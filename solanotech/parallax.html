@@ -32,7 +32,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Noto+Serif+JP:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-/* El sello 義 es el "producto": gira, viaja y se acerca mientras bajás.
+/* La laptop 3D es el "producto": se abre, gira, viaja y cambia de pantalla mientras bajás.
    Sin JavaScript (o con movimiento reducido) todo queda en una columna normal. */
 :root{
   --bg:#05070c; --bg2:#0b0f18;
@@ -84,15 +84,60 @@ main,footer{position:relative;z-index:2}
 .stage-in{position:relative;padding:120px var(--gut) 60px;display:grid;gap:48px;max-width:1240px;margin:0 auto}
 .bigword{display:none}
 .coin-zone{display:grid;place-items:center;padding:20px 0}
-.tilt{perspective:1200px}
-.coin{--size:min(56vw,300px);width:var(--size);height:var(--size);position:relative;transform-style:preserve-3d;transform:rotateX(10deg) rotateY(-25deg)}
-.face,.edge{position:absolute;inset:0;border-radius:22%}
-.face{display:grid;place-items:center;font-family:var(--f-jp);font-weight:900;font-size:calc(var(--size)*.56);color:#fff;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
-.face::after{content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.35),transparent 38%,transparent 62%,rgba(0,0,0,.25))}
-.front{background:radial-gradient(circle at 30% 25%,#ff5a6c,var(--shu) 55%,#b8182b);transform:translateZ(1px)}
-.back{background:radial-gradient(circle at 70% 25%,#ff5a6c,var(--shu) 55%,#b8182b);transform:translateZ(-25px) rotateY(180deg)}
-.edge{background:var(--shu-dark)}
-.coin-shadow{width:calc(var(--size,300px)*.8);height:28px;margin:34px auto 0;border-radius:50%;background:radial-gradient(closest-side,rgba(0,0,0,.65),transparent);filter:blur(4px)}
+.persp{perspective:1500px}
+.tilt{transform-style:preserve-3d}
+.dev{--w:min(68vw,340px);--h:calc(var(--w)*.63);--d:calc(var(--w)*.66);width:var(--w);height:var(--h);position:relative;transform-style:preserve-3d;transform-origin:50% 50%;transform:rotateX(-16deg) rotateY(-26deg);margin-bottom:calc(var(--d)*.45)}
+.lid,.deck{position:absolute;transform-style:preserve-3d}
+.lid{inset:0;transform-origin:50% 100%;transform:rotateX(10deg)}
+.lid > *{position:absolute;inset:0;border-radius:calc(var(--w)*.03) calc(var(--w)*.03) 3px 3px}
+.shell{background:#262b35}
+.lback{transform:translateZ(-7px) rotateY(180deg);background:linear-gradient(160deg,#454c5c,#1f242e 70%);display:grid;place-items:center;backface-visibility:hidden;-webkit-backface-visibility:hidden}
+.lback span{width:24%;aspect-ratio:1;border-radius:22%;background:var(--shu);display:grid;place-items:center;color:#fff;font-family:var(--f-jp);font-weight:900;font-size:calc(var(--w)*.14);box-shadow:0 0 calc(var(--w)*.12) rgba(229,38,61,.7)}
+.screen{transform:translateZ(.6px);background:#05070c;border:calc(var(--w)*.022) solid #11151d;overflow:hidden;backface-visibility:hidden;-webkit-backface-visibility:hidden;font-size:calc(var(--w)*.032);line-height:1.3;color:#fff}
+.screen::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,rgba(255,255,255,.13),transparent 38%)}
+.sc{position:absolute;inset:0;padding:6%;opacity:0}
+.sc:first-child{opacity:1}
+.s-brand{display:grid;place-items:center;align-content:center;gap:.6em;text-align:center;background:radial-gradient(circle at 50% 40%,color-mix(in srgb,var(--a1) 35%,transparent),transparent 65%)}
+.s-brand .sl{width:2.6em;aspect-ratio:1;border-radius:22%;background:var(--shu);display:grid;place-items:center;font-family:var(--f-jp);font-weight:900;font-size:1.6em;box-shadow:0 0 1.4em rgba(229,38,61,.6)}
+.s-brand b{font-family:var(--f-head);font-size:1.5em}
+.s-brand small{color:var(--muted);font-size:.8em}
+.s-dash{display:grid;grid-template-columns:18% 1fr;gap:4%}
+.s-dash .sb{background:rgba(255,255,255,.05);border-radius:.4em;display:grid;gap:.4em;padding:.5em;align-content:start}
+.s-dash .sb i{height:.45em;border-radius:.2em;background:rgba(255,255,255,.14)}
+.s-dash .sb i:first-child{height:.9em;background:var(--grad)}
+.s-dash .mn{display:grid;grid-template-rows:auto 1fr;gap:.6em}
+.s-dash .kp{display:grid;grid-template-columns:repeat(3,1fr);gap:.4em}
+.s-dash .kp div{background:rgba(255,255,255,.06);border-radius:.4em;padding:.4em .5em;font-size:.62em;color:var(--muted)}
+.s-dash .kp b{display:block;color:#fff;font-family:var(--f-head);font-size:1.5em}
+.s-dash .ch{display:flex;align-items:flex-end;gap:.35em;background:rgba(255,255,255,.04);border-radius:.4em;padding:.6em}
+.s-dash .ch span{flex:1;border-radius:.2em .2em 0 0;background:var(--grad)}
+.s-web{padding:0;display:grid;grid-template-rows:auto 1fr;background:#f4f6fb;color:#111}
+.s-web .bar{display:flex;gap:.3em;align-items:center;padding:.45em .7em;background:#e3e7ef;font-size:.6em}
+.s-web .bar i{width:.7em;height:.7em;border-radius:50%;background:#ff5f57}.s-web .bar i:nth-child(2){background:#febc2e}.s-web .bar i:nth-child(3){background:#28c840}
+.s-web .bar span{margin-left:.6em;background:#fff;border-radius:1em;padding:.1em .8em;color:#555}
+.s-web .pg{padding:5% 6%;display:grid;grid-template-columns:1.1fr 1fr;gap:6%;align-items:center}
+.s-web h4{font-family:var(--f-head);font-size:1.25em;line-height:1.05;text-transform:uppercase}
+.s-web .wa{display:inline-block;margin-top:.6em;background:#25d366;color:#fff;border-radius:1em;padding:.3em .8em;font-size:.6em;font-weight:600}
+.s-web .ph{aspect-ratio:4/3;border-radius:.5em;background:var(--grad)}
+.s-web .cards{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:.5em}
+.s-web .cards i{height:2.2em;border-radius:.4em;background:#dfe4ee}
+.s-diag{display:grid;align-content:center;gap:.55em;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.78em}
+.s-diag .hd{display:flex;justify-content:space-between;color:var(--a2);margin-bottom:.3em}
+.s-diag .row{display:grid;grid-template-columns:4.5em 1fr 4em;gap:.6em;align-items:center}
+.s-diag .row i{height:.5em;border-radius:.3em;background:rgba(255,255,255,.1);position:relative;overflow:hidden}
+.s-diag .row i::after{content:"";position:absolute;inset:0;width:var(--v);background:var(--grad)}
+.s-diag .ok{color:#4ade80;margin-top:.4em}
+.s-end{display:grid;place-items:center;background:var(--grad)}
+.s-end b{font-family:var(--f-head);font-size:1.9em;text-transform:uppercase}
+.deck{left:0;top:100%;width:var(--w);height:var(--d);transform-origin:50% 0;transform:rotateX(90deg)}
+.deck > *{position:absolute;inset:0;border-radius:3px 3px calc(var(--w)*.04) calc(var(--w)*.04)}
+.slab{background:#7d8492}
+.dtop{background:linear-gradient(#d3d8e0,#b3bac6);padding:7% 8% 6%;display:grid;grid-template-rows:auto auto;align-content:start;gap:7%;transform:translateZ(.5px)}
+.keys{display:grid;grid-template-columns:repeat(14,1fr);gap:calc(var(--w)*.006)}
+.keys i{aspect-ratio:1.1;border-radius:2px;background:#2b303a;box-shadow:0 1px 0 rgba(0,0,0,.35)}
+.keys i.sp{grid-column:span 6;aspect-ratio:auto}
+.pad{width:38%;aspect-ratio:1.6;margin:0 auto;border-radius:calc(var(--w)*.015);background:rgba(0,0,0,.08);box-shadow:inset 0 0 0 1px rgba(0,0,0,.08)}
+.dev-glow{width:calc(var(--w,340px)*.9);height:30px;margin:0 auto;border-radius:50%;background:radial-gradient(closest-side,color-mix(in srgb,var(--a1) 55%,transparent),transparent);filter:blur(10px)}
 .panels{display:grid;gap:56px}
 .panel .pi{max-width:520px}
 .panel h1,.panel h2{font-size:clamp(2.3rem,5.4vw,4.6rem);font-weight:800;text-transform:uppercase;margin:14px 0 18px}
@@ -107,12 +152,12 @@ main,footer{position:relative;z-index:2}
 .fx .stage-in{height:100vh;height:100svh;max-width:none;padding:0;display:block;overflow:hidden}
 .fx .bigword{display:block;position:absolute;top:50%;left:0;white-space:nowrap;font-family:var(--f-head);font-weight:800;font-size:clamp(7rem,24vw,22rem);line-height:1;letter-spacing:-.04em;color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.09);transform:translateY(-50%);will-change:transform}
 .fx .coin-zone{position:absolute;inset:0;padding:0;z-index:2;pointer-events:none}
-.fx .coin{--size:min(34vw,380px)}
+.fx .dev{--w:min(42vw,520px)}
 .fx .panels{display:block}
 .fx .panel{position:absolute;inset:0;display:flex;align-items:center;padding:0 max(24px,7vw);z-index:3;pointer-events:none}
 .fx .panel .pi{pointer-events:auto}
 .fx .panel.r{justify-content:flex-end}
-.fx .panel.c{justify-content:center;align-items:flex-end;padding-bottom:10vh;text-align:center}
+.fx .panel.c{justify-content:center;align-items:flex-end;padding-bottom:7vh;text-align:center}
 .fx .panel.c .pi{display:grid;justify-items:center}
 .fx .panel.c p{margin:0 auto}
 .fx .panel:not(.p1) .pi{opacity:0;visibility:hidden}
@@ -122,7 +167,7 @@ main,footer{position:relative;z-index:2}
 .hint i{width:1px;height:36px;background:linear-gradient(var(--a2),transparent);display:block;animation:drip 1.6s ease-in-out infinite;transform-origin:top}
 @keyframes drip{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
 @media (max-width:760px){
-  .fx .coin{--size:min(52vw,250px)}
+  .fx .dev{--w:min(66vw,280px)}
   .fx .panel,.fx .panel.r{justify-content:flex-start;align-items:flex-end;padding:0 22px 92px}
   .fx .panel.c{justify-content:flex-start;text-align:left}
   .fx .panel.c .pi{justify-items:start}
@@ -271,13 +316,28 @@ footer{border-top:1px solid var(--line);padding:30px var(--gut) 100px;display:fl
 
       <div class="coin-zone">
         <div>
-          <div class="tilt" id="tilt">
-            <div class="coin" id="coin">
-              <div class="face front">義</div>
-              <div class="face back">信</div>
+          <div class="persp">
+            <div class="tilt" id="tilt">
+              <div class="dev" id="dev">
+                <div class="deck">
+                  <div class="slab" style="transform:translateZ(-6px)"></div><div class="slab" style="transform:translateZ(-5px)"></div><div class="slab" style="transform:translateZ(-4px)"></div><div class="slab" style="transform:translateZ(-3px)"></div><div class="slab" style="transform:translateZ(-2px)"></div><div class="slab" style="transform:translateZ(-1px)"></div>
+                  <div class="dtop"><div class="keys" id="keys"></div><div class="pad"></div></div>
+                </div>
+                <div class="lid" id="lid">
+                  <div class="shell" style="transform:translateZ(-6px)"></div><div class="shell" style="transform:translateZ(-5px)"></div><div class="shell" style="transform:translateZ(-4px)"></div><div class="shell" style="transform:translateZ(-3px)"></div><div class="shell" style="transform:translateZ(-2px)"></div><div class="shell" style="transform:translateZ(-1px)"></div>
+                  <div class="lback"><span>義</span></div>
+                  <div class="screen" aria-hidden="true">
+                    <div class="sc s-brand"><span class="sl">義</span><b>Solanotech</b><small>Software hecho en Cartago</small></div>
+                    <div class="sc s-dash"><div class="sb"><i></i><i></i><i></i><i></i><i></i></div><div class="mn"><div class="kp"><div>Ventas<b>₡</b></div><div>Gastos<b>₡</b></div><div>IVA<b>13%</b></div></div><div class="ch"><span style="height:40%"></span><span style="height:62%"></span><span style="height:48%"></span><span style="height:80%"></span><span style="height:58%"></span><span style="height:92%"></span><span style="height:70%"></span></div></div></div>
+                    <div class="sc s-web"><div class="bar"><i></i><i></i><i></i><span>tunegocio.cr</span></div><div class="pg"><div><h4>Tu negocio en línea</h4><span class="wa">WhatsApp</span></div><div class="ph"></div><div class="cards"><i></i><i></i><i></i></div></div></div>
+                    <div class="sc s-diag"><div class="hd"><span>Diagnóstico</span><span>●</span></div><div class="row"><span>CPU</span><i style="--v:38%"></i><span>Normal</span></div><div class="row"><span>RAM</span><i style="--v:72%"></i><span>Mejorar</span></div><div class="row"><span>Disco</span><i style="--v:90%"></i><span>SSD</span></div><div class="row"><span>Virus</span><i style="--v:0%"></i><span>Limpio</span></div><div class="ok">✓ Equipo listo para entregar</div></div>
+                    <div class="sc s-end"><b>Proyectos ↓</b></div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-          <div class="coin-shadow" id="coinShadow"></div>
+          <div class="dev-glow" id="devGlow"></div>
         </div>
       </div>
 
@@ -479,6 +539,10 @@ footer{border-top:1px solid var(--line);padding:30px var(--gut) 100px;display:fl
   const QR = '1111111100100111111110101011000101100011010011001011111000100110011001010100110011111110111110111110000100010101111000101';
   for (let i = 0; i < 49; i++){ const c = document.createElement('i'); if (QR[i*2] === '0') c.className = 'w'; qr.appendChild(c); }
 
+  /* Teclado de la laptop */
+  const keys = document.getElementById('keys');
+  for (let i = 0; i < 56; i++){ const k = document.createElement('i'); if (i === 46) k.className = 'sp'; if (i > 46 && i < 52) continue; keys.appendChild(k); }
+
   /* Cotizador -> WhatsApp */
   const form = document.getElementById('quoteForm'), nombre = document.getElementById('nombre'), err = document.getElementById('formErr');
   const val = id => document.getElementById(id).value.trim();
@@ -528,27 +592,31 @@ footer{border-top:1px solid var(--line);padding:30px var(--gut) 100px;display:fl
     gsap.to(s, { yPercent: -260 * z, rotate: (i % 2 ? 1 : -1) * 25 * z, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1 } });
   });
 
-  /* ===== Escena del sello ===== */
+  /* ===== Escena de la laptop ===== */
+  // lid: ángulo de la tapa (0 = vertical, negativo = cerrándose hacia el teclado)
   const SCENES = [
-    { name: 'Inicio',      x: 20,  y: 0,   ry: -25, rx: 10,  s: 1,    a1: '#3b82ff', a2: '#38d9ff' },
-    { name: 'Sistemas',    x: -22, y: 0,   ry: 160, rx: -8,  s: 1.08, a1: '#10b981', a2: '#22d3ee' },
-    { name: 'Páginas web', x: 22,  y: 4,   ry: 335, rx: 16,  s: .92,  a1: '#8b5cf6', a2: '#e879f9' },
-    { name: 'Soporte',     x: 0,   y: -18, ry: 520, rx: -12, s: .66,  a1: '#f59e0b', a2: '#fde047' },
-    { name: 'Nosotros',    x: -22, y: 0,   ry: 700, rx: 8,   s: 1.05, a1: '#e5263d', a2: '#ff8a5c' },
+    { name: 'Inicio',      x: 25,  y: 0,   ry: -28, rx: -16, s: .94,    scr: 0, lid: 10,  a1: '#3b82ff', a2: '#38d9ff' },
+    { name: 'Sistemas',    x: -23, y: 2,   ry: 30,  rx: -20, s: 1.05, scr: 1, lid: 14,  a1: '#10b981', a2: '#22d3ee' },
+    { name: 'Páginas web', x: 25,  y: 2,   ry: -38, rx: -10, s: .92,  scr: 2, lid: 6,   a1: '#8b5cf6', a2: '#e879f9' },
+    { name: 'Soporte',     x: 0,   y: -17, ry: 0,   rx: -22, s: .5,   scr: 3, lid: 16,  a1: '#f59e0b', a2: '#fde047' },
+    { name: 'Nosotros',    x: -22, y: 2,   ry: 205, rx: -14, s: 1,    scr: 0, lid: 4,   a1: '#e5263d', a2: '#ff8a5c' },
   ];
-  const coin = document.getElementById('coin');
-  for (let i = 1; i <= 24; i++){ const e = document.createElement('div'); e.className = 'edge'; e.style.transform = `translateZ(${-i}px)`; coin.insertBefore(e, coin.firstChild); }
+  const dev = document.getElementById('dev'), lid = document.getElementById('lid');
+  const pantallas = [...document.querySelectorAll('.sc')];
+  gsap.set(pantallas, { opacity: 0 }); gsap.set(pantallas[0], { opacity: 1 });
+  // La tapa se abre al cargar
+  gsap.fromTo(lid, { rotationX: -88 }, { rotationX: SCENES[0].lid, duration: 1.8, delay: .35, ease: 'power3.out' });
 
   const mm = gsap.matchMedia();
   mm.add({ desk: '(min-width: 761px)', mob: '(max-width: 760px)' }, ctx => {
     const M = ctx.conditions.mob;
     const pos = c => ({
-      x: (M ? c.x * .3 : c.x) + 'vw',
-      y: (M ? -20 + c.y * .4 : c.y) + 'vh',
+      x: (M ? c.x * .15 : c.x) + 'vw',
+      y: (M ? -20 + Math.max(c.y, -6) * .4 : c.y) + 'vh',
       rotateY: c.ry, rotateX: c.rx, scale: M ? c.s * .9 : c.s,
     });
-    gsap.set(coin, pos(SCENES[0]));
-    gsap.set('#coinShadow', { opacity: M ? 0 : 1 });
+    gsap.set(dev, pos(SCENES[0]));
+    gsap.set('#devGlow', { opacity: M ? 0 : 1 });
 
     const tl = gsap.timeline({
       defaults: { ease: 'power2.inOut' },
@@ -567,21 +635,27 @@ footer{border-top:1px solid var(--line);padding:30px var(--gut) 100px;display:fl
       const at = i - 1, c = SCENES[i];
       const salida = SCENES[i - 1].x >= 0 ? -1 : 1;
       tl.to(`.p${i} .pi`, { autoAlpha: 0, x: M ? 0 : salida * -90, y: M ? -40 : 0, duration: .35, ease: 'power2.in' }, at + .05)
-        .to(coin, { ...pos(c), duration: 1 }, at)
+        .to(dev, { ...pos(c), duration: 1 }, at)
+        .to(lid, { rotationX: c.lid, duration: 1 }, at)
+        .to(pantallas[SCENES[i - 1].scr], { opacity: 0, duration: .25, ease: 'none' }, at + .35)
+        .to(pantallas[c.scr], { opacity: 1, duration: .25, ease: 'none' }, at + .45)
         .to(root, { '--a1': c.a1, '--a2': c.a2, duration: 1, ease: 'none' }, at)
         .fromTo(`.p${i + 1} .pi`, { autoAlpha: 0, x: M ? 0 : salida * 90, y: M ? 50 : 0 }, { autoAlpha: 1, x: 0, y: 0, duration: .45, ease: 'power3.out' }, at + .55);
     }
-    // Final: el sello se acerca hasta llenar la pantalla
+    // Final: la laptop gira de frente y entramos a la pantalla
     const end = SCENES.length - 1;
     tl.to(`.p${SCENES.length} .pi`, { autoAlpha: 0, y: -30, duration: .3 }, end + .1)
-      .to(coin, { x: 0, y: 0, rotateY: 720, rotateX: 0, scale: M ? 9 : 7, duration: 1, ease: 'power3.in' }, end)
-      .to('#coinShadow', { opacity: 0, duration: .3 }, end)
+      .to(pantallas[SCENES[end].scr], { opacity: 0, duration: .01 }, end + .2)
+      .to(pantallas[pantallas.length - 1], { opacity: 1, duration: .01 }, end + .2)
+      .to(lid, { rotationX: 0, duration: .6 }, end)
+      .to(dev, { x: 0, y: 0, rotateY: 360, rotateX: 0, scale: M ? 7 : 4.2, duration: 1, ease: 'power3.in' }, end)
+      .to('#devGlow', { opacity: 0, duration: .3 }, end)
       .to('#bigword', { opacity: 0, duration: .4 }, end);
 
     return () => gsap.set(root, { '--a1': '#3b82ff', '--a2': '#38d9ff' });
   });
 
-  /* Inclinación del sello con el mouse */
+  /* Inclinación de la laptop con el mouse */
   const tilt = document.getElementById('tilt');
   const rx = gsap.quickTo(tilt, 'rotationX', { duration: .8, ease: 'power3' });
   const ry = gsap.quickTo(tilt, 'rotationY', { duration: .8, ease: 'power3' });
