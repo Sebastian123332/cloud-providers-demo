@@ -829,6 +829,8 @@ if(!DEFAULT){
     '<p>Tiene que estar en la misma carpeta que esta página.</p></div>');
 }
 let S = DEFAULT;
+/* fotos que trae la demo de fábrica; se copian al cargar, antes de cualquier cambio en el panel */
+const FOTOS_FABRICA = Object.fromEntries(DEFAULT.d.map(x=>[x.n, x.art && x.art.foto]));
 try{
   const guardado = localStorage.getItem("solanotech_sitio_" + CONFIG.plan);
   if(guardado && CONFIG.plan !== "menu") S = JSON.parse(guardado);
@@ -1277,6 +1279,10 @@ function pintaMarca(){
 function repinta(){
   pintaMarca(); pintaMenu(); pintaPromos(); pintaInfo(); pintaCarril();
   observa(); inclinables();
+  if(F.tres_d){
+    pintaTabs3d(); cambiaApa(apaActual);
+    armar(document.getElementById("heroPlato"), recetaDe("casado"));
+  }
 }
 
 /* ===================== ESCENAS 3D ===================== */
@@ -1287,7 +1293,7 @@ function registra(idEsc, idPlato, op){
   return giratorio(e, pl, op);
 }
 if(F.tres_d){
-  armar(document.getElementById("heroPlato"), RECETAS.casado);
+  armar(document.getElementById("heroPlato"), recetaDe("casado"));
   registra("escHero","heroPlato",{auto:.14});
 }else{
   /* sin 3D el hero lleva la foto (o la ilustración) del plato estrella */
@@ -1296,28 +1302,49 @@ if(F.tres_d){
     `<div class="heroart">${svgFor(destacado.art)}<span class="tag">${esc(destacado.n)}</span></div>`;
 }
 
+/* Si el dueño subió una foto del platillo, el 3D muestra el plato con esa foto servida encima */
+function recetaFoto(nombre, foto){
+  return { nombre, capas:[
+    c=>{ disco(c,{r:168, alto:9, color:"#E7EDF6", curva:.07});
+         disco(c,{r:150, alto:3, z:9, color:"#F8FAFD"}); },
+    c=>{ const l = lamina(c,{w:272, h:272, z:13, color:"#D9DEE7"});
+         l.style.background = `center/cover no-repeat url("${foto}")`;
+         l.style.boxShadow = "inset 0 0 22px rgba(0,0,0,.28)"; } ]};
+}
+function recetaDe(k){
+  const r = RECETAS[k], d = S.d.find(x=>x.n===r.nombre);
+  const fotoNueva = d && d.art && d.art.foto && d.art.foto !== FOTOS_FABRICA[r.nombre];
+  return fotoNueva ? recetaFoto(r.nombre, d.art.foto) : r;
+}
+
 let capasServir = [];
 if(F.relato){
-  capasServir = armar(document.getElementById("servirPlato"), RECETAS.casado, {fuera:true});
+  capasServir = armar(document.getElementById("servirPlato"), recetaDe("casado"), {fuera:true});
   capasServir[0].classList.remove("fuera");
   registra("escServir","servirPlato",{auto:.09});
 }
 
 const apaCont = document.getElementById("apaPlato");
 if(F.tres_d) registra("escApa","apaPlato",{auto:.16});
+let apaActual = "casado";
 function cambiaApa(k){
   if(!F.tres_d || !apaCont) return;
-  armar(apaCont, RECETAS[k]);
+  apaActual = k;
+  armar(apaCont, recetaDe(k));
   document.querySelectorAll("#tabs3d .tab").forEach(t=>t.setAttribute("aria-selected", t.dataset.k===k));
 }
-if(F.tres_d) document.getElementById("tabs3d").innerHTML = TABS3D.map(k=>{
+function pintaTabs3d(){
+  if(!F.tres_d) return;
+  document.getElementById("tabs3d").innerHTML = TABS3D.map(k=>{
   const v = RECETAS[k], d = S.d.find(x=>x.n === v.nombre) || {p:0, x:"", art:{}};
-  return `<button class="tab" data-k="${k}" aria-selected="${k==='casado'}">
+  return `<button class="tab" data-k="${k}" aria-selected="${k===apaActual}">
     <span class="mini">${svgFor(d.art)}</span>
     <span><b>${esc(v.nombre)}</b><small>${esc(((d.x||"").slice(0,44).replace(/\s+\S*$/,"")) + ((d.x||"").length>44?"…":""))}</small></span>
     <span class="p">${col(d.p)}</span></button>`;
 }).join("");
-document.querySelectorAll("#tabs3d .tab").forEach(t=>t.onclick=()=>cambiaApa(t.dataset.k));
+  document.querySelectorAll("#tabs3d .tab").forEach(t=>t.onclick=()=>cambiaApa(t.dataset.k));
+}
+pintaTabs3d();
 if(F.tres_d) cambiaApa("casado");
 
 
