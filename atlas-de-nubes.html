@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Atlas de Nubes</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;800;900&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  /* Layout: la página es una columna de aire. Se lee de arriba (hielo, estratosfera)
+     hacia abajo (niebla, suelo); el fondo baja del añil nocturno al durazno del horizonte. */
+  :root{
+    --cielo-alto: #0B1630;
+    --cielo-medio: #24406F;
+    --cielo-bajo: #5F7FB0;
+    --horizonte: #D9A07F;
+    --suelo: #1C2422;
+    --tinta: #F1F4FA;
+    --tinta-suave: #BFCBE0;
+    --sol: #FFD29A;
+    --linea: rgba(241,244,250,.16);
+    --linea-fuerte: rgba(241,244,250,.38);
+    --vidrio: rgba(11,22,48,.42);
+
+    --f-display: 'Big Shoulders Display', 'Arial Narrow', Impact, sans-serif;
+    --f-texto: 'Literata', Georgia, 'Times New Roman', serif;
+    --f-dato: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+
+    color-scheme: dark;
+  }
+  *{ box-sizing: border-box; }
+  html{ scroll-behavior: smooth; }
+  body{
+    margin: 0;
+    color: var(--tinta);
+    font: 400 17px/1.65 var(--f-texto);
+    background:
+      linear-gradient(180deg,
+        var(--cielo-alto) 0%,
+        var(--cielo-medio) 34%,
+        var(--cielo-bajo) 66%,
+        var(--horizonte) 90%,
+        var(--suelo) 100%);
+    background-color: var(--cielo-alto);
+    min-height: 100%;
+  }
+  .ancho{
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  h1, h2, h3{ font-family: var(--f-display); font-weight: 800; line-height: .92; margin: 0; text-wrap: balance; letter-spacing: .005em; }
+  p{ margin: 0; }
+  .dato{ font-family: var(--f-dato); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--tinta-suave); }
+  button{ font: inherit; color: inherit; }
+  :focus-visible{ outline: 2px solid var(--sol); outline-offset: 3px; border-radius: 4px; }
+
+  /* ===== Portada ===== */
+  .portada{ position: relative; overflow: hidden; isolation: isolate; }
+  #cielo{ position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; }
+  .portada .ancho{ padding-block: clamp(72px, 12vw, 150px) clamp(64px, 10vw, 120px); display: grid; gap: 28px; }
+  .portada h1{
+    font-size: clamp(76px, 17vw, 220px);
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: -.01em;
+    line-height: .8;
+    text-shadow: 0 2px 40px rgba(11,22,48,.55);
+  }
+  .portada h1 span{ display: block; color: var(--sol); font-weight: 500; font-size: .42em; letter-spacing: .04em; margin-bottom: .18em; }
+  .portada .lead{ max-width: 34ch; font-size: clamp(18px, 2.2vw, 22px); color: var(--tinta); text-shadow: 0 1px 18px rgba(11,22,48,.7); }
+  .portada .lead em{ color: var(--sol); }
+  .bajar{
+    justify-self: start;
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: var(--f-dato); font-size: 13px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--tinta); text-decoration: none;
+    padding: 12px 18px; border: 1px solid var(--linea-fuerte); border-radius: 999px;
+    background: var(--vidrio); backdrop-filter: blur(6px);
+    transition: border-color .2s, background .2s;
+  }
+  .bajar:hover{ border-color: var(--sol); background: rgba(11,22,48,.65); }
+  .bajar svg{ width: 14px; height: 14px; }
+
+  /* ===== Secciones ===== */
+  section.bloque .ancho{ padding-block: clamp(56px, 8vw, 96px); display: grid; gap: 32px; }
+  .encabezado{ display: grid; gap: 14px; max-width: 64ch; }
+  .encabezado h2{ font-size: clamp(48px, 8vw, 96px); text-transform: uppercase; }
+  .encabezado p{ color: var(--tinta-suave); }
+
+  /* ===== La columna (gráfico de rangos) ===== */
+  .columna-grid{ display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 32px; align-items: start; }
+  .grafico{ display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 0 8px; }
+  .eje{ position: relative; height: 520px; }
+  .eje span{
+    position: absolute; right: 0; transform: translateY(50%);
+    font-family: var(--f-dato); font-size: 11px; color: var(--tinta-suave);
+    font-variant-numeric: tabular-nums;
+  }
+  .lienzo-barras{
+    position: relative; height: 520px;
+    display: grid; grid-template-columns: repeat(10, minmax(0, 1fr));
+    border-left: 1px solid var(--linea-fuerte);
+    border-bottom: 1px solid var(--linea-fuerte);
+  }
+  .guia{ position: absolute; left: 0; right: 0; height: 0; border-top: 1px solid var(--linea); pointer-events: none; }
+  .tropopausa{ position: absolute; left: 0; right: 0; border-top: 1px dashed var(--sol); opacity: .75; pointer-events: none; }
+  .tropopausa span{ position: absolute; left: 6px; bottom: 4px; font-family: var(--f-dato); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: var(--sol); white-space: nowrap; }
+  .gen{
+    position: relative; border: 0; background: transparent; cursor: pointer; padding: 0;
+  }
+  .gen:hover .barra{ background: linear-gradient(180deg, rgba(255,255,255,.75), rgba(255,255,255,.35)); }
+  .barra{
+    position: absolute; left: 22%; right: 22%;
+    border-radius: 999px;
+    background: linear-gradient(180deg, rgba(241,244,250,.55), rgba(241,244,250,.18));
+    box-shadow: 0 0 18px rgba(241,244,250,.15);
+    transition: background .25s, box-shadow .25s, left .25s, right .25s;
+  }
+  .gen[aria-pressed="true"] .barra{
+    left: 14%; right: 14%;
+    background: linear-gradient(180deg, var(--sol), rgba(255,210,154,.45));
+    box-shadow: 0 0 26px rgba(255,210,154,.5);
+  }
+  .abrev{
+    position: absolute; left: 0; right: 0; text-align: center;
+    font-family: var(--f-dato); font-size: 12px; font-weight: 500;
+    transform: translateY(-6px);
+  }
+  .gen[aria-pressed="true"] .abrev{ color: var(--sol); }
+  .familias{
+    grid-column: 2; display: grid; grid-template-columns: 3fr 2fr 3fr 2fr; gap: 6px; margin-top: 10px;
+  }
+  .familias span{
+    border-top: 1px solid var(--linea-fuerte); padding-top: 6px;
+    font-family: var(--f-dato); font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--tinta-suave);
+    text-align: center; line-height: 1.3;
+  }
+
+  .ficha{
+    display: grid; gap: 18px;
+    background: var(--vidrio);
+    border: 1px solid var(--linea);
+    border-radius: 18px;
+    padding: 22px;
+    backdrop-filter: blur(10px);
+    min-width: 0;
+  }
+  .ficha canvas{ width: 100%; aspect-ratio: 16 / 9; max-width: 100%; border-radius: 10px; background: linear-gradient(180deg, rgba(36,64,111,.6), rgba(95,127,176,.5)); display: block; }
+  .ficha h3{ font-size: clamp(44px, 6vw, 68px); text-transform: uppercase; }
+  .ficha .etim{ font-style: italic; color: var(--tinta-suave); margin-top: 6px; }
+  .ficha dl{ display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 18px; margin: 0; }
+  .ficha dt{ font-family: var(--f-dato); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--sol); padding-top: 4px; }
+  .ficha dd{ margin: 0; font-size: 16px; }
+
+  /* ===== Fabricá tu nube ===== */
+  .taller{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 32px; align-items: start; }
+  .controles{ display: grid; gap: 24px; min-width: 0; }
+  .control{ display: grid; gap: 8px; }
+  .control label{ display: flex; justify-content: space-between; gap: 12px; align-items: baseline; }
+  .control output{ font-family: var(--f-dato); font-size: 18px; font-variant-numeric: tabular-nums; color: var(--sol); }
+  input[type=range]{ width: 100%; accent-color: var(--sol); height: 28px; }
+  .escenarios{ display: flex; flex-wrap: wrap; gap: 8px; }
+  .escenarios button{
+    border: 1px solid var(--linea-fuerte); background: var(--vidrio); border-radius: 999px;
+    padding: 8px 14px; cursor: pointer; font-size: 14px;
+    transition: border-color .2s;
+  }
+  .escenarios button:hover{ border-color: var(--sol); }
+  .resultado{
+    display: grid; gap: 16px;
+    background: var(--vidrio); border: 1px solid var(--linea); border-radius: 18px; padding: 22px;
+    backdrop-filter: blur(10px); min-width: 0;
+  }
+  .resultado canvas{ width: 100%; height: 380px; display: block; }
+  .cifras{ display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+  .cifras div{ display: grid; gap: 2px; }
+  .cifras b{ font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 4vw, 42px); line-height: 1; font-variant-numeric: tabular-nums; }
+  .formula{ font-family: var(--f-dato); font-size: 13px; color: var(--tinta-suave); border-top: 1px solid var(--linea); padding-top: 14px; }
+  .formula code{ color: var(--tinta); }
+  #explicacion{ font-size: 16px; }
+
+  /* ===== Suelo ===== */
+  footer{ background: var(--suelo); color: var(--tinta-suave); }
+  footer .ancho{ padding-block: 40px 56px; display: flex; flex-wrap: wrap; gap: 16px 40px; justify-content: space-between; font-size: 14px; }
+  footer p{ max-width: 60ch; }
+
+  @media (max-width: 860px){
+    .columna-grid, .taller{ grid-template-columns: minmax(0, 1fr); }
+    .eje, .lienzo-barras{ height: 440px; }
+  }
+  @media (max-width: 480px){
+    .abrev{ font-size: 10px; }
+    .familias span{ font-size: 9px; letter-spacing: .02em; }
+    .resultado canvas{ height: 320px; }
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior: auto; }
+    *{ transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="portada">
+  <canvas id="cielo" aria-hidden="true"></canvas>
+  <div class="ancho">
+    <p class="dato">Troposfera · 0 a 16 km · 10 géneros</p>
+    <h1><span>Mirá pa' arriba</span>Atlas de Nubes</h1>
+    <p class="lead">Todas las nubes del mundo caben en diez nombres. Esta página es una columna de aire: arriba, el hielo de los <em>cirros</em>; abajo, la niebla que se sienta sobre los cafetales.</p>
+    <a class="bajar" href="#columna">
+      <svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 1v11M2 7l5 5 5-5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
+      Bajar por la columna
+    </a>
+  </div>
+</header>
+
+<main>
+  <section class="bloque" id="columna">
+    <div class="ancho">
+      <div class="encabezado">
+        <p class="dato">01 · Dónde vive cada una</p>
+        <h2>La columna</h2>
+        <p>Cada barra marca la altura típica de un género en latitudes tropicales, dibujada a escala. Tocá una para conocerla.</p>
+      </div>
+
+      <div class="columna-grid">
+        <div>
+          <div class="grafico">
+            <div class="eje" id="eje" aria-hidden="true"></div>
+            <div class="lienzo-barras" id="barras" role="group" aria-label="Géneros de nubes por altitud"></div>
+            <div class="familias" aria-hidden="true">
+              <span>Altas</span><span>Medias</span><span>Bajas</span><span>Vertical</span>
+            </div>
+          </div>
+        </div>
+
+        <article class="ficha" aria-live="polite">
+          <canvas id="retrato" aria-hidden="true"></canvas>
+          <div>
+            <p class="dato" id="f-familia">Desarrollo vertical · Cu</p>
+            <h3 id="f-nombre">Cumulus</h3>
+            <p class="etim" id="f-etim">Del latín: «montón».</p>
+          </div>
+          <dl>
+            <dt>Altura</dt><dd id="f-altura">0,6 a 6 km</dd>
+            <dt>Hecha de</dt><dd id="f-hecha">Gotas de agua</dd>
+            <dt>Cómo verla</dt><dd id="f-ver"></dd>
+            <dt>Qué anuncia</dt><dd id="f-anuncia"></dd>
+          </dl>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="bloque" id="taller">
+    <div class="ancho">
+      <div class="encabezado">
+        <p class="dato">02 · Hacé una con tus manos</p>
+        <h2>Fabricá tu nube</h2>
+        <p>Una nube nace cuando el aire que sube se enfría hasta su punto de rocío. Mové la temperatura, la humedad y qué tan inquieto está el aire, y mirá a qué altura aparece la base y qué género se forma.</p>
+      </div>
+
+      <div class="taller">
+        <form class="controles" id="form-nube">
+          <div class="control">
+            <label for="temp">Temperatura en el suelo <output id="o-temp" for="temp">27 °C</output></label>
+            <input type="range" id="temp" min="10" max="38" step="1" value="27">
+          </div>
+          <div class="control">
+            <label for="hum">Humedad relativa <output id="o-hum" for="hum">65 %</output></label>
+            <input type="range" id="hum" min="15" max="100" step="1" value="65">
+          </div>
+          <div class="control">
+            <label for="inest">Inestabilidad del aire <output id="o-inest" for="inest">Moderada</output></label>
+            <input type="range" id="inest" min="0" max="3" step="1" value="2">
+          </div>
+          <div class="control">
+            <span class="dato">Escenarios de ejemplo</span>
+            <div class="escenarios">
+              <button type="button" data-t="16" data-h="96" data-i="0">Madrugada en Cartago</button>
+              <button type="button" data-t="27" data-h="65" data-i="2">Mediodía en San José</button>
+              <button type="button" data-t="29" data-h="78" data-i="3">Tarde de octubre</button>
+              <button type="button" data-t="35" data-h="30" data-i="1">Guanacaste en marzo</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="resultado">
+          <canvas id="perfil" aria-hidden="true"></canvas>
+          <div class="cifras">
+            <div><span class="dato">Punto de rocío</span><b id="r-rocio">19,9 °C</b></div>
+            <div><span class="dato">Base</span><b id="r-base">890 m</b></div>
+            <div><span class="dato">Género</span><b id="r-genero">Cu</b></div>
+          </div>
+          <p id="explicacion" aria-live="polite"></p>
+          <p class="formula">Base ≈ <code>125 m × (T − Td)</code>, sobre el suelo. Td sale de la fórmula de Magnus.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="ancho">
+    <p>Géneros y abreviaturas según el Atlas Internacional de Nubes de la Organización Meteorológica Mundial. Las alturas son rangos típicos en el trópico; cada nube real hace lo que le da la gana.</p>
+    <p class="dato">Hecho mirando el cielo</p>
+  </div>
+</footer>
+
+<script>
+(() => {
+  const D = Math.min(window.devicePixelRatio || 1, 2);
+  const QUIETO = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const MAX_KM = 17;
+
+  /* ---------- Datos: los diez géneros ---------- */
+  const GENEROS = [
+    { c:'Ci', n:'Cirrus', fam:'Altas', min:7, max:14, etim:'Del latín: «rizo, mechón de pelo».', hecha:'Cristales de hielo',
+      ver:'Filamentos blancos y finos, a veces con un gancho en la punta. Al atardecer son las primeras en ponerse rosadas y las últimas en apagarse.',
+      anuncia:'Si avanzan y se espesan, puede venir un cambio de tiempo en uno o dos días. Solos y quietos no dicen mucho.' },
+    { c:'Cc', n:'Cirrocumulus', fam:'Altas', min:6, max:12, etim:'«Rizo» + «montón».', hecha:'Hielo, a veces gotas sobreenfriadas',
+      ver:'Granitos blancos diminutos, sin sombra propia, en filas como escamas de pescado. Cada grano mide menos que un dedo con el brazo extendido.',
+      anuncia:'Duran poco. Indican aire revuelto allá arriba.' },
+    { c:'Cs', n:'Cirrostratus', fam:'Altas', min:6, max:13, etim:'«Rizo» + «capa».', hecha:'Cristales de hielo',
+      ver:'Un velo lechoso casi transparente. La prueba: dibuja un halo de 22° alrededor del sol o de la luna.',
+      anuncia:'Un velo que se espesa durante el día suele traer nubes más bajas y lluvia.' },
+    { c:'Ac', n:'Altocumulus', fam:'Medias', min:2, max:6, etim:'«Alto» + «montón».', hecha:'Gotas de agua, a veces hielo',
+      ver:'Bancos de bolitas o rollos blancos y grises, con sombra propia. Con el brazo extendido, cada bolita mide entre uno y tres dedos.',
+      anuncia:'Si en una mañana húmeda aparecen como torrecitas (castellanus), la tarde puede terminar en tormenta.' },
+    { c:'As', n:'Altostratus', fam:'Medias', min:2.5, max:7, etim:'«Alto» + «capa».', hecha:'Agua y hielo',
+      ver:'Una capa gris azulada pareja. El sol se ve como a través de un vidrio esmerilado, sin halo y sin sombras en el suelo.',
+      anuncia:'Muchas veces es el paso previo al nimbostrato y a la lluvia larga.' },
+    { c:'Ns', n:'Nimbostratus', fam:'Bajas', min:0.6, max:5, etim:'«Nube de lluvia» + «capa».', hecha:'Agua y hielo',
+      ver:'Una capa oscura y sin forma que tapa todo el cielo. No hay un solo punto donde se adivine el sol.',
+      anuncia:'Lluvia o llovizna seguida durante horas. Es el temporal, no el aguacero.' },
+    { c:'Sc', n:'Stratocumulus', fam:'Bajas', min:0.5, max:2, etim:'«Capa» + «montón».', hecha:'Gotas de agua',
+      ver:'Masas redondeadas grises con claros entre ellas, más anchas que tres dedos con el brazo extendido.',
+      anuncia:'Cielo gris pero casi siempre seco. Es la nube más común del planeta.' },
+    { c:'St', n:'Stratus', fam:'Bajas', min:0, max:0.6, etim:'Del latín: «extendido».', hecha:'Gotas de agua',
+      ver:'Una capa gris uniforme y baja, como niebla que no toca el suelo. Se come la cima de los cerros.',
+      anuncia:'Llovizna fina o nada. Se deshace conforme el sol calienta la mañana.' },
+    { c:'Cu', n:'Cumulus', fam:'Desarrollo vertical', min:0.6, max:6, etim:'Del latín: «montón».', hecha:'Gotas de agua',
+      ver:'Algodones de base plana y bordes nítidos. Esa base plana marca la altura exacta donde el aire que sube llega a su punto de rocío.',
+      anuncia:'Pequeños y sueltos: buen tiempo. Si crecen hacia arriba antes del mediodía, ojo con la tarde.' },
+    { c:'Cb', n:'Cumulonimbus', fam:'Desarrollo vertical', min:0.8, max:16, etim:'«Montón» + «nube de lluvia».', hecha:'Agua abajo, hielo arriba',
+      ver:'Una torre que atraviesa toda la troposfera y se aplana arriba en forma de yunque al topar con la tropopausa.',
+      anuncia:'Aguacero, rayos, ráfagas y a veces granizo. En el Valle Central de Costa Rica son dueños de las tardes de mayo a noviembre.' },
+  ];
+  const POR_CODIGO = Object.fromEntries(GENEROS.map(g => [g.c, g]));
+
+  /* ---------- Pintor de nubes ---------- */
+  function rng(seed){
+    let a = seed >>> 0;
+    return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; };
+  }
+  function puff(g, x, y, r, a = .95, col = [255,255,255]){
+    if (r <= 0) return;
+    const [R,G,B] = col;
+    const gr = g.createRadialGradient(x - r*.25, y - r*.3, r*.08, x, y, r);
+    gr.addColorStop(0, `rgba(${R},${G},${B},${a})`);
+    gr.addColorStop(.55, `rgba(${R-12},${G-8},${B-4},${a*.8})`);
+    gr.addColorStop(1, `rgba(${R-25},${G-18},${B-8},0)`);
+    g.fillStyle = gr;
+    g.beginPath(); g.arc(x, y, r, 0, Math.PI*2); g.fill();
+  }
+  function puffE(g, x, y, rx, ry, a, col){
+    g.save(); g.translate(x, y); g.scale(1, ry/rx); puff(g, 0, 0, rx, a, col); g.restore();
+  }
+  function sombra(g, W, H, y0, y1, col){
+    g.globalCompositeOperation = 'source-atop';
+    const lg = g.createLinearGradient(0, y0, 0, y1);
+    lg.addColorStop(0, 'rgba(0,0,0,0)'); lg.addColorStop(1, col);
+    g.fillStyle = lg; g.fillRect(0, 0, W, H);
+    g.globalCompositeOperation = 'source-over';
+  }
+  function cortarBase(g, W, H, y){
+    g.globalCompositeOperation = 'destination-out';
+    const lg = g.createLinearGradient(0, y - 4, 0, y + 4);
+    lg.addColorStop(0, 'rgba(0,0,0,0)'); lg.addColorStop(1, 'rgba(0,0,0,1)');
+    g.fillStyle = lg; g.fillRect(0, y - 4, W, H);
+    g.globalCompositeOperation = 'source-over';
+  }
+  function lluvia(g, x0, x1, y0, y1, n, R, a = .35){
+    g.strokeStyle = `rgba(200,214,238,${a})`; g.lineWidth = 1;
+    for (let i = 0; i < n; i++){
+      const x = x0 + (x1 - x0) * R(), y = y0 + (y1 - y0) * R() * .4, l = (y1 - y0) * (.3 + .5 * R());
+      g.beginPath(); g.moveTo(x, y); g.lineTo(x - l * .18, y + l); g.stroke();
+    }
+  }
+
+  function pintar(c, W, H, seed = 7){
+    const cv = document.createElement('canvas');
+    cv.width = Math.max(1, Math.round(W * D)); cv.height = Math.max(1, Math.round(H * D));
+    const g = cv.getContext('2d'); g.scale(D, D);
+    const R = rng(seed);
+    switch (c){
+      case 'Cu': {
+        const base = H * .84;
+        for (let i = 0; i < 26; i++){
+          const t = R(), borde = 1 - Math.abs(t - .5) * 1.7;
+          const r = H * (.1 + .16 * Math.max(borde, .1) + .06 * R());
+          puff(g, W * (.12 + .76 * t), base - r * .45 - H * .42 * Math.max(borde, 0) * R(), r);
+        }
+        cortarBase(g, W, H, base);
+        sombra(g, W, H, H * .3, base, 'rgba(70,82,112,.6)');
+        break;
+      }
+      case 'Cb': {
+        const cx = W * .5, base = H * .82, cima = H * .2, tw = W * .32;
+        for (let i = 0; i < 70; i++){
+          const v = R(), py = base - (base - cima) * v;
+          puff(g, cx + (R() - .5) * tw * (.55 + .5 * v), py, W * (.06 + .05 * R()) * (1.15 - .35 * v));
+        }
+        for (let i = 0; i < 36; i++){
+          const rx = W * (.07 + .06 * R());
+          puffE(g, W * (.1 + .8 * Math.pow(R(), .9)), H * (.11 + .09 * R()), rx, rx * .34, .9);
+        }
+        cortarBase(g, W, H, base);
+        sombra(g, W, H, H * .25, base, 'rgba(38,44,66,.85)');
+        lluvia(g, cx - tw * .45, cx + tw * .45, base, H, 70, R, .45);
+        break;
+      }
+      case 'St': {
+        for (let i = 0; i < 46; i++) puffE(g, W * R(), H * (.42 + .16 * R()), W * (.12 + .1 * R()), H * .2, .38, [214,220,230]);
+        sombra(g, W, H, H * .35, H * .7, 'rgba(90,100,120,.35)');
+        break;
+      }
+      case 'Sc': {
+        const k = Math.max(4, Math.round(W / (H * .9)));
+        for (let i = 0; i < k; i++){
+          const cx = W * (i + .5) / k + (R() - .5) * W / k * .25, cy = H * (.48 + (R() - .5) * .12);
+          for (let j = 0; j < 8; j++) puff(g, cx + (R() - .5) * W / k * .8, cy + (R() - .5) * H * .2, H * (.13 + .08 * R()), .9, [238,240,246]);
+        }
+        sombra(g, W, H, H * .28, H * .75, 'rgba(78,88,115,.65)');
+        break;
+      }
+      case 'Ns': {
+        for (let i = 0; i < 80; i++) puff(g, W * R(), H * (.12 + .45 * R()), H * (.14 + .12 * R()), .92, [160,168,184]);
+        sombra(g, W, H, H * .05, H * .65, 'rgba(36,42,58,.75)');
+        lluvia(g, 0, W, H * .58, H, 140, R, .4);
+        break;
+      }
+      case 'As': {
+        const sg = g.createRadialGradient(W * .64, H * .45, 0, W * .64, H * .45, H * .2);
+        sg.addColorStop(0, 'rgba(255,236,206,.75)'); sg.addColorStop(1, 'rgba(255,236,206,0)');
+        g.fillStyle = sg; g.fillRect(0, 0, W, H);
+        for (let i = 0; i < 34; i++) puffE(g, W * R(), H * (.36 + .28 * R()), W * (.18 + .1 * R()), H * .24, .42, [196,204,220]);
+        break;
+      }
+      case 'Ac': {
+        const filas = 4, cols = Math.max(6, Math.round(W / (H * .2)));
+        for (let f = 0; f < filas; f++) for (let k = 0; k < cols; k++){
+          const px = (k + .5 + (f % 2) * .5 + (R() - .5) * .35) * W / cols;
+          const py = H * (.24 + f * .16) + (R() - .5) * H * .05;
+          const r = H * (.055 + .03 * R());
+          puff(g, px, py, r); puff(g, px + r * .6, py + r * .2, r * .8); puff(g, px - r * .5, py + r * .25, r * .7);
+        }
+        sombra(g, W, H, H * .1, H * .9, 'rgba(84,96,124,.45)');
+        break;
+      }
+      case 'Cc': {
+        const filas = 7, cols = Math.max(12, Math.round(W / (H * .065)));
+        for (let f = 0; f < filas; f++) for (let k = 0; k < cols; k++){
+          const px = (k + .5 + (R() - .5) * .5) * W / cols;
+          const py = H * (.2 + f * .1) + Math.sin(px * .035 + f) * H * .03;
+          if (R() > .18) puff(g, px, py, H * (.018 + .018 * R()), .85);
+        }
+        break;
+      }
+      case 'Ci': {
+        g.lineCap = 'round';
+        for (let s = 0; s < 10; s++){
+          const x0 = W * (R() * .75), y0 = H * (.25 + .6 * R()), len = W * (.18 + .3 * R()), sube = H * (.08 + .18 * R());
+          for (let k = 0; k < 9; k++){
+            g.strokeStyle = `rgba(250,252,255,${.12 + .18 * R()})`;
+            g.lineWidth = .8 + R() * 1.6;
+            g.beginPath();
+            g.moveTo(x0 + k * 2, y0 + k * 1.6);
+            g.quadraticCurveTo(x0 + len * .65, y0 + k * 1.2 + H * .03, x0 + len, y0 - sube + k);
+            g.quadraticCurveTo(x0 + len * 1.06, y0 - sube * 1.5, x0 + len * .96, y0 - sube * 1.7);
+            g.stroke();
+          }
+        }
+        break;
+      }
+      case 'Cs': {
+        for (let i = 0; i < 30; i++) puffE(g, W * R(), H * (.2 + .6 * R()), W * (.2 + .15 * R()), H * .3, .16, [236,240,248]);
+        const sx = W * .5, sy = H * .5;
+        const sol = g.createRadialGradient(sx, sy, 0, sx, sy, H * .08);
+        sol.addColorStop(0, 'rgba(255,248,232,1)'); sol.addColorStop(1, 'rgba(255,248,232,0)');
+        g.fillStyle = sol; g.beginPath(); g.arc(sx, sy, H * .08, 0, Math.PI * 2); g.fill();
+        g.strokeStyle = 'rgba(255,226,190,.42)'; g.lineWidth = H * .028;
+        g.beginPath(); g.arc(sx, sy, H * .32, 0, Math.PI * 2); g.stroke();
+        g.strokeStyle = 'rgba(180,200,255,.18)'; g.lineWidth = H * .012;
+        g.beginPath(); g.arc(sx, sy, H * .35, 0, Math.PI * 2); g.stroke();
+        break;
+      }
+    }
+    return cv;
+  }
+
+  /* ---------- Portada: cielo vivo ---------- */
+  const cielo = document.getElementById('cielo');
+  const cg = cielo.getContext('2d');
+  let capas = [], cw = 0, ch = 0, mx = 0, my = 0, tmx = 0, tmy = 0, t0 = performance.now();
+
+  function armarCielo(){
+    const r = cielo.getBoundingClientRect();
+    cw = r.width; ch = r.height;
+    cielo.width = Math.round(cw * D); cielo.height = Math.round(ch * D);
+    const R = rng(42);
+    capas = [];
+    const nCi = Math.max(2, Math.round(cw / 420));
+    for (let i = 0; i < nCi; i++){
+      const w = 380 + 260 * R(), h = w * .26;
+      capas.push({ img: pintar('Ci', w, h, 100 + i), w, h, x: cw * R(), y: ch * (.02 + .22 * R()), prof: .15, vel: 4 + 3 * R(), a: .45 });
+    }
+    const nCu = Math.max(3, Math.round(cw / 260));
+    for (let i = 0; i < nCu; i++){
+      const prof = .35 + .65 * R(), w = (180 + 300 * prof) * Math.min(1, .55 + cw / 1800), h = w * .6;
+      capas.push({ img: pintar('Cu', w, h, 200 + i), w, h, x: cw * R(), y: ch * (.42 + .42 * prof) - h * .6, prof, vel: 6 + 16 * prof, a: .55 + .45 * prof });
+    }
+    capas.sort((a, b) => a.prof - b.prof);
+    dibujarCielo(performance.now());
+  }
+  function dibujarCielo(now){
+    const t = (now - t0) / 1000;
+    mx += (tmx - mx) * .05; my += (tmy - my) * .05;
+    cg.setTransform(D, 0, 0, D, 0, 0);
+    cg.clearRect(0, 0, cw, ch);
+    const sol = cg.createRadialGradient(cw * .82, ch * .78, 0, cw * .82, ch * .78, Math.max(cw, ch) * .5);
+    sol.addColorStop(0, 'rgba(255,210,154,.30)'); sol.addColorStop(1, 'rgba(255,210,154,0)');
+    cg.fillStyle = sol; cg.fillRect(0, 0, cw, ch);
+    for (const c of capas){
+      const span = cw + c.w;
+      const x = ((c.x + (QUIETO ? 0 : t * c.vel)) % span + span) % span - c.w + mx * 30 * c.prof;
+      const y = c.y + my * 16 * c.prof;
+      cg.globalAlpha = c.a;
+      cg.drawImage(c.img, x, y, c.w, c.h);
+    }
+    cg.globalAlpha = 1;
+  }
+  function animar(now){ dibujarCielo(now); if (!QUIETO) requestAnimationFrame(animar); }
+  document.querySelector('.portada').addEventListener('pointermove', e => {
+    tmx = e.clientX / innerWidth - .5; tmy = e.clientY / innerHeight - .5;
+  });
+
+  /* ---------- La columna ---------- */
+  const eje = document.getElementById('eje');
+  const barras = document.getElementById('barras');
+  const pct = km => (km / MAX_KM * 100) + '%';
+
+  for (let km = 0; km <= 16; km += 2){
+    const s = document.createElement('span'); s.style.bottom = pct(km); s.textContent = km + ' km'; eje.appendChild(s);
+    if (km > 0){ const l = document.createElement('div'); l.className = 'guia'; l.style.bottom = pct(km); barras.appendChild(l); }
+  }
+  const tp = document.createElement('div'); tp.className = 'tropopausa'; tp.style.bottom = pct(16.2);
+  tp.innerHTML = '<span>Tropopausa · ~16 km</span>'; barras.appendChild(tp);
+
+  const km = n => n.toLocaleString('es-CR', { maximumFractionDigits: 1 });
+  GENEROS.forEach(gen => {
+    const b = document.createElement('button');
+    b.className = 'gen'; b.type = 'button'; b.dataset.c = gen.c;
+    b.setAttribute('aria-pressed', 'false');
+    b.setAttribute('aria-label', `${gen.n}, de ${km(gen.min)} a ${km(gen.max)} kilómetros`);
+    b.title = gen.n;
+    b.innerHTML = `<span class="barra" style="bottom:${pct(gen.min)};height:calc(${pct(gen.max - gen.min)} + 6px)"></span>
+                   <span class="abrev" style="bottom:calc(${pct(gen.max)} + 8px)">${gen.c}</span>`;
+    b.addEventListener('click', () => elegir(gen.c));
+    barras.appendChild(b);
+  });
+
+  const retrato = document.getElementById('retrato');
+  const rg = retrato.getContext('2d');
+  let actual = 'Cu';
+  function dibujarRetrato(){
+    const r = retrato.getBoundingClientRect();
+    if (!r.width) return;
+    retrato.width = Math.round(r.width * D); retrato.height = Math.round(r.height * D);
+    rg.setTransform(1, 0, 0, 1, 0, 0);
+    rg.clearRect(0, 0, retrato.width, retrato.height);
+    const img = pintar(actual, r.width, r.height, actual.charCodeAt(0) * 31 + actual.charCodeAt(1));
+    rg.drawImage(img, 0, 0);
+  }
+  function elegir(c){
+    actual = c;
+    const g = POR_CODIGO[c];
+    barras.querySelectorAll('.gen').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.c === c)));
+    document.getElementById('f-familia').textContent = `${g.fam} · ${g.c}`;
+    document.getElementById('f-nombre').textContent = g.n;
+    document.getElementById('f-etim').textContent = g.etim;
+    document.getElementById('f-altura').textContent = `${km(g.min)} a ${km(g.max)} km`;
+    document.getElementById('f-hecha').textContent = g.hecha;
+    document.getElementById('f-ver').textContent = g.ver;
+    document.getElementById('f-anuncia').textContent = g.anuncia;
+    dibujarRetrato();
+  }
+
+  /* ---------- Fabricá tu nube ---------- */
+  const $ = id => document.getElementById(id);
+  const INEST = ['Estable', 'Leve', 'Moderada', 'Fuerte'];
+  const perfil = $('perfil'), pg = perfil.getContext('2d');
+
+  function rocio(T, HR){
+    const b = 17.62, c = 243.12, gm = Math.log(HR / 100) + b * T / (c + T);
+    return c * gm / (b - gm);
+  }
+  function diagnostico(T, HR, i){
+    const td = rocio(T, HR), base = Math.max(0, 125 * (T - td));
+    let gen, cima, texto;
+    if (HR < 30 && base > 2500 && i < 2){
+      gen = null; cima = base;
+      texto = `El aire está tan seco que tendría que subir unos ${fmtM(base)} para condensarse, y sin empuje no llega. Cielo despejado.`;
+    } else if (base < 80){
+      gen = 'St'; cima = base + 300;
+      texto = 'El aire ya está prácticamente saturado: la nube se forma pegada al suelo. Eso es niebla, un estrato que se quedó sin ascensor.';
+    } else if (i === 0){
+      gen = base < 600 ? 'St' : 'Sc'; cima = base + (gen === 'St' ? 300 : 700);
+      texto = gen === 'St'
+        ? 'Aire quieto y húmedo: se forma una capa baja y pareja que se come la cima de los cerros.'
+        : 'Aire estable: la humedad se acumula en una capa de bultos grises que no crece hacia arriba.';
+    } else if (i === 1){
+      gen = 'Cu'; cima = base + 1200;
+      texto = 'Burbujas de aire tibio suben, se enfrían y forman cúmulos pequeños de buen tiempo. Fijate en la base plana: está justo a la altura calculada.';
+    } else if (i === 2 || HR < 55){
+      gen = 'Cu'; cima = base + 4500;
+      texto = i === 3
+        ? 'Hay mucha energía pero poca humedad: los cúmulos crecen altos y flacos, sin alcanzar a ser tormenta.'
+        : 'Las burbujas suben con ganas: cúmulos congestus, como coliflores. Si siguen así, por la tarde cambian de nombre.';
+    } else {
+      gen = 'Cb'; cima = 15500;
+      texto = 'Calor, humedad y aire inestable: la torre atraviesa toda la troposfera hasta chocar con la tropopausa y abre el yunque. Aguacero seguro.';
+    }
+    return { td, base, gen, cima, texto };
+  }
+  const fmtM = m => m >= 1000 ? `${km(m / 1000)} km` : `${Math.round(m / 10) * 10} m`;
+
+  function dibujarPerfil(d){
+    const r = perfil.getBoundingClientRect();
+    if (!r.width) return;
+    const W = r.width, H = r.height;
+    perfil.width = Math.round(W * D); perfil.height = Math.round(H * D);
+    pg.setTransform(D, 0, 0, D, 0, 0); pg.clearRect(0, 0, W, H);
+    const izq = 46, arriba = 10, abajo = 22, alto = H - arriba - abajo;
+    const y = m => arriba + alto * (1 - m / 16000);
+
+    pg.font = '11px "IBM Plex Mono", ui-monospace, monospace';
+    pg.textAlign = 'right'; pg.textBaseline = 'middle';
+    for (let k = 0; k <= 16; k += 4){
+      pg.fillStyle = 'rgba(191,203,224,.9)'; pg.fillText(k + ' km', izq - 8, y(k * 1000));
+      pg.strokeStyle = 'rgba(241,244,250,.12)'; pg.beginPath(); pg.moveTo(izq, y(k * 1000)); pg.lineTo(W, y(k * 1000)); pg.stroke();
+    }
+    pg.fillStyle = 'rgba(28,36,34,.9)';
+    pg.beginPath(); pg.moveTo(izq, H - abajo);
+    for (let x = izq; x <= W; x += 8) pg.lineTo(x, H - abajo - 6 - Math.sin(x * .03) * 3 - Math.sin(x * .011) * 4);
+    pg.lineTo(W, H); pg.lineTo(izq, H); pg.fill();
+
+    if (d.gen){
+      const ancho = { St: .92, Sc: .9, Cu: .42, Cb: .78 }[d.gen] * (W - izq);
+      const yTop = y(d.cima), yBase = y(d.base);
+      let h = Math.max(yBase - yTop, d.gen === 'St' ? 28 : 40);
+      const extra = d.gen === 'Cb' ? (H - abajo - yBase) * .9 : 0;
+      const hTotal = d.gen === 'Cb' ? h / .82 : d.gen === 'Cu' ? h / .84 : h * 2;
+      const yDib = d.gen === 'Cb' || d.gen === 'Cu' ? yBase - hTotal * (d.gen === 'Cb' ? .82 : .84) : yBase - hTotal * .55;
+      const img = pintar(d.gen, ancho, hTotal, 77);
+      const x = izq + (W - izq - ancho) / 2;
+      pg.drawImage(img, x, yDib, ancho, hTotal);
+      if (extra > 0){
+        pg.strokeStyle = 'rgba(200,214,238,.4)';
+        const R = rng(9);
+        for (let i = 0; i < 60; i++){
+          const rx = x + ancho * (.36 + .28 * R()), ry = yBase + R() * extra * .3, l = extra * (.4 + .6 * R());
+          pg.beginPath(); pg.moveTo(rx, ry); pg.lineTo(rx - l * .15, Math.min(ry + l, H - abajo)); pg.stroke();
+        }
+      }
+    }
+    const yB = y(d.base);
+    pg.setLineDash([5, 5]); pg.strokeStyle = 'rgba(255,210,154,.9)'; pg.lineWidth = 1.2;
+    pg.beginPath(); pg.moveTo(izq, yB); pg.lineTo(W, yB); pg.stroke(); pg.setLineDash([]);
+    pg.fillStyle = 'rgba(255,210,154,1)'; pg.textAlign = 'left'; pg.textBaseline = 'bottom';
+    pg.fillText(`${d.gen ? 'base' : 'condensaría a'} ≈ ${fmtM(d.base)}`, izq + 8, Math.max(yB - 4, 14));
+  }
+
+  function actualizar(){
+    const T = +$('temp').value, HR = +$('hum').value, i = +$('inest').value;
+    $('o-temp').textContent = `${T} °C`;
+    $('o-hum').textContent = `${HR} %`;
+    $('o-inest').textContent = INEST[i];
+    const d = diagnostico(T, HR, i);
+    $('r-rocio').textContent = `${d.td.toLocaleString('es-CR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} °C`;
+    $('r-base').textContent = fmtM(d.base);
+    $('r-genero').textContent = d.gen || '—';
+    $('r-genero').title = d.gen ? POR_CODIGO[d.gen].n : 'Sin nube';
+    $('explicacion').textContent = d.texto;
+    dibujarPerfil(d);
+  }
+  $('form-nube').addEventListener('input', actualizar);
+  $('form-nube').addEventListener('submit', e => e.preventDefault());
+  document.querySelectorAll('.escenarios button').forEach(b => b.addEventListener('click', () => {
+    $('temp').value = b.dataset.t; $('hum').value = b.dataset.h; $('inest').value = b.dataset.i; actualizar();
+  }));
+
+  /* ---------- Arranque ---------- */
+  let espera;
+  function todo(){ armarCielo(); dibujarRetrato(); actualizar(); }
+  addEventListener('resize', () => { clearTimeout(espera); espera = setTimeout(todo, 150); });
+  elegir('Cu');
+  todo();
+  if (!QUIETO) requestAnimationFrame(animar);
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(actualizar);
+})();
+</script>
+</body>
+</html>
