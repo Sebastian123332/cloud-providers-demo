@@ -1,0 +1,478 @@
+<!doctype html><html lang="es"><head><meta charset=utf8><title>Demo Restaurante · Club de clientes</title><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Karla:wght@400;500;700&display=swap">
+<style>
+/* ====== MARCA DEL RESTAURANTE ======
+   Cambiá estas dos líneas y la tarjeta se adapta sola.
+   estilo: metal | papel | neon                                   */
+:root{ --marca:#1d4ed8; }
+/* Layout: una columna tipo app de teléfono; pestaña Cliente (tarjeta + registrar factura) y pestaña Dueño (aprobar, canjear, ajustes) */
+:root{
+  --bg:#f4f6fb; --surface:#ffffff; --ink:#0b0f1a; --muted:#5b6478; --line:#dfe4ef;
+  --blue:var(--marca); --blue-soft:#e3eaff; --ok:#15803d; --ok-soft:#dcfce7; --bad:#b91c1c; --bad-soft:#fee2e2;
+  --warn:#a16207; --warn-soft:#fef3c7; --gold:#facc15;
+  --card:#0b0f1a; --card-ink:#ffffff; --card-muted:#9aa6c2; --slot:#1c2333;
+  --display:"Instrument Serif",Georgia,serif;
+  --body:"Karla",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#080b12; --surface:#111724; --ink:#eef2fb; --muted:#97a2ba; --line:#232b3d;
+  --blue:color-mix(in srgb,var(--marca) 72%,#ffffff); --blue-soft:#17224a; --ok:#4ade80; --ok-soft:#0f2e1c; --bad:#f87171; --bad-soft:#3a1414;
+  --warn:#fbbf24; --warn-soft:#332608;
+  --card:#141c2e; --card-ink:#ffffff; --card-muted:#8f9bb8; --slot:#222c44; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#080b12; --surface:#111724; --ink:#eef2fb; --muted:#97a2ba; --line:#232b3d;
+  --blue:color-mix(in srgb,var(--marca) 72%,#ffffff); --blue-soft:#17224a; --ok:#4ade80; --ok-soft:#0f2e1c; --bad:#f87171; --bad-soft:#3a1414;
+  --warn:#fbbf24; --warn-soft:#332608;
+  --card:#141c2e; --card-ink:#ffffff; --card-muted:#8f9bb8; --slot:#222c44; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 32px}
+.wrap{max-width:480px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.view{display:flex;flex-direction:column;gap:18px}
+header{display:flex;align-items:center;gap:12px}
+.logo{width:44px;height:44px;border-radius:12px;background:var(--blue);color:#fff;display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:18px;flex:none}
+h1{font-family:var(--display);font-weight:800;font-size:20px;margin:0;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px;margin:0}
+.tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;gap:4px}
+.tabs button{font:600 14px var(--body);border:0;border-radius:9px;padding:10px;background:transparent;color:var(--muted);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--blue);color:#fff}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+.card{position:relative;border-radius:22px;padding:22px 20px 20px;display:flex;flex-direction:column;gap:14px;
+  overflow:hidden;color:#F3F6FC;background:linear-gradient(145deg,#1b2435,#0c111c 55%,#141d2d);
+  box-shadow:0 30px 60px -32px rgba(0,0,0,.75), 0 2px 0 0 rgba(255,255,255,.06) inset;
+  transform-style:preserve-3d;transition:transform .5s cubic-bezier(.2,.8,.25,1)}
+.card::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,color-mix(in srgb,var(--marca) 55%,transparent) 50%,transparent 70%);
+  opacity:.28;mix-blend-mode:screen}
+.card::after{content:"";position:absolute;inset:0;border-radius:22px;pointer-events:none;
+  border:1px solid color-mix(in srgb,var(--marca) 45%,transparent)}
+.card>*{position:relative;z-index:1}
+.card-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.eyebrow{text-transform:uppercase;letter-spacing:.3em;font-size:10px;color:color-mix(in srgb,var(--marca) 70%,#fff);font-weight:700}
+.card h2{font-family:var(--display);font-size:22px;margin:4px 0 0;font-weight:400;overflow-wrap:anywhere;color:#fff}
+.count{font-family:var(--display);font-size:34px;font-weight:400;font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap;color:#fff}
+.count small{font-size:14px;color:rgba(255,255,255,.5)}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
+.slot{aspect-ratio:1;max-width:100%;border-radius:50%;display:grid;place-items:center;position:relative;
+  border:1.5px dashed rgba(255,255,255,.22);color:rgba(255,255,255,.4);
+  font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;transition:.4s cubic-bezier(.2,.8,.25,1)}
+.slot.on{border:0;background:var(--marca);color:#fff;box-shadow:0 6px 18px -8px var(--marca);
+  animation:sellar .5s cubic-bezier(.2,1.4,.4,1) both}
+.slot.on svg{width:52%;height:52%}
+@keyframes sellar{0%{transform:scale(1.8) rotate(-12deg);opacity:0}60%{opacity:1}100%{transform:none;opacity:1}}
+.slot.wait{border:1.5px solid var(--gold);color:var(--gold);font-size:16px}
+.slot.reward{border-color:color-mix(in srgb,var(--marca) 60%,#fff);color:color-mix(in srgb,var(--marca) 55%,#fff);
+  font-size:9px;letter-spacing:.04em;text-align:center;line-height:1.1}
+.slot.reward.on{background:linear-gradient(135deg,#F6D277,#D9A441);color:#1A1203;border:0}
+.chip{width:42px;height:32px;border-radius:7px;flex:none;position:relative;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--marca) 80%,#fff),var(--marca));
+  box-shadow:0 2px 10px -3px var(--marca)}
+.chip::after{content:"";position:absolute;inset:5px 7px;border-radius:3px;
+  background:repeating-linear-gradient(90deg,rgba(0,0,0,.22) 0 1px,transparent 1px 7px),
+             repeating-linear-gradient(0deg,rgba(0,0,0,.22) 0 1px,transparent 1px 9px)}
+.glare{position:absolute;inset:-40%;z-index:2;pointer-events:none;opacity:0;transition:opacity .35s;
+  background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),rgba(255,255,255,.2),transparent 42%)}
+.card:hover .glare{opacity:1}
+.hint{font-size:13px;color:rgba(255,255,255,.55);margin:0}
+.card .link{background:none;border:0;padding:0;color:rgba(255,255,255,.5);font:600 12px var(--body);
+  text-decoration:underline;cursor:pointer;align-self:flex-start}
+
+/* estilo papel */
+.card[data-estilo="papel"]{background:linear-gradient(160deg,#FBF6EC,#F0E7D6);color:#2A2218;
+  box-shadow:0 26px 50px -30px rgba(11,18,32,.45)}
+.card[data-estilo="papel"]::before{background:repeating-linear-gradient(135deg,rgba(0,0,0,.016) 0 2px,transparent 2px 5px);opacity:1;mix-blend-mode:normal}
+.card[data-estilo="papel"]::after{border:1px dashed rgba(42,34,24,.28);inset:7px;border-radius:16px}
+.card[data-estilo="papel"] h2,.card[data-estilo="papel"] .count{color:#2A2218}
+.card[data-estilo="papel"] .count small{color:rgba(42,34,24,.45)}
+.card[data-estilo="papel"] .slot{border:1.5px dashed rgba(42,34,24,.3);color:rgba(42,34,24,.45)}
+.card[data-estilo="papel"] .slot.on{background:none;border:2.5px solid var(--marca);color:var(--marca);
+  box-shadow:none;transform:rotate(-7deg);opacity:.92}
+.card[data-estilo="papel"] .slot.reward.on{background:none;border:2.5px solid #C08A1E;color:#C08A1E}
+.card[data-estilo="papel"] .chip{background:none;border:2px solid rgba(42,34,24,.3);box-shadow:none;width:38px;height:38px;border-radius:50%}
+.card[data-estilo="papel"] .chip::after{inset:6px;border-radius:50%;background:none;border:1px dashed rgba(42,34,24,.3)}
+.card[data-estilo="papel"] .hint{color:rgba(42,34,24,.6)}
+.card[data-estilo="papel"] .link{color:rgba(42,34,24,.55)}
+
+/* estilo neón */
+.card[data-estilo="neon"]{background:radial-gradient(120% 140% at 18% 0%,color-mix(in srgb,var(--marca) 26%,#05070C),#05070C 62%)}
+.card[data-estilo="neon"]::after{border:1px solid color-mix(in srgb,var(--marca) 70%,transparent);
+  box-shadow:0 0 22px -4px var(--marca), inset 0 0 26px -12px var(--marca)}
+.card[data-estilo="neon"] .slot{border:1.5px solid color-mix(in srgb,var(--marca) 35%,transparent)}
+.card[data-estilo="neon"] .slot.on{background:transparent;border:2px solid var(--marca);
+  color:color-mix(in srgb,var(--marca) 55%,#fff);box-shadow:0 0 18px -4px var(--marca), inset 0 0 14px -8px var(--marca)}
+
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.panel h3{margin:0;font-size:16px}
+.panel p{margin:0;color:var(--muted);font-size:14px}
+.field{display:flex;flex-direction:column;gap:4px}
+label{font-size:13px;font-weight:700}
+input{width:100%;font:500 15px var(--body);padding:12px;border-radius:12px;border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.help{font-size:12px;color:var(--muted)}
+.btn{font:700 15px var(--body);border:0;border-radius:12px;padding:14px;background:var(--blue);color:#fff;cursor:pointer;width:100%;text-align:center;text-decoration:none;display:block}
+.btn:disabled{opacity:.55;cursor:default}
+.btn.sm{width:auto;padding:8px 12px;font-size:13px;border-radius:10px;display:inline-block}
+.btn.ok{background:var(--ok);color:#fff}
+.btn.line{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.gold{background:var(--gold);color:#0b0f1a}
+.msg{font-size:13px;font-weight:600;min-height:1.2em;margin:0}
+.msg.ok{color:var(--ok)} .msg.bad{color:var(--bad)}
+.review{border-color:var(--blue)}
+.stars{color:#f59e0b;font-size:18px;letter-spacing:4px}
+.tag{display:inline-block;font-size:11px;font-weight:700;background:var(--blue-soft);color:var(--blue);padding:3px 8px;border-radius:999px}
+
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:2px}
+.stat b{font-family:var(--display);font-size:22px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.list{display:flex;flex-direction:column}
+.row{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.row:first-child{border-top:0;padding-top:0}
+.row .info{flex:1;min-width:0}
+.row .name{font-weight:700;overflow-wrap:anywhere}
+.row .meta{font-size:12px;color:var(--muted);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.row .acts{display:flex;gap:6px;flex:none}
+.pill{font-size:11px;font-weight:700;padding:3px 8px;border-radius:999px;white-space:nowrap}
+.pill.wait{background:var(--warn-soft);color:var(--warn)}
+.pill.ok{background:var(--ok-soft);color:var(--ok)}
+.pill.bad{background:var(--bad-soft);color:var(--bad)}
+.mini{display:flex;gap:3px;margin-top:4px}
+.mini i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.mini i.on{background:var(--blue)}
+.empty{font-size:14px;color:var(--muted);padding:6px 0}
+.qrbox{display:grid;place-items:center;background:#fff;border-radius:14px;padding:16px;border:1px solid var(--line)}
+.qrbox img,.qrbox canvas{max-width:100%;height:auto}
+.notice{background:var(--warn-soft);color:var(--warn);border-radius:12px;padding:12px;font-size:13px;font-weight:600}
+footer{text-align:center;font-size:12px;color:var(--muted)}
+footer b{color:var(--ink)}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="logo">DR</div>
+    <div>
+      <h1>Demo Restaurante</h1>
+      <p class="sub">Club de clientes · 10 visitas = comida gratis</p>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button id="tab-cliente" role="tab" aria-selected="true" data-tab="cliente">Cliente</button>
+    <button id="tab-dueno" role="tab" aria-selected="false" data-tab="dueno">Dueño</button>
+  </div>
+
+  <div class="notice" id="offline" hidden>Modo demostración: los datos se guardan solo en este navegador. Abrí la pestaña Dueño para aprobar tus propias facturas.</div>
+
+  <!-- ===== CLIENTE ===== -->
+  <section class="view" id="view-cliente">
+    <div class="card" id="miTarjeta" data-estilo="metal">
+      <span class="glare"></span>
+      <div class="card-top">
+        <div>
+          <div class="eyebrow">Tarjeta de sellos</div>
+          <h2 id="cNombre">Ganá una comida gratis</h2>
+        </div>
+        <div style="display:flex;align-items:flex-start;gap:12px">
+          <div class="count"><span id="cN">0</span><small>/10</small></div>
+          <span class="chip"></span>
+        </div>
+      </div>
+      <div class="grid" id="cGrid"></div>
+      <p class="hint" id="cHint">Registrá tu factura después de pagar y sumá un sello por cada visita.</p>
+      <button class="link" id="cambiar" hidden>No soy yo, usar otro correo</button>
+    </div>
+
+    <div class="panel review" id="resena" hidden>
+      <div class="stars">★★★★★</div>
+      <h3>¿Cómo estuvo todo?</h3>
+      <p>Tu opinión ayuda a otros a encontrarnos. Si tenés un minuto, dejanos una reseña en Google.</p>
+      <a class="btn" id="resenaBtn" href="#" target="_blank" rel="noopener">Escribir reseña en Google</a>
+    </div>
+
+    <form class="panel" id="formFactura" novalidate>
+      <h3>Registrar mi factura</h3>
+      <p>Después de pagar, ingresá el número de tu factura. El restaurante la confirma y se suma tu sello.</p>
+      <div class="field">
+        <label for="fNombre">Nombre</label>
+        <input id="fNombre" autocomplete="name" placeholder="Ej. María Rojas">
+      </div>
+      <div class="field">
+        <label for="fCorreo">Correo</label>
+        <input id="fCorreo" type="email" autocomplete="email" placeholder="tucorreo@gmail.com">
+      </div>
+      <div class="field">
+        <label for="fNum">Número de factura</label>
+        <input id="fNum" inputmode="numeric" placeholder="Ej. 00100001010000000123">
+        <span class="help">Es el consecutivo que viene en la factura electrónica o el tiquete.</span>
+      </div>
+      <button class="btn" id="fBtn" type="submit">Registrar factura</button>
+      <p class="msg" id="fMsg"></p>
+    </form>
+  </section>
+
+  <!-- ===== DUEÑO ===== -->
+  <section class="view" id="view-dueno" hidden>
+    <p class="help"><span class="tag">Demo</span> En la versión para un negocio real este panel lleva usuario y contraseña.</p>
+    <div class="stats">
+      <div class="stat"><b id="sPend">0</b><span>Por aprobar</span></div>
+      <div class="stat"><b id="sCli">0</b><span>Clientes</span></div>
+      <div class="stat"><b id="sPrem">0</b><span>Premios listos</span></div>
+    </div>
+
+    <div class="panel">
+      <h3>Facturas por aprobar</h3>
+      <p>Revisá que la factura exista en tu sistema de facturación antes de aprobarla.</p>
+      <div class="list" id="listaPend"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Clientes</h3>
+      <div class="list" id="listaCli"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Historial de facturas</h3>
+      <div class="list" id="listaHist"></div>
+    </div>
+
+    <div class="panel">
+      <h3>Link de reseñas de Google</h3>
+      <p>Sale del Perfil de Empresa de Google, en la opción "Pedir reseñas". Este QR se puede imprimir para las mesas.</p>
+      <div class="field">
+        <label for="aUrl">Link</label>
+        <input id="aUrl" type="url">
+      </div>
+      <button class="btn line" id="aBtn">Guardar link</button>
+      <p class="msg" id="aMsg"></p>
+      <div class="qrbox"><div id="qr"></div></div>
+    </div>
+  </section>
+
+  <footer>Sistema hecho por <b>Solanotech</b> · WhatsApp 8933 0326</footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const META = 10, LS = "dr-club-correo";
+const DEF_URL = "https://g.page/r/DEMO-RESTAURANTE/review";
+const plate = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 3v8M5 3v4a2 2 0 0 0 4 0V3M7 11v10"/><path d="M17 21V3c-2 1-3 4-3 7h3"/></svg>';
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const fecha = t => t ? new Date(t).toLocaleString("es-CR",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}) : "";
+const norm = c => String(c||"").trim().toLowerCase();
+
+let db = null, facturas = [], canjes = [], resenaUrl = DEF_URL;
+let miCorreo = ""; try { miCorreo = localStorage.getItem(LS) || ""; } catch(e) {}
+let mostrarResena = false;
+
+/* ---------- cálculo de sellos ---------- */
+function clientes(){
+  const m = new Map();
+  for (const f of facturas){
+    const k = norm(f.correo); if (!k) continue;
+    const c = m.get(k) || {correo:k, nombre:f.nombre, aprob:0, pend:0, canjes:0, ult:0};
+    if (f.estado === "aprobada") c.aprob++;
+    if (f.estado === "pendiente") c.pend++;
+    if ((f.creado||0) > c.ult){ c.ult = f.creado; c.nombre = f.nombre || c.nombre; }
+    m.set(k, c);
+  }
+  for (const x of canjes){ const c = m.get(norm(x.correo)); if (c) c.canjes++; }
+  for (const c of m.values()) c.sellos = Math.max(0, c.aprob - c.canjes*META);
+  return [...m.values()].sort((a,b)=>b.ult-a.ult);
+}
+
+/* ---------- vista cliente ---------- */
+function renderCliente(){
+  const c = clientes().find(x => x.correo === norm(miCorreo));
+  const n = c ? Math.min(c.sellos, META) : 0, pend = c ? c.pend : 0;
+  const g = $("cGrid"); g.innerHTML = "";
+  let p = pend;
+  for (let i=0;i<META;i++){
+    const last = i===META-1, d = document.createElement("div");
+    if (i < n){ d.className = "slot on" + (last?" reward":""); d.innerHTML = last ? "GRATIS" : plate; }
+    else if (p > 0){ d.className = "slot wait"; d.textContent = "⋯"; d.title = "Factura en revisión"; p--; }
+    else { d.className = "slot" + (last?" reward":""); d.innerHTML = last ? "COMIDA<br>GRATIS" : (i+1); }
+    g.appendChild(d);
+  }
+  $("cN").textContent = n;
+  $("cNombre").textContent = c ? "Hola, " + (c.nombre||"cliente").split(" ")[0] : "Ganá una comida gratis";
+  $("cambiar").hidden = !miCorreo;
+  if (miCorreo && !$("fCorreo").value) $("fCorreo").value = miCorreo;
+  if (c && !$("fNombre").value) $("fNombre").value = c.nombre || "";
+  let h;
+  if (!c) h = "Registrá tu factura después de pagar y sumá un sello por cada visita.";
+  else if (n >= META) h = "¡Completaste la tarjeta! Pedí tu comida gratis en caja.";
+  else h = `Te faltan ${META-n} sellos para tu comida gratis.` + (pend ? ` ${pend} factura${pend>1?"s":""} en revisión.` : "");
+  $("cHint").textContent = h;
+  $("resena").hidden = !mostrarResena;
+  $("resenaBtn").href = resenaUrl;
+}
+
+/* ---------- vista dueño ---------- */
+function renderDueno(){
+  const cs = clientes();
+  const pend = facturas.filter(f=>f.estado==="pendiente").sort((a,b)=>(a.creado||0)-(b.creado||0));
+  $("sPend").textContent = pend.length;
+  $("sCli").textContent = cs.length;
+  $("sPrem").textContent = cs.filter(c=>c.sellos>=META).length;
+
+  $("listaPend").innerHTML = pend.length ? pend.map(f=>`
+    <div class="row">
+      <div class="info"><div class="name">Factura ${esc(f.numero)}</div>
+        <div class="meta">${esc(f.nombre)} · ${esc(f.correo)} · ${fecha(f.creado)}</div></div>
+      <div class="acts">
+        <button class="btn sm ok" data-ap="${esc(f.id)}">Aprobar</button>
+        <button class="btn sm line" data-re="${esc(f.id)}">Rechazar</button>
+      </div>
+    </div>`).join("") : `<div class="empty">No hay facturas pendientes. Cuando un cliente registre una, aparece aquí.</div>`;
+
+  $("listaCli").innerHTML = cs.length ? cs.map(c=>`
+    <div class="row">
+      <div class="info"><div class="name">${esc(c.nombre)}</div>
+        <div class="meta">${esc(c.correo)} · ${Math.min(c.sellos,META)}/10 sellos${c.canjes?` · ${c.canjes} premio${c.canjes>1?"s":""} canjeado${c.canjes>1?"s":""}`:""}</div>
+        <div class="mini">${Array.from({length:META},(_,i)=>`<i class="${i<c.sellos?"on":""}"></i>`).join("")}</div></div>
+      <div class="acts">${c.sellos>=META ? `<button class="btn sm gold" data-cj="${esc(c.correo)}" data-nm="${esc(c.nombre)}">Canjear comida</button>` : ""}</div>
+    </div>`).join("") : `<div class="empty">Todavía no hay clientes registrados.</div>`;
+
+  const hist = facturas.filter(f=>f.estado!=="pendiente").sort((a,b)=>(b.revisado||b.creado||0)-(a.revisado||a.creado||0)).slice(0,15);
+  $("listaHist").innerHTML = hist.length ? hist.map(f=>`
+    <div class="row">
+      <div class="info"><div class="name">Factura ${esc(f.numero)}</div>
+        <div class="meta">${esc(f.nombre)} · ${fecha(f.revisado||f.creado)}</div></div>
+      <span class="pill ${f.estado==="aprobada"?"ok":"bad"}">${f.estado==="aprobada"?"Aprobada":"Rechazada"}</span>
+    </div>`).join("") : `<div class="empty">Aquí se ven las facturas ya revisadas.</div>`;
+
+  if (document.activeElement !== $("aUrl")) $("aUrl").value = resenaUrl;
+}
+
+function renderAll(){ renderCliente(); renderDueno(); }
+
+/* ---------- QR ---------- */
+let qrHecho = "";
+function drawQR(){
+  if (qrHecho === resenaUrl || typeof QRCode === "undefined") return;
+  qrHecho = resenaUrl; $("qr").innerHTML = "";
+  new QRCode($("qr"), {text: resenaUrl, width: 200, height: 200, colorDark:"#0b0f1a", colorLight:"#ffffff", correctLevel: QRCode.CorrectLevel.M});
+}
+
+/* ---------- acciones ---------- */
+function msg(el, t, ok){ el.className = "msg " + (ok?"ok":"bad"); el.textContent = t; }
+
+$("formFactura").addEventListener("submit", async e => {
+  e.preventDefault();
+  const m = $("fMsg"), nombre = $("fNombre").value.trim(), correo = norm($("fCorreo").value);
+  const numero = $("fNum").value.trim().toUpperCase().replace(/\s+/g,"");
+  if (!nombre) return msg(m, "Escribí tu nombre.");
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) return msg(m, "Revisá el correo, parece incompleto.");
+  if (numero.length < 4) return msg(m, "El número de factura debe tener al menos 4 caracteres.");
+  if (!db) return msg(m, "No hay conexión con la base de datos.");
+  const id = numero.replace(/[^A-Z0-9_\-.~:@+]/g, "_").slice(0,150);
+  $("fBtn").disabled = true;
+  try {
+    const ref = db.collection("facturas").doc(id);
+    const ya = await ref.get();
+    if (ya.exists){ msg(m, "Esa factura ya fue registrada. Cada factura suma un solo sello."); return; }
+    await ref.set({numero, nombre, correo, estado:"pendiente", creado: Date.now()});
+    miCorreo = correo; try { localStorage.setItem(LS, correo); } catch(err) {}
+    $("fNum").value = "";
+    mostrarResena = true;
+    msg(m, "Factura registrada. Tu sello aparece cuando el restaurante la confirme.", true);
+    renderAll();
+  } catch(err){
+    msg(m, err && err.code === "quota_exceeded" ? "La base de datos está llena. Avisale al restaurante." : "No se pudo guardar. Intentá de nuevo en un momento.");
+  } finally { $("fBtn").disabled = false; }
+});
+
+$("cambiar").onclick = () => {
+  miCorreo = ""; mostrarResena = false; try { localStorage.removeItem(LS); } catch(e) {}
+  $("fNombre").value = ""; $("fCorreo").value = ""; $("fMsg").textContent = ""; renderAll();
+};
+
+document.addEventListener("click", async e => {
+  const b = e.target.closest("button[data-ap],button[data-re],button[data-cj]");
+  if (!b || !db) return;
+  b.disabled = true;
+  try {
+    if (b.dataset.ap) await db.collection("facturas").doc(b.dataset.ap).update({estado:"aprobada", revisado: Date.now()});
+    else if (b.dataset.re) await db.collection("facturas").doc(b.dataset.re).update({estado:"rechazada", revisado: Date.now()});
+    else if (b.dataset.cj) await db.collection("canjes").add({correo: b.dataset.cj, nombre: b.dataset.nm, fecha: Date.now()});
+  } catch(err){ b.disabled = false; b.textContent = "Reintentar"; }
+});
+
+$("aBtn").onclick = async () => {
+  const u = $("aUrl").value.trim();
+  if (!/^https?:\/\/\S+\.\S+/.test(u)) return msg($("aMsg"), "Pegá un link completo que empiece con https://");
+  if (!db) return msg($("aMsg"), "No hay conexión con la base de datos.");
+  try { await db.doc("config/ajustes").set({resenaUrl: u}); msg($("aMsg"), "Link guardado.", true); }
+  catch(err){ msg($("aMsg"), "No se pudo guardar el link. Intentá de nuevo."); }
+};
+
+document.querySelectorAll(".tabs button").forEach(b => b.onclick = () => {
+  document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", x === b));
+  const d = b.dataset.tab === "dueno";
+  $("view-dueno").hidden = !d; $("view-cliente").hidden = d;
+  if (d) drawQR();
+});
+
+/* ---------- la tarjeta se inclina y brilla con el dedo ---------- */
+(function(){
+  const t = $("miTarjeta");
+  if(!t || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const g = t.querySelector(".glare");
+  t.addEventListener("pointermove", e => {
+    const r = t.getBoundingClientRect();
+    const x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5;
+    t.style.transform = `perspective(1100px) rotateY(${x*11}deg) rotateX(${-y*11}deg)`;
+    g.style.setProperty("--gx", ((x+.5)*100).toFixed(1)+"%");
+    g.style.setProperty("--gy", ((y+.5)*100).toFixed(1)+"%");
+  });
+  t.addEventListener("pointerleave", () => { t.style.transform = ""; });
+})();
+
+/* ---------- base de datos local para la demostración ----------
+   Fuera de Claude (por ejemplo en Netlify) no hay base de datos compartida,
+   así que la demo guarda todo en este navegador con la misma forma de uso. */
+function crearDbLocal(){
+  const KEY = "dr-club-demo-db";
+  let st = {};
+  const leer = () => { try { st = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e) { st = {}; } };
+  leer();
+  const subs = new Set();
+  const avisar = () => subs.forEach(f => f());
+  const guardar = () => { try { localStorage.setItem(KEY, JSON.stringify(st)); } catch(e) {} avisar(); };
+  addEventListener("storage", e => { if (e.key === KEY){ leer(); avisar(); } });
+  const col = n => st[n] || (st[n] = {});
+  const foto = (id, d) => ({ id, exists: d !== undefined, data: () => d });
+  const ref = (c, id) => ({
+    get: async () => foto(id, col(c)[id]),
+    set: async d => { col(c)[id] = { ...d }; guardar(); },
+    update: async d => { col(c)[id] = { ...col(c)[id], ...d }; guardar(); },
+    onSnapshot: cb => { const f = () => cb(foto(id, col(c)[id])); subs.add(f); f(); },
+  });
+  return {
+    collection: c => ({
+      doc: id => ref(c, id),
+      add: async d => { const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6); col(c)[id] = { ...d }; guardar(); return { id }; },
+      onSnapshot: cb => { const f = () => cb({ docs: Object.entries(col(c)).map(([id, d]) => ({ id, data: () => d })) }); subs.add(f); f(); },
+    }),
+    doc: path => { const [c, id] = path.split("/"); return ref(c, id); },
+  };
+}
+
+/* ---------- conexión ---------- */
+renderAll();
+(async () => {
+  try { db = window.claude && window.claude.use ? await window.claude.use("db") : null; } catch(e) { db = null; }
+  if (!db){ db = crearDbLocal(); $("offline").hidden = false; }
+  const fallo = () => { $("offline").hidden = false; };
+  db.collection("facturas").onSnapshot(s => { facturas = s.docs.map(d => ({id:d.id, ...d.data()})); renderAll(); }, fallo);
+  db.collection("canjes").onSnapshot(s => { canjes = s.docs.map(d => d.data()); renderAll(); }, fallo);
+  db.doc("config/ajustes").onSnapshot(s => {
+    resenaUrl = (s.exists && s.data().resenaUrl) || DEF_URL; renderAll();
+    if (!$("view-dueno").hidden) drawQR();
+  }, fallo);
+})();
+</script>
+
+</body></html>
