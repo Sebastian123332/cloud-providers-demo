@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-IJ8onApn5k36Dn85gQjMYrAOS82Z+vQE0rQm9ZtCIu8='; style-src 'sha256-dFyr9TJoBov4mCPX+HDVDv6axaFNkNLSshqQ9nqI7f8=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://formsubmit.co; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Grúas Dieca S.A. · Grúa telescópica y servicio de camiones 24/7 en todo Costa Rica: lowboy, plataformas, carretas y cabezales. Torres, estructuras, contenedores y maquinaria. Cotice por WhatsApp al 8854-4150.">
 <meta property="og:title" content="Grúas Dieca S.A. · Grúas y camiones 24/7">
@@ -365,8 +367,67 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
   .hero h1 .ln > span{transform:none}.hero-photo{clip-path:none}.hero-photo img{transform:none}
   .step::after{transform:scaleX(1)}
 }
+body{margin:0}img{max-width:100%}[hidden]{display:none!important}
+/* Clases que reemplazan estilos en línea (la CSP bloquea los atributos de estilo) */
+.facts-sep{margin-top:56px}
+.trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+/* Parallax del hero */
+.hero{position:relative;overflow-x:clip;--mx:0;--my:0;--sy:0}
+.hero-fondo{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;z-index:0;
+  transform:translate3d(calc(var(--mx) * 12px), calc(var(--my) * 10px + var(--sy) * .32px), 0)}
+.hero-fondo span{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(200px,34vw,520px);line-height:.8;color:transparent;-webkit-text-stroke:2px rgba(17,18,20,.09);white-space:nowrap}
+.hero .wrap{position:relative;z-index:1}
+.hero-grid > div:first-child{transform:translate3d(calc(var(--mx) * -8px), calc(var(--sy) * -.06px), 0)}
+.hero-wrap-foto{transform:translate3d(calc(var(--mx) * 20px), calc(var(--my) * 16px + var(--sy) * .1px), 0)}
+.sello{transform:translate3d(calc(var(--mx) * 24px), calc(var(--my) * 24px + var(--sy) * -.16px), 0)}
+
+/* Letras que reaccionan al cursor */
+.pal{display:inline-block;white-space:nowrap}
+.hero h1 .l{display:inline-block;transition:color .25s;will-change:transform}
+.hero h1 .l.cerca{color:#8F2A00}
+.hero h1 em .l.cerca{color:#111214}
+
+/* Scrollytelling: el izaje */
+.izaje-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px}
+.iz-fija{position:sticky;top:96px;height:calc(100vh - 140px);min-height:440px}
+.obra{position:relative;height:100%;border:2px solid #111214;background:
+  linear-gradient(transparent 0 88%,rgba(17,18,20,.12) 88%),
+  repeating-linear-gradient(0deg,transparent 0 39px,rgba(17,18,20,.06) 39px 40px),
+  repeating-linear-gradient(90deg,transparent 0 39px,rgba(17,18,20,.06) 39px 40px),#FFD24D;overflow:hidden}
+.obra svg{width:100%;height:100%;display:block}
+.obra .suelo{stroke:#111214;stroke-width:3}
+.obra .chasis{fill:#F4B400;stroke:#111214;stroke-width:3}
+.obra .cabina{fill:#F4B400;stroke:#111214;stroke-width:3}
+.obra .vidrio{fill:#2B3640}
+.obra .rueda{fill:#111214}.obra .rin{fill:#8E8A7A}
+.obra .estab{stroke:#111214;stroke-width:6;stroke-linecap:square}
+.obra .torreta{fill:#111214}
+.obra .pluma{fill:#F4B400;stroke:#111214;stroke-width:3}
+.obra .seccion{stroke:#111214;stroke-width:2}
+.obra .cable{stroke:#111214;stroke-width:2}
+.obra .gancho{fill:#111214}
+.obra .viga{fill:#8F2A00;stroke:#111214;stroke-width:2}
+.obra .marca-altura{font-family:var(--mono);font-size:12px;fill:#111214}
+.iz-dato{position:absolute;left:14px;top:14px;display:grid;gap:2px;background:#111214;color:#F4B400;padding:8px 12px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+.iz-dato b{font-family:var(--display);font-size:26px;letter-spacing:.02em}
+.iz-pasos{display:grid}
+.iz-paso{min-height:70vh;display:flex;flex-direction:column;justify-content:center;gap:12px;opacity:.3;transition:opacity .5s;border-top:4px solid rgba(17,18,20,.2)}
+.iz-paso.activo{opacity:1;border-top-color:#111214}
+.iz-paso .num{font-family:var(--display);font-weight:900;font-size:clamp(84px,9vw,140px);line-height:.85;color:transparent;-webkit-text-stroke:2px #111214}
+.iz-paso.activo .num{color:#111214}
+.iz-paso h3{font-size:clamp(34px,3.6vw,52px);font-weight:800}
+.iz-paso p{color:#2B271C;font-size:18px;max-width:36ch}
+@media (max-width:900px){
+  .izaje-grid{grid-template-columns:minmax(0,1fr);gap:0}
+  .iz-fija{top:74px;height:38vh;min-height:250px;z-index:2}
+  .iz-paso{min-height:58vh}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-fondo,.hero-grid > div:first-child,.hero-wrap-foto,.sello{transform:none!important}
+  .iz-paso{opacity:1}
+}
 </style>
-<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
 
@@ -393,7 +454,7 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
       <a href="#trabajos">Trabajos</a>
       <a href="#transporte">Transporte</a>
       <a href="#proceso">Cómo trabajamos</a>
-      <a class="fb-link" href="https://www.facebook.com/share/1JrD9EspEX/?mibextid=wwXIfr" target="_blank" rel="noopener" aria-label="Grúas Dieca en Facebook"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg></a>
+      <a class="fb-link" href="https://www.facebook.com/share/1JrD9EspEX/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Grúas Dieca en Facebook"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg></a>
       <a class="btn sm" href="#cotizar">Cotizar</a>
     </nav>
   </div>
@@ -402,6 +463,7 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
 
 <main id="inicio">
   <section class="hero">
+    <div class="hero-fondo" aria-hidden="true"><span>Dieca</span></div>
     <div class="wrap hero-grid">
       <div>
         <p class="eyebrow">Servicio 24/7 · Grúas y camiones en todo el país</p>
@@ -416,7 +478,7 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
         </ul>
         <div class="hero-cta">
           <a class="btn" href="#cotizar">Pedir cotización</a>
-          <a class="btn wa" href="https://wa.me/50688544150?text=Hola%20Gr%C3%BAas%20Dieca%2C%20quisiera%20cotizar%20un%20servicio%20de%20gr%C3%BAa." target="_blank" rel="noopener">
+          <a class="btn wa" href="https://wa.me/50688544150?text=Hola%20Gr%C3%BAas%20Dieca%2C%20quisiera%20cotizar%20un%20servicio%20de%20gr%C3%BAa." target="_blank" rel="noopener noreferrer">
             <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3 1.8.8 2.5.8 3.4.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.6-.3Z"/></svg>
             Escribir por WhatsApp
           </a>
@@ -442,7 +504,7 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
     </div>
   </section>
 
-  <div class="facts" style="margin-top:56px">
+  <div class="facts facts-sep">
     <div class="wrap">
       <div class="fact rv"><b>24/7</b><span>Atención todos los días, en todo el país</span></div>
       <div class="fact rv"><b>Ciudad</b><span>Maniobras en calles estrechas y zonas urbanas</span></div>
@@ -545,11 +607,39 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
       <div class="sec-head rv">
         <div><p class="eyebrow"><span class="sec-num">03</span>Cómo trabajamos</p><h2>De la consulta al izaje</h2></div>
       </div>
-      <div class="steps">
-        <div class="step rv"><h3>Nos escribe</h3><p>Envíe el tipo de trabajo, ubicación, peso aproximado y fotos del sitio por WhatsApp.</p></div>
-        <div class="step rv"><h3>Valoramos</h3><p>Revisamos acceso, terreno, altura y distancia. Si hace falta, visitamos el lugar.</p></div>
-        <div class="step rv"><h3>Cotizamos</h3><p>Le enviamos el precio y la fecha disponible, sin compromiso.</p></div>
-        <div class="step rv"><h3>Izamos</h3><p>Llegamos, estabilizamos la grúa, señalizamos la zona y hacemos la maniobra.</p></div>
+      <div class="izaje-grid">
+        <div class="iz-fija">
+          <div class="obra" aria-hidden="true">
+            <svg viewBox="0 0 400 480" preserveAspectRatio="xMidYMid meet">
+              <line class="suelo" x1="0" y1="452" x2="400" y2="452"/>
+              <line class="estab" x1="40" y1="420" x2="26" y2="450"/><line class="estab" x1="250" y1="420" x2="264" y2="450"/>
+              <rect class="chasis" x="40" y="392" width="230" height="34"/>
+              <rect class="cabina" x="270" y="362" width="62" height="64"/>
+              <rect class="vidrio" x="296" y="372" width="28" height="22"/>
+              <circle class="rueda" cx="80" cy="436" r="16"/><circle class="rin" cx="80" cy="436" r="6"/>
+              <circle class="rueda" cx="130" cy="436" r="16"/><circle class="rin" cx="130" cy="436" r="6"/>
+              <circle class="rueda" cx="300" cy="436" r="16"/><circle class="rin" cx="300" cy="436" r="6"/>
+              <g id="izPluma">
+                <rect class="pluma" x="110" y="382" width="240" height="20"/>
+                <line class="seccion" x1="180" y1="382" x2="180" y2="402"/><line class="seccion" x1="255" y1="382" x2="255" y2="402"/>
+              </g>
+              <rect class="torreta" x="100" y="378" width="40" height="22"/>
+              <line class="cable" id="izCable" x1="0" y1="0" x2="0" y2="0"/>
+              <g id="izCarga">
+                <path class="gancho" d="M-6 0h12v8h-4v6a6 6 0 1 1-6-6h4V4h-6z"/>
+                <line class="cable" x1="0" y1="14" x2="-40" y2="30"/><line class="cable" x1="0" y1="14" x2="40" y2="30"/>
+                <rect class="viga" x="-58" y="30" width="116" height="14"/>
+              </g>
+            </svg>
+            <div class="iz-dato"><span id="izTxt">Solicitud</span><b id="izAltura">En el suelo</b></div>
+          </div>
+        </div>
+        <div class="iz-pasos">
+          <article class="iz-paso" data-paso="0"><span class="num">01</span><h3>Nos escribe</h3><p>Envíe el tipo de trabajo, ubicación, peso aproximado y fotos del sitio por WhatsApp.</p></article>
+          <article class="iz-paso" data-paso="1"><span class="num">02</span><h3>Valoramos</h3><p>Revisamos acceso, terreno, altura y distancia. Si hace falta, visitamos el lugar.</p></article>
+          <article class="iz-paso" data-paso="2"><span class="num">03</span><h3>Cotizamos</h3><p>Le enviamos el precio y la fecha disponible, sin compromiso.</p></article>
+          <article class="iz-paso" data-paso="3"><span class="num">04</span><h3>Izamos</h3><p>Llegamos, estabilizamos la grúa, señalizamos la zona y hacemos la maniobra.</p></article>
+        </div>
       </div>
     </div>
   </section>
@@ -575,20 +665,20 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
               <button type="button" class="chip" aria-pressed="false">Otro</button>
             </div>
           </div>
-          <div class="field"><label for="q-name">Nombre o empresa *</label><input id="q-name" autocomplete="name" placeholder="Ej. Constructora Las Palmas"></div>
-          <div class="field"><label for="q-phone">Teléfono *</label><input id="q-phone" inputmode="tel" autocomplete="tel" placeholder="Ej. 8888-0000"></div>
-          <div class="field"><label for="q-email">Correo electrónico *</label><input id="q-email" type="email" inputmode="email" autocomplete="email" placeholder="Ej. compras@empresa.com"></div>
+          <div class="field"><label for="q-name">Nombre o empresa *</label><input id="q-name" maxlength="80" autocomplete="name" placeholder="Ej. Constructora Las Palmas"></div>
+          <div class="field"><label for="q-phone">Teléfono *</label><input id="q-phone" maxlength="16" inputmode="tel" autocomplete="tel" placeholder="Ej. 8888-0000"></div>
+          <div class="field"><label for="q-email">Correo electrónico *</label><input id="q-email" type="email" maxlength="100" inputmode="email" autocomplete="email" placeholder="Ej. compras@empresa.com"></div>
           <div class="field" id="inv-field"><label id="inv-label">¿Requiere factura? *</label>
             <div class="chips" id="inv" role="group" aria-labelledby="inv-label">
               <button type="button" class="chip" aria-pressed="false" data-inv="Sí">Sí, con factura</button>
               <button type="button" class="chip" aria-pressed="false" data-inv="No">Sin factura</button>
             </div></div>
-          <div class="field full" id="ced-field" hidden><label for="q-ced">Cédula física o jurídica para la factura</label><input id="q-ced" placeholder="Ej. 3-101-123456"></div>
+          <div class="field full" id="ced-field" hidden><label for="q-ced">Cédula física o jurídica para la factura</label><input id="q-ced" maxlength="20" placeholder="Ej. 3-101-123456"></div>
           <div class="field"><label for="q-prov">Provincia *</label>
             <select id="q-prov"><option value="">Seleccione…</option><option>San José</option><option>Alajuela</option><option>Cartago</option><option>Heredia</option><option>Guanacaste</option><option>Puntarenas</option><option>Limón</option></select></div>
-          <div class="field"><label for="q-place">Cantón / lugar</label><input id="q-place" placeholder="Ej. Paraíso, frente a la plaza"></div>
-          <div class="field"><label for="q-weight">Peso aproximado</label><input id="q-weight" placeholder="Ej. 3 toneladas"></div>
-          <div class="field"><label for="q-height">Altura o distancia</label><input id="q-height" placeholder="Ej. 18 m de altura"></div>
+          <div class="field"><label for="q-place">Cantón / lugar</label><input id="q-place" maxlength="100" placeholder="Ej. Paraíso, frente a la plaza"></div>
+          <div class="field"><label for="q-weight">Peso aproximado</label><input id="q-weight" maxlength="40" placeholder="Ej. 3 toneladas"></div>
+          <div class="field"><label for="q-height">Altura o distancia</label><input id="q-height" maxlength="40" placeholder="Ej. 18 m de altura"></div>
           <div class="field date-field"><label for="q-date">Fecha deseada</label>
             <button type="button" id="q-date" class="date-btn" aria-haspopup="dialog" aria-expanded="false" aria-controls="cal">
               <span id="date-text">Elegir fecha</span>
@@ -611,13 +701,14 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
           </div>
           <div class="field"><label for="q-access">Acceso al sitio</label>
             <select id="q-access"><option value="">No sé</option><option>Calle pavimentada</option><option>Lastre / tierra</option><option>Dentro de propiedad</option><option>Espacio reducido</option></select></div>
-          <div class="field full"><label for="q-detail">Detalles del trabajo</label><textarea id="q-detail" placeholder="¿Qué hay que levantar, desde dónde y hasta dónde? Si tiene fotos del sitio, las puede enviar en el chat."></textarea></div>
+          <div class="field full"><label for="q-detail">Detalles del trabajo</label><textarea id="q-detail" maxlength="1000" placeholder="¿Qué hay que levantar, desde dónde y hasta dónde? Si tiene fotos del sitio, las puede enviar en el chat."></textarea></div>
+          <div class="trampa" aria-hidden="true"><label for="q-web">No llenar este campo</label><input id="q-web" tabindex="-1" autocomplete="off"></div>
           <div class="consent" id="consent">
             <label class="casilla" for="ok-terminos"><input type="checkbox" id="ok-terminos"><span>He leído y acepto los <a href="#terminos" data-legal="terminos">Términos y condiciones</a> del servicio.</span></label>
             <label class="casilla" for="ok-datos"><input type="checkbox" id="ok-datos"><span>Autorizo a Grúas Dieca S.A. a usar mis datos para atender esta cotización, y a recibir una copia por correo, según la <a href="#privacidad" data-legal="privacidad">Política de privacidad y seguridad</a> (Ley 8968).</span></label>
           </div>
           <div class="form-foot">
-            <a class="btn wa" id="send" href="https://wa.me/50688544150" target="_blank" rel="noopener">
+            <a class="btn wa" id="send" href="https://wa.me/50688544150" target="_blank" rel="noopener noreferrer">
               <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Z"/></svg>
               Enviar cotización por WhatsApp
             </a>
@@ -626,7 +717,7 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
         </form>
         <aside>
           <div class="preview">
-            <div class="preview-head"><span class="eyebrow" style="color:var(--yellow)">Mensaje que se enviará</span></div>
+            <div class="preview-head"><span class="eyebrow">Mensaje que se enviará</span></div>
             <div id="preview"></div>
           </div>
           <div class="contact-card">
@@ -637,7 +728,7 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
               <a class="btn sm" href="tel:+50688544150">Llamar</a>
               <button class="copy" type="button" id="copy">Copiar número</button>
               <button class="copy" type="button" id="copy-mail">Copiar correo</button>
-              <a class="copy fb-btn" href="https://www.facebook.com/share/1JrD9EspEX/?mibextid=wwXIfr" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg> Facebook</a>
+              <a class="copy fb-btn" href="https://www.facebook.com/share/1JrD9EspEX/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M13.5 22v-8h2.7l.4-3.2h-3.1V8.8c0-.9.3-1.5 1.6-1.5h1.7V4.4c-.3 0-1.3-.1-2.5-.1-2.5 0-4.1 1.5-4.1 4.2v2.3H7.4V14h2.8v8h3.3Z"/></svg> Facebook</a>
             </div>
           </div>
         </aside>
@@ -651,8 +742,8 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
 <footer>
   <div class="wrap">
     <span>© <span id="yr">2026</span> Grúas Dieca S.A. · Servicio de grúa 24/7 en todo el país</span>
-    <span>Diego Quirós · WhatsApp y teléfono: 8854-4150 · dquiros811@gmail.com · <a href="https://www.facebook.com/share/1JrD9EspEX/?mibextid=wwXIfr" target="_blank" rel="noopener">Síganos en Facebook</a></span>
-    <span class="legales"><button type="button" data-legal="terminos">Términos y condiciones</button><button type="button" data-legal="privacidad">Privacidad y seguridad</button><button type="button" data-legal="cookies">Política de cookies</button><span>Sitio web por <a href="https://ssolanotech.com" target="_blank" rel="noopener">Solanotech</a></span></span>
+    <span>Diego Quirós · WhatsApp y teléfono: 8854-4150 · dquiros811@gmail.com · <a href="https://www.facebook.com/share/1JrD9EspEX/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer">Síganos en Facebook</a></span>
+    <span class="legales"><button type="button" data-legal="terminos">Términos y condiciones</button><button type="button" data-legal="privacidad">Privacidad y seguridad</button><button type="button" data-legal="cookies">Política de cookies</button><span>Sitio web por <a href="https://ssolanotech.com" target="_blank" rel="noopener noreferrer">Solanotech</a></span></span>
   </div>
 </footer>
 
@@ -760,22 +851,30 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
 </dialog>
 
 
-<a class="fab" href="https://wa.me/50688544150?text=Hola%20Gr%C3%BAas%20Dieca%2C%20quisiera%20cotizar%20un%20servicio%20de%20gr%C3%BAa." target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+<a class="fab" href="https://wa.me/50688544150?text=Hola%20Gr%C3%BAas%20Dieca%2C%20quisiera%20cotizar%20un%20servicio%20de%20gr%C3%BAa." target="_blank" rel="noopener noreferrer" aria-label="Escribir por WhatsApp">
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.4.1-.2 0-.3 0-.5l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 4.9 4.3 1.8.8 2.5.8 3.4.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.6-.3Z"/></svg>
 </a>
 
 <script>
 (function(){
   var WA = "50688544150";
+  /* ===== Seguridad: todo lo que escribe el usuario pasa por limpiar() ===== */
+  var CONTROL=/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u2064\u2066-\u2069\uFEFF]/g;
+  function limpiar(t,max){ return String(t==null?'':t).normalize('NFKC').replace(CONTROL,'').replace(/[<>]/g,'').replace(/[ \t]{2,}/g,' ').trim().slice(0,max) }
+  var LARGO={'q-name':80,'q-phone':16,'q-email':100,'q-ced':20,'q-prov':20,'q-place':100,'q-weight':40,'q-height':40,'q-access':40,'q-detail':1000};
+  function val(id){ return limpiar($(id).value, LARGO[id]||100) }
+  var abierto=Date.now(), ultimoEnvio=0;
   var $ = function(id){return document.getElementById(id)};
   var chips = Array.prototype.slice.call(document.querySelectorAll('#chips .chip'));
-  var job = "Torres y postes";
+  var job = "Torres y postes", TRABAJOS=null;
 
   function setJob(name){
+    if(TRABAJOS && TRABAJOS.indexOf(name)===-1) return;
     job = name;
     chips.forEach(function(c){c.setAttribute('aria-pressed', String(c.textContent.trim()===name))});
     update();
   }
+  var TRABAJOS=chips.map(function(c){return c.textContent.trim()});
   chips.forEach(function(c){c.addEventListener('click',function(){setJob(c.textContent.trim())})});
   document.querySelectorAll('[data-job]').forEach(function(b){
     b.addEventListener('click',function(){
@@ -790,7 +889,7 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
     var p=v.split('-'); return p[2]+'/'+p[1]+'/'+p[0];
   }
   function build(){
-    var v=function(id){return $(id).value.trim()};
+    var v=val;
     var lines=["Hola Grúas Dieca, quisiera una cotización.","","*Servicio:* "+job];
     if(v('q-name')) lines.push("*Nombre:* "+v('q-name'));
     if(v('q-phone')) lines.push("*Teléfono:* "+v('q-phone'));
@@ -828,9 +927,19 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
     var missing=[], first=null;
     [['q-name','nombre'],['q-phone','teléfono'],['q-email','correo'],['q-prov','provincia']].forEach(function(f){
       var el=$(f[0]);
-      if(!el.value.trim()){ missing.push(f[1]); el.parentNode.classList.add('err'); first=first||el; }
+      if(!val(f[0])){ missing.push(f[1]); el.parentNode.classList.add('err'); first=first||el; }
     });
-    var email=$('q-email').value.trim();
+    var nombre=val('q-name');
+    if(nombre && !/^[\p{L}\p{M}\p{N} .,&'’()-]{2,80}$/u.test(nombre)){ missing.push('un nombre válido'); $('q-name').parentNode.classList.add('err'); first=first||$('q-name'); }
+    var tel=val('q-phone').replace(/[^\d+]/g,'').replace(/^\+?506/,'');
+    if(val('q-phone') && !/^[2-8]\d{7}$/.test(tel)){ missing.push('un teléfono de 8 dígitos'); $('q-phone').parentNode.classList.add('err'); first=first||$('q-phone'); }
+    if(invoice==="Sí" && val('q-ced') && !/^[0-9-]{9,20}$/.test(val('q-ced'))){ missing.push('una cédula válida (solo números y guiones)'); $('ced-field').classList.add('err'); first=first||$('q-ced'); }
+    var bloqueo='';
+    if($('q-web').value) bloqueo='No se pudo enviar.';
+    else if(Date.now()-abierto<3000) bloqueo='Muy rápido. Revise sus datos y vuelva a tocar Enviar.';
+    else if(Date.now()-ultimoEnvio<30000) bloqueo='Ya abrimos WhatsApp. Espere unos segundos para enviar otra vez.';
+    if(bloqueo){ e.preventDefault(); $('msg').textContent=bloqueo; return; }
+    var email=val('q-email');
     var badEmail = email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
     if(badEmail){ $('q-email').parentNode.classList.add('err'); first=first||$('q-email'); }
     if(!invoice){ missing.push('si requiere factura'); $('inv-field').classList.add('err'); first=first||invChips[0]; }
@@ -844,6 +953,7 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
       $('msg').textContent=parts.join(' ');
       first.focus();
     } else {
+      ultimoEnvio=Date.now();
       sendEmail();
       $('msg').textContent="Se abrió WhatsApp con su mensaje. Solo falta tocar Enviar. También enviamos una copia por correo.";
     }
@@ -867,7 +977,7 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
   /* copia de la cotización por correo (FormSubmit) */
   var QUOTE_EMAIL="dquiros811@gmail.com";
   function sendEmail(){
-    var v=function(id){return $(id).value.trim()};
+    var v=val;
     var data={
       _subject:"Nueva cotización: "+job+" — "+v('q-name'),
       _template:"table",
@@ -957,6 +1067,70 @@ dialog.legal::backdrop{background:rgba(17,18,20,.72)}
   requestAnimationFrame(function(){ setTimeout(function(){ document.querySelector('.hero').classList.add('listo') },80) });
   var io=new IntersectionObserver(function(es){es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target) } })},{threshold:.15,rootMargin:'0px 0px -6% 0px'});
   document.querySelectorAll('.rv').forEach(function(el,i){ el.style.transitionDelay=((i%3)*80)+'ms'; io.observe(el) });
+
+  /* ===== Letras del titular que reaccionan al cursor ===== */
+  var QUIETO=matchMedia('(prefers-reduced-motion: reduce)').matches, FINO=matchMedia('(pointer: fine)').matches;
+  function partir(nodo){
+    Array.prototype.slice.call(nodo.childNodes).forEach(function(n){
+      if(n.nodeType===3){
+        var frag=document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(function(trozo){
+          if(!trozo) return;
+          if(/^\s+$/.test(trozo)){ frag.appendChild(document.createTextNode(trozo)); return; }
+          var pal=document.createElement('span'); pal.className='pal';
+          for(var i=0;i<trozo.length;i++){ var l=document.createElement('span'); l.className='l'; l.textContent=trozo[i]; pal.appendChild(l); }
+          frag.appendChild(pal);
+        });
+        nodo.replaceChild(frag,n);
+      } else if(n.nodeType===1) partir(n);
+    });
+  }
+  var h1=document.querySelector('.hero h1');
+  h1.setAttribute('aria-label',h1.textContent.replace(/\s+/g,' ').trim());
+  Array.prototype.forEach.call(h1.querySelectorAll('.ln > span'),function(s){ s.setAttribute('aria-hidden','true'); partir(s) });
+  var letras=Array.prototype.slice.call(h1.querySelectorAll('.l'));
+
+  /* ===== Parallax del hero (cursor + scroll) ===== */
+  var hero=document.querySelector('.hero'), mx=0,my=0,tx=0,ty=0,px=-9999,py=-9999;
+  if(FINO && !QUIETO) addEventListener('pointermove',function(e){ tx=e.clientX/innerWidth-.5; ty=e.clientY/innerHeight-.5; px=e.clientX; py=e.clientY },{passive:true});
+  function cuadro(){
+    mx+=(tx-mx)*.07; my+=(ty-my)*.07;
+    var sy=Math.min(scrollY,innerHeight*1.4);
+    hero.style.setProperty('--mx',mx.toFixed(4)); hero.style.setProperty('--my',my.toFixed(4)); hero.style.setProperty('--sy',sy.toFixed(1));
+    if(FINO && sy<innerHeight){
+      for(var i=0;i<letras.length;i++){
+        var r=letras[i].getBoundingClientRect(), dx=r.left+r.width/2-px, dy=r.top+r.height/2-py, d=Math.sqrt(dx*dx+dy*dy)||1, f=Math.max(0,1-d/180);
+        letras[i].style.transform=f?'translate('+(dx/d*f*20).toFixed(1)+'px,'+(dy/d*f*20).toFixed(1)+'px) rotate('+(dx/d*f*9).toFixed(1)+'deg)':'';
+        letras[i].classList.toggle('cerca',f>.3);
+      }
+    }
+    requestAnimationFrame(cuadro);
+  }
+  if(!QUIETO) requestAnimationFrame(cuadro);
+
+  /* ===== Scrollytelling: la pluma sube y levanta la viga ===== */
+  var pasosIz=document.querySelectorAll('.iz-paso'), pluma=$('izPluma'), cable=$('izCable'), carga=$('izCarga');
+  var PIVX=120, PIVY=392, LARGO_PLUMA=230, SUELO=452;
+  var ROTULOS=['Solicitud','Valoración','Cotización','Izaje'];
+  function izaje(){
+    var mitad=innerHeight*.5, a=pasosIz[0].getBoundingClientRect(), z=pasosIz[pasosIz.length-1].getBoundingClientRect();
+    var c0=a.top+a.height/2, cN=z.top+z.height/2;
+    var prog=Math.min(1,Math.max(0,(mitad-c0)/Math.max(1,cN-c0)));
+    var ang=18+prog*44, rad=ang*Math.PI/180;
+    pluma.setAttribute('transform','rotate('+(-ang).toFixed(2)+' '+PIVX+' '+PIVY+')');
+    var puntaX=PIVX+LARGO_PLUMA*Math.cos(rad), puntaY=PIVY-LARGO_PLUMA*Math.sin(rad);
+    var sube=Math.min(1,Math.max(0,(prog-.62)/.38));
+    var ganchoY=SUELO-14-(SUELO-14-(puntaY+56))*sube;
+    cable.setAttribute('x1',puntaX.toFixed(1)); cable.setAttribute('y1',puntaY.toFixed(1));
+    cable.setAttribute('x2',puntaX.toFixed(1)); cable.setAttribute('y2',ganchoY.toFixed(1));
+    carga.setAttribute('transform','translate('+puntaX.toFixed(1)+' '+ganchoY.toFixed(1)+')');
+    var activo=0;
+    for(var i=0;i<pasosIz.length;i++){ var pr=pasosIz[i].getBoundingClientRect(); if(pr.top+pr.height/2<mitad+pr.height*.25) activo=i }
+    for(var j=0;j<pasosIz.length;j++) pasosIz[j].classList.toggle('activo',j===activo);
+    $('izTxt').textContent=ROTULOS[activo];
+    $('izAltura').textContent= sube<.02 ? 'En el suelo' : sube>.98 ? 'Izada' : 'Subiendo';
+  }
+  addEventListener('scroll',izaje,{passive:true}); addEventListener('resize',izaje); izaje();
 
   /* ===== Visor de fotos ===== */
   var figs=Array.prototype.slice.call(document.querySelectorAll('.gallery figure')), actual=0, visor=$('visor');

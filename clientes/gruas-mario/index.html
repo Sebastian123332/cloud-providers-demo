@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ugkmmfPWXYHhzdGQc3+aBnjhaMmwZLBWMEQnK6wvai4='; style-src 'sha256-XYCAwf9s0XRE3vtwmV3011oLz/a2SdOesHi2Mrrw+bs=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Grúas Mario | Grúa de plataforma 24/7 en Costa Rica · 8344-5667</title>
 <meta name="description" content="Grúa de plataforma 24/7 en el GAM y todo Costa Rica. Carros, motos, pickups, montacargas, maquinaria y contenedores de 20 pies. Con pólizas de carga. Llame o escriba al 8344-5667.">
@@ -277,6 +279,67 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
 .lg-body ul{padding-left:20px}
 .lg-body .fecha{font-size:14px;color:#6B675F}
 
+/* Clases que reemplazan estilos en línea (la CSP bloquea los atributos de estilo) */
+.trabajos{border-top:2px solid #141414;padding-bottom:clamp(56px,8vw,96px)}
+.e-ama{color:var(--amarillo)}
+.cob-txt{display:flex;flex-direction:column;gap:18px}
+.cob-p{font-size:19px;max-width:36ch}
+.gal-head{display:flex;flex-direction:column;gap:18px;align-items:flex-start}
+.pie-marca{font-family:var(--f-titulo);font-weight:400;font-size:30px;color:var(--hueso)}
+.pie-p{margin-top:10px;max-width:34ch}
+.acciones.centro{justify-content:center}
+.trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+/* Parallax del hero: capas a distinta profundidad */
+.hero{--mx:0;--my:0;--sy:0}
+.hero-fondo{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none;z-index:0;
+  transform:translate3d(calc(var(--mx) * 10px), calc(var(--my) * 10px + var(--sy) * .35px), 0)}
+.hero-fondo span{font-family:var(--f-titulo);font-size:clamp(220px,42vw,640px);line-height:.8;color:transparent;-webkit-text-stroke:1.5px rgba(255,210,0,.09);white-space:nowrap;transform:translateX(18%)}
+.hero .wrap{position:relative;z-index:1}
+.hero-txt{transform:translate3d(calc(var(--mx) * -8px), calc(var(--sy) * -.08px), 0)}
+.hero-foto{transform:translate3d(calc(var(--mx) * 22px), calc(var(--my) * 18px + var(--sy) * .12px), 0)}
+.sello{transform:translate3d(calc(var(--mx) * 26px), calc(var(--my) * 26px + var(--sy) * -.18px), 0)}
+
+/* Letras que reaccionan al cursor */
+.pal{display:inline-block;white-space:nowrap}
+.hero h1 .l{display:inline-block;transition:color .25s;will-change:transform}
+.hero h1 .l.cerca{color:var(--rojo)}
+.hero h1 .amarillo .l.cerca{color:var(--hueso)}
+
+/* Scrollytelling: la ruta */
+.ruta{background:var(--negro2);padding-block:clamp(80px,10vw,128px) 40px}
+.ruta-sub{color:var(--gris)}
+.ruta-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px}
+.ruta-fija{position:sticky;top:96px;height:calc(100vh - 140px);min-height:440px}
+.mapa{position:relative;height:100%;border:2px solid var(--linea);border-radius:22px;overflow:hidden;
+  background:radial-gradient(circle at 30% 20%,rgba(255,210,0,.08),transparent 55%),repeating-linear-gradient(0deg,transparent 0 39px,rgba(244,241,234,.04) 39px 40px),repeating-linear-gradient(90deg,transparent 0 39px,rgba(244,241,234,.04) 39px 40px),var(--negro)}
+.mapa svg{width:100%;height:100%;display:block}
+.calle{fill:none;stroke:#2B2B2B;stroke-width:34;stroke-linecap:round}
+.calle-borde{fill:none;stroke:rgba(244,241,234,.35);stroke-width:2;stroke-dasharray:12 14}
+.calle-avance{fill:none;stroke:var(--amarillo);stroke-width:4;stroke-linecap:round;filter:drop-shadow(0 0 6px rgba(255,210,0,.6))}
+.pin circle{fill:var(--negro);stroke:var(--gris2);stroke-width:3;transition:fill .4s,stroke .4s}
+.pin text{font-family:var(--f-cond);font-weight:800;font-size:16px;fill:var(--gris2);text-anchor:middle;transition:fill .4s}
+.pin.on circle{fill:var(--rojo);stroke:var(--rojo)}
+.pin.on text{fill:#fff}
+.g-plataforma{fill:#8E897F}.g-cabina{fill:var(--amarillo)}.g-vidrio{fill:#1b2a3a}.g-carro{fill:#3A6EA5}.g-luz{fill:#fff}
+.leyenda{position:absolute;left:18px;top:16px;font-family:var(--f-cond);font-weight:800;font-size:20px;letter-spacing:.06em;text-transform:uppercase;background:var(--amarillo);color:#111;padding:6px 14px;border-radius:999px}
+.ruta-pasos{display:grid}
+.ruta-paso{min-height:72vh;display:flex;flex-direction:column;justify-content:center;gap:14px;opacity:.25;transition:opacity .5s}
+.ruta-paso.activo{opacity:1}
+.ruta-paso .num{font-family:var(--f-titulo);font-size:clamp(90px,10vw,150px);line-height:.85;color:transparent;-webkit-text-stroke:2px var(--amarillo)}
+.ruta-paso.activo .num{color:var(--amarillo)}
+.ruta-paso h3{font-family:var(--f-cond);font-weight:800;font-size:clamp(30px,3.4vw,44px);text-transform:uppercase;line-height:1}
+.ruta-paso p{color:var(--gris);font-size:19px;max-width:36ch}
+@media (max-width:900px){
+  .ruta-grid{grid-template-columns:minmax(0,1fr);gap:0}
+  .ruta-fija{top:76px;height:38vh;min-height:250px;z-index:2}
+  .ruta-paso{min-height:60vh}
+}
+@media (prefers-reduced-motion:reduce){
+  .hero-fondo,.hero-txt,.hero-foto,.sello{transform:none!important}
+  .ruta-paso{opacity:1}
+}
+
 /* Aparición al bajar */
 .js .rv{opacity:0;transform:translateY(40px);transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1)}
 .js .rv.in{opacity:1;transform:none}
@@ -311,6 +374,7 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
 
 <main>
 <section class="hero" id="inicio">
+  <div class="hero-fondo" aria-hidden="true"><span>24/7</span></div>
   <div class="wrap">
     <div class="hero-txt">
       <div class="estado"><i></i>Disponibles ahora <small id="hora"></small></div>
@@ -318,7 +382,7 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
       <p class="lead">Grúa de plataforma para trasladar su vehículo seguro, sin rayones y sin complicaciones. Atendemos las 24 horas en el GAM y en todo el país.</p>
       <div class="acciones">
         <a class="btn btn-ama" href="tel:+50683445667"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>Llamar ya</a>
-        <a class="btn btn-wa" href="https://wa.me/50683445667?text=Hola%2C%20necesito%20una%20gr%C3%BAa" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"/></svg>WhatsApp</a>
+        <a class="btn btn-wa" href="https://wa.me/50683445667?text=Hola%2C%20necesito%20una%20gr%C3%BAa" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"/></svg>WhatsApp</a>
         <a class="btn btn-borde" href="#cotizar">Cotizar viaje</a>
       </div>
       <div class="checks">
@@ -364,11 +428,11 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
   </div>
 </section>
 
-<section class="claro sec" id="trabajos" style="border-top:2px solid #141414;padding-bottom:clamp(56px,8vw,96px)">
+<section class="claro sec trabajos" id="trabajos">
   <div class="wrap">
-    <div class="sec-head" style="align-items:end">
+    <div class="sec-head">
       <div class="rv"><span class="eyebrow">Trabajos realizados</span><h2 class="titulo">Lo que<br>hemos movido</h2></div>
-      <div class="rv" style="display:flex;flex-direction:column;gap:18px;align-items:flex-start">
+      <div class="rv gal-head">
         <p class="sub">Fotos reales de nuestros traslados en todo Costa Rica. Deslice para ver más.</p>
         <div class="gal-ctrl"><button type="button" id="galPrev" aria-label="Fotos anteriores">←</button><button type="button" id="galNext" aria-label="Fotos siguientes">→</button></div>
       </div>
@@ -389,7 +453,7 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
 <section class="sec cotizar" id="cotizar">
   <div class="wrap cot-grid">
     <div class="cot-info rv">
-      <span class="eyebrow" style="color:var(--amarillo)">Cotizador</span>
+      <span class="eyebrow e-ama">Cotizador</span>
       <h2 class="titulo">Cotice su grúa <span class="amarillo">en 1 minuto</span></h2>
       <p>Llene los datos y le llegan directo al WhatsApp de Grúas Mario. Le respondemos con el precio y el tiempo de llegada.</p>
       <ul>
@@ -415,43 +479,66 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
       <div class="campo">
         <span class="paso"><i>02</i>¿De dónde a dónde?</span>
         <div class="dos">
-          <div class="campo"><label for="q-desde">Desde (dónde está el vehículo)</label><input id="q-desde" type="text" placeholder="Ej: Paraíso, Cartago"></div>
-          <div class="campo"><label for="q-hasta">Hasta (a dónde lo llevamos)</label><input id="q-hasta" type="text" placeholder="Ej: Taller en Curridabat"></div>
+          <div class="campo"><label for="q-desde">Desde (dónde está el vehículo)</label><input id="q-desde" type="text" maxlength="80" autocomplete="off" placeholder="Ej: Paraíso, Cartago"></div>
+          <div class="campo"><label for="q-hasta">Hasta (a dónde lo llevamos)</label><input id="q-hasta" type="text" maxlength="80" autocomplete="off" placeholder="Ej: Taller en Curridabat"></div>
         </div>
       </div>
       <div class="campo">
         <span class="paso"><i>03</i>Detalles</span>
-        <div class="campo"><label for="q-vehiculo">Descripción del vehículo</label><textarea id="q-vehiculo" rows="3" placeholder="Marca, modelo, año y color. ¿Enciende? ¿Está chocado? ¿Llantas bloqueadas?"></textarea></div>
-        <div class="campo"><label for="q-ubicacion">Ubicación exacta</label><textarea id="q-ubicacion" rows="2" placeholder="Señas (200 m norte de…, frente a…) o pegue el link de Google Maps"></textarea></div>
-        <div class="campo"><label for="q-nombre">Su nombre (opcional)</label><input id="q-nombre" type="text" placeholder="Ej: Carlos"></div>
+        <div class="campo"><label for="q-vehiculo">Descripción del vehículo</label><textarea id="q-vehiculo" rows="3" maxlength="300" placeholder="Marca, modelo, año y color. ¿Enciende? ¿Está chocado? ¿Llantas bloqueadas?"></textarea></div>
+        <div class="campo"><label for="q-ubicacion">Ubicación exacta</label><textarea id="q-ubicacion" rows="2" maxlength="300" placeholder="Señas (200 m norte de…, frente a…) o pegue el link de Google Maps"></textarea></div>
+        <div class="campo"><label for="q-nombre">Su nombre (opcional)</label><input id="q-nombre" type="text" maxlength="50" autocomplete="given-name" placeholder="Ej: Carlos"></div>
       </div>
+      <div class="trampa" aria-hidden="true"><label for="q-web">No llenar este campo</label><input id="q-web" tabindex="-1" autocomplete="off"></div>
       <div class="consent">
         <label class="casilla" for="ok-terminos"><input type="checkbox" id="ok-terminos"><span>He leído y acepto los <a href="#terminos" data-legal="terminos">Términos y condiciones</a> del servicio.</span></label>
         <label class="casilla" for="ok-datos"><input type="checkbox" id="ok-datos"><span>Autorizo a Grúas Mario a usar mis datos para responder esta cotización, según la <a href="#privacidad" data-legal="privacidad">Política de privacidad y seguridad</a> (Ley 8968).</span></label>
       </div>
-      <a class="btn btn-wa enviar" id="q-enviar" href="https://wa.me/50683445667" target="_blank" rel="noopener" aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"/></svg>Enviar cotización por WhatsApp</a>
+      <a class="btn btn-wa enviar" id="q-enviar" href="https://wa.me/50683445667" target="_blank" rel="noopener noreferrer" aria-disabled="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"/></svg>Enviar cotización por WhatsApp</a>
       <p class="falta" id="q-falta" role="status"></p>
     </form>
   </div>
 </section>
 
-<section class="sec" style="background:var(--negro2)">
+<section class="ruta" id="como">
   <div class="wrap">
-    <div class="sec-head"><div class="rv"><span class="eyebrow" style="color:var(--amarillo)">Cómo funciona</span><h2 class="titulo">Así de fácil <span class="amarillo">en 3 pasos</span></h2></div></div>
-    <div class="pasos">
-      <div class="paso-c rv"><span class="num">01</span><h3>Llámenos o escriba</h3><p>Al 8344-5667 por llamada o WhatsApp, a cualquier hora.</p></div>
-      <div class="paso-c rv"><span class="num">02</span><h3>Envíe su ubicación</h3><p>Comparta la ubicación por WhatsApp y le confirmamos el precio y tiempo de llegada.</p></div>
-      <div class="paso-c rv"><span class="num">03</span><h3>Llegamos y trasladamos</h3><p>Cargamos su vehículo con cuidado y lo dejamos donde lo necesite.</p></div>
+    <div class="sec-head"><div class="rv"><span class="eyebrow e-ama">Cómo funciona</span><h2 class="titulo">Así de fácil <span class="amarillo">en 3 pasos</span></h2></div><p class="sub rv ruta-sub">Baje y mire el viaje: de su llamada a su vehículo entregado.</p></div>
+    <div class="ruta-grid">
+      <div class="ruta-fija">
+        <div class="mapa" aria-hidden="true">
+          <svg viewBox="0 0 400 560" preserveAspectRatio="xMidYMid meet">
+            <path class="calle" d="M60 520 C 60 420, 340 440, 330 330 S 70 250, 90 150 S 300 40, 340 50"/>
+            <path class="calle-borde" d="M60 520 C 60 420, 340 440, 330 330 S 70 250, 90 150 S 300 40, 340 50"/>
+            <path class="calle-avance" id="rutaAvance" d="M60 520 C 60 420, 340 440, 330 330 S 70 250, 90 150 S 300 40, 340 50"/>
+            <g class="pin" id="pin0"><circle r="16"/><text y="5">1</text></g>
+            <g class="pin" id="pin1"><circle r="16"/><text y="5">2</text></g>
+            <g class="pin" id="pin2"><circle r="16"/><text y="5">3</text></g>
+            <g id="grua">
+              <rect x="-30" y="-9" width="44" height="18" rx="2" class="g-plataforma"/>
+              <rect x="14" y="-11" width="18" height="22" rx="3" class="g-cabina"/>
+              <rect x="22" y="-8" width="8" height="16" rx="1.5" class="g-vidrio"/>
+              <rect x="-26" y="-6" width="30" height="12" rx="5" class="g-carro"/>
+              <circle cx="34" cy="-7" r="2.4" class="g-luz"/><circle cx="34" cy="7" r="2.4" class="g-luz"/>
+            </g>
+          </svg>
+          <span class="leyenda" id="rutaTxt">Su llamada</span>
+        </div>
+      </div>
+      <div class="ruta-pasos">
+        <article class="ruta-paso" data-paso="0"><span class="num">01</span><h3>Llámenos o escriba</h3><p>Al 8344-5667 por llamada o WhatsApp, a cualquier hora. Contesta quien maneja la grúa.</p></article>
+        <article class="ruta-paso" data-paso="1"><span class="num">02</span><h3>Envíe su ubicación</h3><p>Comparta la ubicación por WhatsApp y le confirmamos el precio y el tiempo de llegada antes de salir.</p></article>
+        <article class="ruta-paso" data-paso="2"><span class="num">03</span><h3>Llegamos y trasladamos</h3><p>Cargamos su vehículo completo sobre la plataforma, con póliza de carga, y lo dejamos donde lo necesite.</p></article>
+      </div>
     </div>
   </div>
 </section>
 
 <section class="cobertura sec" id="cobertura">
   <div class="wrap cob-grid">
-    <div class="rv cob-txt" style="display:flex;flex-direction:column;gap:18px">
+    <div class="rv cob-txt">
       <span class="eyebrow">Cobertura</span>
       <h2 class="titulo">GAM y todo<br>Costa Rica</h2>
-      <p style="font-size:19px;max-width:36ch">Donde sea que esté, llegamos. Servicio dentro del Gran Área Metropolitana y traslados hacia las siete provincias.</p>
+      <p class="cob-p">Donde sea que esté, llegamos. Servicio dentro del Gran Área Metropolitana y traslados hacia las siete provincias.</p>
     </div>
     <ul class="prov">
       <li class="rv">San José <small>GAM</small></li>
@@ -482,10 +569,10 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
   <div class="wrap">
     <h2 class="titulo rv">¿Necesita una grúa <span class="amarillo">ahora mismo?</span></h2>
     <a class="numerazo rv" href="tel:+50683445667">8344-5667</a>
-    <div class="acciones rv" style="justify-content:center">
+    <div class="acciones centro rv">
       <a class="btn btn-ama" href="tel:+50683445667">Llamar</a>
-      <a class="btn btn-wa" href="https://wa.me/50683445667?text=Hola%2C%20necesito%20una%20gr%C3%BAa" target="_blank" rel="noopener">Escribir por WhatsApp</a>
-      <a class="btn btn-fb" href="https://www.facebook.com/share/1B1DroMF33/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>Síganos en Facebook</a>
+      <a class="btn btn-wa" href="https://wa.me/50683445667?text=Hola%2C%20necesito%20una%20gr%C3%BAa" target="_blank" rel="noopener noreferrer">Escribir por WhatsApp</a>
+      <a class="btn btn-fb" href="https://www.facebook.com/share/1B1DroMF33/" target="_blank" rel="noopener noreferrer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>Síganos en Facebook</a>
     </div>
   </div>
 </section>
@@ -494,22 +581,22 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
 <footer>
   <div class="wrap">
     <div>
-      <b style="font-family:var(--f-titulo);font-weight:400;font-size:30px;color:var(--hueso)">GRÚAS <span class="amarillo">MARIO</span></b>
-      <p style="margin-top:10px;max-width:34ch">Servicio de grúa de plataforma 24/7 en el GAM y todo Costa Rica.</p>
+      <b class="pie-marca">GRÚAS <span class="amarillo">MARIO</span></b>
+      <p class="pie-p">Servicio de grúa de plataforma 24/7 en el GAM y todo Costa Rica.</p>
     </div>
     <div>
       <h4>Contacto</h4>
-      <ul><li>Tel. y WhatsApp: <a href="tel:+50683445667">8344-5667</a></li><li><a href="https://www.facebook.com/share/1B1DroMF33/" target="_blank" rel="noopener">Facebook</a></li><li><a href="#cotizar">Cotizar un traslado</a></li></ul>
+      <ul><li>Tel. y WhatsApp: <a href="tel:+50683445667">8344-5667</a></li><li><a href="https://www.facebook.com/share/1B1DroMF33/" target="_blank" rel="noopener noreferrer">Facebook</a></li><li><a href="#cotizar">Cotizar un traslado</a></li></ul>
     </div>
     <div>
       <h4>Legal</h4>
       <ul><li><button class="lg" type="button" data-legal="terminos">Términos y condiciones</button></li><li><button class="lg" type="button" data-legal="privacidad">Privacidad y seguridad</button></li><li><button class="lg" type="button" data-legal="cookies">Política de cookies</button></li></ul>
     </div>
   </div>
-  <div class="wrap pie-fin"><span>© <span id="yr">2026</span> Grúas Mario · Costa Rica</span><span>Sitio web por <a href="https://ssolanotech.com" target="_blank" rel="noopener">Solanotech</a></span></div>
+  <div class="wrap pie-fin"><span>© <span id="yr">2026</span> Grúas Mario · Costa Rica</span><span>Sitio web por <a href="https://ssolanotech.com" target="_blank" rel="noopener noreferrer">Solanotech</a></span></div>
 </footer>
 
-<a class="fab" href="https://wa.me/50683445667?text=Hola%2C%20necesito%20una%20gr%C3%BAa" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"/></svg></a>
+<a class="fab" href="https://wa.me/50683445667?text=Hola%2C%20necesito%20una%20gr%C3%BAa" target="_blank" rel="noopener noreferrer" aria-label="Escribir por WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 21l2.1-5.5A8.4 8.4 0 1 1 21 11.5z"/></svg></a>
 
 <!-- ===================== DOCUMENTOS LEGALES ===================== -->
 <dialog class="legal" id="dlg-terminos" aria-labelledby="t-terminos">
@@ -620,7 +707,7 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
   }
   hora(); setInterval(hora,30000);
 
-  /* Aparición al bajar */
+  /* Aparecer al bajar */
   var io=new IntersectionObserver(function(es){es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } })},{threshold:.15,rootMargin:'0px 0px -6% 0px'});
   document.querySelectorAll('.rv').forEach(function(el,i){ el.style.transitionDelay=((i%4)*70)+'ms'; io.observe(el) });
 
@@ -633,14 +720,21 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
   $('galPrev').onclick=function(){ gal.scrollBy({left:-paso(),behavior:QUIETO?'auto':'smooth'}) };
   $('galNext').onclick=function(){ gal.scrollBy({left:paso(),behavior:QUIETO?'auto':'smooth'}) };
 
+  /* ===== Seguridad: todo lo que escribe el usuario pasa por limpiar() ===== */
+  var CONTROL=/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u2064\u2066-\u2069\uFEFF]/g;
+  function limpiar(t,max){ return String(t==null?'':t).normalize('NFKC').replace(CONTROL,'').replace(/[<>]/g,'').replace(/[ \t]{2,}/g,' ').trim().slice(0,max) }
+  var TIPOS=Array.prototype.map.call(document.querySelectorAll('.tipos button'),function(b){return b.getAttribute('data-tipo')});
+  var abierto=Date.now(), ultimo=0;
+
   /* Cotizador */
   var tipo='Carro', btns=document.querySelectorAll('.tipos button');
   btns.forEach(function(b){ b.addEventListener('click',function(){
-    tipo=b.getAttribute('data-tipo');
+    var t=b.getAttribute('data-tipo'); if(TIPOS.indexOf(t)===-1) return; tipo=t;
     btns.forEach(function(x){ x.setAttribute('aria-pressed', x===b?'true':'false') });
     actualizar();
   })});
-  function v(id){var e=$(id);return e?e.value.trim():''}
+  var LARGO={'q-desde':80,'q-hasta':80,'q-vehiculo':300,'q-ubicacion':300,'q-nombre':50};
+  function v(id){var e=$(id);return e?limpiar(e.value,LARGO[id]||100):''}
   var enviar=$('q-enviar'), falta=$('q-falta');
   function actualizar(){
     var desde=v('q-desde'),hasta=v('q-hasta'),veh=v('q-vehiculo'),ubi=v('q-ubicacion'),nom=v('q-nombre');
@@ -653,7 +747,8 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
     l.push('','Acepté los términos y condiciones y autoricé el uso de mis datos para esta cotización.','(Enviado desde la página web)');
     enviar.href='https://wa.me/50683445667?text='+encodeURIComponent(l.join('\n'));
     var faltan=[];
-    if(!desde) faltan.push('“Desde”'); if(!hasta) faltan.push('“Hasta”');
+    if(desde.length<3) faltan.push('“Desde”'); if(hasta.length<3) faltan.push('“Hasta”');
+    if(nom && !/^[\p{L}\p{M} .'’-]{2,50}$/u.test(nom)) faltan.push('un nombre válido (solo letras)');
     if(!t) faltan.push('aceptar los términos'); if(!d) faltan.push('autorizar el uso de sus datos');
     var ok=!faltan.length;
     enviar.setAttribute('aria-disabled', ok?'false':'true');
@@ -663,7 +758,78 @@ dialog.legal::backdrop{background:rgba(0,0,0,.72);backdrop-filter:blur(4px)}
   ['q-desde','q-hasta','q-vehiculo','q-ubicacion','q-nombre'].forEach(function(id){ $(id).addEventListener('input',actualizar) });
   ['ok-terminos','ok-datos'].forEach(function(id){ $(id).addEventListener('change',actualizar) });
   $('cotForm').addEventListener('submit',function(e){e.preventDefault()});
+  /* Freno a bots y envíos repetidos */
+  enviar.addEventListener('click',function(e){
+    actualizar();
+    var bloqueo='';
+    if($('q-web').value) bloqueo='No se pudo enviar.';
+    else if(Date.now()-abierto<3000) bloqueo='Muy rápido. Revise sus datos y vuelva a tocar Enviar.';
+    else if(Date.now()-ultimo<30000) bloqueo='Ya abrimos WhatsApp. Espere unos segundos para enviar otra vez.';
+    else if(enviar.getAttribute('aria-disabled')==='true') bloqueo=falta.textContent;
+    if(bloqueo){ e.preventDefault(); falta.textContent=bloqueo; return; }
+    ultimo=Date.now();
+  });
   actualizar();
+
+  /* ===== Letras del titular que reaccionan al cursor ===== */
+  var FINO=matchMedia('(pointer: fine)').matches;
+  function partir(nodo){
+    Array.prototype.slice.call(nodo.childNodes).forEach(function(n){
+      if(n.nodeType===3){
+        var frag=document.createDocumentFragment();
+        n.textContent.split(/(\s+)/).forEach(function(trozo){
+          if(!trozo) return;
+          if(/^\s+$/.test(trozo)){ frag.appendChild(document.createTextNode(trozo)); return; }
+          var pal=document.createElement('span'); pal.className='pal';
+          for(var i=0;i<trozo.length;i++){ var l=document.createElement('span'); l.className='l'; l.textContent=trozo[i]; pal.appendChild(l); }
+          frag.appendChild(pal);
+        });
+        nodo.replaceChild(frag,n);
+      } else if(n.nodeType===1) partir(n);
+    });
+  }
+  var h1=document.querySelector('.hero h1');
+  h1.setAttribute('aria-label',h1.textContent.replace(/\s+/g,' ').trim());
+  Array.prototype.forEach.call(h1.querySelectorAll('.ln > span'),function(s){ s.setAttribute('aria-hidden','true'); partir(s) });
+  var letras=Array.prototype.slice.call(h1.querySelectorAll('.l'));
+
+  /* ===== Parallax del hero (cursor + scroll) ===== */
+  var hero=document.querySelector('.hero'), mx=0,my=0,tx=0,ty=0,px=-9999,py=-9999;
+  if(FINO && !QUIETO) addEventListener('pointermove',function(e){ tx=e.clientX/innerWidth-.5; ty=e.clientY/innerHeight-.5; px=e.clientX; py=e.clientY },{passive:true});
+  function cuadro(){
+    mx+=(tx-mx)*.07; my+=(ty-my)*.07;
+    var sy=Math.min(scrollY,innerHeight*1.4);
+    hero.style.setProperty('--mx',mx.toFixed(4)); hero.style.setProperty('--my',my.toFixed(4)); hero.style.setProperty('--sy',sy.toFixed(1));
+    if(FINO && sy<innerHeight){
+      for(var i=0;i<letras.length;i++){
+        var r=letras[i].getBoundingClientRect(), dx=r.left+r.width/2-px, dy=r.top+r.height/2-py, d=Math.sqrt(dx*dx+dy*dy)||1, f=Math.max(0,1-d/190);
+        letras[i].style.transform=f?'translate('+(dx/d*f*22).toFixed(1)+'px,'+(dy/d*f*22).toFixed(1)+'px) rotate('+(dx/d*f*10).toFixed(1)+'deg)':'';
+        letras[i].classList.toggle('cerca',f>.3);
+      }
+    }
+    requestAnimationFrame(cuadro);
+  }
+  if(!QUIETO) requestAnimationFrame(cuadro);
+
+  /* ===== Scrollytelling: la grúa recorre la ruta ===== */
+  var camino=$('rutaAvance'), largo=camino.getTotalLength(), grua=$('grua'), pasos=document.querySelectorAll('.ruta-paso'), grid=document.querySelector('.ruta-grid');
+  var ETIQUETAS=['Su llamada','Su ubicación','Entregado'], puntos=[0,.5,1];
+  camino.style.strokeDasharray=String(largo);
+  puntos.forEach(function(t,i){ var p=camino.getPointAtLength(largo*t); $('pin'+i).setAttribute('transform','translate('+p.x.toFixed(1)+' '+p.y.toFixed(1)+')') });
+  function ruta(){
+    var mitad=innerHeight*.5, p0=pasos[0].getBoundingClientRect(), pN=pasos[pasos.length-1].getBoundingClientRect();
+    var c0=p0.top+p0.height/2, cN=pN.top+pN.height/2;
+    var prog=Math.min(1,Math.max(0,(mitad-c0)/Math.max(1,cN-c0)));
+    camino.style.strokeDashoffset=String(largo*(1-prog));
+    var a=camino.getPointAtLength(largo*prog), b=camino.getPointAtLength(Math.min(largo,largo*prog+1)), c=camino.getPointAtLength(Math.max(0,largo*prog-1));
+    var ang=Math.atan2(b.y-c.y,b.x-c.x)*180/Math.PI;
+    grua.setAttribute('transform','translate('+a.x.toFixed(1)+' '+a.y.toFixed(1)+') rotate('+ang.toFixed(1)+')');
+    var activo=0;
+    for(var i=0;i<pasos.length;i++){ var pr=pasos[i].getBoundingClientRect(); if(pr.top+pr.height/2<mitad+pr.height*.25) activo=i }
+    for(var j=0;j<pasos.length;j++){ pasos[j].classList.toggle('activo',j===activo); $('pin'+j).classList.toggle('on',prog>=puntos[j]-.02) }
+    $('rutaTxt').textContent=ETIQUETAS[activo];
+  }
+  addEventListener('scroll',ruta,{passive:true}); addEventListener('resize',ruta); ruta();
 
   /* Documentos legales */
   function abrir(cual){
