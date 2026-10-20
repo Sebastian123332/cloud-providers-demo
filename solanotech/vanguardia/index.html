@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-a9xQO1srDEnuZeK3Y6Rzaex+wG+djTw9tMwC5r8cqgw='; style-src 'sha256-HgljjkE/vfSo7wW+IJSUbzEf1vVJXB23JXHiBrP04YI=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>Solanotech · Protocolo 義</title>
+<meta name="description" content="Solanotech: software a la medida, páginas web y soporte técnico hechos en Cartago, Costa Rica, con seguridad desde el diseño.">
+<meta name="theme-color" content="#08070E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;700&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Mono:wght@400;500&family=Noto+Serif+JP:wght@900&display=swap">
+<style>
+/* Protocolo 義: una ciudad de noche vista desde un terminal.
+   Capas a distinta profundidad, una historia que se arma al bajar y letras que reaccionan al cursor. */
+:root{
+  --noche:#08070E; --panel:#100E1A; --panel2:#171427;
+  --tinta:#ECEAF6; --gris:#8D8AA6; --linea:rgba(236,234,246,.12);
+  --shu:#FF2E4D; --cian:#41F0FF; --ambar:#FFC24B;
+  --f-disp:'Chakra Petch','Arial Narrow',sans-serif;
+  --f-texto:'IBM Plex Sans',system-ui,sans-serif;
+  --f-mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --f-jp:'Noto Serif JP','Hiragino Mincho ProN',serif;
+  --gut:max(20px,env(safe-area-inset-left,0px));
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--noche);overflow-x:clip}
+body{margin:0;background:var(--noche);color:var(--tinta);font-family:var(--f-texto);font-size:17px;line-height:1.6;overflow-x:clip}
+a{color:inherit}
+img{max-width:100%}
+h1,h2,h3,p{margin:0}
+:focus-visible{outline:2px solid var(--cian);outline-offset:4px}
+::selection{background:var(--shu);color:#fff}
+.wrap{max-width:1240px;margin:0 auto;padding-inline:var(--gut)}
+.mono{font-family:var(--f-mono)}
+.kicker{font-family:var(--f-mono);font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--cian)}
+.kicker b{color:var(--shu);font-weight:500}
+
+/* Líneas de barrido y grano: textura de pantalla */
+body::before{content:"";position:fixed;inset:0;z-index:300;pointer-events:none;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 3px);mix-blend-mode:overlay}
+
+/* ===== Navegación ===== */
+.nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:14px var(--gut)}
+.nav-in{max-width:1240px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 12px 10px 16px;border:1px solid var(--linea);background:rgba(8,7,14,.6);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px))}
+.marca{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-disp);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.marca i{font-style:normal;width:32px;height:32px;display:grid;place-items:center;background:var(--shu);font-family:var(--f-jp);font-size:18px;color:#fff;box-shadow:0 0 18px rgba(255,46,77,.6)}
+.links{display:flex;gap:26px;font-family:var(--f-mono);font-size:13px;letter-spacing:.06em;text-transform:uppercase}
+.links a{text-decoration:none;color:var(--gris);transition:color .2s}
+.links a:hover{color:var(--cian)}
+.links a::before{content:"/";color:var(--shu);margin-right:4px}
+@media (max-width:780px){.links{display:none}}
+
+/* Botones con borde que se dibuja */
+.btn{position:relative;display:inline-flex;align-items:center;gap:10px;padding:14px 22px;font-family:var(--f-mono);font-size:14px;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;color:var(--tinta);background:transparent;border:0;cursor:pointer;isolation:isolate}
+.btn svg.borde{position:absolute;inset:0;width:100%;height:100%;overflow:visible;z-index:-1}
+.btn svg.borde rect{fill:none;stroke:var(--linea);stroke-width:1.5}
+.btn svg.borde rect.traza{stroke:var(--cian);stroke-dasharray:var(--per,400);stroke-dashoffset:var(--per,400);transition:stroke-dashoffset .7s cubic-bezier(.2,.8,.2,1)}
+.btn:hover svg.borde rect.traza,.btn:focus-visible svg.borde rect.traza{stroke-dashoffset:0}
+.btn.lleno{background:var(--shu);color:#fff;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:background .25s,box-shadow .25s}
+.btn.lleno:hover{background:#ff4a64;box-shadow:0 0 30px rgba(255,46,77,.55)}
+.btn[aria-disabled="true"]{opacity:.4;pointer-events:none}
+
+/* ===== Hero con capas de profundidad ===== */
+.hero{position:relative;height:100vh;height:100svh;min-height:640px;overflow:hidden;--mx:0;--my:0;--sy:0}
+.capa{position:absolute;inset:-8%;will-change:transform;
+  transform:translate3d(calc(var(--mx) * var(--d) * 1px), calc(var(--my) * var(--d) * 1px + var(--sy) * var(--v) * 1px), 0)}
+.c-suelo{--d:6;--v:.12}
+.c-suelo svg{position:absolute;left:0;right:0;bottom:0;width:100%;height:62%}
+.c-suelo line{stroke:rgba(65,240,255,.22);stroke-width:1}
+.c-suelo .h{stroke:rgba(255,46,77,.25)}
+.c-sol{position:absolute;left:50%;top:30%;width:min(62vw,620px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;
+  background:repeating-linear-gradient(0deg,transparent 0 10px,var(--noche) 10px 14px),radial-gradient(circle at 50% 30%,var(--shu),#7a0f2a 60%,transparent 72%);opacity:.55;filter:blur(.5px)}
+.c-kanji{--d:16;--v:.3}
+.c-kanji span{position:absolute;font-family:var(--f-jp);color:transparent;-webkit-text-stroke:1px rgba(236,234,246,.13);line-height:1;user-select:none}
+.k1{left:6%;top:16%;font-size:22vw}.k2{right:4%;top:6%;font-size:15vw}.k3{right:18%;bottom:6%;font-size:12vw}
+.c-titulo{--d:28;--v:.5;inset:0;display:flex;flex-direction:column;justify-content:center;padding:110px var(--gut) 90px}
+.c-titulo .wrap{width:100%}
+.boot{font-family:var(--f-mono);font-size:13px;color:var(--gris);min-height:5.4em;margin-bottom:20px}
+.boot p{white-space:pre-wrap}
+.boot .ok{color:var(--cian)}
+.mega{font-family:var(--f-disp);font-weight:700;text-transform:uppercase;line-height:.84;letter-spacing:-.01em;font-size:clamp(68px,15.5vw,236px);user-select:none}
+.mega .fila{display:block;white-space:nowrap}
+.mega .l{display:inline-block;transition:color .3s;will-change:transform}
+.mega .fila.b{color:transparent;-webkit-text-stroke:2px var(--tinta)}
+.mega .l.caliente{color:var(--cian);-webkit-text-stroke:0;text-shadow:0 0 22px rgba(65,240,255,.6)}
+.hero-pie{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:24px;margin-top:30px}
+.hero-pie p{max-width:40ch;color:var(--gris);font-size:18px}
+.hero-pie p strong{color:var(--tinta);font-weight:500}
+.acciones{display:flex;flex-wrap:wrap;gap:12px}
+.c-sello{--d:46;--v:.85;inset:auto;right:8%;top:20%;width:clamp(120px,15vw,210px);aspect-ratio:1}
+.sello{width:100%;height:100%;display:grid;place-items:center;background:var(--shu);font-family:var(--f-jp);font-size:clamp(70px,9vw,130px);color:#fff;transform:rotate(-8deg) perspective(600px) rotateX(calc(var(--my) * -14deg)) rotateY(calc(var(--mx) * 18deg));box-shadow:0 0 60px rgba(255,46,77,.55),inset 0 0 0 6px rgba(255,255,255,.12);clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,22px 100%,0 calc(100% - 22px))}
+.bajar{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);font-family:var(--f-mono);font-size:12px;letter-spacing:.2em;color:var(--gris);text-transform:uppercase;display:flex;flex-direction:column;align-items:center;gap:8px;z-index:3}
+.bajar i{width:1px;height:42px;background:linear-gradient(var(--cian),transparent);animation:gota 1.8s ease-in-out infinite;transform-origin:top}
+@keyframes gota{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+@media (max-width:780px){.c-sello{right:6%;top:13%}.hero{min-height:700px}}
+
+/* ===== Cinta ===== */
+.cinta{border-block:1px solid var(--linea);overflow:hidden;background:var(--panel)}
+.cinta-in{display:flex;width:max-content;animation:cinta 40s linear infinite}
+.cinta span{font-family:var(--f-mono);font-size:14px;letter-spacing:.12em;text-transform:uppercase;padding:14px 0;white-space:nowrap;color:var(--gris)}
+.cinta span::after{content:"◇";color:var(--shu);margin:0 22px}
+@keyframes cinta{to{transform:translateX(-50%)}}
+
+/* ===== Scrollytelling: el protocolo ===== */
+.historia{position:relative;padding-top:120px}
+.historia-cab{margin-bottom:60px;display:grid;gap:16px;max-width:760px}
+.historia-cab h2,.sec-cab h2{font-family:var(--f-disp);font-weight:700;text-transform:uppercase;font-size:clamp(42px,6.6vw,96px);line-height:.92}
+.historia-cab h2 em,.sec-cab h2 em{font-style:normal;color:var(--shu)}
+.historia-cuerpo{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px}
+.fijo{position:sticky;top:96px;height:calc(100vh - 130px);min-height:480px;display:flex;flex-direction:column;gap:18px}
+.circuito{flex:1;min-height:0;border:1px solid var(--linea);background:var(--panel);position:relative;overflow:hidden}
+.circuito svg{width:100%;height:100%;display:block}
+.circuito .base{fill:none;stroke:var(--linea);stroke-width:2}
+.circuito .vivo{fill:none;stroke:var(--cian);stroke-width:2.5;filter:drop-shadow(0 0 6px rgba(65,240,255,.8))}
+.circuito .nodo{fill:var(--panel);stroke:var(--gris);stroke-width:2;transition:fill .4s,stroke .4s}
+.circuito .nodo.on{fill:var(--shu);stroke:var(--shu)}
+.circuito text{font-family:var(--f-mono);font-size:13px;fill:var(--gris);transition:fill .4s}
+.circuito text.on{fill:var(--tinta)}
+.terminal{border:1px solid var(--linea);background:#05040A;font-family:var(--f-mono);font-size:13px;min-height:150px}
+.terminal-bar{display:flex;gap:6px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--linea);color:var(--gris);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+.terminal-bar i{width:9px;height:9px;border-radius:50%;background:var(--linea)}
+.terminal-bar i:first-child{background:var(--shu)}
+.terminal-out{padding:12px 14px;display:grid;gap:4px;color:var(--gris)}
+.terminal-out .ok{color:var(--cian)}
+.terminal-out .cursor::after{content:"█";color:var(--shu);animation:parpadeo 1s steps(1) infinite;margin-left:2px}
+@keyframes parpadeo{50%{opacity:0}}
+.capitulos{display:grid;gap:0}
+.capitulo{min-height:78vh;display:flex;flex-direction:column;justify-content:center;gap:16px;padding-block:40px;opacity:.28;transition:opacity .6s}
+.capitulo.activo{opacity:1}
+.capitulo .num{font-family:var(--f-mono);color:var(--shu);font-size:14px;letter-spacing:.14em}
+.capitulo h3{font-family:var(--f-disp);font-weight:700;font-size:clamp(34px,4.4vw,60px);text-transform:uppercase;line-height:.95}
+.capitulo p{color:var(--gris);font-size:18px;max-width:44ch}
+.capitulo ul{list-style:none;margin:0;padding:0;display:grid;gap:8px;font-family:var(--f-mono);font-size:14px}
+.capitulo li::before{content:"→ ";color:var(--cian)}
+@media (max-width:900px){
+  .historia-cuerpo{grid-template-columns:minmax(0,1fr);gap:0}
+  .fijo{top:76px;height:auto;min-height:0;z-index:2;background:var(--noche);padding-block:8px}
+  .circuito{display:none}
+  .capitulo{min-height:62vh}
+}
+
+/* ===== Servicios ===== */
+.sec{padding-block:clamp(90px,12vw,150px)}
+.sec-cab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.7fr);gap:30px;align-items:end;margin-bottom:56px}
+.sec-cab p{color:var(--gris);font-size:18px}
+@media (max-width:860px){.sec-cab{grid-template-columns:minmax(0,1fr)}}
+.modulos{border-top:1px solid var(--linea)}
+.modulo{position:relative;display:grid;grid-template-columns:90px minmax(0,1.1fr) minmax(0,1fr) 40px;gap:24px;align-items:center;padding:30px 8px;border-bottom:1px solid var(--linea);overflow:hidden}
+.modulo::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--shu);transform:scaleY(0);transition:transform .4s}
+.modulo:hover::before{transform:scaleY(1)}
+.modulo .id{font-family:var(--f-mono);font-size:13px;color:var(--gris)}
+.modulo h3{font-family:var(--f-disp);font-weight:700;text-transform:uppercase;font-size:clamp(26px,3.4vw,44px);line-height:1;transition:color .3s,transform .5s cubic-bezier(.2,.8,.2,1)}
+.modulo:hover h3{color:var(--cian);transform:translateX(10px)}
+.modulo p{color:var(--gris)}
+.modulo svg{width:36px;height:36px;color:var(--shu);transition:transform .5s}
+.modulo:hover svg{transform:rotate(90deg)}
+.modulo .linea{position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--cian);transform:scaleX(0);transform-origin:left;transition:transform .8s cubic-bezier(.2,.8,.2,1)}
+.modulo:hover .linea{transform:scaleX(1)}
+@media (max-width:860px){.modulo{grid-template-columns:minmax(0,1fr) 36px;gap:10px}.modulo .id{grid-column:1/-1}.modulo p{grid-column:1/-1}.modulo svg{grid-row:2;grid-column:2}}
+
+/* ===== Proyectos ===== */
+.proyectos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.proy{position:relative;display:flex;flex-direction:column;gap:14px;padding:26px;border:1px solid var(--linea);background:var(--panel);text-decoration:none;min-height:280px;overflow:hidden;transition:border-color .3s,transform .5s cubic-bezier(.2,.8,.2,1)}
+.proy:hover{border-color:var(--shu);transform:translateY(-6px)}
+.proy::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 40%,rgba(65,240,255,.12) 50%,transparent 60%);transform:translateX(-100%);transition:transform .9s}
+.proy:hover::after{transform:translateX(100%)}
+.proy .tipo{font-family:var(--f-mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--cian)}
+.proy h3{font-family:var(--f-disp);font-weight:700;font-size:30px;text-transform:uppercase;line-height:1}
+.proy p{color:var(--gris);font-size:15.5px;flex:1}
+.proy .ir{font-family:var(--f-mono);font-size:13px;color:var(--tinta)}
+.proy .ir::after{content:" ↗";color:var(--shu)}
+@media (max-width:980px){.proyectos{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:620px){.proyectos{grid-template-columns:minmax(0,1fr)}}
+
+/* ===== Laboratorio de seguridad ===== */
+.lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px}
+.caja{border:1px solid var(--linea);background:var(--panel);padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.caja h3{font-family:var(--f-mono);font-weight:500;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--gris)}
+.caja textarea{width:100%;min-height:130px;resize:vertical;background:#05040A;color:var(--ambar);border:1px solid var(--linea);padding:14px;font:14px/1.5 var(--f-mono)}
+.caja textarea:focus{outline:none;border-color:var(--cian)}
+.salida{background:#05040A;border:1px solid var(--linea);padding:14px;font:14px/1.5 var(--f-mono);color:var(--tinta);min-height:64px;white-space:pre-wrap;word-break:break-word}
+.amenazas{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-family:var(--f-mono);font-size:13px}
+.amenazas li{display:flex;gap:10px;align-items:baseline}
+.amenazas .tag{padding:2px 8px;background:rgba(255,46,77,.15);color:var(--shu);border:1px solid rgba(255,46,77,.4);font-size:11px;letter-spacing:.08em;text-transform:uppercase;flex:none}
+.amenazas .limpio{color:var(--cian)}
+.marcador{display:flex;gap:18px;align-items:baseline}
+.marcador b{font-family:var(--f-disp);font-size:56px;line-height:1;color:var(--shu);font-variant-numeric:tabular-nums}
+.marcador span{color:var(--gris);font-size:15px}
+.capas-seg{grid-column:1/-1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--linea);border:1px solid var(--linea)}
+.capas-seg div{background:var(--noche);padding:20px;display:grid;gap:6px}
+.capas-seg b{font-family:var(--f-disp);font-size:20px;text-transform:uppercase}
+.capas-seg span{color:var(--gris);font-size:14.5px}
+@media (max-width:900px){.lab{grid-template-columns:minmax(0,1fr)}.capas-seg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.capas-seg{grid-template-columns:minmax(0,1fr)}}
+
+/* ===== Contacto ===== */
+.contacto{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:48px;align-items:start}
+.contacto-info{display:grid;gap:18px}
+.contacto-info .num{font-family:var(--f-disp);font-weight:700;font-size:clamp(40px,5vw,64px);line-height:1;user-select:all}
+.form{border:1px solid var(--linea);background:var(--panel);padding:clamp(20px,3.5vw,34px);display:grid;gap:18px}
+.campo{display:grid;gap:6px}
+.campo label{font-family:var(--f-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--gris)}
+.campo input,.campo select,.campo textarea{width:100%;background:#05040A;color:var(--tinta);border:1px solid var(--linea);padding:13px 14px;font:16px var(--f-texto)}
+.campo textarea{min-height:110px;resize:vertical}
+.campo input:focus,.campo select:focus,.campo textarea:focus{outline:none;border-color:var(--cian);box-shadow:0 0 0 3px rgba(65,240,255,.12)}
+.campo[data-error] input,.campo[data-error] select,.campo[data-error] textarea{border-color:var(--shu)}
+.campo .err{font-family:var(--f-mono);font-size:12px;color:var(--shu);min-height:1em}
+.cont{font-family:var(--f-mono);font-size:11px;color:var(--gris);text-align:right}
+.dos{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:16px}
+.trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.casilla{display:grid;grid-template-columns:22px minmax(0,1fr);gap:12px;font-size:15px;line-height:1.45;cursor:pointer;color:var(--gris)}
+.casilla input{appearance:none;-webkit-appearance:none;width:22px;height:22px;margin:0;border:1.5px solid var(--gris);background:#05040A;display:grid;place-items:center;cursor:pointer}
+.casilla input::after{content:"";width:10px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translate(1px,-1px) scale(0);transition:transform .2s}
+.casilla input:checked{background:var(--shu);border-color:var(--shu)}
+.casilla input:checked::after{transform:rotate(-45deg) translate(1px,-1px) scale(1)}
+.casilla button{background:none;border:0;padding:0;font:inherit;color:var(--tinta);text-decoration:underline;text-decoration-color:var(--shu);text-underline-offset:3px;cursor:pointer}
+.estado{font-family:var(--f-mono);font-size:13px;min-height:1.3em;color:var(--gris)}
+.estado.mal{color:var(--shu)}.estado.bien{color:var(--cian)}
+.vista{border:1px dashed var(--linea);padding:14px;font:13px/1.55 var(--f-mono);color:var(--gris);white-space:pre-wrap;word-break:break-word;max-height:220px;overflow:auto}
+@media (max-width:900px){.contacto{grid-template-columns:minmax(0,1fr)}}
+
+/* ===== Pie ===== */
+footer{border-top:1px solid var(--linea);padding-block:40px 110px}
+footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;font-family:var(--f-mono);font-size:13px;color:var(--gris)}
+footer button{background:none;border:0;padding:0;font:inherit;color:var(--gris);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+footer button:hover{color:var(--cian)}
+.gigante{font-family:var(--f-disp);font-weight:700;text-transform:uppercase;font-size:clamp(70px,19vw,300px);line-height:.8;text-align:center;color:transparent;-webkit-text-stroke:1px rgba(236,234,246,.18);overflow:hidden;white-space:nowrap;padding-top:40px}
+
+dialog{width:min(720px,calc(100vw - 32px));max-height:86vh;border:1px solid var(--linea);background:var(--panel);color:var(--tinta);padding:0}
+dialog::backdrop{background:rgba(8,7,14,.8);backdrop-filter:blur(4px)}
+.dlg-cab{position:sticky;top:0;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 22px;background:var(--panel2);border-bottom:1px solid var(--linea)}
+.dlg-cab h2{font-family:var(--f-disp);font-size:26px;text-transform:uppercase}
+.dlg-cab button{width:42px;height:42px;border:1px solid var(--linea);background:transparent;color:var(--tinta);cursor:pointer;font-size:18px}
+.dlg-cab button:hover{border-color:var(--shu);color:var(--shu)}
+.dlg-cuerpo{padding:18px 22px 26px;display:grid;gap:10px;color:var(--gris);font-size:15.5px}
+.dlg-cuerpo h3{font-family:var(--f-disp);font-size:20px;text-transform:uppercase;color:var(--tinta);margin-top:10px}
+.dlg-cuerpo ul{margin:0;padding-left:20px}
+
+.fab{position:fixed;right:max(18px,env(safe-area-inset-right,0px));bottom:max(18px,env(safe-area-inset-bottom,0px));z-index:90;width:58px;height:58px;display:grid;place-items:center;background:#25d366;clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));transition:transform .3s}
+.fab:hover{transform:scale(1.08)}
+.fab svg{width:28px;height:28px}
+
+/* Aparición */
+.js .rv{opacity:0;transform:translateY(36px);transition:opacity .9s cubic-bezier(.16,1,.3,1),transform .9s cubic-bezier(.16,1,.3,1)}
+.js .rv.in{opacity:1;transform:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .capa{transform:none!important}
+  .js .rv{opacity:1;transform:none}
+  .capitulo{opacity:1}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav" aria-label="Principal">
+  <div class="nav-in">
+    <a class="marca" href="#inicio"><i aria-hidden="true">義</i>Solanotech</a>
+    <div class="links"><a href="#protocolo">Protocolo</a><a href="#modulos">Servicios</a><a href="#proyectos">Proyectos</a><a href="#seguridad">Seguridad</a><a href="#contacto">Contacto</a></div>
+    <a class="btn lleno" href="#contacto">Cotizar</a>
+  </div>
+</nav>
+
+<main>
+<header class="hero" id="inicio">
+  <div class="capa c-suelo" aria-hidden="true">
+    <div class="c-sol"></div>
+    <svg id="suelo" viewBox="0 0 1200 500" preserveAspectRatio="none"></svg>
+  </div>
+  <div class="capa c-kanji" aria-hidden="true"><span class="k1">義</span><span class="k2">信</span><span class="k3">守</span></div>
+  <div class="capa c-titulo">
+    <div class="wrap">
+      <div class="boot" id="boot" aria-hidden="true"></div>
+      <h1 class="mega" id="mega" aria-label="Solanotech"><span class="fila a">Solano</span><span class="fila b">tech</span></h1>
+      <div class="hero-pie">
+        <p><strong>Software a la medida, páginas web y soporte técnico</strong> hechos en Cartago, Costa Rica. Seguros desde la primera línea de código.</p>
+        <div class="acciones">
+          <a class="btn lleno" href="#contacto">Contanos tu idea</a>
+          <a class="btn trazo" href="#protocolo">Ver el protocolo</a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="capa c-sello" aria-hidden="true"><div class="sello">義</div></div>
+  <div class="bajar" aria-hidden="true"><i></i>Bajá</div>
+</header>
+
+<div class="cinta" aria-hidden="true"><div class="cinta-in"><span>Aplicaciones web</span><span>Sistemas de gestión</span><span>Facturación</span><span>Inventario</span><span>Páginas web</span><span>Menú QR</span><span>Soporte técnico</span><span>Seguridad por diseño</span><span>Aplicaciones web</span><span>Sistemas de gestión</span><span>Facturación</span><span>Inventario</span><span>Páginas web</span><span>Menú QR</span><span>Soporte técnico</span><span>Seguridad por diseño</span></div></div>
+
+<section class="historia wrap" id="protocolo">
+  <div class="historia-cab rv">
+    <span class="kicker"><b>01</b> · Scrollytelling</span>
+    <h2>Del problema<br>a un sistema <em>seguro</em></h2>
+  </div>
+  <div class="historia-cuerpo">
+    <div class="fijo">
+      <div class="circuito" aria-hidden="true">
+        <svg viewBox="0 0 400 520" preserveAspectRatio="xMidYMid meet">
+          <path class="base" d="M60 60 H260 Q320 60 320 120 V180 Q320 220 280 220 H120 Q80 220 80 260 V320 Q80 360 120 360 H280 Q320 360 320 400 V460"/>
+          <path class="vivo" id="trazo" d="M60 60 H260 Q320 60 320 120 V180 Q320 220 280 220 H120 Q80 220 80 260 V320 Q80 360 120 360 H280 Q320 360 320 400 V460"/>
+          <circle class="nodo" cx="60" cy="60" r="11"/><text x="80" y="44">escuchar()</text>
+          <circle class="nodo" cx="320" cy="180" r="11"/><text x="190" y="164">diseñar()</text>
+          <circle class="nodo" cx="80" cy="300" r="11"/><text x="100" y="292">construir()</text>
+          <circle class="nodo" cx="320" cy="460" r="11"/><text x="186" y="490">cuidar()</text>
+        </svg>
+      </div>
+      <div class="terminal" aria-live="polite">
+        <div class="terminal-bar"><i></i><i></i><i></i>&nbsp;protocolo.log</div>
+        <div class="terminal-out" id="terminal"></div>
+      </div>
+    </div>
+    <div class="capitulos">
+      <article class="capitulo" data-paso="0">
+        <span class="num">PASO 01 / 04</span>
+        <h3>Escuchamos el problema</h3>
+        <p>Antes de escribir código entendemos cómo trabaja tu negocio: qué hacés a mano, qué se pierde y qué te quita tiempo.</p>
+        <ul><li>Conversación por WhatsApp o en persona</li><li>Mapa de procesos actuales</li><li>Qué datos se manejan y quién los ve</li></ul>
+      </article>
+      <article class="capitulo" data-paso="1">
+        <span class="num">PASO 02 / 04</span>
+        <h3>Diseñamos con permisos desde el inicio</h3>
+        <p>Cada pantalla se piensa junto con quién puede verla. Roles, accesos y datos sensibles se definen en el plano, no al final.</p>
+        <ul><li>Propuesta con alcance, tiempo y precio</li><li>Roles y permisos por usuario</li><li>Solo los datos que de verdad hacen falta</li></ul>
+      </article>
+      <article class="capitulo" data-paso="2">
+        <span class="num">PASO 03 / 04</span>
+        <h3>Construimos seguro</h3>
+        <p>Validamos todo lo que entra, escapamos todo lo que sale y no confiamos en el navegador. Te mostramos avances para que opinés.</p>
+        <ul><li>Entradas validadas y limpiadas</li><li>Conexiones cifradas</li><li>Contraseñas nunca guardadas en texto plano</li></ul>
+      </article>
+      <article class="capitulo" data-paso="3">
+        <span class="num">PASO 04 / 04</span>
+        <h3>Entregamos y cuidamos</h3>
+        <p>Publicamos en tu dominio, te capacitamos y seguimos al lado con respaldos, actualizaciones y soporte.</p>
+        <ul><li>Capacitación para tu equipo</li><li>Respaldos y actualizaciones</li><li>Soporte directo, sin intermediarios</li></ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="sec wrap" id="modulos">
+  <div class="sec-cab">
+    <div class="rv"><span class="kicker"><b>02</b> · Módulos</span><h2>Lo que <em>hacemos</em></h2></div>
+    <p class="rv">Nada de plantillas genéricas. Construimos lo que tu operación necesita y lo dejamos funcionando.</p>
+  </div>
+  <div class="modulos">
+    <div class="modulo rv"><span class="id">mod.01</span><h3 data-scramble>Aplicaciones web</h3><p>Clientes, facturas, inventario y proveedores en un solo sistema, desde la compu o el celular.</p><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="linea"></span></div>
+    <div class="modulo rv"><span class="id">mod.02</span><h3 data-scramble>Páginas web</h3><p>Sitios con tu dominio, WhatsApp y cotizadores que llegan directo a tu celular.</p><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="linea"></span></div>
+    <div class="modulo rv"><span class="id">mod.03</span><h3 data-scramble>Menú digital QR</h3><p>Tu menú con fotos y precios, actualizable al instante, con pago único.</p><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="linea"></span></div>
+    <div class="modulo rv"><span class="id">mod.04</span><h3 data-scramble>Control de asistencia</h3><p>Marcas de entrada y salida y horas trabajadas según el Código de Trabajo.</p><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="linea"></span></div>
+    <div class="modulo rv"><span class="id">mod.05</span><h3 data-scramble>Soporte técnico</h3><p>Diagnóstico, limpieza, formateo, virus, mejoras de RAM y SSD, redes e impresoras.</p><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="linea"></span></div>
+  </div>
+</section>
+
+<section class="sec wrap" id="proyectos">
+  <div class="sec-cab">
+    <div class="rv"><span class="kicker"><b>03</b> · En producción</span><h2>Proyectos <em>en línea</em></h2></div>
+    <p class="rv">Sistemas y páginas que hoy usan negocios reales de Costa Rica.</p>
+  </div>
+  <div class="proyectos">
+    <a class="proy rv" href="https://gruas247mario.com/" target="_blank" rel="noopener noreferrer"><span class="tipo">Página web</span><h3>Grúas Mario 24/7</h3><p>Grúa de plataforma con cotizador que manda la ubicación del cliente por WhatsApp.</p><span class="ir">Visitar</span></a>
+    <a class="proy rv" href="https://gruadieca.com/" target="_blank" rel="noopener noreferrer"><span class="tipo">Página web</span><h3>Grúas Dieca S.A.</h3><p>Grúa telescópica y transporte pesado, con cotizador detallado y galería de obras.</p><span class="ir">Visitar</span></a>
+    <a class="proy rv" href="https://adrianasolanobonos.com/" target="_blank" rel="noopener noreferrer"><span class="tipo">Página web</span><h3>Adriana Solano · Bonos</h3><p>Asesoría en bonos de vivienda, con requisitos, montos y solicitud por WhatsApp.</p><span class="ir">Visitar</span></a>
+    <div class="proy rv"><span class="tipo">Sistema de gestión</span><h3>MecaFusion J&amp;M</h3><p>Taller de mecánica pesada: dashboard con IVA, facturas, asistencia y proveedores.</p><span class="ir">Uso interno</span></div>
+    <a class="proy rv" href="https://comfy-lamington-a5198b.netlify.app/" target="_blank" rel="noopener noreferrer"><span class="tipo">Restaurantes</span><h3>Menú Premium</h3><p>Menú digital con aparador 3D, promociones y panel del dueño.</p><span class="ir">Ver demo</span></a>
+    <a class="proy rv" href="https://fantastic-eclair-68ed5a.netlify.app/" target="_blank" rel="noopener noreferrer"><span class="tipo">Restaurantes</span><h3>Club de clientes</h3><p>Tarjeta de sellos digital: 10 visitas, comida gratis, y reseñas en Google.</p><span class="ir">Ver demo</span></a>
+  </div>
+</section>
+
+<section class="sec wrap" id="seguridad">
+  <div class="sec-cab">
+    <div class="rv"><span class="kicker"><b>04</b> · Seguridad por diseño</span><h2>Probá <em>romperlo</em></h2></div>
+    <p class="rv">Escribí código malicioso en la caja. Esta misma página lo trata como texto y nunca lo ejecuta. Así protegemos cada formulario que hacemos.</p>
+  </div>
+  <div class="lab">
+    <div class="caja rv">
+      <h3><label for="labEntrada">Entrada sin confianza</label></h3>
+      <textarea id="labEntrada" spellcheck="false" maxlength="600"></textarea>
+      <div class="marcador"><b id="labCuenta">0</b><span>amenazas detectadas y neutralizadas</span></div>
+    </div>
+    <div class="caja rv">
+      <h3>Lo que la página muestra</h3>
+      <div class="salida" id="labSalida" aria-live="polite"></div>
+      <ul class="amenazas" id="labLista"></ul>
+    </div>
+    <div class="capas-seg rv">
+      <div><b>CSP estricta</b><span>La página solo ejecuta su propio código. Cualquier script inyectado se bloquea.</span></div>
+      <div><b>Cero innerHTML</b><span>Lo que escribe el usuario se pinta como texto, nunca como HTML.</span></div>
+      <div><b>Limpieza de entradas</b><span>Se quitan caracteres de control, invisibles y de dirección, y se limita el largo.</span></div>
+      <div><b>Sin terceros</b><span>No hay rastreadores ni scripts externos. Solo tipografías.</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec wrap" id="contacto">
+  <div class="sec-cab">
+    <div class="rv"><span class="kicker"><b>05</b> · Contacto</span><h2>Contanos <em>tu idea</em></h2></div>
+  </div>
+  <div class="contacto">
+    <div class="contacto-info rv">
+      <p class="kicker">WhatsApp directo</p>
+      <p class="num">8933-0326</p>
+      <p class="mono">San Rafael de Oreamuno, Cartago</p>
+      <p>El formulario arma tu mensaje en tu propio navegador. No se guarda en ningún servidor: vos decidís si lo enviás por WhatsApp.</p>
+    </div>
+    <form class="form rv" id="form" novalidate autocomplete="on">
+      <div class="dos">
+        <div class="campo"><label for="fNombre">Nombre</label><input id="fNombre" name="nombre" autocomplete="name" maxlength="60" required><span class="err" id="eNombre"></span></div>
+        <div class="campo"><label for="fTel">Teléfono</label><input id="fTel" name="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="8888-8888" required><span class="err" id="eTel"></span></div>
+      </div>
+      <div class="campo"><label for="fServicio">¿Qué necesitás?</label>
+        <select id="fServicio" name="servicio"><option>Aplicación web o sistema</option><option>Página web</option><option>Menú digital QR</option><option>Control de asistencia</option><option>Soporte técnico</option><option>Otro</option></select>
+      </div>
+      <div class="campo"><label for="fMensaje">Contanos un poco más</label><textarea id="fMensaje" name="mensaje" maxlength="800" required></textarea><span class="cont" id="cMensaje">0 / 800</span><span class="err" id="eMensaje"></span></div>
+      <div class="trampa" aria-hidden="true"><label for="fWeb">No llenar</label><input id="fWeb" name="web" tabindex="-1" autocomplete="off"></div>
+      <label class="casilla" for="okTerminos"><input type="checkbox" id="okTerminos"><span>Acepto los <button type="button" data-dlg="dlgTerminos">términos del servicio</button>.</span></label>
+      <label class="casilla" for="okDatos"><input type="checkbox" id="okDatos"><span>Autorizo el uso de mis datos para responder esta consulta, según la <button type="button" data-dlg="dlgPrivacidad">política de privacidad</button> (Ley 8968).</span></label>
+      <div class="vista" id="vista" aria-label="Vista previa del mensaje"></div>
+      <button class="btn lleno" type="submit" id="enviar">Enviar por WhatsApp</button>
+      <p class="estado" id="estado" role="status"></p>
+    </form>
+  </div>
+</section>
+</main>
+
+<div class="gigante" aria-hidden="true">Solanotech</div>
+<footer>
+  <div class="wrap">
+    <span>© <span id="anio">2026</span> Solanotech · Cartago, Costa Rica</span>
+    <span><button type="button" data-dlg="dlgTerminos">Términos</button> · <button type="button" data-dlg="dlgPrivacidad">Privacidad y seguridad</button> · Sin cookies</span>
+  </div>
+</footer>
+
+<a class="fab" href="https://wa.me/50689330326" target="_blank" rel="noopener noreferrer" aria-label="Escribir por WhatsApp"><svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.2c0-.1-.2-.2-.4-.3z"/></svg></a>
+
+<dialog id="dlgTerminos" aria-labelledby="tTerminos">
+  <div class="dlg-cab"><h2 id="tTerminos">Términos del servicio</h2><button type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div class="dlg-cuerpo">
+    <p>Este sitio pertenece a Solanotech, de San Rafael de Oreamuno, Cartago. Contacto: WhatsApp 8933-0326.</p>
+    <h3>Cotizaciones</h3>
+    <p>Enviar una consulta no crea un contrato. Cada proyecto se cotiza por escrito con alcance, tiempo de entrega, precio y forma de pago antes de empezar.</p>
+    <h3>Pagos</h3>
+    <p>Normalmente se trabaja con un adelanto al iniciar y el resto a la entrega, según lo acordado en la propuesta.</p>
+    <h3>Contenido</h3>
+    <p>Textos, diseño y logotipos del sitio pertenecen a Solanotech. Las marcas de los proyectos pertenecen a sus dueños.</p>
+    <h3>Ley aplicable</h3>
+    <p>Estos términos se rigen por las leyes de Costa Rica, incluida la Ley 7472 de Defensa Efectiva del Consumidor.</p>
+  </div>
+</dialog>
+<dialog id="dlgPrivacidad" aria-labelledby="tPrivacidad">
+  <div class="dlg-cab"><h2 id="tPrivacidad">Privacidad y seguridad</h2><button type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div class="dlg-cuerpo">
+    <p>Tratamos tus datos según la Ley 8968 de Protección de la Persona frente al Tratamiento de sus Datos Personales.</p>
+    <h3>Qué datos y para qué</h3>
+    <p>Nombre, teléfono y lo que escribás en el mensaje, solo para responder tu consulta y darte seguimiento. No los vendemos ni los usamos para publicidad.</p>
+    <h3>Dónde viajan</h3>
+    <ul><li>El formulario no envía nada a ningún servidor: arma el texto en tu navegador.</li><li>Si lo enviás, viaja por WhatsApp (Meta Platforms), con su propia política.</li><li>Las tipografías se cargan desde Google Fonts, que recibe tu dirección IP.</li></ul>
+    <h3>Seguridad de esta página</h3>
+    <ul><li>Política de seguridad de contenido (CSP) que solo permite el código propio del sitio.</li><li>Las entradas se limpian y se muestran como texto, nunca como código.</li><li>Sin cookies, sin rastreadores y sin scripts de terceros.</li></ul>
+    <h3>Tus derechos</h3>
+    <p>Podés pedir acceso, corrección o eliminación de tus datos al 8933-0326. También podés acudir a la PRODHAB.</p>
+  </div>
+</dialog>
+
+<script>
+(function(){
+  'use strict';
+  var doc = document, root = doc.documentElement;
+  var QUIETO = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var FINO = matchMedia('(pointer: fine)').matches;
+  var $ = function(id){ return doc.getElementById(id); };
+  root.classList.add('js');
+  $('anio').textContent = String(new Date().getFullYear());
+
+  /* ============ SEGURIDAD: utilidades ============
+     Todo lo que viene del usuario pasa por limpiar() y se pinta solo con textContent. */
+  var CONTROL = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u2064\u2066-\u2069\uFEFF]/g;
+  function limpiar(valor, max){
+    return String(valor == null ? '' : valor).normalize('NFKC').replace(CONTROL, '').replace(/[<>]/g, '').replace(/[ \t]{2,}/g, ' ').trim().slice(0, max);
+  }
+  var REGLAS = [
+    { nombre: 'Etiqueta <script>', re: /<\s*\/?\s*script\b/i },
+    { nombre: 'Evento en atributo (on…=)', re: /\bon[a-z]+\s*=/i },
+    { nombre: 'Enlace javascript:', re: /j\s*a\s*v\s*a\s*s\s*c\s*r\s*i\s*p\s*t\s*:/i },
+    { nombre: 'Etiqueta HTML', re: /<\s*[a-z!\/]/i },
+    { nombre: 'iframe u objeto incrustado', re: /<\s*(iframe|object|embed)\b/i },
+    { nombre: 'URL data: o vbscript:', re: /\b(data|vbscript)\s*:/i },
+    { nombre: 'Carácter invisible o de dirección', re: CONTROL },
+    { nombre: 'Patrón de inyección SQL', re: /('|")\s*(or|and)\s+\d+\s*=\s*\d+|;\s*drop\s+table|union\s+select/i }
+  ];
+  function amenazas(texto){
+    var out = [];
+    for (var i = 0; i < REGLAS.length; i++){ REGLAS[i].re.lastIndex = 0; if (REGLAS[i].re.test(texto)) out.push(REGLAS[i].nombre); }
+    CONTROL.lastIndex = 0;
+    return out;
+  }
+  function el(tag, clase, texto){
+    var n = doc.createElement(tag);
+    if (clase) n.className = clase;
+    if (texto != null) n.textContent = texto;
+    return n;
+  }
+  function vaciar(n){ while (n.firstChild) n.removeChild(n.firstChild); }
+
+  /* ============ HERO: arranque tipo terminal ============ */
+  var boot = $('boot');
+  var LINEAS = ['> iniciando protocolo 義 …', '> verificando política de seguridad … ok', '> cargando módulos: web · sistemas · soporte … ok'];
+  function escribir(i){
+    if (i >= LINEAS.length) return;
+    var p = el('p', i === LINEAS.length - 1 ? 'ok' : null, '');
+    boot.appendChild(p);
+    var t = LINEAS[i], k = 0;
+    (function paso(){
+      p.textContent = t.slice(0, ++k);
+      if (k < t.length) setTimeout(paso, QUIETO ? 0 : 14); else setTimeout(function(){ escribir(i + 1); }, QUIETO ? 0 : 160);
+    })();
+  }
+  escribir(0);
+
+  /* Suelo en perspectiva hecho con líneas */
+  var NS = 'http://www.w3.org/2000/svg', suelo = $('suelo');
+  for (var c = -12; c <= 12; c++){
+    var l = doc.createElementNS(NS, 'line');
+    l.setAttribute('x1', String(600 + c * 18)); l.setAttribute('y1', '0');
+    l.setAttribute('x2', String(600 + c * 140)); l.setAttribute('y2', '500');
+    suelo.appendChild(l);
+  }
+  for (var f = 1; f <= 12; f++){
+    var y = Math.pow(f / 12, 2.2) * 500, h = doc.createElementNS(NS, 'line');
+    h.setAttribute('class', 'h'); h.setAttribute('x1', '0'); h.setAttribute('x2', '1200');
+    h.setAttribute('y1', y.toFixed(1)); h.setAttribute('y2', y.toFixed(1));
+    suelo.appendChild(h);
+  }
+
+  /* Letras sueltas para que reaccionen al cursor */
+  var mega = $('mega'), letras = [];
+  Array.prototype.forEach.call(mega.querySelectorAll('.fila'), function(fila){
+    var texto = fila.textContent; vaciar(fila);
+    for (var i = 0; i < texto.length; i++){
+      var s = el('span', 'l', texto[i]); s.setAttribute('aria-hidden', 'true');
+      fila.appendChild(s); letras.push(s);
+    }
+  });
+
+  /* Parallax: cursor y scroll, con suavizado */
+  var hero = $('inicio'), mx = 0, my = 0, tx = 0, ty = 0, px = -9999, py = -9999;
+  if (FINO && !QUIETO){
+    addEventListener('pointermove', function(e){
+      tx = e.clientX / innerWidth - .5; ty = e.clientY / innerHeight - .5;
+      px = e.clientX; py = e.clientY;
+    }, { passive: true });
+  }
+  function cuadro(){
+    mx += (tx - mx) * .07; my += (ty - my) * .07;
+    hero.style.setProperty('--mx', mx.toFixed(4));
+    hero.style.setProperty('--my', my.toFixed(4));
+    var sy = Math.min(scrollY, innerHeight * 1.2);
+    hero.style.setProperty('--sy', sy.toFixed(1));
+    if (FINO && sy < innerHeight){
+      for (var i = 0; i < letras.length; i++){
+        var r = letras[i].getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+        var dx = cx - px, dy = cy - py, d = Math.sqrt(dx * dx + dy * dy), fuerza = Math.max(0, 1 - d / 220);
+        letras[i].style.transform = fuerza ? 'translate(' + (dx / (d || 1) * fuerza * 26).toFixed(1) + 'px,' + (dy / (d || 1) * fuerza * 26).toFixed(1) + 'px) rotate(' + (dx / (d || 1) * fuerza * 8).toFixed(1) + 'deg)' : '';
+        letras[i].classList.toggle('caliente', fuerza > .35);
+      }
+    }
+    requestAnimationFrame(cuadro);
+  }
+  if (!QUIETO) requestAnimationFrame(cuadro);
+
+  /* Bordes de botones que se dibujan */
+  Array.prototype.forEach.call(doc.querySelectorAll('.btn.trazo'), function(b){
+    var svg = doc.createElementNS(NS, 'svg'); svg.setAttribute('class', 'borde'); svg.setAttribute('aria-hidden', 'true');
+    var r1 = doc.createElementNS(NS, 'rect'), r2 = doc.createElementNS(NS, 'rect');
+    [r1, r2].forEach(function(r){ r.setAttribute('x', '0'); r.setAttribute('y', '0'); r.setAttribute('width', '100%'); r.setAttribute('height', '100%'); svg.appendChild(r); });
+    r2.setAttribute('class', 'traza');
+    b.insertBefore(svg, b.firstChild);
+    requestAnimationFrame(function(){ var bb = b.getBoundingClientRect(); b.style.setProperty('--per', String(Math.ceil(2 * (bb.width + bb.height)))); });
+  });
+
+  /* ============ SCROLLYTELLING ============ */
+  var trazo = $('trazo'), largo = trazo.getTotalLength();
+  trazo.style.strokeDasharray = String(largo); trazo.style.strokeDashoffset = String(largo);
+  var nodos = doc.querySelectorAll('.circuito .nodo'), etiquetas = doc.querySelectorAll('.circuito text');
+  var capitulos = doc.querySelectorAll('.capitulo'), cuerpo = doc.querySelector('.historia-cuerpo');
+  var LOG = [
+    ['$ escuchar --negocio', 'procesos a mano detectados', 'datos sensibles: identificados', 'ok · diagnóstico listo'],
+    ['$ diseñar --roles --minimo-necesario', 'roles: dueño, cajero, mecánico', 'acceso por permiso: activado', 'ok · plano aprobado'],
+    ['$ construir --validar --escapar', 'entradas: validadas y limpiadas', 'salida: escapada (sin innerHTML)', 'ok · 0 vulnerabilidades conocidas'],
+    ['$ cuidar --respaldos --soporte', 'respaldo programado', 'capacitación: completada', 'ok · sistema en línea']
+  ];
+  var term = $('terminal'), pasoActual = -1;
+  function mostrarLog(i){
+    vaciar(term);
+    LOG[i].forEach(function(t, k){
+      var p = el('p', k === LOG[i].length - 1 ? 'ok cursor' : null, t);
+      if (!QUIETO){ p.style.opacity = '0'; setTimeout(function(){ p.style.opacity = '1'; }, 120 * k); }
+      term.appendChild(p);
+    });
+  }
+  function historia(){
+    var r = cuerpo.getBoundingClientRect(), total = r.height - innerHeight * .6;
+    var prog = Math.min(1, Math.max(0, (innerHeight * .45 - r.top) / total));
+    trazo.style.strokeDashoffset = String(largo * (1 - prog));
+    var activo = 0;
+    for (var i = 0; i < capitulos.length; i++){
+      var cr = capitulos[i].getBoundingClientRect();
+      if (cr.top < innerHeight * .55) activo = i;
+    }
+    for (var j = 0; j < capitulos.length; j++){
+      capitulos[j].classList.toggle('activo', j === activo);
+      nodos[j].classList.toggle('on', j <= activo && prog > 0);
+      etiquetas[j].classList.toggle('on', j <= activo && prog > 0);
+    }
+    if (activo !== pasoActual){ pasoActual = activo; mostrarLog(activo); }
+  }
+  addEventListener('scroll', historia, { passive: true });
+  addEventListener('resize', historia);
+  historia();
+
+  /* ============ Texto que se revuelve al pasar el mouse ============ */
+  var GLIFOS = '義信守01#<>/\\_-=+*ABCDEFGHJKLMNPQRSTUVWXYZ';
+  Array.prototype.forEach.call(doc.querySelectorAll('[data-scramble]'), function(h){
+    var original = h.textContent, corriendo = false;
+    h.closest('.modulo').addEventListener('pointerenter', function(){
+      if (corriendo || QUIETO) return; corriendo = true;
+      var t = 0;
+      (function paso(){
+        var s = '';
+        for (var i = 0; i < original.length; i++){
+          s += original[i] === ' ' || i < t ? original[i] : GLIFOS[(Math.random() * GLIFOS.length) | 0];
+        }
+        h.textContent = s; t += .6;
+        if (t <= original.length) requestAnimationFrame(paso); else { h.textContent = original; corriendo = false; }
+      })();
+    });
+  });
+
+  /* ============ Aparición al bajar ============ */
+  var io = new IntersectionObserver(function(es){ es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: .12 });
+  Array.prototype.forEach.call(doc.querySelectorAll('.rv'), function(n, i){ n.style.transitionDelay = ((i % 3) * 80) + 'ms'; io.observe(n); });
+
+  /* ============ LABORATORIO XSS ============ */
+  var labIn = $('labEntrada'), labOut = $('labSalida'), labLista = $('labLista'), labCuenta = $('labCuenta');
+  labIn.value = '<img src=x onerror="alert(\'te hackeé\')">\n<script>robar(document.cookie)<\/script>\n\' OR 1=1 --';
+  function laboratorio(){
+    var crudo = labIn.value.slice(0, 600);
+    labOut.textContent = crudo;               /* se muestra tal cual, como texto: nunca se ejecuta */
+    var encontradas = amenazas(crudo);
+    vaciar(labLista);
+    if (!encontradas.length){ labLista.appendChild(el('li', 'limpio', '✓ Sin patrones peligrosos.')); }
+    encontradas.forEach(function(n){ var li = el('li'); li.appendChild(el('span', 'tag', 'bloqueado')); li.appendChild(doc.createTextNode(n)); labLista.appendChild(li); });
+    labLista.appendChild(el('li', null, 'Guardado como: ' + (limpiar(crudo, 120) || '(vacío)')));
+    labCuenta.textContent = String(encontradas.length);
+  }
+  labIn.addEventListener('input', laboratorio);
+  laboratorio();
+
+  /* ============ FORMULARIO SEGURO ============ */
+  var form = $('form'), vista = $('vista'), estado = $('estado'), enviar = $('enviar');
+  var NOMBRE_OK = /^[\p{L}\p{M}][\p{L}\p{M} .'’-]{1,59}$/u;
+  var inicio = Date.now(), ultimoEnvio = 0;
+  function datos(){
+    return {
+      nombre: limpiar($('fNombre').value, 60),
+      tel: limpiar($('fTel').value, 16).replace(/[^\d+]/g, ''),
+      servicio: limpiar($('fServicio').value, 40),
+      mensaje: limpiar($('fMensaje').value, 800)
+    };
+  }
+  var SERVICIOS = Array.prototype.map.call($('fServicio').options, function(o){ return o.text; });
+  function validar(d){
+    var errores = {};
+    if (!NOMBRE_OK.test(d.nombre)) errores.Nombre = 'Escribí tu nombre (solo letras).';
+    var dig = d.tel.replace(/^\+?506/, '');
+    if (!/^[2-8]\d{7}$/.test(dig)) errores.Tel = 'Ingresá un teléfono de Costa Rica de 8 dígitos.';
+    if (d.mensaje.length < 10) errores.Mensaje = 'Contanos un poco más (mínimo 10 caracteres).';
+    if (SERVICIOS.indexOf(d.servicio) === -1) errores.Servicio = 'Elegí un servicio de la lista.';
+    return errores;
+  }
+  function mensaje(d){
+    return 'Hola Solanotech, quiero cotizar.\n\n*Nombre:* ' + d.nombre + '\n*Teléfono:* ' + d.tel + '\n*Servicio:* ' + d.servicio + '\n\n' + d.mensaje +
+      '\n\nAcepté los términos y autoricé el uso de mis datos para esta consulta.';
+  }
+  function refrescar(){
+    var d = datos();
+    vista.textContent = mensaje(d);
+    $('cMensaje').textContent = $('fMensaje').value.length + ' / 800';
+  }
+  ['fNombre', 'fTel', 'fServicio', 'fMensaje'].forEach(function(id){
+    $(id).addEventListener('input', function(){
+      var campo = $(id).closest('.campo'); campo.removeAttribute('data-error');
+      var e = campo.querySelector('.err'); if (e) e.textContent = '';
+      refrescar();
+    });
+  });
+  refrescar();
+  form.addEventListener('submit', function(ev){
+    ev.preventDefault();
+    estado.className = 'estado';
+    if ($('fWeb').value) return;                                   /* trampa para bots */
+    if (Date.now() - inicio < 3000){ estado.className = 'estado mal'; estado.textContent = 'Muy rápido. Revisá tus datos y volvé a enviar.'; return; }
+    if (Date.now() - ultimoEnvio < 30000){ estado.className = 'estado mal'; estado.textContent = 'Ya abrimos WhatsApp. Esperá unos segundos para enviar otra vez.'; return; }
+    var d = datos(), errores = validar(d);
+    ['Nombre', 'Tel', 'Mensaje'].forEach(function(k){
+      var e = $('e' + k), campo = e.closest('.campo');
+      if (errores[k]){ campo.setAttribute('data-error', ''); e.textContent = errores[k]; } else { campo.removeAttribute('data-error'); e.textContent = ''; }
+    });
+    var faltan = [];
+    if (!$('okTerminos').checked) faltan.push('aceptar los términos');
+    if (!$('okDatos').checked) faltan.push('autorizar el uso de tus datos');
+    if (Object.keys(errores).length || faltan.length){
+      estado.className = 'estado mal';
+      estado.textContent = Object.keys(errores).length ? 'Revisá los campos marcados.' + (faltan.length ? ' También falta ' + faltan.join(' y ') + '.' : '') : 'Falta ' + faltan.join(' y ') + '.';
+      var primero = form.querySelector('[data-error] input, [data-error] textarea') || (!$('okTerminos').checked ? $('okTerminos') : $('okDatos'));
+      if (primero) primero.focus();
+      return;
+    }
+    var url = 'https://wa.me/50689330326?text=' + encodeURIComponent(mensaje(d));
+    ultimoEnvio = Date.now();
+    var w = window.open(url, '_blank');        /* con 'noopener' el navegador devuelve null siempre */
+    if (w) w.opener = null; else location.assign(url);
+    estado.className = 'estado bien';
+    estado.textContent = 'Listo: se abrió WhatsApp con tu mensaje. Solo tocá Enviar.';
+  });
+
+  /* ============ Diálogos ============ */
+  Array.prototype.forEach.call(doc.querySelectorAll('[data-dlg]'), function(b){
+    b.addEventListener('click', function(e){ e.preventDefault(); var d = $(b.getAttribute('data-dlg')); if (d && d.showModal){ d.showModal(); d.scrollTop = 0; } });
+  });
+  Array.prototype.forEach.call(doc.querySelectorAll('dialog'), function(d){
+    d.querySelector('[data-cerrar]').addEventListener('click', function(){ d.close(); });
+    d.addEventListener('click', function(e){ if (e.target === d) d.close(); });
+  });
+})();
+</script>
+</body>
+</html>
