@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gruas247mario.com/sitemap.xml
