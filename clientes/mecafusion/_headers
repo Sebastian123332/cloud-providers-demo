@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-oVulzREZ6quBSZay2URadUlGlIApel9YDJ4xCJuqzSE='; style-src 'sha256-UXx8mzYRJhlzOYib+CxTOs44Gp6WV/R4obWMsIDyeH4=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-oVulzREZ6quBSZay2URadUlGlIApel9YDJ4xCJuqzSE='; style-src 'sha256-6hnZlzuj3L2hf6ggsfHq30PbuJdWVql4ZBVbemr5X5E=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests; frame-ancestors 'none'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

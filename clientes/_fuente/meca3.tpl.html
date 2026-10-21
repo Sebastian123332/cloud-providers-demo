@@ -297,6 +297,8 @@ dialog.visor::backdrop{background:rgba(5,5,8,.92);backdrop-filter:blur(8px)}
 .dueno-foto::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,var(--bg3))}
 .dueno-logo{position:absolute;right:20px;bottom:-30px;z-index:2;width:86px;height:86px;border-radius:50%;box-shadow:0 0 0 4px var(--bg3),0 0 40px -6px rgba(124,58,237,.9)}
 .dueno-in{padding:6px 26px 26px}
+.mision{margin:20px 0 4px;padding:16px 18px;border-left:2px solid var(--purple3);border-radius:0 14px 14px 0;background:rgba(124,58,237,.08);color:#d6d3e4;font-size:.95rem;line-height:1.6;font-style:italic}
+.mision span{display:block;font-style:normal;font-family:var(--f-mono);font-size:.6rem;letter-spacing:.18em;text-transform:uppercase;color:var(--purple3);margin-bottom:6px}
 .dueno li a,.dueno li em{color:var(--fg);font-style:normal;font-weight:600;text-decoration:none}
 .dueno li a:hover{color:var(--purple3)}
 .mono{width:120px;height:120px;border-radius:50%;box-shadow:0 0 0 5px var(--bg3),0 0 0 6px var(--line2),0 0 50px -10px rgba(124,58,237,.8)}
@@ -545,8 +547,8 @@ __SCRIPT__
         <a href="#servicios" class="btn btn-borde iman">Ver servicios</a>
       </div>
       <div class="cifras aparece d3">
-        <div class="cifra"><b><span data-contar="10">10</span><i>+</i></b><span>Años de experiencia</span></div>
-        <div class="cifra"><b><span data-contar="400">400</span><i>+</i></b><span>Trabajos realizados</span></div>
+        <div class="cifra"><b><span data-contar="25">25</span><i>+</i></b><span>Años de experiencia</span></div>
+        <div class="cifra"><b><span data-contar="1000">1000</span><i>+</i></b><span>Trabajos realizados</span></div>
         <div class="cifra"><b><span data-contar="100">100</span><i>%</i></b><span>Garantizado</span></div>
       </div>
     </div>
@@ -651,7 +653,7 @@ __SCRIPT__
       <button type="button" class="obra rv" data-titulo="Motor listo para montar"><img src="{{F:motor2}}" alt="Motor rojo colgando frente al compartimiento del motor abierto" loading="lazy"><figcaption><div><small>Mecánica</small><b>Motor al chasis</b></div><span class="mas" aria-hidden="true">+</span></figcaption></button>
       <button type="button" class="obra rv" data-titulo="Furgón en reparación"><img src="{{F:furgon}}" alt="Puerta trasera de un furgón levantada con grúa en el taller" loading="lazy"><figcaption><div><small>Furgones</small><b>Furgón</b></div><span class="mas" aria-hidden="true">+</span></figcaption></button>
       <button type="button" class="obra o-f rv" data-titulo="Cisterna terminada"><img src="{{F:cisterna1}}" alt="Cabezal Freightliner blanco con cisterna roja, amarilla y negra" loading="lazy"><figcaption><div><small>Trabajo terminado</small><b>Cabezal con cisterna</b></div><span class="mas" aria-hidden="true">+</span></figcaption></button>
-      <div class="dato-obra rv"><b><span data-contar="400">400</span>+</b><span>trabajos entregados en camiones, carretas, lowboy, furgones y maquinaria.</span><a href="#contacto">Hablemos →</a></div>
+      <div class="dato-obra rv"><b><span data-contar="1000">1000</span>+</b><span>trabajos entregados en camiones, carretas, lowboy, furgones y maquinaria.</span><a href="#contacto">Hablemos →</a></div>
     </div>
   </div>
 </section>
@@ -687,7 +689,7 @@ __SCRIPT__
         <div class="etiqueta rv">Quiénes somos</div>
         <p class="cita" id="cita">“Tu maquinaria en buenas manos” no es solo un eslogan: es nuestro compromiso diario en Taras, Cartago.</p>
         <div class="nos-txt rv">
-          <p>MecaFusion J&amp;M es un taller de mecánica pesada dirigido por Jonatan Molina Araya, con años de experiencia en camiones, equipo de carga, maquinaria de construcción y equipo industrial.</p>
+          <p>MecaFusion J&amp;M es un taller de mecánica pesada dirigido por Jonatan Molina Araya, con más de 25 años de experiencia nacional e internacional en camiones, equipo de carga, maquinaria de construcción y equipo industrial.</p>
           <p>Trabajamos con transparencia: diagnóstico honesto, presupuesto claro antes de arrancar y garantía en cada trabajo. Su tiempo vale, por eso actuamos rápido.</p>
         </div>
       </div>
@@ -699,18 +701,19 @@ __SCRIPT__
         <div class="dueno-in">
           <h3>Jonatan Molina Araya</h3>
           <small>Dueño · Mecánica y soldadura</small>
+          <blockquote class="mision"><span>Nuestra misión</span>“Brindar a nuestros clientes un trabajo eficiente, responsable y seguro, satisfaciendo sus necesidades y expectativas en el mejor tiempo posible, con más de 25 años de experiencia internacional y nacional.”</blockquote>
           <ul>
             <li>Teléfono<a href="tel:+50685957526">8595-7526</a></li>
             <li>Ubicación<em>Taras, Cartago</em></li>
-            <li>Años de experiencia<b><span data-contar="10">10</span>+</b></li>
-            <li>Trabajos realizados<b><span data-contar="400">400</span>+</b></li>
+            <li>Años de experiencia<b><span data-contar="25">25</span>+</b></li>
+            <li>Trabajos realizados<b><span data-contar="1000">1000</span>+</b></li>
           </ul>
           <a href="https://wa.me/50685957526?text=Hola%2C%20quiero%20una%20consulta%20sin%20costo" target="_blank" rel="noopener noreferrer" class="btn btn-morado">Consulta sin costo →</a>
         </div>
       </aside>
     </div>
     <div class="pilares">
-      <div class="pilar foco rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg><b>Experiencia comprobada</b><span>Más de una década en mecánica pesada en Cartago.</span></div>
+      <div class="pilar foco rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 22l5-3 5 3-1.5-8"/></svg><b>Experiencia comprobada</b><span>Más de 25 años en mecánica pesada, en Costa Rica y fuera del país.</span></div>
       <div class="pilar foco rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><b>Diagnóstico preciso</b><span>La causa raíz, no solo el síntoma.</span></div>
       <div class="pilar foco rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><b>Respuesta rápida</b><span>Maquinaria parada es pérdida: respondemos rápido.</span></div>
       <div class="pilar foco rv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg><b>Garantía en trabajos</b><span>Respaldamos cada reparación que sale del taller.</span></div>
