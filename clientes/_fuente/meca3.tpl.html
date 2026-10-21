@@ -290,9 +290,17 @@ dialog.visor::backdrop{background:rgba(5,5,8,.92);backdrop-filter:blur(8px)}
 .cita .w.on{opacity:1}
 .cita .w.acento{color:var(--purple3)}
 .nos-txt{display:grid;gap:14px;color:var(--fg2);margin-top:30px;max-width:56ch}
-.dueno{border:1px solid var(--line2);border-radius:24px;padding:28px;background:linear-gradient(180deg,var(--bg3),var(--bg2));position:sticky;top:110px;overflow:hidden;isolation:isolate}
+.dueno{border:1px solid var(--line2);border-radius:24px;background:linear-gradient(180deg,var(--bg3),var(--bg2));position:relative;overflow:hidden;isolation:isolate}
+.dueno-foto{position:relative;aspect-ratio:4/5;margin:0}
+.dueno-foto > img:first-child{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.dueno:hover .dueno-foto > img:first-child{transform:scale(1.04)}
+.dueno-foto::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,transparent 55%,var(--bg3))}
+.dueno-logo{position:absolute;right:20px;bottom:-30px;z-index:2;width:86px;height:86px;border-radius:50%;box-shadow:0 0 0 4px var(--bg3),0 0 40px -6px rgba(124,58,237,.9)}
+.dueno-in{padding:6px 26px 26px}
+.dueno li a,.dueno li em{color:var(--fg);font-style:normal;font-weight:600;text-decoration:none}
+.dueno li a:hover{color:var(--purple3)}
 .mono{width:120px;height:120px;border-radius:50%;box-shadow:0 0 0 5px var(--bg3),0 0 0 6px var(--line2),0 0 50px -10px rgba(124,58,237,.8)}
-.dueno h3{font-family:var(--f-titulo);font-weight:400;font-size:2rem;line-height:1;margin-top:20px}
+.dueno h3{font-family:var(--f-titulo);font-weight:400;font-size:2.2rem;line-height:1;margin-top:10px;padding-right:96px}
 .dueno small{font-family:var(--f-mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--purple3)}
 .dueno ul{list-style:none;margin:22px 0;display:grid;gap:12px;border-top:1px solid var(--line2);padding-top:20px}
 .dueno li{display:flex;justify-content:space-between;align-items:baseline;gap:10px;color:var(--fg2);font-size:.9rem}
@@ -304,7 +312,7 @@ dialog.visor::backdrop{background:rgba(5,5,8,.92);backdrop-filter:blur(8px)}
 .pilar svg{width:26px;height:26px;color:var(--purple3);margin-bottom:22px}
 .pilar b{display:block;font-size:1.05rem;margin-bottom:4px}
 .pilar span{color:var(--fg2);font-size:.9rem}
-@media(max-width:900px){.nos-grid{grid-template-columns:minmax(0,1fr)}.dueno{position:relative;top:0}.pilares{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:900px){.nos-grid{grid-template-columns:minmax(0,1fr)}.dueno{max-width:520px}.pilares{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:560px){.pilares{grid-template-columns:minmax(0,1fr)}}
 
 /* Proceso: el camión se arma y se suelda */
@@ -470,6 +478,17 @@ dialog.legal::backdrop{background:rgba(5,5,8,.8);backdrop-filter:blur(4px)}
 .js .rv{opacity:0;transform:translateY(36px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
 .js .rv.in{opacity:1;transform:none}
 .js .cg.rv.in:hover{transform:translateY(-8px)}
+/* Sin JavaScript (o si el archivo llega cortado) todo se ve igual, sin animaciones */
+html:not(.js) .ln > span,html:not(.js) .aparece{transform:none;opacity:1}
+html:not(.js) .tarjeta{clip-path:none}
+html:not(.js) .tarjeta img{transform:none}
+html:not(.js) .pz,html:not(.js) .rueda{opacity:1;transform:none}
+html:not(.js) .trazo *{stroke-dashoffset:0}
+html:not(.js) #taller{height:auto}
+html:not(.js) .pin{position:relative;height:auto;padding-block:90px}
+html:not(.js) .pista{overflow-x:auto;width:auto}
+html:not(.js) #proceso{height:auto}
+html:not(.js) .escena{position:relative}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation:none!important;transition:none!important}
   .intro{display:none}
@@ -673,15 +692,21 @@ __SCRIPT__
         </div>
       </div>
       <aside class="dueno foco rv">
-        <img class="mono" src="{{LOGO512}}" alt="Logo de MecaFusion J&amp;M" width="120" height="120" loading="lazy">
-        <h3>Jonatan Molina Araya</h3>
-        <small>Dueño y mecánico a cargo</small>
-        <ul>
-          <li>Años de experiencia<b><span data-contar="10">10</span>+</b></li>
-          <li>Trabajos realizados<b><span data-contar="400">400</span>+</b></li>
-          <li>Trato<b>Directo</b></li>
-        </ul>
-        <a href="https://wa.me/50685957526?text=Hola%2C%20quiero%20una%20consulta%20sin%20costo" target="_blank" rel="noopener noreferrer" class="btn btn-morado">Consulta sin costo →</a>
+        <figure class="dueno-foto">
+          <img src="{{F:jonatan}}" alt="Jonatan Molina Araya, dueño de MecaFusion J&amp;M, junto a un cabezal" loading="lazy">
+          <img class="dueno-logo" src="{{LOGO512}}" alt="" width="86" height="86" loading="lazy">
+        </figure>
+        <div class="dueno-in">
+          <h3>Jonatan Molina Araya</h3>
+          <small>Dueño · Mecánica y soldadura</small>
+          <ul>
+            <li>Teléfono<a href="tel:+50685957526">8595-7526</a></li>
+            <li>Ubicación<em>Taras, Cartago</em></li>
+            <li>Años de experiencia<b><span data-contar="10">10</span>+</b></li>
+            <li>Trabajos realizados<b><span data-contar="400">400</span>+</b></li>
+          </ul>
+          <a href="https://wa.me/50685957526?text=Hola%2C%20quiero%20una%20consulta%20sin%20costo" target="_blank" rel="noopener noreferrer" class="btn btn-morado">Consulta sin costo →</a>
+        </div>
       </aside>
     </div>
     <div class="pilares">
