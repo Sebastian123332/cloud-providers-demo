@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#05070C">
+<meta name="theme-color" content="#2A1A0F">
 <meta name="description" content="Menú digital con fotos, precios y promociones. Cocina de montaña en Cartago, Costa Rica.">
 <meta property="og:title" content="Demo Restaurante · Cocina de montaña">
 <meta property="og:description" content="Menú digital con fotos, precios y promociones. Cocina de montaña en Cartago, Costa Rica.">
@@ -12,7 +12,7 @@
 <title>Demo Restaurante · Plan Menú</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Karla:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap">
 <style>
 :root{
   --noche:#05070C; --noche2:#0A0E18; --humo:#111826; --humo2:#182233;
@@ -467,6 +467,223 @@ section > .wrap{position:relative;z-index:1}
   .rv{opacity:1;transform:none}
   .plato3d .capa.fuera{opacity:1;transform:none}
 }
+
+/* =====================================================================
+   ESTILO CAFETERÍA · letras gruesas, stickers y tonos café
+   ===================================================================== */
+:root{
+  --noche:#1A110B; --noche2:#22170F; --humo:#2A1C12; --humo2:#33231A;
+  --linea:rgba(246,235,221,.12); --linea2:rgba(246,235,221,.24);
+  --hueso:#F6EBDD; --gris:#CDB8A2; --gris2:#9C8571;
+  --azul:#C98A3A; --azul2:#E9B266; --azul-g:rgba(201,138,58,.16);
+  --nav-bg:rgba(26,17,11,.9); --vidrio:rgba(26,17,11,.78); --fili:rgba(246,235,221,.08);
+  --aura:rgba(201,138,58,.16); --sombra-card:0 30px 60px -34px rgba(0,0,0,.9);
+  --crema:#FFF8EE; --cafe:#3B2416;
+  --serif:"Anton","Impact","Arial Narrow Bold",sans-serif;
+  --cond:"Barlow Condensed","Arial Narrow",sans-serif;
+  --sans:"Barlow","Helvetica Neue",Arial,sans-serif;
+}
+html[data-tema="claro"]{
+  --noche:#F6F2EA; --noche2:#EFE7DA; --humo:#FFFDF8; --humo2:#F2EADD;
+  --linea:rgba(59,36,22,.12); --linea2:rgba(59,36,22,.24);
+  --hueso:#3B2416; --gris:#6E5644; --gris2:#9A8371;
+  --azul:#B5772C; --azul2:#8A5420; --azul-g:rgba(181,119,44,.12);
+  --nav-bg:rgba(246,242,234,.92); --vidrio:rgba(255,253,248,.86); --fili:rgba(59,36,22,.07);
+  --aura:rgba(181,119,44,.13); --sombra-card:0 26px 50px -30px rgba(59,36,22,.35);
+}
+body{font-family:var(--sans)}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:400;letter-spacing:.005em}
+::selection{background:var(--azul);color:var(--crema)}
+.demobar{background:#2A1A0F;color:#E9D9C4;border-bottom:0}
+html[data-tema="claro"] .demobar{background:#2A1A0F}
+.demobar b{color:#E9B266}
+
+/* etiquetas tipo píldora: NUESTRO MENÚ, NOSOTROS... */
+.ojo{display:inline-block;font-family:var(--cond);font-weight:700;font-size:.82rem;letter-spacing:.04em;text-transform:uppercase;
+  background:var(--hueso);color:var(--noche);padding:5px 14px 4px;border-radius:999px;line-height:1.2}
+
+/* botones */
+.btn{font-family:var(--cond);font-weight:700;font-size:1rem;letter-spacing:.03em;text-transform:uppercase;border-width:2px}
+.btn-p{background:var(--azul);color:var(--crema);border-color:var(--cafe);box-shadow:0 4px 0 var(--cafe);padding-right:52px}
+html:not([data-tema="claro"]) .btn-p{border-color:#0F0905;box-shadow:0 4px 0 #0F0905}
+.btn-p:hover{background:var(--azul2);transform:translateY(-2px)}
+.btn-p::before{content:"";position:absolute;right:6px;top:50%;width:32px;height:32px;margin-top:-16px;border-radius:50%;
+  background:var(--crema) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%233B2416' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M9 6l6 6-6 6'/%3E%3C/svg%3E") center/15px no-repeat;
+  transition:transform .35s cubic-bezier(.2,.9,.3,1.4)}
+.btn-p:hover::before{transform:translateX(3px)}
+.btn-p.btn-s{padding-right:42px}
+.btn-p.btn-s::before{width:24px;height:24px;margin-top:-12px;right:5px;background-size:12px}
+.btn-o{border-color:var(--hueso);color:var(--hueso)}
+.btn-o:hover{background:var(--hueso);color:var(--noche);border-color:var(--hueso)}
+
+/* navegación */
+.sello{border-radius:50%;background:var(--azul);color:var(--crema);font-family:var(--serif);font-size:.95rem;font-weight:400;transform:rotate(-12deg);border:2px solid var(--cafe)}
+html:not([data-tema="claro"]) .sello{border-color:#0F0905}
+.marca .n{font-family:var(--serif);text-transform:uppercase;font-size:1.35rem;letter-spacing:.02em}
+.marca .s{font-family:var(--cond);font-weight:600;letter-spacing:.14em}
+nav.links a{font-family:var(--cond);font-weight:700;text-transform:uppercase;font-size:.98rem;letter-spacing:.03em;color:var(--hueso)}
+nav.links a::after{height:2px;background:var(--azul)}
+header.nav.chica{border-bottom:1px solid var(--linea2)}
+
+/* ---------- portada ---------- */
+.hero{min-height:88vh}
+.hero .grid{display:none}
+.hero .aura{width:1100px;height:1100px;left:72%;background:radial-gradient(circle,var(--aura),transparent 60%)}
+.hero .wrap{grid-template-columns:1.08fr .92fr}
+.h-titulo{position:relative;padding-top:34px}
+.hero h1{font-size:clamp(4.2rem,10.4vw,9.6rem);line-height:.86;text-transform:uppercase;margin:0}
+.h-grande{display:block;color:#6B3F1F}
+html:not([data-tema="claro"]) .h-grande{color:#E2A65A}
+/* letra con textura, como impresa */
+#h1hero:not(.kin) .h-grande,#h1hero.kin .h-grande .pal > i{
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .96 0 0 0 0 .9 0 0 0 0 .8 0 0 0 1.6 -.9'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E"),
+    linear-gradient(170deg,#8A5226,#5E3418 70%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+html:not([data-tema="claro"]) #h1hero:not(.kin) .h-grande,html:not([data-tema="claro"]) #h1hero.kin .h-grande .pal > i{
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .1 0 0 0 0 .06 0 0 0 0 .03 0 0 0 1.6 -.9'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E"),
+    linear-gradient(170deg,#F0BE74,#C98A3A 70%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+.h-tag{display:inline-block;margin-top:.06em;font-size:.78em;background:var(--azul);color:var(--crema);padding:.04em .2em 0;transform:rotate(-4deg);transform-origin:left center;
+  box-shadow:.07em .07em 0 var(--cafe);border:3px solid var(--cafe)}
+html:not([data-tema="claro"]) .h-tag{box-shadow:.07em .07em 0 #0F0905;border-color:#0F0905}
+.h-tag .pal{overflow:visible}
+.sticker-r{position:absolute;left:-10px;top:-6px;z-index:2;width:116px;height:72px;display:grid;place-items:center;text-align:center;
+  font-family:var(--serif);font-size:1.05rem;line-height:.92;text-transform:uppercase;color:var(--cafe);background:#FFFDF8;border:3px solid var(--cafe);border-radius:50%;
+  transform:rotate(-16deg);box-shadow:3px 4px 0 rgba(59,36,22,.35);animation:bambolea 4s ease-in-out infinite}
+.sticker-taza{position:absolute;right:4%;top:46%;width:92px;height:92px;z-index:2;color:var(--cafe);transform:rotate(14deg);animation:bambolea 5s ease-in-out infinite reverse}
+html:not([data-tema="claro"]) .sticker-taza{color:var(--hueso)}
+@keyframes bambolea{0%,100%{rotate:0deg;translate:0 0}50%{rotate:5deg;translate:0 -6px}}
+.h-hoy{margin-top:22px;font-family:var(--cond);font-weight:700;text-transform:uppercase;font-size:1.05rem;letter-spacing:.03em;color:var(--gris)}
+.rota b{font-style:normal;color:var(--azul2)}
+.h-sub{margin-top:26px;font-size:1.35rem;text-transform:uppercase;color:var(--hueso)}
+.hero .lede{margin-top:8px;font-size:1.02rem;max-width:40ch}
+.hero .meta{font-family:var(--cond);font-weight:600;font-size:.95rem;border-top:2px dashed var(--linea2)}
+/* foto del plato estrella flotando */
+.heroart.corte{aspect-ratio:1/1;max-height:none;border:0;border-radius:0;background:none;box-shadow:none;overflow:visible;isolation:isolate}
+.heroart.corte .disco{position:absolute;inset:8% 6% 6% 10%;border-radius:50%;z-index:-1;
+  background:radial-gradient(circle,transparent 55%,rgba(59,36,22,.06) 55.5%,transparent 57%),
+    repeating-conic-gradient(from 0deg,rgba(255,248,238,.16) 0 6deg,transparent 6deg 18deg),
+    radial-gradient(circle at 35% 30%,#E8B36A,var(--azul) 55%,#7A4A22);
+  box-shadow:inset 0 0 0 10px rgba(255,248,238,.18),0 40px 70px -40px rgba(59,36,22,.6);animation:giraLento 60s linear infinite}
+@keyframes giraLento{to{transform:rotate(360deg)}}
+.heroart.corte > img,.heroart.corte > svg{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform:rotate(-10deg) scale(1.16);
+  filter:drop-shadow(0 30px 26px rgba(40,22,10,.42));animation:flota 6s ease-in-out infinite}
+@keyframes flota{0%,100%{translate:0 0}50%{translate:0 -14px}}
+.heroart.corte .mini{position:absolute;width:30%;aspect-ratio:1;left:-4%;bottom:-2%;filter:drop-shadow(0 16px 14px rgba(40,22,10,.4));animation:flota 5s ease-in-out -2s infinite;transform:rotate(14deg)}
+.heroart.corte .mini img{width:100%;height:100%;object-fit:contain}
+.heroart.corte .tag{left:auto;right:2%;bottom:6%;top:auto;background:#FFFDF8;color:var(--cafe);border:3px solid var(--cafe);border-radius:999px;backdrop-filter:none;
+  font-family:var(--serif);font-size:1rem;letter-spacing:.02em;padding:8px 18px 6px;transform:rotate(-6deg);box-shadow:3px 4px 0 rgba(59,36,22,.35)}
+#escHero::before{content:"";position:absolute;inset:10%;border-radius:50%;background:radial-gradient(circle at 35% 30%,rgba(232,179,106,.55),rgba(181,119,44,.25) 55%,transparent 70%)}
+html[data-tema="claro"] .escena{background:none}
+
+/* ---------- cinta ---------- */
+.cinta{background:var(--cafe);border:0;padding-block:18px}
+html:not([data-tema="claro"]) .cinta{background:var(--azul)}
+.cinta span{font-family:var(--serif);text-transform:uppercase;font-size:1.7rem;color:var(--crema);letter-spacing:.02em}
+.cinta span::after{width:16px;height:22px;border-radius:50%;background:var(--azul);transform:rotate(30deg);box-shadow:inset -4px 0 0 -2px var(--cafe)}
+html:not([data-tema="claro"]) .cinta span{color:#1A110B}
+html:not([data-tema="claro"]) .cinta span::after{background:#1A110B}
+
+/* ---------- franja nosotros ---------- */
+.nos{background:var(--azul);color:var(--crema);text-align:center;padding-block:96px 110px;overflow:hidden}
+.nos .ojo{background:var(--crema);color:var(--cafe)}
+.nos h2{font-size:clamp(3.2rem,10vw,8.8rem);line-height:.88;text-transform:uppercase;margin-top:18px;color:var(--crema)}
+.nos h2 em{font-style:normal;color:var(--cafe)}
+.nos p.txt{max-width:56ch;margin:22px auto 0;font-size:1.08rem;color:#FFF1DD}
+.nos .st{position:absolute;color:var(--cafe);opacity:.9;animation:bambolea 6s ease-in-out infinite}
+.nos .st.s1{left:6%;top:16%;width:74px;transform:rotate(-14deg)}
+.nos .st.s2{right:7%;bottom:14%;width:84px;transform:rotate(12deg);animation-delay:-2s}
+@media (max-width:620px){.nos .st{display:none}}
+
+/* ---------- encabezados de sección ---------- */
+.cab h2{font-size:clamp(2.6rem,6.4vw,5rem);line-height:.92;text-transform:uppercase;color:var(--hueso)}
+html[data-tema="claro"] .cab h2{color:#6B3F1F}
+.cab p{font-size:1rem}
+.cab .btn{align-self:flex-end}
+.horiz h2,.paso h3{text-transform:uppercase}
+.filigrana{font-family:var(--serif);text-transform:uppercase}
+
+/* ---------- menú estilo cafetería ---------- */
+.pills{gap:8px}
+.pill{font-family:var(--cond);font-weight:700;text-transform:uppercase;font-size:.95rem;letter-spacing:.03em;border:2px solid var(--linea2);color:var(--hueso)}
+.pill[aria-selected="true"]{background:var(--hueso);color:var(--noche);border-color:var(--hueso)}
+.cat-bloque{margin-bottom:70px}
+.cat-cab{display:flex;align-items:center;gap:16px;margin-bottom:6px;flex-wrap:wrap}
+.cat-cab h3{font-size:clamp(1.9rem,3.6vw,2.8rem);text-transform:uppercase;line-height:1}
+.cat-cab .cat-n{font-family:var(--cond);font-weight:700;text-transform:uppercase;font-size:.85rem;letter-spacing:.06em;color:var(--gris2);margin-right:auto}
+.flechas{display:flex;gap:8px}
+.flechas button{width:44px;height:44px;border-radius:50%;border:2px solid var(--hueso);background:none;color:var(--hueso);font-size:1.3rem;line-height:1;display:grid;place-items:center;transition:.25s}
+.flechas button:hover{background:var(--hueso);color:var(--noche)}
+.flechas button:disabled{opacity:.3;pointer-events:none}
+.riel{display:grid;grid-auto-flow:column;grid-auto-columns:calc(100% / 3);overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;
+  border-block:2px solid var(--linea2);scroll-behavior:smooth;overscroll-behavior-x:contain}
+.riel::-webkit-scrollbar{display:none}
+.riel .plato{background:none;border:0;border-right:2px solid var(--linea2);border-radius:0;padding:26px 26px 24px;scroll-snap-align:start;overflow:visible;gap:0}
+.riel .plato:hover{box-shadow:none;border-color:var(--linea2)}
+.p-top{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;min-height:2.2em}
+.riel .plato h4{font-size:clamp(1.45rem,2.1vw,1.95rem);line-height:.98;text-transform:uppercase;color:var(--hueso);max-width:11ch}
+html[data-tema="claro"] .riel .plato h4{color:#6B3F1F}
+.pedir{flex:none;font-family:var(--cond);font-weight:700;text-transform:uppercase;font-size:.9rem;letter-spacing:.03em;color:var(--azul2);text-decoration:none;
+  border-bottom:2px solid currentColor;padding-bottom:1px;margin-top:6px;white-space:nowrap;transition:.25s}
+.pedir:hover{color:var(--hueso)}
+.riel .plato .foto{aspect-ratio:4/3;background:none;overflow:visible;margin:14px -6px 10px;position:relative}
+.plato .foto::after{display:none}
+.riel .plato .foto img{object-fit:contain;filter:drop-shadow(0 22px 18px rgba(40,22,10,.28));transition:transform .8s cubic-bezier(.2,.9,.3,1.3)}
+.riel .plato:hover .foto img{transform:translateY(-12px) rotate(-7deg) scale(1.08)}
+.riel .plato .foto svg{border-radius:14px}
+.p-desc{font-size:.9rem;color:var(--gris);line-height:1.5;min-height:3em}
+.p-pie{display:flex;align-items:center;gap:12px;margin-top:14px;padding-top:12px;border-top:2px dashed var(--linea2);font-family:var(--cond);font-weight:700;text-transform:uppercase;font-size:.95rem;color:var(--gris)}
+.p-pie .precio{font-family:var(--cond);font-size:1.3rem;color:var(--hueso);font-weight:700}
+.riel .plato .eti{position:absolute;left:4px;top:4px;margin:0;z-index:2;background:var(--azul);color:var(--crema);border:2px solid var(--cafe);
+  font-family:var(--cond);font-size:.78rem;letter-spacing:.04em;padding:4px 12px 3px;transform:rotate(-8deg);box-shadow:2px 3px 0 rgba(59,36,22,.3)}
+.ver3d{font-family:var(--cond);letter-spacing:.06em;font-size:.78rem}
+.puntos{display:flex;justify-content:center;gap:8px;margin-top:18px}
+.puntos button{width:9px;height:9px;padding:0;border-radius:999px;border:0;background:var(--linea2);transition:.3s}
+.puntos button[aria-current="true"]{width:28px;background:var(--azul)}
+.estampilla{display:block;width:110px;margin:10px auto 0;color:var(--cafe);transform:rotate(-10deg);animation:bambolea 5s ease-in-out infinite}
+html:not([data-tema="claro"]) .estampilla{color:var(--hueso)}
+@media (max-width:980px){.riel{grid-auto-columns:calc(100% / 2)}}
+@media (max-width:620px){
+  .riel{grid-auto-columns:82%}
+  .riel .plato{padding:22px 18px 20px}
+  .flechas{display:none}
+  .sticker-r{width:96px;height:60px;font-size:.88rem;left:-4px}
+  .sticker-taza{width:66px;height:66px;right:0;top:auto;bottom:-10px}
+  .hero .wrap{grid-template-columns:1fr}
+}
+
+/* ---------- otras tarjetas ---------- */
+.panel{border:2px solid var(--linea2);border-radius:22px}
+.panel .foto{background:none}
+.panel .foto img{width:100%;height:100%;object-fit:contain;filter:drop-shadow(0 18px 16px rgba(40,22,10,.3));transform:scale(.92)}
+.panel h4{text-transform:uppercase}
+.panel .orden{font-family:var(--cond);font-size:.85rem}
+.promo{border:2px dashed var(--linea2);border-radius:20px;position:relative}
+html[data-tema="claro"] .promo{background:var(--humo)}
+.promo h4{text-transform:uppercase;font-size:1.9rem;line-height:1}
+.promo .dia{font-family:var(--cond);font-size:.85rem;letter-spacing:.06em}
+.cifra b{color:var(--hueso)}
+html[data-tema="claro"] .cifra b{color:#6B3F1F}
+.cifra span{font-family:var(--cond);font-weight:700;letter-spacing:.06em;font-size:.85rem}
+.info h4{font-family:var(--cond);font-size:.85rem;letter-spacing:.08em}
+.tab b{font-family:var(--serif);text-transform:uppercase;font-size:1.2rem}
+.tab{border-width:2px}
+.paso .cont{color:var(--azul)}
+.club .pc .n{font-family:var(--serif)}
+.estilos button{font-family:var(--cond);font-weight:700;text-transform:uppercase}
+.wafab{border:2px solid var(--cafe)}
+#adminroot{--serif:"Barlow Condensed","Arial Narrow",sans-serif;--azul:#9A5F1F;--azul2:#B5772C;--azul-suave:#F7EBDB;--azul-borde:#E5C89F}
+@media (max-width:980px){
+  nav.links.abre{background:var(--noche)}
+  .hero .wrap{grid-template-columns:1fr}
+  .heroart.corte{max-width:440px;margin-inline:auto}
+}
+/* tildes de los títulos grandes sin recortar */
+#h1hero .pal,.cab h2 .pal,.nos h2 .pal,.horiz h2 .pal,.paso h3 .pal{padding-top:.16em;margin-top:-.16em}
+.h-hoy{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.h-hoy .rota{height:1.3em;line-height:1.3;vertical-align:middle}
+.h-hoy .rota b{line-height:1.3}
+@media (max-width:560px){header.nav .btn-s{display:none}}
 </style>
 </head>
 <body>
@@ -492,10 +709,13 @@ section > .wrap{position:relative;z-index:1}
   <div class="grid"></div><div class="aura"></div>
   <div class="wrap">
     <div id="heroTxt">
-      <p class="ojo">Cartago · Costa Rica</p>
-      <h1 style="margin-top:18px" id="h1hero">Comida de <em>casa</em>,<br>hecha con leña</h1>
-      <p class="ojo" style="margin-top:16px;color:var(--gris2)">Hoy en el fogón ·
-        <span class="rota" id="rota"><b>Olla de carne</b></span></p>
+      <div class="h-titulo">
+        <span class="sticker-r" aria-hidden="true">Hecho<br>con leña</span>
+        <h1 id="h1hero"><span class="h-grande">Sabor de</span><span class="h-tag">casa</span></h1>
+        <svg class="sticker-taza" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 46h56v8a28 28 0 0 1-56 0z" fill="#FFFDF8"/><path d="M74 52h6a9 9 0 0 1 0 18h-9"/><path d="M10 86h76"/><path d="M34 34c-4-6 4-10 0-16M48 34c-4-6 4-10 0-16M62 34c-4-6 4-10 0-16"/><path d="M26 56h40M30 64h32" stroke-width="2.5"/></svg>
+      </div>
+      <p class="h-hoy">Hoy en el fogón · <span class="rota" id="rota"><b>Olla de carne</b></span></p>
+      <h4 class="h-sub">Nuestra historia</h4>
       <p class="lede">Quince minutos de la Basílica. Cocinamos con fuego de verdad, compramos en la feria los sábados y el café nos llega de Tarrazú.</p>
       <div class="cta">
         <a class="btn btn-p" href="#menu">Ver el menú</a>
@@ -516,6 +736,13 @@ section > .wrap{position:relative;z-index:1}
 
 <!-- ================= CINTA ================= -->
 <div class="cinta"><div class="rueda" id="rueda"></div></div>
+
+<!-- ================= NOSOTROS ================= -->
+<section class="nos" id="nosotros"><svg class="st s1" viewBox="0 0 80 80" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 66C10 34 30 14 66 12c2 34-18 56-52 54z" fill="rgba(255,248,238,.25)"/><path d="M14 66L50 30M30 50h14M38 42V30"/></svg><svg class="st s2" viewBox="0 0 90 90" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 40h62v14a24 24 0 0 1-24 24H38a24 24 0 0 1-24-24z" fill="rgba(255,248,238,.25)"/><path d="M8 42h8M74 42h8M36 40v-6h18v6M32 26c-3-5 3-8 0-13M46 26c-3-5 3-8 0-13M60 26c-3-5 3-8 0-13"/></svg><div class="wrap">
+  <p class="ojo">Nosotros</p>
+  <h2>Más que <em>comida</em>,<br>una casa</h2>
+  <p class="txt" id="nosDesc"></p>
+</div></section>
 
 <!-- ================= SE SIRVE ================= -->
 <section class="servir" id="servir">
@@ -543,11 +770,13 @@ section > .wrap{position:relative;z-index:1}
 <!-- ================= MENÚ ================= -->
 <section id="menu"><span class="filigrana" data-par="0.12">Sabor de casa</span><div class="wrap">
   <div class="cab rv">
-    <div><p class="ojo">La carta</p><h2>Nuestro menú</h2></div>
-    <p>Precios en colones, impuestos incluidos. Si algo se acaba en el día, lo quitamos del menú al instante.</p>
+    <div><p class="ojo">Nuestro menú</p><h2>Para todos<br>los días</h2>
+      <p style="margin-top:14px">Precios en colones, impuestos incluidos. Si algo se acaba en el día, lo quitamos del menú al instante.</p></div>
+    <a class="btn btn-p" href="#menu" id="verTodo">Ver todo el menú</a>
   </div>
   <div class="pills rv" id="pills" role="tablist"></div>
   <div id="cartaMenu"></div>
+  <svg class="estampilla" viewBox="0 0 120 120" aria-hidden="true"><path d="M10 10h100v100H10z" fill="#FFFDF8" stroke="currentColor" stroke-width="3" stroke-dasharray="6 5"/><rect x="22" y="22" width="76" height="76" rx="6" fill="none" stroke="currentColor" stroke-width="3"/><g fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"><path d="M46 36v22a6 6 0 0 0 6 6v20M40 36v14M52 36v14"/><path d="M74 84V36c-8 4-10 16-10 24h10"/></g><path d="M30 30l6 6M90 30l-6 6M30 90l6-6M90 90l-6-6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/></svg>
 </div></section>
 
 <!-- ================= LO MÁS PEDIDO (horizontal) ================= -->
@@ -795,7 +1024,7 @@ window.MENU = {
     tel:"2551 4820", whatsapp:"50689330326", dir:"200 m sur de la Basílica de los Ángeles, Cartago",
     ig:"demorestaurante.cr", fb:"DemoRestauranteCR", tiktok:"demorestaurante",
     horarios:[["Lunes","Cerrado"],["Martes a jueves","11:00 a.m. – 9:00 p.m."],["Viernes y sábado","11:00 a.m. – 10:30 p.m."],["Domingo","8:00 a.m. – 6:00 p.m."]],
-    acento:"#1A4FD8"
+    acento:"#B5772C"
   },
   cats:["Entradas","Platos fuertes","Pizzas del horno","Postres","Bebidas"],
   promos:[
@@ -1182,7 +1411,7 @@ document.getElementById("wa1").href = waLink();
 const wa2 = document.getElementById("wa2"); wa2.href = waLink(); wa2.innerHTML = ICO.wa;
 
 /* cinta */
-const frases = ["Cocina de montaña","Horno de leña","Feria de Cartago","Café de Tarrazú","Desde 1998","Hecho a mano"];
+const frases = ["Cocina de montaña","Horno de leña","Feria de Cartago","Café de Tarrazú","Desde 1998","Hecho a mano","Sabor de casa"];
 document.getElementById("rueda").innerHTML = [...frases, ...frases].map(f=>`<span>${f}</span>`).join("");
 
 /* menú */
@@ -1193,29 +1422,53 @@ function pintaMenu(){
   document.getElementById("pills").innerHTML =
     [["Todo","Todo"],...cats.map(c=>[c,c])].map(([v,t])=>
       `<button class="pill" role="tab" aria-selected="${filtro===v}" data-f="${esc(v)}">${esc(t)}</button>`).join("");
+  const num = String(S.r.whatsapp).replace(/\D/g,"");
+  const pedir = d => `https://wa.me/${num}?text=${encodeURIComponent("Hola, quiero pedir: "+d.n+" ("+col(d.p)+")")}`;
   document.getElementById("cartaMenu").innerHTML = muestra.map(c=>{
     const items = S.d.filter(d=>d.cat===c && d.v);
-    return `<div style="margin-bottom:56px">
-      <div style="display:flex;align-items:baseline;gap:18px;margin-bottom:24px" class="rv">
-        <h3 style="font-size:1.8rem">${esc(c)}</h3>
-        <span style="flex:1;height:1px;background:var(--linea)"></span>
-        <span style="font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gris2)" class="num">${items.length} platillos</span>
+    return `<div class="cat-bloque">
+      <div class="cat-cab rv">
+        <h3>${esc(c)}</h3><span class="cat-n num">${items.length} ${items.length===1?"platillo":"platillos"}</span>
+        <div class="flechas"><button type="button" data-dir="-1" aria-label="Anteriores">‹</button><button type="button" data-dir="1" aria-label="Siguientes">›</button></div>
       </div>
-      <div class="grid">${items.map((d,i)=>`
-        <article class="plato rv" style="transition-delay:${Math.min(i,5)*70}ms">
-          <div class="foto">${svgFor(d.art)}${F.tres_d && RECETAS[claveReceta(d)]?'<span class="ver3d">Ver en 3D</span>':''}</div>
-          <div class="cuerpo">
-            <div class="arriba"><h4>${esc(d.n)}</h4><span class="precio">${col(d.p)}</span></div>
-            <p>${esc(d.x)}</p>${d.b?`<span class="eti">${esc(d.b)}</span>`:""}
-          </div></article>`).join("")}</div></div>`;
+      <div class="riel">${items.map((d,i)=>`
+        <article class="plato rv" style="transition-delay:${Math.min(i,3)*80}ms">
+          <div class="p-top"><h4>${esc(d.n)}</h4><a class="pedir" href="${pedir(d)}" target="_blank" rel="noopener">Pedir +</a></div>
+          <div class="foto">${svgFor(d.art)}${d.b?`<span class="eti">${esc(d.b)}</span>`:""}${F.tres_d && RECETAS[claveReceta(d)]?'<span class="ver3d">Ver en 3D</span>':''}</div>
+          <p class="p-desc">${esc(d.x)}</p>
+          <div class="p-pie"><span>Precio:</span><span class="precio">${col(d.p)}</span></div>
+        </article>`).join("")}</div>
+      <div class="puntos"></div></div>`;
   }).join("");
+  document.querySelectorAll("#cartaMenu .cat-bloque").forEach(bl=>{
+    const riel = bl.querySelector(".riel"), pts = bl.querySelector(".puntos"), fl = bl.querySelectorAll(".flechas button");
+    const cards = [...riel.children];
+    const marca = ()=>{
+      const w = cards[0] ? cards[0].offsetWidth : 1, vis = Math.max(1, Math.round(riel.clientWidth / w));
+      const pags = Math.max(1, cards.length - vis + 1), act = Math.min(pags-1, Math.round(riel.scrollLeft / w));
+      if(pts.children.length !== pags){
+        pts.innerHTML = pags > 1 ? Array.from({length:pags},(_,i)=>`<button type="button" aria-label="Ir al ${i+1}"></button>`).join("") : "";
+        [...pts.children].forEach((p,i)=>p.onclick=()=>riel.scrollTo({left:i*w}));
+      }
+      [...pts.children].forEach((p,i)=>p.setAttribute("aria-current", i===act));
+      fl[0].disabled = act <= 0; fl[1].disabled = act >= pags-1;
+      bl.querySelector(".flechas").style.display = pags > 1 ? "" : "none";
+    };
+    fl.forEach(f=>f.onclick=()=>riel.scrollBy({left:(+f.dataset.dir)*(cards[0]?cards[0].offsetWidth:300)}));
+    riel.addEventListener("scroll", ()=>requestAnimationFrame(marca), {passive:true});
+    addEventListener("resize", marca);
+    marca();
+  });
+  const vt = document.getElementById("verTodo");
+  if(vt) vt.onclick = e=>{ e.preventDefault(); filtro = "Todo"; pintaMenu(); document.getElementById("menu").scrollIntoView({behavior:"smooth",block:"start"}); };
   document.querySelectorAll(".pill").forEach(b=>b.onclick=()=>{
     filtro = b.dataset.f; pintaMenu();
     document.getElementById("menu").scrollIntoView({behavior:"smooth",block:"start"});
   });
   document.querySelectorAll("#cartaMenu .plato").forEach(el=>{
     const t = el.querySelector(".ver3d");
-    if(t) el.addEventListener("click", ()=>{
+    if(t) el.addEventListener("click", ev=>{
+      if(ev.target.closest(".pedir")) return;
       const n = el.querySelector("h4").textContent;
       const k = Object.keys(RECETAS).find(k=>RECETAS[k].nombre===n);
       if(k){ cambiaApa(k); document.getElementById("aparador").scrollIntoView({behavior:"smooth"}); }
@@ -1261,6 +1514,7 @@ function pintaMarca(){
   document.querySelector(".marca .n").textContent = r.nombre;
   document.querySelector(".marca .s").textContent = r.eslogan;
   document.getElementById("pieNombre").textContent = r.nombre;
+  const nd = document.getElementById("nosDesc"); if(nd) nd.textContent = r.desc || "";
   const nc = document.getElementById("nombreClub"); if(nc) nc.textContent = r.nombre;
   const cc = document.getElementById("ctaClub"); if(cc) cc.href = r.club || waLink();
   document.getElementById("wa1").href = waLink();
@@ -1299,7 +1553,7 @@ if(F.tres_d){
   /* sin 3D el hero lleva la foto (o la ilustración) del plato estrella */
   const destacado = S.d.find(d=>d.v && d.b==="Recomendado") || S.d.find(d=>d.v);
   document.getElementById("escHero").outerHTML =
-    `<div class="heroart">${svgFor(destacado.art)}<span class="tag">${esc(destacado.n)}</span></div>`;
+    `<div class="heroart corte"><span class="disco"></span>${svgFor(destacado.art)}${(()=>{ const m = S.d.find(d=>d.v && d.cat==="Bebidas" && d.art && d.art.foto); return m ? `<span class="mini">${svgFor(m.art)}</span>` : ""; })()}<span class="tag">${esc(destacado.n)}</span></div>`;
 }
 
 /* Si el dueño subió una foto del platillo, el 3D muestra el plato con esa foto servida encima */
@@ -1372,11 +1626,11 @@ function partir(el){
 }
 function animaTexto(el){ partir(el); requestAnimationFrame(()=>el.classList.add("on")); }
 
-document.querySelectorAll(".cab h2, .horiz h2, .paso h3").forEach(partir);
+document.querySelectorAll(".cab h2, .horiz h2, .paso h3, .nos h2").forEach(partir);
 const ioTexto = new IntersectionObserver(es=>es.forEach(e=>{
   if(e.isIntersecting){ e.target.classList.add("on"); ioTexto.unobserve(e.target); }
 }), {threshold:.4});
-document.querySelectorAll(".cab h2, .horiz h2").forEach(e=>ioTexto.observe(e));
+document.querySelectorAll(".cab h2, .horiz h2, .nos h2").forEach(e=>ioTexto.observe(e));
 
 /* el titular entra solo al cargar */
 const h1 = document.getElementById("h1hero");
@@ -1412,10 +1666,10 @@ function pintaCarril(){
       <h4>${esc(d.n)}</h4><p>${esc(d.x)}</p>
       <div class="pie"><span>${esc(d.cat)}</span><span class="precio">${col(d.p)}</span></div>
     </div></article>`).join("") +
-  `<article class="panel" style="background:linear-gradient(160deg,var(--azul),#1B3FA8);border-color:transparent">
+  `<article class="panel" style="background:linear-gradient(160deg,var(--azul),#5E3418);border-color:transparent">
      <div class="cuerpo" style="justify-content:center;gap:14px;aspect-ratio:3/4">
        <h4 style="font-size:1.8rem">¿Y el resto<br>de la carta?</h4>
-       <p style="color:#D8E3FF">Son catorce platillos más, todos con foto y precio.</p>
+       <p style="color:#FFF1DD">Son catorce platillos más, todos con foto y precio.</p>
        <a class="btn btn-o" style="border-color:rgba(255,255,255,.5);color:#fff;margin-top:8px" href="#menu">Ver el menú completo</a>
      </div></article>`;
 }
@@ -1451,7 +1705,7 @@ if(!RM) document.querySelectorAll(".btn-p").forEach(b=>{
 /* tarjetas que se inclinan siguiendo el mouse */
 function inclinables(){
   if(RM || !matchMedia("(hover:hover)").matches) return;
-  document.querySelectorAll(".plato, .panel").forEach(c=>{
+  document.querySelectorAll(".panel").forEach(c=>{
     if(c.dataset.inc) return; c.dataset.inc = "1";
     c.addEventListener("pointermove", e=>{
       const r = c.getBoundingClientRect();
