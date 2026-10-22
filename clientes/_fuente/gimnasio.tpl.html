@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Revolución Fitness · Gimnasio</title>
+<meta name="description" content="Gimnasio Revolución Fitness: pesas, funcional, cardio y clases grupales. Planes desde ₡18.000 al mes. Reservá tu clase gratis por WhatsApp.">
+<meta name="theme-color" content="#0B0B0E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23FF2D3D'/%3E%3Cpath d='M36 6L14 36h14l-4 22 26-32H36z' fill='%230B0B0E'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --negro:#0B0B0E; --negro2:#121217; --negro3:#1A1A21; --linea:rgba(255,255,255,.09); --linea2:rgba(255,255,255,.18);
+  --blanco:#F5F5F7; --gris:#A3A3AE; --gris2:#6E6E7A;
+  --rojo:#FF2D3D; --rojo2:#FF5A66; --lima:#D7FF3A;
+  --titulo:"Big Shoulders Display","Arial Narrow",Impact,sans-serif;
+  --texto:"Space Grotesk",system-ui,sans-serif;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--negro)}
+body{background:var(--negro);color:var(--blanco);font-family:var(--texto);font-size:16px;line-height:1.6;overflow-x:clip;-webkit-font-smoothing:antialiased}
+img,svg{display:block;max-width:100%}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+::selection{background:var(--rojo);color:#fff}
+.wrap{max-width:1220px;margin:0 auto;padding-inline:max(18px,4vw)}
+.t{font-family:var(--titulo);font-weight:900;text-transform:uppercase;line-height:.88;letter-spacing:.005em}
+.rojo{color:var(--rojo)}
+.lima{color:var(--lima)}
+.eti{display:inline-flex;align-items:center;gap:10px;font-weight:700;font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--lima)}
+.eti::before{content:"";width:10px;height:10px;background:var(--lima);clip-path:polygon(0 0,100% 50%,0 100%)}
+section{position:relative;padding-block:clamp(80px,11vw,140px)}
+
+/* barra demo */
+.demobar{background:var(--lima);color:var(--negro);font-size:.8rem;font-weight:600;text-align:center;padding:7px 14px;position:relative;z-index:70}
+
+/* nav */
+.nav{position:sticky;top:0;z-index:60;transition:background .35s,border-color .35s;border-bottom:1px solid transparent}
+.nav.chica{background:rgba(11,11,14,.86);backdrop-filter:blur(14px);border-bottom-color:var(--linea)}
+.nav .wrap{display:flex;align-items:center;gap:22px;padding-block:14px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;margin-right:auto}
+.logo i{width:42px;height:42px;background:var(--rojo);display:grid;place-items:center;clip-path:polygon(12% 0,100% 0,88% 100%,0 100%)}
+.logo i svg{width:20px;height:24px}
+.logo b{font-family:var(--titulo);font-weight:900;font-size:1.45rem;line-height:.85;text-transform:uppercase;letter-spacing:.02em}
+.logo b small{display:block;font-size:.72em;color:var(--rojo);letter-spacing:.18em}
+.links{display:flex;gap:26px;list-style:none}
+.links a{text-decoration:none;font-weight:600;font-size:.86rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gris);transition:color .25s}
+.links a:hover{color:var(--blanco)}
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;font-family:var(--titulo);font-weight:800;font-size:1.15rem;text-transform:uppercase;letter-spacing:.04em;
+  text-decoration:none;padding:13px 26px;border:0;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);transition:transform .3s var(--ease),background .3s,color .3s}
+.btn svg{width:18px;height:18px}
+.btn-r{background:var(--rojo);color:#fff}
+.btn-r:hover{background:var(--rojo2);transform:translateY(-3px)}
+.btn-l{background:var(--lima);color:var(--negro)}
+.btn-l:hover{transform:translateY(-3px)}
+.btn-b{background:transparent;color:var(--blanco);box-shadow:inset 0 0 0 2px var(--linea2);clip-path:none}
+.btn-b:hover{box-shadow:inset 0 0 0 2px var(--blanco)}
+.menu-btn{display:none;width:44px;height:44px;border:1px solid var(--linea2);background:none;border-radius:10px}
+@media(max-width:900px){
+  .links{position:absolute;left:0;right:0;top:100%;flex-direction:column;gap:0;background:var(--negro);border-bottom:1px solid var(--linea);padding:6px max(18px,4vw) 16px;display:none}
+  .nav.abre .links{display:flex}
+  .links a{display:block;padding:14px 0;border-bottom:1px solid var(--linea);font-size:1rem}
+  .menu-btn{display:block}
+  .nav .btn{display:none}
+}
+
+/* portada */
+.hero{min-height:calc(100svh - 34px);display:flex;align-items:center;padding-block:40px 80px;overflow:hidden}
+.hero-fondo{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.gigante{position:absolute;left:0;top:50%;white-space:nowrap;font-family:var(--titulo);font-weight:900;font-size:clamp(9rem,28vw,26rem);line-height:.8;text-transform:uppercase;
+  color:transparent;-webkit-text-stroke:1.5px rgba(255,255,255,.06);transform:translate3d(var(--gx,0px),-50%,0);will-change:transform}
+.hero-fondo::after{content:"";position:absolute;right:-10%;top:-20%;width:70%;height:140%;background:radial-gradient(closest-side,rgba(255,45,61,.22),transparent);filter:blur(10px)}
+.hero .wrap{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:clamp(30px,5vw,70px);align-items:center;width:100%}
+.hero h1{font-size:clamp(4.4rem,11vw,10rem);margin:20px 0 24px}
+.hero h1 .ln{display:block;overflow:hidden}
+.hero h1 .ln span{display:inline-block;transform:translateY(105%);transition:transform 1.1s var(--ease)}
+.hero h1 .ln:nth-child(2) span{transition-delay:.1s}.hero h1 .ln:nth-child(3) span{transition-delay:.2s}
+.hero.listo h1 .ln span{transform:none}
+.hoy{background:var(--rojo);color:#fff;padding:0 .14em;transform:skewX(-8deg)!important;display:inline-block}
+.hero.listo .hoy{transform:skewX(-8deg)!important}
+.hero h1 .ln .hoy{transform:translateY(105%) skewX(-8deg)!important}
+.hero.listo h1 .ln .hoy{transform:skewX(-8deg)!important}
+.hero p.sub{color:var(--gris);font-size:1.1rem;max-width:44ch}
+.hero p.sub b{color:var(--blanco)}
+.acciones{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px}
+.cifras{display:flex;gap:clamp(22px,4vw,48px);margin-top:44px;padding-top:24px;border-top:1px solid var(--linea)}
+.cifra b{display:block;font-family:var(--titulo);font-weight:900;font-size:clamp(2.6rem,4.4vw,3.6rem);line-height:1}
+.cifra b i{font-style:normal;color:var(--rojo)}
+.cifra span{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gris2);font-weight:600}
+/* arte de la portada */
+.arte{position:relative;aspect-ratio:1;max-width:560px;width:100%;justify-self:center}
+.anillo{position:absolute;inset:6%;border-radius:50%;border:1px dashed var(--linea2);animation:gira 40s linear infinite}
+.anillo::before{content:"";position:absolute;left:50%;top:-6px;width:12px;height:12px;border-radius:50%;background:var(--lima);box-shadow:0 0 18px var(--lima)}
+.disco-r{position:absolute;inset:18%;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FF6B76,var(--rojo) 45%,#9E0F1C);box-shadow:0 40px 80px -30px rgba(255,45,61,.7)}
+.progreso{position:absolute;inset:12%;transform:rotate(-90deg)}
+.progreso circle{fill:none;stroke-width:6;stroke-linecap:round}
+.progreso .fondo{stroke:rgba(255,255,255,.08)}
+.progreso .barra{stroke:var(--lima);stroke-dasharray:1;stroke-dashoffset:1;transition:stroke-dashoffset 2.4s .4s var(--ease)}
+.hero.listo .progreso .barra{stroke-dashoffset:.22}
+.pesa{position:absolute;left:50%;top:50%;width:62%;transform:translate(-50%,-50%) rotate(-24deg);filter:drop-shadow(0 30px 30px rgba(0,0,0,.55));animation:levanta 3.2s ease-in-out infinite}
+@keyframes levanta{0%,100%{translate:0 6px}50%{translate:0 -14px}}
+@keyframes gira{to{transform:rotate(360deg)}}
+.pulso{position:absolute;left:-6%;right:-6%;bottom:12%;height:70px;overflow:visible}
+.pulso path{fill:none;stroke:var(--lima);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:420 900;animation:latido 2.4s linear infinite;filter:drop-shadow(0 0 8px rgba(215,255,58,.8))}
+@keyframes latido{from{stroke-dashoffset:1320}to{stroke-dashoffset:0}}
+.chapa{position:absolute;z-index:2;background:rgba(18,18,23,.8);backdrop-filter:blur(12px);border:1px solid var(--linea2);border-radius:16px;padding:12px 16px;display:flex;align-items:center;gap:12px;font-size:.82rem;
+  transform:translate3d(calc(var(--mx,0) * 20px),calc(var(--my,0) * 20px),0)}
+.chapa b{display:block;font-family:var(--titulo);font-weight:800;font-size:1.5rem;line-height:1}
+.chapa i{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;background:var(--rojo);flex:none}
+.chapa i svg{width:20px;height:20px}
+.chapa.c1{left:-4%;top:14%}
+.chapa.c2{right:-2%;bottom:30%}
+.chapa.c2 i{background:var(--lima);color:var(--negro)}
+@media(max-width:900px){.hero .wrap{grid-template-columns:minmax(0,1fr)}.arte{max-width:420px}.chapa.c1{left:0}.chapa.c2{right:0}}
+
+/* cinta */
+.cinta{background:var(--rojo);color:#fff;overflow:hidden;padding-block:16px;transform:rotate(-1.5deg);margin-block:-10px;position:relative;z-index:3;border-block:3px solid var(--negro)}
+.cinta-in{display:flex;width:max-content;animation:corre 32s linear infinite}
+.cinta span{font-family:var(--titulo);font-weight:900;font-size:clamp(1.8rem,3.6vw,2.8rem);text-transform:uppercase;padding-right:36px;display:flex;align-items:center;gap:36px;white-space:nowrap}
+.cinta span::after{content:"";width:22px;height:26px;background:var(--negro);clip-path:polygon(60% 0,10% 58%,48% 58%,38% 100%,90% 40%,52% 40%)}
+@keyframes corre{to{transform:translateX(-50%)}}
+
+/* encabezados */
+.cab{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:clamp(36px,5vw,56px)}
+.cab h2{font-size:clamp(3rem,7vw,6rem);margin-top:14px}
+.cab p{color:var(--gris);max-width:42ch}
+
+/* clases */
+.clases{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.clase{position:relative;overflow:hidden;isolation:isolate;background:var(--negro2);border:1px solid var(--linea);border-radius:20px;padding:26px;min-height:270px;display:flex;flex-direction:column;transition:transform .5s var(--ease),border-color .4s}
+.clase::before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(160deg,var(--rojo),#7A0B16);transform:translateY(101%);transition:transform .6s var(--ease)}
+.clase:hover{transform:translateY(-6px);border-color:transparent}
+.clase:hover::before{transform:none}
+.clase .num{font-family:var(--titulo);font-weight:900;font-size:1rem;color:var(--gris2);transition:color .3s}
+.clase:hover .num{color:#FFD7DB}
+.clase svg.ic{width:52px;height:52px;color:var(--lima);margin:18px 0 auto;transition:transform .6s var(--ease),color .3s}
+.clase:hover svg.ic{transform:rotate(-12deg) scale(1.1);color:#fff}
+.clase h3{font-family:var(--titulo);font-weight:900;font-size:2.3rem;text-transform:uppercase;line-height:.9;margin-top:26px}
+.clase p{color:var(--gris);font-size:.92rem;margin-top:8px;transition:color .3s}
+.clase:hover p{color:#FFE4E6}
+.nivel{display:flex;align-items:center;gap:10px;margin-top:16px;font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--gris2)}
+.nivel i{display:flex;gap:3px}
+.nivel i b{width:16px;height:6px;background:var(--linea2);transform:skewX(-20deg)}
+.nivel i b.on{background:var(--lima)}
+.clase:hover .nivel{color:#FFD7DB}
+@media(max-width:960px){.clases{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.clases{grid-template-columns:minmax(0,1fr)}}
+
+/* planes */
+#planes{background:var(--negro2);border-block:1px solid var(--linea)}
+.cambio{display:inline-flex;background:var(--negro);border:1px solid var(--linea2);border-radius:999px;padding:4px;gap:4px}
+.cambio button{border:0;background:none;border-radius:999px;padding:9px 18px;font-weight:700;font-size:.85rem;color:var(--gris);transition:.25s}
+.cambio button[aria-pressed="true"]{background:var(--blanco);color:var(--negro)}
+.cambio button small{color:var(--rojo);font-weight:700}
+.planes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch}
+.plan{position:relative;background:var(--negro);border:1px solid var(--linea);border-radius:22px;padding:30px 28px;display:flex;flex-direction:column;gap:16px;transition:transform .5s var(--ease)}
+.plan:hover{transform:translateY(-6px)}
+.plan.top{background:linear-gradient(170deg,#24070B,var(--negro) 60%);border-color:var(--rojo);box-shadow:0 30px 70px -40px rgba(255,45,61,.8)}
+.plan .sello{position:absolute;top:-14px;right:22px;background:var(--lima);color:var(--negro);font-family:var(--titulo);font-weight:900;font-size:1rem;text-transform:uppercase;padding:5px 14px;transform:rotate(4deg)}
+.plan h3{font-family:var(--titulo);font-weight:900;font-size:2.2rem;text-transform:uppercase;line-height:1}
+.plan .desc{color:var(--gris);font-size:.92rem}
+.precio{display:flex;align-items:baseline;gap:6px}
+.precio b{font-family:var(--titulo);font-weight:900;font-size:clamp(3.2rem,5vw,4.2rem);line-height:1;font-variant-numeric:tabular-nums}
+.precio span{color:var(--gris2);font-weight:600}
+.plan ul{list-style:none;display:grid;gap:10px;font-size:.93rem;color:#D8D8DE}
+.plan li{display:flex;gap:10px;align-items:flex-start}
+.plan li::before{content:"";flex:none;width:18px;height:18px;margin-top:3px;background:var(--lima);clip-path:polygon(14% 52%,0 66%,38% 100%,100% 22%,86% 8%,38% 72%)}
+.plan .btn{margin-top:auto;width:100%}
+.nota{color:var(--gris2);font-size:.82rem;margin-top:18px;text-align:center}
+@media(max-width:960px){.planes{grid-template-columns:minmax(0,1fr);max-width:480px;margin-inline:auto}}
+
+/* IMC */
+.imc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,5vw,70px);align-items:center}
+.calc{background:var(--negro2);border:1px solid var(--linea2);border-radius:24px;padding:clamp(22px,3vw,34px);display:grid;gap:18px}
+.campo{display:grid;gap:8px}
+.campo label{display:flex;justify-content:space-between;font-size:.78rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--gris)}
+.campo label b{color:var(--blanco);font-family:var(--titulo);font-size:1.5rem;letter-spacing:0;line-height:1}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:8px;border-radius:8px;background:linear-gradient(90deg,var(--rojo) var(--p,50%),var(--negro3) var(--p,50%));outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:26px;height:26px;border-radius:50%;background:var(--blanco);border:5px solid var(--rojo);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:var(--blanco);border:5px solid var(--rojo);cursor:pointer}
+.res{display:flex;align-items:center;gap:20px;padding-top:18px;border-top:1px dashed var(--linea2)}
+.res .valor{font-family:var(--titulo);font-weight:900;font-size:4.4rem;line-height:.9;min-width:2.6em}
+.res .estado{font-weight:700;font-size:1.05rem}
+.res small{display:block;color:var(--gris);font-size:.86rem;font-weight:400;margin-top:2px}
+.regla{position:relative;height:10px;border-radius:10px;background:linear-gradient(90deg,#3BA7FF 0 18%,var(--lima) 18% 50%,#FFB020 50% 75%,var(--rojo) 75%)}
+.regla i{position:absolute;top:50%;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--blanco);border:4px solid var(--negro);left:var(--pos,40%);transition:left .5s var(--ease)}
+@media(max-width:860px){.imc{grid-template-columns:minmax(0,1fr)}}
+
+/* horario */
+#horario{background:var(--negro2);border-block:1px solid var(--linea)}
+.horario{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(30px,5vw,70px)}
+.horas{display:grid;gap:2px}
+.hora{display:flex;justify-content:space-between;align-items:center;padding:18px 4px;border-bottom:1px solid var(--linea);font-weight:600}
+.hora b{font-family:var(--titulo);font-weight:800;font-size:1.6rem;letter-spacing:.02em}
+.hora.hoy-d{color:var(--lima)}
+.hora .abierto{font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;font-weight:700;background:var(--lima);color:var(--negro);padding:3px 9px;border-radius:999px;margin-left:10px}
+.dias{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}
+.dias button{border:1px solid var(--linea2);background:none;border-radius:999px;padding:8px 16px;font-weight:700;font-size:.82rem;color:var(--gris);text-transform:uppercase;letter-spacing:.06em;transition:.2s}
+.dias button[aria-pressed="true"]{background:var(--rojo);border-color:var(--rojo);color:#fff}
+.agenda{display:grid;gap:10px}
+.sesion{display:grid;grid-template-columns:90px minmax(0,1fr) auto;gap:16px;align-items:center;background:var(--negro);border:1px solid var(--linea);border-radius:14px;padding:14px 18px;animation:entra .5s var(--ease) both}
+.sesion time{font-family:var(--titulo);font-weight:800;font-size:1.5rem}
+.sesion b{display:block;font-size:1.02rem}
+.sesion small{color:var(--gris2)}
+.sesion span{font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--lima)}
+@keyframes entra{from{opacity:0;transform:translateY(12px)}}
+@media(max-width:860px){.horario{grid-template-columns:minmax(0,1fr)}.sesion{grid-template-columns:70px minmax(0,1fr)}.sesion span{display:none}}
+
+/* equipo */
+.equipo{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.coach{position:relative;border-radius:22px;overflow:hidden;background:var(--negro2);border:1px solid var(--linea)}
+.coach .foto{aspect-ratio:4/4.4;display:grid;place-items:center;position:relative;overflow:hidden;background:radial-gradient(circle at 50% 30%,var(--c,#FF2D3D),transparent 70%),var(--negro3)}
+.coach .foto b{font-family:var(--titulo);font-weight:900;font-size:7rem;line-height:1;color:rgba(255,255,255,.92);transition:transform .7s var(--ease)}
+.coach:hover .foto b{transform:scale(1.12) rotate(-4deg)}
+.coach .foto::after{content:"FOTO DEL COACH";position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:.62rem;letter-spacing:.24em;font-weight:700;color:rgba(255,255,255,.4)}
+.coach .info{padding:20px 22px 24px}
+.coach h3{font-family:var(--titulo);font-weight:900;font-size:1.9rem;text-transform:uppercase;line-height:1}
+.coach p{color:var(--gris);font-size:.9rem;margin-top:6px}
+@media(max-width:860px){.equipo{grid-template-columns:minmax(0,1fr);max-width:420px;margin-inline:auto}}
+
+/* QR */
+#qr{background:var(--lima);color:var(--negro)}
+#qr .eti{color:var(--negro)}
+#qr .eti::before{background:var(--negro)}
+#qr .cab p{color:#2B3010}
+.qrs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;max-width:860px}
+.qr{background:var(--negro);color:var(--blanco);border-radius:24px;padding:26px;display:grid;grid-template-columns:150px minmax(0,1fr);gap:22px;align-items:center;transform:rotate(var(--r,-1deg));transition:transform .5s var(--ease)}
+.qr:nth-child(2){--r:1.2deg}
+.qr:hover{transform:rotate(0) translateY(-4px)}
+.qr .codigo{background:#fff;border-radius:14px;padding:10px}
+.qr .codigo svg{width:100%;height:auto}
+.qr h3{font-family:var(--titulo);font-weight:900;font-size:2rem;text-transform:uppercase;line-height:.95}
+.qr p{color:var(--gris);font-size:.88rem;margin-top:8px}
+.qr .estrellas{color:#FFC21A;letter-spacing:3px;font-size:1.1rem;margin-top:6px}
+@media(max-width:760px){.qrs{grid-template-columns:minmax(0,1fr)}.qr{grid-template-columns:120px minmax(0,1fr)}}
+
+/* contacto */
+.contacto{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:clamp(30px,5vw,70px);align-items:center}
+.contacto h2{font-size:clamp(3.4rem,8vw,7rem)}
+.canales{display:grid;gap:10px}
+.canal{display:flex;align-items:center;gap:16px;padding:18px 20px;background:var(--negro2);border:1px solid var(--linea);border-radius:16px;text-decoration:none;transition:border-color .3s,transform .4s var(--ease)}
+.canal:hover{border-color:var(--rojo);transform:translateX(6px)}
+.canal i{width:48px;height:48px;border-radius:12px;display:grid;place-items:center;background:var(--negro3);color:var(--rojo);flex:none}
+.canal i svg{width:22px;height:22px}
+.canal.wa i{background:#25D366;color:#fff}
+.canal small{display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gris2);font-weight:700}
+.canal b{font-size:1.05rem}
+@media(max-width:860px){.contacto{grid-template-columns:minmax(0,1fr)}}
+
+footer{border-top:1px solid var(--linea);padding-block:36px 90px;color:var(--gris2);font-size:.85rem}
+footer .wrap{display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap}
+footer a{color:var(--gris)}
+.fab{position:fixed;right:18px;bottom:18px;z-index:80;width:58px;height:58px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 14px 30px rgba(0,0,0,.5);transition:transform .3s}
+.fab:hover{transform:scale(1.08)}
+.fab svg{width:30px;height:30px}
+
+/* aparición */
+.js .rv{opacity:0;transform:translateY(34px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.js .rv.in{opacity:1;transform:none}
+html:not(.js) .hero h1 .ln span{transform:none}
+html:not(.js) .hero h1 .ln .hoy{transform:skewX(-8deg)!important}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.hero h1 .ln span{transform:none}.js .rv{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<div class="demobar">Demo de ejemplo hecha por Solanotech para Revolución Fitness · precios, horarios y datos de muestra</div>
+
+<header class="nav" id="nav"><div class="wrap">
+  <a class="logo" href="#inicio" aria-label="Revolución Fitness, inicio"><i><svg viewBox="0 0 20 24" fill="#0B0B0E" aria-hidden="true"><path d="M12 0L0 14h8l-2 10L20 9h-8z"/></svg></i><b>Revolución<small>Fitness</small></b></a>
+  <ul class="links" id="links">
+    <li><a href="#clases">Clases</a></li><li><a href="#planes">Planes</a></li><li><a href="#horario">Horario</a></li><li><a href="#equipo">Equipo</a></li><li><a href="#contacto">Contacto</a></li>
+  </ul>
+  <a class="btn btn-r" href="{{WA}}" target="_blank" rel="noopener">Clase gratis</a>
+  <button class="menu-btn" id="menuBtn" aria-label="Abrir menú" aria-expanded="false">☰</button>
+</div></header>
+
+<main>
+<section class="hero" id="inicio">
+  <div class="hero-fondo" aria-hidden="true"><div class="gigante" id="gigante">Revolución · Revolución ·</div></div>
+  <div class="wrap">
+    <div>
+      <span class="eti">Gimnasio · Costa Rica</span>
+      <h1 class="t" aria-label="Tu cambio empieza hoy"><span class="ln" aria-hidden="true"><span>Tu cambio</span></span><span class="ln" aria-hidden="true"><span>empieza</span></span><span class="ln" aria-hidden="true"><span class="hoy">hoy.</span></span></h1>
+      <p class="sub">Pesas, funcional, cardio y clases grupales con <b>entrenadores que sí te acompañan</b>. Sin contratos amarrados: venís, entrenás y ves resultados.</p>
+      <div class="acciones">
+        <a class="btn btn-r" href="{{WA}}" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2c.2-.6.2-1 .1-1.2z"/></svg>Reservá tu clase gratis</a>
+        <a class="btn btn-b" href="#planes">Ver planes</a>
+      </div>
+      <div class="cifras">
+        <div class="cifra"><b><span data-n="500">500</span><i>+</i></b><span>Miembros activos</span></div>
+        <div class="cifra"><b><span data-n="12">12</span><i>+</i></b><span>Clases por semana</span></div>
+        <div class="cifra"><b><span data-n="7">7</span></b><span>Días a la semana</span></div>
+      </div>
+    </div>
+    <div class="arte" aria-hidden="true">
+      <div class="anillo"></div>
+      <svg class="progreso" viewBox="0 0 100 100"><circle class="fondo" cx="50" cy="50" r="46"/><circle class="barra" cx="50" cy="50" r="46" pathLength="1"/></svg>
+      <div class="disco-r"></div>
+      <svg class="pesa" viewBox="0 0 300 120">
+        <defs><linearGradient id="gm" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4A4A55"/><stop offset=".5" stop-color="#1C1C22"/><stop offset="1" stop-color="#0B0B0E"/></linearGradient>
+          <linearGradient id="gb" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F2F2F5"/><stop offset=".5" stop-color="#8E8E99"/><stop offset="1" stop-color="#C9C9D2"/></linearGradient></defs>
+        <rect x="70" y="52" width="160" height="16" rx="5" fill="url(#gb)"/>
+        <path d="M95 52v16M110 52v16M190 52v16M205 52v16" stroke="#6E6E7A" stroke-width="1.5"/>
+        <rect x="18" y="8" width="38" height="104" rx="10" fill="url(#gm)" stroke="#2A2A33"/><rect x="52" y="22" width="22" height="76" rx="7" fill="url(#gm)" stroke="#2A2A33"/>
+        <rect x="244" y="8" width="38" height="104" rx="10" fill="url(#gm)" stroke="#2A2A33"/><rect x="226" y="22" width="22" height="76" rx="7" fill="url(#gm)" stroke="#2A2A33"/>
+        <rect x="6" y="50" width="14" height="20" rx="4" fill="url(#gb)"/><rect x="280" y="50" width="14" height="20" rx="4" fill="url(#gb)"/>
+        <text x="37" y="66" text-anchor="middle" font-family="Big Shoulders Display,Impact" font-weight="900" font-size="15" fill="#FF2D3D" transform="rotate(-90 37 62)">20 KG</text>
+        <text x="263" y="66" text-anchor="middle" font-family="Big Shoulders Display,Impact" font-weight="900" font-size="15" fill="#FF2D3D" transform="rotate(-90 263 62)">20 KG</text>
+      </svg>
+      <svg class="pulso" viewBox="0 0 600 70" preserveAspectRatio="none"><path d="M0 40 H170 L190 40 L205 10 L222 64 L240 2 L256 52 L268 40 H600"/></svg>
+      <div class="chapa c1"><i><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/></svg></i><div><b id="bpm">128</b>ritmo de hoy</div></div>
+      <div class="chapa c2"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h8l-1 8 10-12h-8z"/></svg></i><div><b>78%</b>de tu meta</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="cinta" aria-hidden="true"><div class="cinta-in">
+  <span>Fuerza</span><span>Funcional</span><span>Cardio</span><span>Crosstraining</span><span>Spinning</span><span>Zumba</span><span>Boxeo</span>
+  <span>Fuerza</span><span>Funcional</span><span>Cardio</span><span>Crosstraining</span><span>Spinning</span><span>Zumba</span><span>Boxeo</span>
+</div></div>
+
+<section id="clases"><div class="wrap">
+  <div class="cab rv"><div><span class="eti">Clases y zonas</span><h2 class="t">Elegí cómo<br><span class="rojo">querés sudar</span></h2></div>
+    <p>Todas las clases están incluidas en el plan Full. Cupos limitados: reservá por WhatsApp.</p></div>
+  <div class="clases">
+    <article class="clase rv"><span class="num">01</span><svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M6 24h36M10 16v16M16 12v24M32 12v24M38 16v16"/></svg><h3>Pesas y fuerza</h3><p>Zona completa de máquinas, mancuernas y barras olímpicas.</p><div class="nivel">Intensidad<i><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b></b></i></div></article>
+    <article class="clase rv"><span class="num">02</span><svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="24" cy="28" r="12"/><path d="M17 18c0-7 14-7 14 0"/><path d="M24 24v5"/></svg><h3>Funcional</h3><p>Kettlebells, cuerdas, cajones y circuitos para todo el cuerpo.</p><div class="nivel">Intensidad<i><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b></i></div></article>
+    <article class="clase rv"><span class="num">03</span><svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="34" r="7"/><circle cx="36" cy="34" r="7"/><path d="M12 34l8-14h10l6 14M20 20l-3-6h-4M30 20l3-7h4"/></svg><h3>Spinning</h3><p>Música alta, luces y 45 minutos que se pasan volando.</p><div class="nivel">Intensidad<i><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b></b></i></div></article>
+    <article class="clase rv"><span class="num">04</span><svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M14 10h14a8 8 0 0 1 8 8v8a8 8 0 0 1-8 8H18a4 4 0 0 1-4-4z"/><path d="M14 22h22M20 34v6h10v-6"/></svg><h3>Boxeo</h3><p>Técnica, sacos y cardio. Para soltar el estrés de la semana.</p><div class="nivel">Intensidad<i><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b><b class="on"></b></i></div></article>
+    <article class="clase rv"><span class="num">05</span><svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="26" cy="8" r="4"/><path d="M26 14l-4 12 8 6-4 10M22 26l-10 4M30 18l8 6M18 42l4-10"/></svg><h3>Zumba</h3><p>Baile y cardio en grupo. Nadie te mira, todos se divierten.</p><div class="nivel">Intensidad<i><b class="on"></b><b class="on"></b><b class="on"></b><b></b><b></b></i></div></article>
+    <article class="clase rv"><span class="num">06</span><svg class="ic" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M4 24h8l4-10 8 20 6-14 4 4h10"/></svg><h3>Cardio</h3><p>Caminadoras, elípticas y escaladoras con vista a la calle.</p><div class="nivel">Intensidad<i><b class="on"></b><b class="on"></b><b></b><b></b><b></b></i></div></article>
+  </div>
+</div></section>
+
+<section id="planes"><div class="wrap">
+  <div class="cab rv"><div><span class="eti">Planes y precios</span><h2 class="t">Sin matrícula,<br><span class="lima">sin amarras</span></h2></div>
+    <div class="cambio" role="group" aria-label="Forma de pago"><button type="button" aria-pressed="true" data-m="1">Mensual</button><button type="button" aria-pressed="false" data-m="3">Trimestral <small>−10%</small></button></div></div>
+  <div class="planes">
+    <article class="plan rv"><h3>Básico</h3><p class="desc">Para entrenar a tu ritmo en el área de pesas y cardio.</p>
+      <div class="precio"><b data-p="18000">₡18.000</b><span data-u>/mes</span></div>
+      <ul><li>Área de pesas y máquinas</li><li>Zona de cardio</li><li>Rutina inicial con un coach</li><li>Horario completo</li></ul>
+      <a class="btn btn-b" href="{{WA}}" target="_blank" rel="noopener">Quiero este</a></article>
+    <article class="plan top rv"><span class="sello">Más popular</span><h3>Full</h3><p class="desc">Todo el gimnasio y todas las clases grupales incluidas.</p>
+      <div class="precio"><b data-p="25000">₡25.000</b><span data-u>/mes</span></div>
+      <ul><li>Todo lo del plan Básico</li><li>Clases ilimitadas: funcional, spinning, boxeo, zumba</li><li>Evaluación física cada mes</li><li>Rutina personalizada</li></ul>
+      <a class="btn btn-r" href="{{WA}}" target="_blank" rel="noopener">Quiero este</a></article>
+    <article class="plan rv"><h3>Pareja</h3><p class="desc">Entrenen juntos y ahorren. Plan Full para dos personas.</p>
+      <div class="precio"><b data-p="42000">₡42.000</b><span data-u>/mes</span></div>
+      <ul><li>Plan Full para 2 personas</li><li>Clases ilimitadas</li><li>Evaluación física cada mes</li><li>Un mes de batidos de proteína gratis</li></ul>
+      <a class="btn btn-b" href="{{WA}}" target="_blank" rel="noopener">Quiero este</a></article>
+  </div>
+  <p class="nota">Precios de ejemplo para la demostración. En la página real se ponen los del gimnasio.</p>
+</div></section>
+
+<section id="imc"><div class="wrap imc">
+  <div class="rv"><span class="eti">Calculadora</span><h2 class="t" style="font-size:clamp(3rem,7vw,6rem);margin-top:14px">¿Cómo<br>estás <span class="rojo">hoy?</span></h2>
+    <p style="color:var(--gris);max-width:40ch;margin-top:18px">Mové las barras y calculá tu índice de masa corporal. Es un punto de partida: en tu evaluación gratis vemos el resto.</p>
+    <div class="acciones"><a class="btn btn-l" href="{{WA}}" target="_blank" rel="noopener">Quiero mi evaluación gratis</a></div></div>
+  <div class="calc rv">
+    <div class="campo"><label for="peso">Peso <b><span id="pesoV">70</span> kg</b></label><input type="range" id="peso" min="40" max="150" value="70"></div>
+    <div class="campo"><label for="altura">Altura <b><span id="alturaV">170</span> cm</b></label><input type="range" id="altura" min="140" max="205" value="170"></div>
+    <div class="res"><div class="valor" id="imcV">24.2</div><div><div class="estado" id="imcE">Peso saludable</div><small id="imcT">Seguí así: el plan Full te ayuda a mantenerlo.</small></div></div>
+    <div class="regla"><i id="imcP"></i></div>
+  </div>
+</div></section>
+
+<section id="horario"><div class="wrap">
+  <div class="cab rv"><div><span class="eti">Horario</span><h2 class="t">Abierto cuando<br><span class="rojo">vos podés</span></h2></div></div>
+  <div class="horario">
+    <div class="horas rv" id="horas">
+      <div class="hora" data-d="1,2,3,4,5"><span>Lunes a viernes</span><b>5:00 a.m. – 10:00 p.m.</b></div>
+      <div class="hora" data-d="6"><span>Sábado</span><b>7:00 a.m. – 4:00 p.m.</b></div>
+      <div class="hora" data-d="0"><span>Domingo y feriados</span><b>8:00 a.m. – 12:00 m.d.</b></div>
+    </div>
+    <div class="rv">
+      <div class="dias" id="dias"></div>
+      <div class="agenda" id="agenda"></div>
+    </div>
+  </div>
+</div></section>
+
+<section id="equipo"><div class="wrap">
+  <div class="cab rv"><div><span class="eti">Entrenadores</span><h2 class="t">Tu equipo<br><span class="lima">en la esquina</span></h2></div>
+    <p>Aquí van las fotos reales de los coaches, con su especialidad.</p></div>
+  <div class="equipo">
+    <article class="coach rv"><div class="foto" style="--c:#FF2D3D"><b>C1</b></div><div class="info"><h3>Coach 1</h3><p>Fuerza e hipertrofia · Certificado en entrenamiento funcional</p></div></article>
+    <article class="coach rv"><div class="foto" style="--c:#8A6BFF"><b>C2</b></div><div class="info"><h3>Coach 2</h3><p>Spinning y cardio · Instructora de zumba</p></div></article>
+    <article class="coach rv"><div class="foto" style="--c:#2EC4B6"><b>C3</b></div><div class="info"><h3>Coach 3</h3><p>Boxeo y acondicionamiento · Nutrición deportiva</p></div></article>
+  </div>
+</div></section>
+
+<section id="qr"><div class="wrap">
+  <div class="cab rv"><div><span class="eti">Incluido con la página</span><h2 class="t">Escaneá<br>y listo</h2></div>
+    <p>Dos códigos QR para imprimir y pegar en la recepción, los espejos o los volantes.</p></div>
+  <div class="qrs">
+    <div class="qr rv"><div class="codigo">{{QR_RESENA}}</div><div><h3>Dejanos tu reseña</h3><div class="estrellas">★★★★★</div><p>Abre directo la ventana para calificar al gimnasio en Google.</p></div></div>
+    <div class="qr rv"><div class="codigo">{{QR_WEB}}</div><div><h3>Abrí nuestra página</h3><p>Planes, horario y WhatsApp en el celular, sin buscar nada.</p></div></div>
+  </div>
+</div></section>
+
+<section id="contacto"><div class="wrap contacto">
+  <div class="rv"><span class="eti">Contacto</span><h2 class="t" style="margin-top:14px">Tu primera<br>clase es<br><span class="rojo">gratis.</span></h2></div>
+  <div class="canales rv">
+    <a class="canal wa" href="{{WA}}" target="_blank" rel="noopener"><i><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2c.2-.6.2-1 .1-1.2z"/></svg></i><div><small>WhatsApp</small><b>Reservar clase gratis</b></div></a>
+    <a class="canal" href="#contacto"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-6.3 7-12a7 7 0 0 0-14 0c0 5.7 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg></i><div><small>Ubicación</small><b>Dirección del gimnasio · Waze y Google Maps</b></div></a>
+    <a class="canal" href="#contacto"><i><svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-8h2.7l.4-3h-3.1V8.2c0-.9.25-1.5 1.5-1.5H17V4.1A21 21 0 0 0 14.7 4C12.3 4 10.6 5.5 10.6 8v2H8v3h2.6v8z"/></svg></i><div><small>Facebook</small><b>Revolución Fitness</b></div></a>
+    <a class="canal" href="#contacto"><i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg></i><div><small>Instagram</small><b>@revolucionfitness</b></div></a>
+    <a class="canal" href="#contacto"><i><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 3c.4 2 1.6 3.3 3.5 3.5v2.6c-1.3.1-2.5-.3-3.6-1v5.8c0 3.4-2.5 5.6-5.4 5.3-2.6-.3-4.4-2.5-4.3-5 .1-2.6 2.4-4.6 5.1-4.3v2.7c-1.4-.4-2.6.4-2.6 1.7 0 1.1.9 1.9 2 1.8 1.1 0 1.9-.9 1.9-2.1V3z"/></svg></i><div><small>TikTok</small><b>@revolucionfitness</b></div></a>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap">
+  <span>© <span id="anio">2026</span> Revolución Fitness</span>
+  <span>Página web por <a href="https://ssolanotech.com" target="_blank" rel="noopener">Solanotech</a> · WhatsApp 8933-0326</span>
+</div></footer>
+<a class="fab" href="{{WA}}" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2c.2-.6.2-1 .1-1.2z"/></svg></a>
+
+<script>
+(function(){
+  'use strict';
+  var d=document, $=function(i){return d.getElementById(i)};
+  var QUIETO=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  d.documentElement.classList.add('js');
+  $('anio').textContent=new Date().getFullYear();
+  var hero=d.querySelector('.hero');
+  setTimeout(function(){hero.classList.add('listo')},80);
+
+  /* menú en celular */
+  var nav=$('nav');
+  $('menuBtn').onclick=function(){ var a=nav.classList.toggle('abre'); this.setAttribute('aria-expanded',a) };
+  d.querySelectorAll('#links a').forEach(function(a){ a.onclick=function(){ nav.classList.remove('abre') } });
+
+  /* aparición */
+  var io=new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target) } }) },{threshold:.15});
+  d.querySelectorAll('.rv').forEach(function(el,i){ el.style.transitionDelay=(i%3)*90+'ms'; io.observe(el) });
+
+  /* cifras que cuentan */
+  var ioC=new IntersectionObserver(function(es){ es.forEach(function(e){ if(!e.isIntersecting) return; ioC.unobserve(e.target);
+    var el=e.target, fin=+el.dataset.n, t0=null;
+    (function paso(t){ if(t0===null) t0=t; var k=Math.min(1,(t-t0)/1500); el.textContent=Math.round(fin*(1-Math.pow(1-k,3))); if(k<1) requestAnimationFrame(paso) })(performance.now());
+  }) },{threshold:.6});
+  if(!QUIETO) d.querySelectorAll('[data-n]').forEach(function(el){ el.textContent='0'; ioC.observe(el) });
+
+  /* pulso que cambia */
+  if(!QUIETO) setInterval(function(){ $('bpm').textContent=118+Math.round(Math.random()*24) },1800);
+
+  /* paralaje y texto gigante */
+  var mx=0,my=0,tx=0,ty=0;
+  addEventListener('pointermove',function(e){ tx=e.clientX/innerWidth-.5; ty=e.clientY/innerHeight-.5 },{passive:true});
+  (function cuadro(){
+    var y=scrollY; nav.classList.toggle('chica',y>30);
+    if(!QUIETO && y<innerHeight*1.2){
+      mx+=(tx-mx)*.08; my+=(ty-my)*.08;
+      hero.style.setProperty('--mx',mx.toFixed(3)); hero.style.setProperty('--my',my.toFixed(3));
+      $('gigante').style.setProperty('--gx',(-y*.6-mx*40).toFixed(1)+'px');
+    }
+    requestAnimationFrame(cuadro);
+  })();
+
+  /* planes mensual / trimestral */
+  d.querySelectorAll('.cambio button').forEach(function(b){ b.onclick=function(){
+    d.querySelectorAll('.cambio button').forEach(function(x){ x.setAttribute('aria-pressed',x===b) });
+    var m=+b.dataset.m;
+    d.querySelectorAll('[data-p]').forEach(function(p){ var v=+p.dataset.p*m*(m>1?.9:1); p.textContent='₡'+Math.round(v/100)*100 .toLocaleString('es-CR').replace(/,/g,'.') });
+    d.querySelectorAll('[data-u]').forEach(function(u){ u.textContent=m>1?'/3 meses':'/mes' });
+  } });
+
+  /* calculadora IMC */
+  var peso=$('peso'), alt=$('altura');
+  function imc(){
+    var p=+peso.value, a=+alt.value/100, v=p/(a*a);
+    $('pesoV').textContent=p; $('alturaV').textContent=alt.value;
+    [peso,alt].forEach(function(r){ r.style.setProperty('--p',((r.value-r.min)/(r.max-r.min)*100)+'%') });
+    $('imcV').textContent=v.toFixed(1);
+    var e,t;
+    if(v<18.5){e='Bajo peso';t='Te armamos una rutina para ganar masa muscular.'}
+    else if(v<25){e='Peso saludable';t='Seguí así: el plan Full te ayuda a mantenerlo.'}
+    else if(v<30){e='Sobrepeso';t='Con cardio y funcional lo bajás más rápido de lo que creés.'}
+    else {e='Obesidad';t='Empezamos suave y con un coach a tu lado. Tu primera clase es gratis.'}
+    $('imcE').textContent=e; $('imcT').textContent=t;
+    $('imcP').style.setProperty('--pos',Math.max(2,Math.min(98,(v-14)/(36-14)*100))+'%');
+  }
+  peso.oninput=imc; alt.oninput=imc; imc();
+
+  /* agenda de clases por día */
+  var AG={
+    1:[['6:00','Funcional','Coach 1','Alta'],['12:00','Spinning','Coach 2','Media'],['18:00','Boxeo','Coach 3','Alta'],['19:30','Zumba','Coach 2','Media']],
+    2:[['6:00','Spinning','Coach 2','Media'],['17:30','Funcional','Coach 1','Alta'],['19:00','Boxeo','Coach 3','Alta']],
+    3:[['6:00','Funcional','Coach 1','Alta'],['12:00','Spinning','Coach 2','Media'],['18:00','Zumba','Coach 2','Media'],['19:30','Funcional','Coach 1','Alta']],
+    4:[['6:00','Spinning','Coach 2','Media'],['17:30','Boxeo','Coach 3','Alta'],['19:00','Funcional','Coach 1','Alta']],
+    5:[['6:00','Funcional','Coach 1','Alta'],['18:00','Spinning','Coach 2','Media'],['19:00','Zumba','Coach 2','Media']],
+    6:[['8:00','Funcional en grupo','Coach 1','Alta'],['10:00','Zumba','Coach 2','Media']],
+    0:[['9:00','Spinning','Coach 2','Media']]
+  };
+  var NOM=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'], hoy=new Date().getDay();
+  function agenda(dia){
+    d.querySelectorAll('#dias button').forEach(function(b){ b.setAttribute('aria-pressed',+b.dataset.d===dia) });
+    var cont=$('agenda'); cont.textContent='';
+    AG[dia].forEach(function(s,i){
+      var el=d.createElement('div'); el.className='sesion'; el.style.animationDelay=i*70+'ms';
+      var tm=d.createElement('time'); tm.textContent=s[0];
+      var info=d.createElement('div'); var b=d.createElement('b'); b.textContent=s[1]; var sm=d.createElement('small'); sm.textContent=s[2]; info.appendChild(b); info.appendChild(sm);
+      var tag=d.createElement('span'); tag.textContent='Intensidad '+s[3].toLowerCase();
+      el.appendChild(tm); el.appendChild(info); el.appendChild(tag); cont.appendChild(el);
+    });
+  }
+  [1,2,3,4,5,6,0].forEach(function(n){ var b=d.createElement('button'); b.type='button'; b.dataset.d=n; b.textContent=n===hoy?'Hoy':NOM[n]; b.onclick=function(){agenda(n)}; $('dias').appendChild(b) });
+  agenda(hoy);
+  d.querySelectorAll('.hora').forEach(function(h){ if(h.dataset.d.split(',').indexOf(String(hoy))>-1){ h.classList.add('hoy-d'); var s=d.createElement('em'); s.className='abierto'; s.textContent='Hoy'; h.firstElementChild.appendChild(s) } });
+})();
+</script>
+</body>
+</html>
