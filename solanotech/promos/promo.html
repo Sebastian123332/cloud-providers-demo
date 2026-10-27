@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+:root{--n:#08090D;--n2:#11131A;--az:#3B74FF;--az2:#8AADFF;--am:#FFD23F;--bl:#F5F6FA;--gr:#A6ABBC;--t:"Big Shoulders Display",Impact,sans-serif;--s:"Space Grotesk",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:var(--h,1350px);background:var(--n);color:var(--bl);font-family:var(--s);overflow:hidden;position:relative}
+.fondo{position:absolute;inset:0;background:
+  radial-gradient(700px 500px at 85% 18%,rgba(59,116,255,.35),transparent 70%),
+  radial-gradient(600px 500px at 0% 100%,rgba(255,210,63,.14),transparent 70%),
+  linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/54px 54px,
+  linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) 0 0/54px 54px}
+.cinta{position:absolute;left:-60px;right:-60px;background:var(--am);color:var(--n);font-family:var(--t);font-weight:900;font-size:38px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;padding:12px 0;transform:rotate(-4deg);box-shadow:0 14px 30px rgba(0,0,0,.4)}
+.cinta span{display:inline-block;padding:0 22px}
+.cinta span::after{content:"⏳";margin-left:22px}
+.c1{top:46px}
+.in{position:absolute;inset:0;padding:150px 76px 70px;display:flex;flex-direction:column}
+.marca{display:flex;align-items:center;gap:14px;font-family:var(--t);font-weight:800;font-size:34px;letter-spacing:.04em;text-transform:uppercase}
+.marca i{width:46px;height:46px;border-radius:12px;background:var(--az);display:grid;place-items:center;font-style:normal;font-size:26px}
+.ultimos{margin-top:34px;max-width:640px;font-family:var(--t);font-weight:900;font-size:128px;line-height:.82;text-transform:uppercase}
+.ultimos em{font-style:normal;color:transparent;-webkit-text-stroke:3px var(--am);display:block}
+.sub{margin-top:22px;max-width:600px;font-size:32px;font-weight:600;color:var(--gr)}
+.sub b{color:var(--bl)}
+.precio{margin-top:34px;display:flex;flex-direction:column;align-items:flex-start;gap:24px;max-width:620px}
+.monto{background:var(--az);border-radius:28px;padding:20px 38px 14px;transform:rotate(-2deg);box-shadow:12px 12px 0 var(--am)}
+.monto small{display:block;margin-bottom:10px;font-weight:700;font-size:22px;letter-spacing:.14em;text-transform:uppercase;color:#DCE6FF}
+.monto b{display:block;font-family:var(--t);font-weight:900;font-size:136px;line-height:.9;letter-spacing:-.01em}
+.unico{font-family:var(--t);font-weight:800;font-size:40px;line-height:1;text-transform:uppercase}
+.unico span{color:var(--am)}
+.lista{margin-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:16px 26px;font-size:28px;font-weight:600}
+.lista div{display:flex;gap:14px;align-items:center}
+.lista div::before{content:"";flex:none;width:30px;height:30px;border-radius:50%;background:var(--am) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2308090D' stroke-width='3.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12l4 4 8-8'/%3E%3C/svg%3E") center/20px no-repeat}
+.dominio{margin-top:28px;font-size:25px;color:var(--gr)}
+.dominio b{color:var(--bl)}
+.pie{margin-top:auto;display:flex;justify-content:space-between;align-items:flex-end;gap:20px;padding-top:28px;border-top:2px dashed rgba(255,255,255,.18)}
+.cta{font-family:var(--t);font-weight:900;font-size:62px;line-height:.95;text-transform:uppercase}
+.cta span{color:var(--am)}
+.datos{text-align:right;font-size:30px;font-weight:700;line-height:1.35}
+.datos .wa{display:inline-flex;align-items:center;gap:12px;background:#25D366;color:#06301A;border-radius:999px;padding:10px 24px;font-size:38px;font-weight:700}
+.datos .wa svg{width:36px;height:36px}
+.datos small{display:block;margin-top:10px;color:var(--gr);font-weight:600}
+/* celular */
+.cel{position:absolute;right:64px;top:250px;width:250px;height:500px;border-radius:40px;background:#0E1016;border:9px solid #23262F;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 2px #3A3E4A;transform:rotate(8deg);overflow:hidden}
+.cel::before{content:"";position:absolute;top:10px;left:50%;width:80px;height:20px;border-radius:12px;background:#000;transform:translateX(-50%);z-index:3}
+.pant{position:absolute;inset:0;padding:44px 16px 16px;background:linear-gradient(170deg,#18213A,#0B0E16)}
+.pant .tt{font-family:var(--t);font-weight:900;font-size:40px;line-height:.86;text-transform:uppercase}
+.pant .tt span{color:var(--am)}
+.pant .ln{height:9px;border-radius:9px;background:rgba(255,255,255,.18);margin-top:12px}
+.pant .ln.c{width:70%}
+.pant .bt{margin-top:18px;height:38px;border-radius:999px;background:var(--az)}
+.pant .gal{margin-top:16px;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.pant .gal i{height:78px;border-radius:12px;background:linear-gradient(135deg,var(--az),#1B2C55)}
+.pant .gal i:nth-child(2){background:linear-gradient(135deg,var(--am),#7A5A00)}
+.pant .gal i:nth-child(3){background:linear-gradient(135deg,#2EC4B6,#0D4A45)}
+.pant .gal i:nth-child(4){background:linear-gradient(135deg,#FF5A66,#5A0F17)}
+.pant .wa2{position:absolute;right:14px;bottom:14px;width:46px;height:46px;border-radius:50%;background:#25D366}
+.sello{position:absolute;right:230px;top:640px;width:160px;height:160px;border-radius:50%;background:var(--am);color:var(--n);display:grid;place-items:center;text-align:center;font-family:var(--t);font-weight:900;font-size:30px;line-height:.92;text-transform:uppercase;transform:rotate(-12deg);box-shadow:0 18px 40px rgba(0,0,0,.45);z-index:2}
+.sello b{display:block;font-size:36px}
+/* versión historia */
+body.hist .in{padding-top:260px}
+body.hist .c1{top:120px}
+body.hist .ultimos{font-size:128px;margin-top:40px;max-width:640px}
+body.hist .cel{top:420px}
+body.hist .sello{top:830px}
+body.hist .lista{grid-template-columns:1fr;margin-top:60px;font-size:34px;gap:20px}
+body.hist .precio{margin-top:50px}
+body.hist .pie{flex-direction:column;align-items:flex-start;gap:30px;padding-bottom:150px}
+body.hist .sub{font-size:36px}
+body.hist .dominio{font-size:28px}
+body.hist .datos{text-align:left}
+</style></head>
+<body>
+<div class="fondo"></div>
+<div class="cinta c1"><span>Últimos días</span><span>Últimos días</span><span>Últimos días</span><span>Últimos días</span><span>Últimos días</span></div>
+<div class="in">
+  <div class="marca"><i>S</i>Solanotech</div>
+  <h1 class="ultimos">Quedan<em>pocos días</em></h1>
+  <p class="sub">de la promo de <b>páginas web</b> para su negocio</p>
+  <div class="precio">
+    <div class="monto"><small>Solo</small><b>₡80.000</b></div>
+    <div class="unico">Un solo <span>pago</span> · sin mensualidades</div>
+  </div>
+  <div class="lista">
+    <div>Diseño personalizado</div>
+    <div>Adaptada al celular</div>
+    <div>Botón de WhatsApp</div>
+    <div>Sus redes sociales</div>
+    <div>QR reseñas Google</div>
+    <div>QR de su página</div>
+    <div>3 cambios gratis</div>
+    <div>3 meses de garantía</div>
+  </div>
+  <p class="dominio">Incluye su dominio <b>www</b> · solo se renueva el dominio: <b>₡12.000 al año</b></p>
+  <div class="pie">
+    <div class="cta">¡Aparte<br>la <span>suya hoy!</span></div>
+    <div class="datos"><span class="wa"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2c.2-.6.2-1 .1-1.2z"/></svg>8933-0326</span><small>ssolanotech.com</small></div>
+  </div>
+</div>
+<div class="sello">Cupos<b>limitados</b></div>
+<div class="cel"><div class="pant">
+  <div class="tt">Su<br>negocio<br><span>en línea</span></div>
+  <div class="ln"></div><div class="ln c"></div>
+  <div class="bt"></div>
+  <div class="gal"><i></i><i></i><i></i><i></i></div>
+  <div class="wa2"></div>
+</div></div>
+</body></html>
