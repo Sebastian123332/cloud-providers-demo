@@ -1,0 +1,68 @@
+<dialog class="legal pro" id="dlg-proformas" aria-labelledby="t-proformas">
+  <div class="lg-head"><h2 id="t-proformas">Proformas</h2><button type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div class="pro-in">
+    <form class="pro-form" id="pf" novalidate>
+      <p class="pro-nota">Herramienta interna de Grúas Dieca. Llene los datos y descargue la proforma en PDF con el formato de la empresa. Los datos quedan solo en este navegador.</p>
+      <fieldset>
+        <legend>Cliente</legend>
+        <label class="pf">Razón social o nombre *<input id="pf-cliente" maxlength="90" value="INVERSIONES ZETA SOCIEDAD ANONIMA"></label>
+        <div class="pro-dos">
+          <label class="pf">Cédula jurídica<input id="pf-cedula" maxlength="20" inputmode="numeric" value="3101031022"></label>
+          <label class="pf">Actividad económica<input id="pf-actividad" maxlength="20" value="6810.0"></label>
+        </div>
+        <label class="pf">Teléfonos<input id="pf-tel" maxlength="60" value="2573-7601 / 2224-3333"></label>
+        <label class="pf">Correo<input id="pf-correo" type="email" maxlength="80" value="facturaelectronica@zetaonline.com"></label>
+        <label class="pf">Dirección<input id="pf-dir" maxlength="120" value="Los Yoses, San Pedro, Edificio Adriático"></label>
+        <label class="pf">Atención a (opcional)<input id="pf-contacto" maxlength="60" placeholder="Ej. Rodolfo Méndez"></label>
+        <label class="pf">Proyecto (opcional)<input id="pf-proyecto" maxlength="80" placeholder="Ej. Torre Los Yoses"></label>
+      </fieldset>
+      <div>
+      <fieldset>
+        <legend>Fecha</legend>
+        <div class="pro-dos">
+          <label class="pf">Ciudad<input id="pf-ciudad" maxlength="40" value="Cartago"></label>
+          <label class="pf">Fecha<input id="pf-fecha" type="date"></label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Servicio</legend>
+        <label class="pf">Descripción<input id="pf-servicio" maxlength="80" value="Servicio de grúa mensual"></label>
+        <div class="pro-dos">
+          <label class="pf">Monto mensual (₡)<input id="pf-monto" inputmode="numeric" value="7.500.000"></label>
+          <label class="pf">Horas incluidas<input id="pf-horas" inputmode="numeric" value="200"></label>
+        </div>
+        <div class="pro-dos">
+          <label class="pf">Hora adicional (₡)<input id="pf-extra" inputmode="numeric" value="37.500"></label>
+          <label class="pf">IVA (%)<input id="pf-iva" inputmode="numeric" value="13"></label>
+        </div>
+        <label class="pf">Forma de pago<input id="pf-pago" maxlength="60" value="Sistema de pago de contado"></label>
+        <label class="pf">Observaciones (opcional)<textarea id="pf-obs" maxlength="400" placeholder="Ej. Incluye operador. Traslado de la grúa al proyecto sin costo."></textarea></label>
+      </fieldset>
+      </div>
+      <div class="pro-acc">
+        <button type="button" class="btn pro-pdf" id="pf-pdf">Descargar PDF</button>
+        <button type="button" class="pro-limpiar" id="pf-limpiar">Nueva proforma</button>
+      </div>
+      <p class="pro-msg" id="pf-msg" role="status"></p>
+    </form>
+    <div class="pro-vista" aria-label="Vista previa de la proforma">
+      <div class="hoja" id="hoja">
+        <img class="hoja-fondo" src="{{PRO_FONDO}}" alt="">
+        <div class="hoja-cab">GRÚAS DIECA S.A.</div>
+        <p class="hoja-fecha" id="hv-fecha"></p>
+        <p>Señores</p>
+        <p class="hoja-cli" id="hv-cliente"></p>
+        <p class="hoja-dat" id="hv-datos"></p>
+        <p class="hoja-saludo" id="hv-saludo"></p>
+        <p class="hoja-serv" id="hv-servicio"></p>
+        <table class="hoja-tabla" id="hv-tabla"></table>
+        <p class="hoja-obs" id="hv-obs"></p>
+        <p class="hoja-atento">Quedo atento a sus órdenes</p>
+        <p class="hoja-nota"><b>Nota:</b><br><b id="hv-pago"></b></p>
+        <p class="hoja-banco">Grúas DIECA S.A cédula jurídica<br>3-101-712098<br>Cuenta 100-01-054-001419-4<br>Cuenta cliente 15105410010014191<br>Banco Nacional<br>IBAN:CR 39015105410010014191</p>
+        <p class="hoja-firma">Atentamente<br><br>Diego Quirós Olivares<br><br>Cedula 3-03380923<br><br>Gerente General</p>
+        <div class="hoja-pie"><span>San Nicolas, Cartago</span><span>dquiros811@gmail.com</span><span>8854-4150</span></div>
+      </div>
+    </div>
+  </div>
+</dialog>

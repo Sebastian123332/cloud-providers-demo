@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-IJ8onApn5k36Dn85gQjMYrAOS82Z+vQE0rQm9ZtCIu8='; style-src 'sha256-dFyr9TJoBov4mCPX+HDVDv6axaFNkNLSshqQ9nqI7f8=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src https://formsubmit.co; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-0ioa3WNOL3DSpBWW1vnE5brlsOBj1mcv1xDvYOcHVko=' https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js; style-src 'sha256-Etld5js5csRfdRi0RNsrHRb+GWKgKQo8+msLuemAW2g=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src https://formsubmit.co; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests; frame-ancestors 'none'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
