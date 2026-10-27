@@ -3,8 +3,8 @@
     var pf=$('pf'); if(!pf) return;
     var F_REG='__F_REG__', F_BOLD='__F_BOLD__', F_TIT='__F_TIT__';
     var MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','setiembre','octubre','noviembre','diciembre'];
-    var CAMPOS=['ciudad','fecha','cliente','cedula','actividad','tel','correo','dir','contacto','proyecto','servicio','monto','horas','extra','iva','pago','obs'];
-    var DEL_CLIENTE=['cliente','cedula','actividad','tel','correo','dir','contacto','proyecto','obs'];
+    var CAMPOS=['ciudad','fecha','cliente','cedula','actividad','tel','correo','dir','proyecto','servicio','monto','horas','extra','iva','pago','obs'];
+    var DEL_CLIENTE=['cliente','cedula','actividad','tel','correo','dir','proyecto','obs'];
     var GUARDA='dieca-proforma';
     function hoyISO(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0') }
     function v(k){ return String($('pf-'+k).value||'').replace(/[\u0000-\u001F\u007F]/g,' ').replace(/\s+/g,' ').trim() }
@@ -30,7 +30,7 @@
       if(x>0) filas.push(['Hora adicional ('+col(x)+(iva>0?' + IVA '+col(x*iva/100):'')+')',col(x*(1+iva/100))]);
       return {
         fecha:fechaTxt(), cliente:v('cliente'), lineas:lineas,
-        saludo:(v('contacto') ? 'Estimado(a) '+v('contacto')+', por' : 'Estimados señores, por')+' este medio adjunto la cotización solicitada'+pr,
+        saludo:'Estimados señores, por este medio adjunto la cotización solicitada'+pr,
         servicio:v('servicio')+' '+h+' horas '+col(m)+mas+(x>0?' y '+col(x)+mas+' la hora adicional después de las '+h+' del mes.':'.'),
         filas:filas, obs:String($('pf-obs').value||'').replace(/[\u0000-\u0009\u000B-\u001F\u007F]/g,' ').trim(), pago:v('pago')||'Sistema de pago de contado',
         monto:m
