@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+:root{--n:#08090D;--az:#3B74FF;--am:#FFD23F;--bl:#F5F6FA;--gr:#A6ABBC;--ok:#22C55E;--t:"Big Shoulders Display",Impact,sans-serif;--s:"Space Grotesk",system-ui,sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{width:1080px;height:1350px;background:var(--n);color:var(--bl);font-family:var(--s);overflow:hidden;position:relative}
+.fondo{position:absolute;inset:0;background:
+  radial-gradient(700px 520px at 80% 40%,rgba(59,116,255,.32),transparent 70%),
+  radial-gradient(600px 500px at 0% 100%,rgba(255,210,63,.13),transparent 70%),
+  linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/54px 54px,
+  linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) 0 0/54px 54px}
+.in{position:absolute;inset:0;padding:60px 70px 56px;display:flex;flex-direction:column}
+.top{display:flex;justify-content:space-between;align-items:center}
+.marca{display:flex;align-items:center;gap:14px;font-family:var(--t);font-weight:800;font-size:32px;letter-spacing:.04em;text-transform:uppercase}
+.marca i{width:44px;height:44px;border-radius:12px;background:var(--az);display:grid;place-items:center;font-style:normal;font-size:24px}
+.check{display:inline-flex;align-items:center;gap:12px;background:rgba(34,197,94,.14);border:2px solid var(--ok);color:#86EFAC;border-radius:999px;padding:10px 22px;font-weight:700;font-size:24px;letter-spacing:.06em;text-transform:uppercase}
+.check::before{content:"";width:28px;height:28px;border-radius:50%;background:var(--ok) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2308090D' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12l4 4 8-8'/%3E%3C/svg%3E") center/18px no-repeat}
+h1{margin-top:44px;font-family:var(--t);font-weight:900;font-size:112px;line-height:.86;text-transform:uppercase}
+h1 span{color:var(--am)}
+.tipo{margin-top:18px;font-size:32px;font-weight:600;color:var(--gr)}
+.tipo b{color:var(--bl)}
+.escena{position:relative;flex:1;margin-top:20px}
+.laptop{position:absolute;left:-8px;top:40px;width:820px}
+.pantalla{background:#1B1E27;border-radius:22px 22px 0 0;padding:16px 16px 18px;box-shadow:0 0 0 2px #2E3240}
+.pantalla img{display:block;width:100%;border-radius:6px}
+.base{height:26px;margin:0 -50px;background:linear-gradient(#3A3E4A,#20232C);border-radius:0 0 26px 26px;box-shadow:0 30px 60px rgba(0,0,0,.6)}
+.base::before{content:"";display:block;width:150px;height:9px;margin:0 auto;background:#14161D;border-radius:0 0 10px 10px}
+.cel{position:absolute;right:-6px;top:0;width:250px;border-radius:38px;background:#0E1016;padding:10px;box-shadow:0 0 0 3px #2E3240,0 40px 70px rgba(0,0,0,.7)}
+.cel img{display:block;width:100%;border-radius:30px}
+.cel::before{content:"";position:absolute;top:18px;left:50%;width:74px;height:20px;border-radius:12px;background:#000;transform:translateX(-50%)}
+.chips{position:absolute;left:0;bottom:6px;display:flex;flex-wrap:wrap;gap:10px;max-width:720px}
+.chips span{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(8px);border-radius:999px;padding:9px 18px;font-size:22px;font-weight:600}
+.pie{display:flex;justify-content:space-between;align-items:center;gap:20px;padding-top:28px;border-top:2px dashed rgba(255,255,255,.18)}
+.cta{font-family:var(--t);font-weight:900;font-size:54px;white-space:nowrap;line-height:.95;text-transform:uppercase}
+.cta span{color:var(--am)}
+.cta small{display:block;font-family:var(--s);font-size:24px;font-weight:600;letter-spacing:.02em;text-transform:none;color:var(--gr);margin-top:8px}
+.datos{text-align:right}
+.wa{white-space:nowrap;display:inline-flex;align-items:center;gap:12px;background:#25D366;color:#06301A;border-radius:999px;padding:12px 26px;font-size:36px;font-weight:700}
+.wa svg{width:34px;height:34px}
+.datos small{display:block;margin-top:8px;color:var(--gr);font-size:24px;font-weight:600}
+.cinta{position:absolute;left:-60px;right:-60px;top:20px;background:var(--am);color:var(--n);font-family:var(--t);font-weight:900;font-size:30px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;padding:9px 0;transform:rotate(-3deg);box-shadow:0 12px 24px rgba(0,0,0,.4);display:none}
+/* collage */
+body.collage h1{font-size:120px;margin-top:40px}
+.grid{display:none}
+body.collage .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:34px}
+body.collage .escena,body.collage .tipo{display:none}
+.tile{position:relative;border-radius:18px;overflow:hidden;box-shadow:0 0 0 2px #2E3240,0 24px 40px rgba(0,0,0,.5);transform:rotate(var(--r,0deg))}
+.tile:nth-child(1){--r:-1.5deg}.tile:nth-child(2){--r:1.2deg}.tile:nth-child(3){--r:1deg}.tile:nth-child(4){--r:-1.2deg}
+.tile img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top}
+.tile b{position:absolute;left:12px;bottom:12px;display:inline-flex;align-items:center;gap:8px;background:rgba(8,9,13,.86);border-radius:999px;padding:7px 14px 7px 10px;font-size:20px;font-weight:700}
+.tile b::before{content:"";width:20px;height:20px;border-radius:50%;background:var(--ok) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2308090D' stroke-width='3.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 12l4 4 8-8'/%3E%3C/svg%3E") center/13px no-repeat}
+body.collage .gracias{display:block}
+.gracias{display:none;margin-top:30px;font-size:30px;font-weight:600;color:var(--gr);margin-bottom:28px}
+.gracias b{color:var(--bl)}
+.aviso{white-space:nowrap;display:inline-flex;align-items:center;gap:10px;margin-top:16px;background:var(--am);color:var(--n);font-family:var(--t);font-weight:900;font-size:30px;text-transform:uppercase;padding:6px 18px;transform:rotate(-2deg)}
+</style></head>
+<body>
+<div class="fondo"></div>
+<div class="in">
+  <div class="top"><div class="marca"><i>S</i>Solanotech</div><span class="check" id="check">Cliente satisfecho</span></div>
+  <h1 id="titulo"></h1>
+  <p class="tipo" id="tipo"></p>
+  <div class="grid" id="grid"></div>
+  <p class="gracias">Gracias a cada negocio que confió en <b>Solanotech</b> para llevar su marca a internet.</p>
+  <div class="escena">
+    <div class="laptop"><div class="pantalla"><img id="pc" alt=""></div><div class="base"></div></div>
+    <div class="cel"><img id="mov" alt=""></div>
+    <div class="chips" id="chips"></div>
+  </div>
+  <div class="pie">
+    <div><div class="cta">¿El suyo es el <span>próximo?</span></div><span class="aviso">⏳ Quedan pocos días de promo</span></div>
+    <div class="datos"><span class="wa"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2c.2-.6.2-1 .1-1.2z"/></svg>8933-0326</span><small>ssolanotech.com</small></div>
+  </div>
+</div>
+<script>
+window.pinta=function(d){
+  document.getElementById('titulo').innerHTML=d.titulo;
+  if(d.collage){
+    document.body.classList.add('collage'); document.getElementById('check').textContent='Clientes satisfechos';
+    var g=document.getElementById('grid'); d.items.forEach(function(it){ var t=document.createElement('div'); t.className='tile'; var i=document.createElement('img'); i.src=it.img; var b=document.createElement('b'); b.textContent=it.nom; t.appendChild(i); t.appendChild(b); g.appendChild(t) });
+    return;
+  }
+  document.getElementById('tipo').innerHTML=d.tipo;
+  document.getElementById('pc').src=d.pc; document.getElementById('mov').src=d.cel;
+  var c=document.getElementById('chips'); d.chips.forEach(function(x){ var s=document.createElement('span'); s.textContent=x; c.appendChild(s) });
+};
+</script>
+</body></html>
