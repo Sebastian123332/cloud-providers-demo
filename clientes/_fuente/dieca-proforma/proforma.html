@@ -24,20 +24,23 @@
         </div>
       </fieldset>
       <fieldset>
-        <legend>Servicio</legend>
-        <label class="pf">Descripción<input id="pf-servicio" maxlength="80" value="Servicio de grúa mensual"></label>
+        <legend>Condiciones</legend>
         <div class="pro-dos">
-          <label class="pf">Monto mensual (₡)<input id="pf-monto" inputmode="numeric" value="7.500.000"></label>
-          <label class="pf">Horas incluidas<input id="pf-horas" inputmode="numeric" value="200"></label>
-        </div>
-        <div class="pro-dos">
-          <label class="pf">Hora adicional (₡)<input id="pf-extra" inputmode="numeric" value="37.500"></label>
           <label class="pf">IVA (%)<input id="pf-iva" inputmode="numeric" value="13"></label>
+          <label class="pf">Horas incluidas (opcional)<input id="pf-horas" inputmode="numeric" value="200"></label>
         </div>
+        <label class="pf">Hora adicional (₡, opcional)<input id="pf-extra" inputmode="numeric" value="37.500"></label>
         <label class="pf">Forma de pago<input id="pf-pago" maxlength="60" value="Sistema de pago de contado"></label>
         <label class="pf">Observaciones (opcional)<textarea id="pf-obs" maxlength="400" placeholder="Ej. Incluye operador. Traslado de la grúa al proyecto sin costo."></textarea></label>
       </fieldset>
       </div>
+      <fieldset class="pro-servicios">
+        <legend>Servicios y precios</legend>
+        <div class="ln-cab" aria-hidden="true"><span>Descripción del servicio</span><span>Cant.</span><span>Precio unit. (₡)</span><span>Total</span></div>
+        <div id="pf-lineas"></div>
+        <button type="button" class="pro-mas" id="pf-mas">+ Agregar servicio</button>
+        <div class="ln-tot" id="pf-totales" aria-live="polite"></div>
+      </fieldset>
       <div class="pro-acc">
         <button type="button" class="btn pro-pdf" id="pf-pdf">Descargar PDF</button>
         <button type="button" class="pro-limpiar" id="pf-limpiar">Nueva proforma</button>
