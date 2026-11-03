@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-8cK/3Gsz+gNtLTkfbbikRvmFXr6k4c6HItkpE0sJlZc=' https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js; style-src 'sha256-1FEsr3Vi1LoOVQbitAI2+Y/kSae+KlxzDbSkFaxDz/A=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-G7octUp6SDLbeT2TL+kjJdgNxRsmpKzgAI555ZWt2HQ=' https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js; style-src 'sha256-1FEsr3Vi1LoOVQbitAI2+Y/kSae+KlxzDbSkFaxDz/A=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Adriana Solano Guillén, asesora en bonos de vivienda con más de 10 años de experiencia, junto a Caribe Constructora. Tipos de bono, requisitos y trámite por WhatsApp.">
@@ -1321,15 +1321,27 @@ dialog.legal::backdrop{background:rgba(31,42,61,.55);backdrop-filter:blur(3px)}
     var clean = function(t){ return String(t).replace(/₡/g,'¢').replace(/[“”]/g,'"'); };
     var blue=[71,103,168], ink=[31,42,61], grey=[91,101,120], line=[212,220,234], blush=[252,233,228], sage=[227,241,232];
 
-    doc.setFillColor.apply(doc, blue); doc.rect(0,0,W,32,'F');
-    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(18);
-    doc.text('Solicitud de bono de vivienda', M, 15);
-    doc.setFont('helvetica','normal'); doc.setFontSize(10);
-    doc.text('Adriana Solano Guillén  ·  Asesora en bonos de vivienda  ·  Tel. 8670-4012', M, 23);
+    /* encabezado con el logo de Adriana */
+    var logo = document.querySelector('.lg-adriana');
+    var conLogo = false;
+    if(logo && logo.complete && logo.naturalWidth){
+      try{ doc.addImage(logo.src, 'PNG', M, 9, 84, 84 * logo.naturalHeight / logo.naturalWidth); conLogo = true; }catch(e){}
+    }
+    if(!conLogo){
+      doc.setTextColor.apply(doc, ink); doc.setFont('helvetica','bold'); doc.setFontSize(15);
+      doc.text('Adriana Solano Guillén', M, 16);
+      doc.setTextColor.apply(doc, grey); doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+      doc.text('ASESORA EN BONOS DE VIVIENDA', M, 21.5);
+    }
+    doc.setTextColor.apply(doc, blue); doc.setFont('helvetica','bold'); doc.setFontSize(14);
+    doc.text('Solicitud de bono de vivienda', W-M, 15, {align:'right'});
+    doc.setTextColor.apply(doc, grey); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+    doc.text('Tel. y WhatsApp 8670-4012', W-M, 21, {align:'right'});
+    doc.setFillColor.apply(doc, blue); doc.rect(M, 28, W-2*M, 1.2, 'F');
 
     var d = new Date(), pad=function(n){return (n<10?'0':'')+n;};
     var fecha = pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear();
-    y = 44;
+    y = 40;
     doc.setTextColor.apply(doc, grey); doc.setFontSize(10);
     doc.text('Fecha: ' + fecha, M, y);
     var tipo = field(data,/Tipo de bono/i);
@@ -1397,6 +1409,12 @@ dialog.legal::backdrop{background:rgba(31,42,61,.55);backdrop-filter:blur(3px)}
       doc.text(c, M, y); y += c.length * 5;
     }
 
+    /* la sección de la asesora va completa en una misma página cuando cabe */
+    doc.setFontSize(10.5);
+    var altoAsesora = 18 + [data.resultado, data.observaciones].reduce(function(a, x){
+      x = String(x || '').trim(); return a + (x ? 10 + doc.splitTextToSize(clean(x), W - 2*M).length * 5 : 13);
+    }, 0);
+    if(altoAsesora < 200) newPageIfNeeded(altoAsesora);
     section('Para uso de la asesora');
     [['Resultado del preanálisis:', data.resultado],['Observaciones:', data.observaciones]].forEach(function(par){
       var t = par[0], txt = String(par[1] || '').trim();
