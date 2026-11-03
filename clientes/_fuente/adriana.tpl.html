@@ -262,7 +262,8 @@ fieldset{border:0;padding:0;margin:0;display:grid;gap:8px}
 .ficha-preview{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:6px;min-width:0}
 .ficha-preview dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:.92rem}
 .ficha-preview dt{color:var(--muted);font-weight:700}
-.ficha-preview dd{margin:0;overflow-wrap:anywhere}
+.ficha-preview dd{margin:0;overflow-wrap:anywhere;white-space:pre-line}
+.obs-asesora{margin-top:14px}
 @media (max-width:760px){.ficha-grid{grid-template-columns:1fr}}
 footer{border-top:1px solid var(--line);padding-block:28px;color:var(--muted);font-size:.88rem}
 footer .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px}
@@ -979,6 +980,14 @@ dialog.legal::backdrop{background:rgba(31,42,61,.55);backdrop-filter:blur(3px)}
         <div class="field">
           <label for="pasteMsg">Mensaje de WhatsApp</label>
           <textarea id="pasteMsg" rows="12" placeholder="Hola Adriana, quiero iniciar el trámite del bono de vivienda.&#10;&#10;*Nombre:* ...&#10;*Cédula:* ..."></textarea>
+          <div class="field obs-asesora">
+            <label for="resAsesora">Resultado del preanálisis <span class="hint">(opcional)</span></label>
+            <textarea id="resAsesora" maxlength="400" rows="2" placeholder="Ej. Califica para bono ordinario completo."></textarea>
+          </div>
+          <div class="field obs-asesora">
+            <label for="obsAsesora">Observaciones <span class="hint">(opcional)</span></label>
+            <textarea id="obsAsesora" maxlength="1200" rows="4" placeholder="Ej. Falta la constancia salarial. Se le explicó el trámite. Volver a llamar el lunes."></textarea>
+          </div>
           <div class="fila-btns arriba">
             <button class="btn" type="button" id="pdfAdmin">Generar PDF</button>
             <button class="btn ghost" type="button" id="loadSample">Ver un ejemplo</button>
@@ -1387,10 +1396,21 @@ dialog.legal::backdrop{background:rgba(31,42,61,.55);backdrop-filter:blur(3px)}
     }
 
     section('Para uso de la asesora');
-    doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor.apply(doc, grey);
-    ['Resultado del preanálisis:','Observaciones:'].forEach(function(t){
-      newPageIfNeeded(9);
-      doc.text(t, M, y); doc.setDrawColor.apply(doc, line); doc.line(M+48, y+.5, W-M, y+.5); doc.line(M, y+7, W-M, y+7); y += 13;
+    [['Resultado del preanálisis:', data.resultado],['Observaciones:', data.observaciones]].forEach(function(par){
+      var t = par[0], txt = String(par[1] || '').trim();
+      doc.setFont('helvetica', txt ? 'bold' : 'normal'); doc.setFontSize(10);
+      doc.setTextColor.apply(doc, txt ? ink : grey);
+      if(txt){
+        var ls = doc.splitTextToSize(clean(txt), W - 2*M);
+        newPageIfNeeded(7 + ls.length*5);
+        doc.text(t, M, y); y += 6;
+        doc.setFont('helvetica','normal'); doc.setFontSize(10.5);
+        ls.forEach(function(l){ newPageIfNeeded(5); doc.text(l, M, y); y += 5; });
+        y += 4;
+      } else {
+        newPageIfNeeded(9);
+        doc.text(t, M, y); doc.setDrawColor.apply(doc, line); doc.line(M+48, y+.5, W-M, y+.5); doc.line(M, y+7, W-M, y+7); y += 13;
+      }
     });
 
     var pages = doc.getNumberOfPages();
@@ -1459,8 +1479,12 @@ dialog.legal::backdrop{background:rgba(31,42,61,.55);backdrop-filter:blur(3px)}
   window.addEventListener('hashchange', function(){ if(location.hash === '#ficha') showFicha(); });
   document.getElementById('openFicha').addEventListener('click', function(){ showFicha(); setTimeout(function(){ ficha.scrollIntoView({block:'start'}); }, 0); });
 
+  var resA = document.getElementById('resAsesora'), obsA = document.getElementById('obsAsesora');
+  var LIMPIA_OBS = /[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F-\u009F\u200B-\u200F\u2028\u2029\u202A-\u202E\u2060-\u2064\u2066-\u2069\uFEFF]/g;
+  function notaAsesora(el, max){ return String(el.value || '').normalize('NFKC').replace(LIMPIA_OBS, '').replace(/[ \t]{2,}/g, ' ').replace(/\n{3,}/g, '\n\n').trim().slice(0, max); }
   function renderPreview(){
     var data = parseMsg(paste.value);
+    data.resultado = notaAsesora(resA, 400); data.observaciones = notaAsesora(obsA, 1200);
     prev.textContent = '';
     if(!data.fields.length){
       var h = document.createElement('p'); h.className='hint';
@@ -1468,13 +1492,14 @@ dialog.legal::backdrop{background:rgba(31,42,61,.55);backdrop-filter:blur(3px)}
       prev.appendChild(h); return data;
     }
     var dl = document.createElement('dl');
-    data.fields.concat([['Ya tiene', data.tiene.join(', ') || 'Ninguno'],['Pendientes', data.falta.join(', ') || 'Ninguno']]).concat(data.comentario ? [['Comentario', data.comentario]] : []).forEach(function(f){
+    data.fields.concat([['Ya tiene', data.tiene.join(', ') || 'Ninguno'],['Pendientes', data.falta.join(', ') || 'Ninguno']]).concat(data.comentario ? [['Comentario', data.comentario]] : []).concat(data.resultado ? [['Resultado del preanálisis', data.resultado]] : []).concat(data.observaciones ? [['Observaciones', data.observaciones]] : []).forEach(function(f){
       var dt=document.createElement('dt'), dd=document.createElement('dd'); dt.textContent=f[0]; dd.textContent=f[1]; dl.appendChild(dt); dl.appendChild(dd);
     });
     prev.appendChild(dl);
     return data;
   }
   paste.addEventListener('input', renderPreview);
+  resA.addEventListener('input', renderPreview); obsA.addEventListener('input', renderPreview);
   document.getElementById('loadSample').addEventListener('click', function(){
     paste.value = 'Hola Adriana, quiero iniciar el trámite del bono de vivienda.\n\n*Nombre:* Ejemplo Pérez Mora\n*Cédula:* 3-0000-0000\n*Teléfono:* 8888-8888\n*Correo:* ejemplo@gmail.com\n*Lugar:* Oreamuno, San Rafael\n*Tipo de bono:* CLP (construcción en lote propio)\n*Propiedad:* Sí, con escritura\n*Personas en el núcleo familiar:* 4\n*Cotiza para la CCSS:* Sí\n*Ingreso mensual del hogar:* ₡300.000\n\n*Documentos que ya tengo:* Copia de la cédula, Plano de catastro, Uso de suelo\n*Me faltan:* Estudio de preanálisis, Carta de disponibilidad de agua, Carta de disponibilidad de luz, Constancia de ingresos, Datos del núcleo familiar\n\n*Comentario:* Este es un mensaje de ejemplo.';
     renderPreview();

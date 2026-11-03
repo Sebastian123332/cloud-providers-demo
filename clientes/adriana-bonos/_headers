@@ -1,5 +1,5 @@
 /*
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-J0JtnKx/hlkZP9JPJFckA4h3Lh9XwuhUUvrDXMCSmKE=' https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js; style-src 'sha256-xJApowO4RygU87XFVoSXshOnCWUvY0xB91BeBY79qwU=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-8cK/3Gsz+gNtLTkfbbikRvmFXr6k4c6HItkpE0sJlZc=' https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js; style-src 'sha256-1FEsr3Vi1LoOVQbitAI2+Y/kSae+KlxzDbSkFaxDz/A=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests; frame-ancestors 'none'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
