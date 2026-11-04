@@ -147,6 +147,12 @@ for pag in ('tarjeta', 'panel'):
     csps[pag] = csp_de(p, extra_script=" 'self'", img="'self' data: blob:" if pag == 'panel' else "'self' data:")
     open('%s/%s.html' % (OUT, pag), 'w', encoding='utf-8').write(con_csp(p, csps[pag]))
 
+# ---------------- demostración con dos celulares (para enseñar por WhatsApp) ----------------
+demo = open(A + '../../../monzu-club-demo/index.html', encoding='utf-8').read()
+demo = demo.replace('Demostración hecha por Solanotech para Monzú Detallados', 'Demostración de Monzú Club · <a href="/">ver la página de Monzú</a>', 1)
+demo = demo.replace('.demobar{', '.demobar a{color:inherit;text-decoration:underline}\n.demobar{', 1)
+open(OUT + '/demo.html', 'w', encoding='utf-8').write(demo)
+
 # ---------------- cabeceras y robots ----------------
 base = "  X-Frame-Options: DENY\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  Cross-Origin-Opener-Policy: same-origin\n"
 sin_cam = "  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()\n"
@@ -158,5 +164,5 @@ for ruta, csp, extra in [('/', csp_index, sin_cam), ('/index.html', csp_index, s
     hd += ruta + "\n  Content-Security-Policy: " + csp + "\n" + base + extra
 hd += "/js/*\n  Cache-Control: public, max-age=604800\n"
 open(OUT + '/_headers', 'w').write(hd)
-open(OUT + '/robots.txt', 'w').write('User-agent: *\nDisallow: /panel.html\nDisallow: /panel\nDisallow: /tarjeta.html\nDisallow: /api/\n')
+open(OUT + '/robots.txt', 'w').write('User-agent: *\nDisallow: /demo.html\nDisallow: /panel.html\nDisallow: /panel\nDisallow: /tarjeta.html\nDisallow: /api/\n')
 print('listo ->', OUT, {f: os.path.getsize(OUT + '/' + f) for f in os.listdir(OUT) if f.endswith('.html')})

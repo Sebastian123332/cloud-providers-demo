@@ -1,4 +1,5 @@
 User-agent: *
+Disallow: /demo.html
 Disallow: /panel.html
 Disallow: /panel
 Disallow: /tarjeta.html
