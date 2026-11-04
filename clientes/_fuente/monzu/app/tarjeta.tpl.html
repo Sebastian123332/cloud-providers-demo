@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mi tarjeta · Monzú Club</title>
+<meta name="description" content="Tarjeta de cliente frecuente de Monzú Detallados.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#07090B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Monzú Club">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/tarjeta.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="{{FAV}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,700;0,800;1,800;1,900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{--n:#07090B;--n2:#0D1115;--n3:#141A20;--n4:#1C242C;--linea:rgba(255,255,255,.09);--linea2:rgba(255,255,255,.18);--bl:#F3F7FA;--gr:#A2AEB9;--gr2:#6C7884;--tq:#4CC3D4;--tq2:#8BE3EE;--az:#1E8FD8;--oro:#FFC94D;--ok:#3DDC84;
+  --t:"Exo 2","Arial Narrow",sans-serif;--s:"Inter",system-ui,sans-serif;--ease:cubic-bezier(.16,1,.3,1);color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--n)}
+body{min-height:100svh;background:radial-gradient(700px 500px at 50% -10%,rgba(76,195,212,.16),transparent 60%),var(--n);color:var(--bl);font-family:var(--s);line-height:1.5;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+a{color:inherit}
+.app{max-width:460px;margin:0 auto;padding:14px 16px 40px;display:grid;gap:14px}
+.top{display:flex;align-items:center;justify-content:space-between}
+.top img{height:40px}
+.top span{font-family:var(--t);font-weight:900;font-style:italic;color:var(--tq2);letter-spacing:.06em}
+.tarjeta{border-radius:24px;padding:22px 18px 18px;position:relative;overflow:hidden;background:linear-gradient(140deg,#0E5E6B 0%,#0B3B55 45%,#081E2E 100%);box-shadow:0 24px 50px rgba(0,0,0,.5),inset 0 0 0 1px rgba(139,227,238,.25)}
+.tarjeta::before{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(139,227,238,.35),transparent 70%)}
+.tarjeta::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.12) 50%,transparent 65%);transform:translateX(-100%);animation:brillo 5s infinite}
+@keyframes brillo{60%,100%{transform:translateX(100%)}}
+.tarjeta.premio{background:linear-gradient(140deg,#7A5A12 0%,#3B2C08 55%,#1B1405 100%);box-shadow:0 24px 50px rgba(0,0,0,.5),inset 0 0 0 1px rgba(255,201,77,.45)}
+.tj-cab{display:flex;justify-content:space-between;align-items:flex-start;position:relative}
+.tj-cab small{display:block;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--tq2);font-weight:700}
+.tj-cab b{font-family:var(--t);font-style:italic;font-weight:800;font-size:1.6rem;line-height:1.05}
+.tj-cab em{font-style:normal;font-size:.75rem;color:var(--gr);display:block;margin-top:2px}
+.tj-club{font-family:var(--t);font-weight:900;font-style:italic;font-size:.95rem;letter-spacing:.06em;color:var(--tq2);text-align:right;line-height:1}
+.sellos{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:18px 0 14px;position:relative}
+.sello{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;border:2px dashed rgba(139,227,238,.35);color:rgba(139,227,238,.35)}
+.sello svg{width:56%;height:56%}
+.sello.on{border:2px solid var(--tq2);background:radial-gradient(circle at 35% 30%,#8BE3EE,#1E8FD8);color:#04202A;box-shadow:0 6px 16px rgba(30,143,216,.45)}
+.sello.nuevo{animation:pop .9s var(--ease)}
+@keyframes pop{0%{transform:scale(.2) rotate(-40deg);opacity:0}60%{transform:scale(1.25) rotate(8deg);opacity:1}100%{transform:none}}
+.sello.regalo{border-color:var(--oro);color:var(--oro);border-style:solid}
+.tarjeta.premio .sello.on{background:radial-gradient(circle at 35% 30%,#FFE7A3,#E0A21B);border-color:#FFE7A3}
+.tj-pie{display:flex;justify-content:space-between;align-items:center;gap:10px;position:relative}
+.tj-pie b{font-family:var(--t);font-style:italic;font-weight:900;font-size:2.1rem;line-height:1;white-space:nowrap;flex:none}
+.tj-pie span{font-size:.8rem;color:var(--gr);text-align:right}
+.barra{height:6px;border-radius:6px;background:rgba(255,255,255,.12);margin-top:12px;overflow:hidden;position:relative}
+.barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--tq),var(--tq2));border-radius:6px;transition:width .8s var(--ease)}
+.tarjeta.premio .barra i{background:linear-gradient(90deg,#E0A21B,#FFE7A3)}
+.aviso{padding:13px 15px;border-radius:16px;font-weight:600;font-size:.9rem;text-align:center}
+.aviso.oro{background:rgba(255,201,77,.12);border:1px solid rgba(255,201,77,.5);color:#FFE7A3}
+.aviso.cita{background:rgba(76,195,212,.1);border:1px solid rgba(76,195,212,.4);color:var(--tq2)}
+.qr-caja{background:#fff;border-radius:20px;padding:14px;display:grid;grid-template-columns:118px 1fr;gap:14px;align-items:center;color:#0B1A22}
+.qr-caja canvas{width:118px;height:118px;display:block;image-rendering:pixelated}
+.qr-caja b{font-family:var(--t);font-style:italic;font-weight:800;font-size:1.1rem;text-transform:uppercase;line-height:1.05}
+.qr-caja p{font-size:.78rem;color:#4A5964;margin-top:4px}
+.qr-caja code{font-size:.75rem;color:#0B5FA0;font-weight:700}
+.bloque{background:var(--n3);border:1px solid var(--linea);border-radius:18px;padding:14px}
+.bloque h3{font-family:var(--t);font-style:italic;font-weight:800;text-transform:uppercase;font-size:.95rem;color:var(--tq2);margin-bottom:8px}
+.hist{display:grid;gap:8px;font-size:.84rem}
+.hist div{display:flex;justify-content:space-between;gap:10px;color:var(--gr)}
+.hist b{color:var(--bl);font-weight:600}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;font-weight:800;font-size:.95rem;text-decoration:none}
+.btn-a{background:var(--tq);color:#03181C}
+.btn-b{border:1px solid var(--linea2);color:var(--bl)}
+.btn svg{width:18px;height:18px}
+.estado{display:grid;gap:12px;text-align:center;padding:30px 10px}
+.estado h1{font-family:var(--t);font-style:italic;font-weight:900;text-transform:uppercase;font-size:1.8rem;line-height:1}
+.estado p{color:var(--gr)}
+.cargando{width:42px;height:42px;border-radius:50%;border:4px solid rgba(139,227,238,.2);border-top-color:var(--tq);animation:gira 1s linear infinite;justify-self:center}
+@keyframes gira{to{transform:rotate(360deg)}}
+.pie{text-align:center;font-size:.75rem;color:var(--gr2)}
+.pie a{color:var(--gr)}
+.toast{pointer-events:none;visibility:hidden;position:fixed;left:50%;top:calc(14px + env(safe-area-inset-top));transform:translate(-50%,-160%);z-index:20;width:min(92vw,420px);background:rgba(32,38,46,.95);backdrop-filter:blur(14px);border-radius:18px;padding:13px 15px;box-shadow:0 14px 30px rgba(0,0,0,.5);transition:transform .6s var(--ease);font-size:.88rem}
+.toast.on{visibility:visible;transform:translate(-50%,0)}
+.toast b{display:block;font-size:.95rem}
+.ov{position:fixed;inset:0;z-index:15;background:var(--n);display:none;overflow-y:auto}
+.ov.on{display:block}
+.ov .app{padding-top:30px}
+.ov h2{font-family:var(--t);font-style:italic;font-weight:900;text-transform:uppercase;font-size:1.6rem;line-height:1}
+.so{display:grid;grid-template-columns:1fr 1fr;background:var(--n3);border-radius:10px;padding:3px}
+.so button{padding:9px;border-radius:8px;font-weight:700;font-size:.85rem;color:var(--gr)}
+.so button[aria-selected="true"]{background:var(--n4);color:var(--bl)}
+.ov ol{display:grid;gap:9px;padding-left:20px;color:var(--gr)}
+.ov ol b{color:var(--bl)}
+.ov ol[hidden]{display:none}
+.tq2{color:var(--tq2)}
+.pie-ov{color:var(--gr)}
+.ov .app{gap:16px}
+[hidden]{display:none!important}
+#vista{display:grid;gap:14px}
+.app > .btn{width:100%}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<main class="app">
+  <div class="top"><a href="/" aria-label="Ir a la página de Monzú"><img src="{{LOGO}}" alt="Monzú Detallados"></a><span>MONZÚ CLUB</span></div>
+
+  <div class="estado" id="cargando"><div class="cargando" aria-hidden="true"></div><p>Cargando su tarjeta…</p></div>
+
+  <div class="estado" id="sinTarjeta" hidden>
+    <h1>Su tarjeta <span class="tq2">Monzú Club</span></h1>
+    <p id="sinTxt">Su tarjeta se crea con su primera cita. Reserve en línea y le aparece aquí, lista para guardar en su celular.</p>
+    <a class="btn btn-a" href="/#agendar">Reservar mi cita</a>
+    <a class="btn btn-b" href="https://wa.me/50672686906?text=Hola%20Monz%C3%BA%2C%20no%20encuentro%20mi%20tarjeta%20Monz%C3%BA%20Club" target="_blank" rel="noopener noreferrer">¿Perdió su enlace? Escríbanos</a>
+  </div>
+
+  <div id="vista" hidden>
+    <div class="tarjeta" id="tarjeta">
+      <div class="tj-cab"><div><small>Cliente frecuente</small><b id="tjNombre"></b><em id="tjCarro"></em></div><div class="tj-club">MONZÚ<br>CLUB</div></div>
+      <div class="sellos" id="sellos"></div>
+      <div class="tj-pie"><b id="tjCuenta"></b><span id="tjFalta"></span></div>
+      <div class="barra"><i id="tjBarra"></i></div>
+    </div>
+    <p class="aviso oro" id="premioMsg" hidden></p>
+    <p class="aviso cita" id="proxCita" hidden></p>
+    <div class="qr-caja"><canvas id="qr" width="118" height="118" aria-label="Código QR de su tarjeta"></canvas><div><b>Su código Monzú</b><p>Muéstrelo al terminar el lavado para sumar su sello.</p><code id="tjCodigo"></code></div></div>
+    <div class="bloque"><h3>Historial</h3><div class="hist" id="hist"></div></div>
+    <button type="button" class="btn btn-a" id="btnInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Tenerla siempre en mi celular</button>
+    <a class="btn btn-b" href="/#agendar">Reservar otra cita</a>
+  </div>
+  <p class="pie">Monzú Detallados · Cartago · <a href="/#contacto">Contacto</a></p>
+</main>
+
+<div class="ov" id="ov" role="dialog" aria-modal="true" aria-labelledby="ovT"><div class="app">
+  <h2 id="ovT">Su tarjeta,<br><span class="tq2">siempre a mano</span></h2>
+  <p class="pie-ov">Guárdela una vez y le queda como una app con el ícono de Monzú. Sin descargar nada.</p>
+  <button type="button" class="btn btn-a" id="btnInstalar" hidden>Instalar ahora</button>
+  <div class="so" role="tablist"><button type="button" role="tab" aria-selected="true" data-so="ios">iPhone</button><button type="button" role="tab" aria-selected="false" data-so="and">Android</button></div>
+  <ol id="pasosIos"><li>Abra esta página en <b>Safari</b>.</li><li>Toque <b>Compartir</b> (el cuadro con la flecha ↑).</li><li>Elija <b>"Agregar a pantalla de inicio"</b> y luego <b>Agregar</b>.</li></ol>
+  <ol id="pasosAnd" hidden><li>Abra esta página en <b>Chrome</b>.</li><li>Toque el menú <b>⋮</b> arriba a la derecha.</li><li>Elija <b>"Agregar a pantalla principal"</b> o <b>"Instalar app"</b>.</li></ol>
+  <button type="button" class="btn btn-b" id="cerrarOv">Listo, volver a mi tarjeta</button>
+</div></div>
+<script src="/js/qrcode.min.js"></script>
+<script>
+__JS__
+</script>
+</body>
+</html>

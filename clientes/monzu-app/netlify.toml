@@ -1,0 +1,8 @@
+# Monzú Detallados: página + reservas + Monzú Club (tarjeta) + panel del dueño
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+  command = "echo listo"
+
+[functions]
+  node_bundler = "esbuild"

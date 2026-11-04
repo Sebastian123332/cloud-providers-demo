@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /panel.html
+Disallow: /panel
+Disallow: /tarjeta.html
+Disallow: /api/

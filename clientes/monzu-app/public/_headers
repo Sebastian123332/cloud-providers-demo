@@ -1,0 +1,56 @@
+/
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-clt5ZoTzvucr8xMTSqwdF9vs5GzG1q7dF30AEALPQO8='; style-src 'sha256-EuduFG2zseLlT+N+jKvgOQSbjcIzix404VSW4y19tOE=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+/index.html
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-clt5ZoTzvucr8xMTSqwdF9vs5GzG1q7dF30AEALPQO8='; style-src 'sha256-EuduFG2zseLlT+N+jKvgOQSbjcIzix404VSW4y19tOE=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+/tarjeta.html
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-L8W6u8rGWZRpg91FMptpn8vOvrT22VrXUh+QOR6AhLM=' 'self'; style-src 'sha256-FxoaRgjaeMXa801rPrh8Z3g2zJwG2uyjuUPoUMsw6pY=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  X-Robots-Tag: noindex
+/tarjeta
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-L8W6u8rGWZRpg91FMptpn8vOvrT22VrXUh+QOR6AhLM=' 'self'; style-src 'sha256-FxoaRgjaeMXa801rPrh8Z3g2zJwG2uyjuUPoUMsw6pY=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  X-Robots-Tag: noindex
+/panel.html
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-mF4T4mtk2soRKhrHTSPZCeYu83IUmJpFjxicb9r7dPI=' 'self'; style-src 'sha256-w+FR1W6gKSlawd66y2DqACXwEIDdIKU8ykUnMmxHLgE=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+/panel
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-mF4T4mtk2soRKhrHTSPZCeYu83IUmJpFjxicb9r7dPI=' 'self'; style-src 'sha256-w+FR1W6gKSlawd66y2DqACXwEIDdIKU8ykUnMmxHLgE=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: no-store
+/js/*
+  Cache-Control: public, max-age=604800

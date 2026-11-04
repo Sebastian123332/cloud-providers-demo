@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Panel · Monzú Admin</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#07090B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Monzú Admin">
+<link rel="manifest" href="/panel.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="{{FAV}}">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,700;0,800;1,800;1,900&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{--n:#07090B;--n2:#0D1115;--n3:#141A20;--n4:#1C242C;--linea:rgba(255,255,255,.09);--linea2:rgba(255,255,255,.18);--bl:#F3F7FA;--gr:#A2AEB9;--gr2:#6C7884;--tq:#4CC3D4;--tq2:#8BE3EE;--az:#1E8FD8;--oro:#FFC94D;--ok:#3DDC84;--rojo:#FF7A6B;
+  --t:"Exo 2","Arial Narrow",sans-serif;--s:"Inter",system-ui,sans-serif;--ease:cubic-bezier(.16,1,.3,1);color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--n)}
+body{min-height:100svh;background:var(--n);color:var(--bl);font-family:var(--s);line-height:1.45;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+a{color:inherit}
+.app{max-width:760px;margin:0 auto;padding:12px 14px 90px;display:grid;gap:12px}
+.t{font-family:var(--t);font-weight:900;font-style:italic;text-transform:uppercase;line-height:.95}
+.tq{color:var(--tq)}
+/* login */
+.login{max-width:380px;margin:12vh auto 0;padding:0 18px;display:grid;gap:14px;text-align:center}
+.login img{width:180px;justify-self:center}
+.login h1{font-size:1.9rem}
+.login p{color:var(--gr);font-size:.9rem}
+.campo{display:grid;gap:6px;text-align:left}
+.campo label{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gr)}
+.campo input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n3);font-size:1rem}
+.campo input:focus{outline:2px solid var(--tq);border-color:transparent}
+.casilla{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--gr);text-align:left}
+.casilla input{width:18px;height:18px;accent-color:var(--tq)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 16px;border-radius:12px;font-weight:800;font-size:.9rem;text-decoration:none;transition:filter .2s}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn svg{width:18px;height:18px;flex:none}
+.b-tq{background:var(--tq);color:#03181C}
+.b-ok{background:var(--ok);color:#052814}
+.b-oro{background:var(--oro);color:#2B1E00}
+.b-bor{border:1px solid var(--linea2)}
+.b-wa{background:#25D366;color:#06301A}
+.b-rojo{border:1px solid rgba(255,122,107,.5);color:var(--rojo)}
+.msg{min-height:1.3em;font-size:.88rem;font-weight:600}
+.msg.mal{color:var(--rojo)}.msg.bien{color:var(--ok)}
+/* cabecera */
+.cab{display:flex;align-items:center;justify-content:space-between;gap:10px;position:sticky;top:0;z-index:10;background:rgba(7,9,11,.92);backdrop-filter:blur(10px);padding:10px 0}
+.cab img{height:34px}
+.cab b{font-family:var(--t);font-style:italic;font-weight:900;font-size:1.1rem;text-transform:uppercase}
+.cab small{display:block;font-size:.7rem;color:var(--gr)}
+.cab-acc{display:flex;gap:6px;align-items:center}
+.ico{width:40px;height:40px;border-radius:10px;border:1px solid var(--linea2);display:grid;place-items:center;position:relative}
+.ico svg{width:18px;height:18px}
+.ico.giro svg{animation:gira 1s linear infinite}
+@keyframes gira{to{transform:rotate(360deg)}}
+.demo{padding:10px 12px;border-radius:12px;background:rgba(255,201,77,.1);border:1px solid rgba(255,201,77,.45);color:#FFE7A3;font-size:.82rem}
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.kpis div{background:var(--n3);border:1px solid var(--linea);border-radius:14px;padding:10px 12px}
+.kpis b{font-family:var(--t);font-weight:900;font-style:italic;font-size:1.7rem;line-height:1;display:block}
+.kpis small{font-size:.7rem;color:var(--gr)}
+/* pestañas inferiores */
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:12;background:rgba(13,17,21,.96);backdrop-filter:blur(12px);border-top:1px solid var(--linea);display:grid;grid-template-columns:repeat(3,1fr);padding:6px max(10px,env(safe-area-inset-left)) calc(6px + env(safe-area-inset-bottom))}
+.tabs button{display:grid;justify-items:center;gap:2px;padding:6px;border-radius:12px;font-size:.72rem;font-weight:700;color:var(--gr);position:relative}
+.tabs button svg{width:22px;height:22px}
+.tabs button[aria-selected="true"]{color:var(--tq2);background:rgba(76,195,212,.1)}
+.badge{position:absolute;top:2px;right:calc(50% - 22px);min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--rojo);color:#fff;font-size:.68rem;display:grid;place-items:center}
+.badge[hidden]{display:none}
+.sec{display:none;gap:10px}
+.sec.on{display:grid}
+.filtros{display:flex;gap:6px;overflow-x:auto;padding-bottom:2px}
+.filtros button{flex:none;padding:8px 14px;border-radius:999px;border:1px solid var(--linea2);font-size:.82rem;font-weight:700;color:var(--gr)}
+.filtros button[aria-pressed="true"]{background:var(--bl);color:var(--n);border-color:var(--bl)}
+.dia{font-family:var(--t);font-style:italic;font-weight:800;text-transform:uppercase;color:var(--gr);font-size:.95rem;margin-top:6px}
+.cita{background:var(--n3);border:1px solid var(--linea);border-radius:16px;padding:13px;display:grid;gap:8px}
+.cita.nueva{border-color:var(--tq);box-shadow:0 0 0 3px rgba(76,195,212,.15)}
+.cita.cancelada{opacity:.55}
+.c-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.c-top b{font-family:var(--t);font-style:italic;font-weight:800;font-size:1.35rem}
+.chip{font-size:.7rem;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(255,201,77,.15);color:var(--oro)}
+.chip.confirmada{background:rgba(76,195,212,.15);color:var(--tq2)}
+.chip.hecha{background:rgba(61,220,132,.15);color:var(--ok)}
+.chip.cancelada{background:rgba(255,122,107,.12);color:var(--rojo)}
+.cita h3{font-size:1rem}
+.cita p{font-size:.84rem;color:var(--gr)}
+.cita p a{color:var(--tq2)}
+.servs{font-size:.82rem;color:var(--gr);display:grid;gap:2px}
+.servs div{display:flex;justify-content:space-between;gap:10px}
+.servs .tot{color:var(--bl);font-weight:700;border-top:1px dashed var(--linea2);padding-top:4px;margin-top:2px}
+.mini{display:flex;align-items:center;gap:6px;font-size:.75rem;color:var(--gr)}
+.mini span{display:flex;gap:3px}
+.mini i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.14)}
+.mini i.on{background:var(--tq)}
+.acc{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.vacio{text-align:center;color:var(--gr);padding:30px 10px;font-size:.9rem}
+/* escáner */
+.cam{position:relative;border-radius:18px;overflow:hidden;background:#000;aspect-ratio:1;max-width:480px;width:100%;justify-self:center}
+.cam video{width:100%;height:100%;object-fit:cover;display:block}
+.cam .marco{position:absolute;inset:14%;border:3px solid var(--tq2);border-radius:18px;box-shadow:0 0 0 999px rgba(0,0,0,.4)}
+.cam .linea{position:absolute;left:14%;right:14%;height:3px;background:var(--tq2);box-shadow:0 0 14px var(--tq2);top:14%;animation:barrido 1.4s ease-in-out infinite alternate}
+@keyframes barrido{to{top:86%}}
+.cam p{position:absolute;bottom:10px;left:0;right:0;text-align:center;font-size:.8rem;text-shadow:0 1px 4px #000}
+.hallado{background:var(--n3);border:1px solid var(--tq);border-radius:16px;padding:14px;display:grid;gap:10px;max-width:480px;width:100%;justify-self:center}
+.hallado b{font-family:var(--t);font-style:italic;font-weight:800;font-size:1.4rem}
+.ayuda{font-size:.8rem;color:var(--gr2);text-align:center}
+/* clientes */
+.buscar input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n3)}
+.lista{display:grid;gap:10px}
+.cli{background:var(--n3);border:1px solid var(--linea);border-radius:14px;padding:12px;display:grid;gap:8px}
+.cli-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cli-top b{display:block}
+.cli-top small{color:var(--gr);font-size:.75rem}
+.cli-top em{font-style:normal;font-family:var(--t);font-weight:800;font-size:1.2rem;color:var(--tq2);white-space:nowrap}
+.cli-top em.oro{color:var(--oro)}
+.toast{pointer-events:none;visibility:hidden;position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translate(-50%,200%);z-index:20;width:min(92vw,460px);background:var(--ok);color:#052814;font-weight:800;border-radius:14px;padding:12px 14px;text-align:center;transition:transform .5s var(--ease)}
+.toast.on{visibility:visible;transform:translate(-50%,0)}
+.toast.mal{background:var(--rojo);color:#2A0703}
+[hidden]{display:none!important}
+@media(max-width:560px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<form class="login" id="login" novalidate>
+  <img src="{{LOGO}}" alt="Monzú Detallados">
+  <h1 class="t">Panel del <span class="tq">dueño</span></h1>
+  <p>Citas, sellos de Monzú Club y clientes. Solo para Monzú Detallados.</p>
+  <div class="campo"><label for="clave">Contraseña</label><input id="clave" type="password" autocomplete="current-password" required></div>
+  <label class="casilla"><input type="checkbox" id="recordar" checked> Recordar en este celular</label>
+  <button class="btn b-tq" type="submit" id="entrar">Entrar</button>
+  <p class="msg" id="loginMsg" role="alert"></p>
+</form>
+
+<main class="app" id="app" hidden>
+  <header class="cab">
+    <div class="cab-izq"><img src="{{LOGO}}" alt="Monzú"></div>
+    <div><b>Monzú <span class="tq">Admin</span></b><small id="actualizado">Actualizando…</small></div>
+    <div class="cab-acc">
+      <button type="button" class="ico" id="btnAvisos" aria-label="Activar avisos de citas nuevas" title="Activar avisos"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9M13.7 21a2 2 0 0 1-3.4 0"/></svg></button>
+      <button type="button" class="ico" id="btnRef" aria-label="Actualizar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-3-6.7L21 8M21 3v5h-5"/></svg></button>
+      <button type="button" class="ico" id="btnSalir" aria-label="Salir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
+    </div>
+  </header>
+  <p class="demo" id="demo" hidden>Modo demostración: la contraseña es la de prueba. Antes de usarlo con clientes, ponga su propia contraseña en Netlify (variable PANEL_CLAVE).</p>
+  <div class="kpis" id="kpis"></div>
+
+  <section class="sec on" id="sec-citas" aria-label="Citas">
+    <div class="filtros" role="group" aria-label="Filtrar citas">
+      <button type="button" data-f="hoy" aria-pressed="true">Hoy</button><button type="button" data-f="prox" aria-pressed="false">Próximas</button><button type="button" data-f="pend" aria-pressed="false">Por confirmar</button><button type="button" data-f="pasadas" aria-pressed="false">Pasadas</button>
+    </div>
+    <div id="listaCitas"></div>
+  </section>
+
+  <section class="sec" id="sec-escanear" aria-label="Escanear tarjeta">
+    <button type="button" class="btn b-tq" id="btnCam"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Escanear tarjeta del cliente</button>
+    <div class="cam" id="cam" hidden><video id="video" playsinline muted></video><div class="marco"></div><div class="linea"></div><p id="camTxt">Apunte al código QR de la tarjeta</p></div>
+    <canvas id="lienzo" hidden></canvas>
+    <div id="hallado"></div>
+    <p class="ayuda">Pídale al cliente que abra su tarjeta Monzú Club y apunte la cámara al código QR. ¿No tiene la tarjeta a mano? Búsquelo en <b>Clientes</b>.</p>
+  </section>
+
+  <section class="sec" id="sec-clientes" aria-label="Clientes">
+    <div class="buscar"><label class="sr-only" for="buscar" hidden>Buscar cliente</label><input id="buscar" type="search" placeholder="Buscar por nombre o teléfono" autocomplete="off"></div>
+    <div id="listaCli" class="lista"></div>
+  </section>
+</main>
+
+<nav class="tabs" id="tabs" role="tablist" aria-label="Secciones" hidden>
+  <button type="button" role="tab" aria-selected="true" data-sec="citas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Citas<span class="badge" id="badge" hidden></span></button>
+  <button type="button" role="tab" aria-selected="false" data-sec="escanear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Escanear</button>
+  <button type="button" role="tab" aria-selected="false" data-sec="clientes"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/><circle cx="9" cy="7" r="4"/></svg>Clientes</button>
+</nav>
+<script src="/js/jsqr.min.js"></script>
+<script>
+__JS__
+</script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "monzu-app",
+  "private": true,
+  "type": "module",
+  "description": "Monzú Detallados: reservas, tarjeta de cliente frecuente y panel del dueño (Netlify Functions + Netlify Blobs)",
+  "dependencies": {
+    "@netlify/blobs": "^8.2.0"
+  }
+}

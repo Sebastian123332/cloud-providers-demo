@@ -1,0 +1,1 @@
+{"name": "Monzú Club · Mi tarjeta", "short_name": "Monzú Club", "start_url": "/tarjeta.html", "scope": "/", "display": "standalone", "background_color": "#07090B", "theme_color": "#07090B", "lang": "es-CR", "icons": [{"src": "/icono-192.png", "sizes": "192x192", "type": "image/png"}, {"src": "/icono-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]}

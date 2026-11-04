@@ -1,0 +1,3 @@
+node_modules/
+.netlify/
+datos-local.json
