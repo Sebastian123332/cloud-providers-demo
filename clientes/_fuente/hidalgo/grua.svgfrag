@@ -1,0 +1,11 @@
+<g id="grua" transform="translate(112 188)"><g id="gruaC" transform="scale(1.25)">
+<ellipse cx="0" cy="1" rx="27" ry="3.5" fill="rgba(0,0,0,.5)"/>
+<path d="M-6 -13 L-25 -31" stroke="#E9ECF1" stroke-width="4.2" stroke-linecap="round"/>
+<path d="M-25 -31 V-19" stroke="#C3C8D1" stroke-width="1.1"/><path d="M-25 -19 v2.4 a2.3 2.3 0 1 1 -2.3 2.3" fill="none" stroke="#C3C8D1" stroke-width="1.4" stroke-linecap="round"/>
+<path d="M-24 -6 H10 V-13 H-24Z" fill="#E9ECF1" stroke="#0A0E1A" stroke-width="1"/>
+<path d="M-24 -8 H-31 V-4" stroke="#C3C8D1" stroke-width="2.2" fill="none"/>
+<path d="M8 -6 V-24 Q8 -26 10 -26 H18 L24 -17 H27 Q29 -17 29 -15 V-6Z" fill="#3D50D6" stroke="#0A0E1A" stroke-width="1.2"/>
+<path d="M11.5 -23.5 H17.3 L21.6 -17.2 H11.5Z" fill="#BFD0FF"/>
+<rect class="faro" x="10" y="-29.5" width="8" height="3.2" rx="1.2"/>
+<g fill="#0A0E1A" stroke="#8D94A1" stroke-width="2"><circle cx="-16" cy="-4" r="4.6"/><circle cx="-6" cy="-4" r="4.6"/><circle cx="20" cy="-4" r="4.6"/></g>
+</g></g>

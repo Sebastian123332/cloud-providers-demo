@@ -10,6 +10,8 @@ for f in glob.glob(D+'img/*.webp'):
     k=os.path.basename(f)[:-5]; imgs[k]=uri(k+'.webp','image/webp')
 def svguri(f): return 'data:image/svg+xml;base64,'+base64.b64encode(open(D+'img/'+f,'rb').read()).decode()
 t=t.replace('{{LOGO_COLOR}}',svguri('logo-color.svg')).replace('{{LOGO_BLANCO}}',svguri('logo-blanco.svg')).replace('{{LOGO_NEGRO}}',svguri('logo-negro.svg')).replace('{{ICONO}}',svguri('logo-color.svg'))
+sys.path.insert(0,D); from mapa_build import mapa
+t=t.replace('{{MAPA}}',mapa(D))
 t=re.sub(r'\{\{IMG:(\w+)\}\}',lambda m:imgs[m.group(1)],t)
 def qr(u):
     b=io.BytesIO(); segno.make(u,error='m').save(b,kind='svg',scale=4,border=1,dark='#0A0E1A',xmldecl=False,svgns=True,omitsize=True); return b.getvalue().decode()

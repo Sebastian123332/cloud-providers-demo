@@ -58,12 +58,54 @@
 
   /* cobertura */
   var PROVS=['San José','Alajuela','Cartago','Heredia','Guanacaste','Puntarenas','Limón'], pc=$('provs');
-  PROVS.forEach(function(p){ var b=d.createElement('button'); b.type='button'; b.textContent=p; b.setAttribute('aria-pressed','false');
+  PROVS.forEach(function(p){ var b=d.createElement('button'); b.type='button'; b.textContent=p; b.dataset.p=p; b.setAttribute('aria-pressed','false');
     b.addEventListener('click',function(){ pc.querySelectorAll('button').forEach(function(x){ x.setAttribute('aria-pressed',String(x===b)) });
-      d.querySelectorAll('#mapa .prov').forEach(function(x){ x.classList.toggle('on',x.dataset.p===p) });
       $('fOrigen').value=p+', '; prev(); $('solicitar').scrollIntoView({behavior:QUIETO?'auto':'smooth'}); setTimeout(function(){ $('fOrigen').focus() },QUIETO?0:600) });
     pc.appendChild(b) });
-  var pi=0; if(!QUIETO) setInterval(function(){ var ps=d.querySelectorAll('#mapa .prov'); ps.forEach(function(x,i){ x.classList.toggle('on',i===pi) }); pi=(pi+1)%ps.length },1400);
+  /* grúa recorriendo el mapa con el scroll */
+  (function(){
+    var cob=$('cobertura'), mapa=$('mapa'), base=$('rutaBase'), hecha=$('rutaHecha'), grua=$('grua'), gc=$('gruaC');
+    if(!mapa||!base.getTotalLength) return;
+    var WP=mapa.dataset.wp.split(';').map(function(s){ var a=s.split(','); return [+a[0],+a[1]] });
+    var ORDEN=Array.prototype.map.call(mapa.querySelectorAll('.lbl'),function(x){ return x.dataset.p });
+    // curva suave (Catmull-Rom) por los puntos
+    var dd='M'+WP[0][0]+' '+WP[0][1];
+    for(var i=0;i<WP.length-1;i++){ var p0=WP[i-1]||WP[i], p1=WP[i], p2=WP[i+1], p3=WP[i+2]||p2;
+      dd+=' C'+(p1[0]+(p2[0]-p0[0])/6).toFixed(1)+' '+(p1[1]+(p2[1]-p0[1])/6).toFixed(1)+' '+(p2[0]-(p3[0]-p1[0])/6).toFixed(1)+' '+(p2[1]-(p3[1]-p1[1])/6).toFixed(1)+' '+p2[0]+' '+p2[1] }
+    base.setAttribute('d',dd); hecha.setAttribute('d',dd);
+    var L=base.getTotalLength(), WL=[];
+    WP.forEach(function(w){ var mejor=0,dm=1e9; for(var l=0;l<=L;l+=2){ var q=base.getPointAtLength(l), dx=q.x-w[0], dy=q.y-w[1], dist=dx*dx+dy*dy; if(dist<dm){dm=dist;mejor=l} } WL.push(mejor) });
+    WL[0]=0; WL[WL.length-1]=L;
+    hecha.style.strokeDasharray=L+' '+L;
+    var provs=mapa.querySelectorAll('.prov'), lbls=mapa.querySelectorAll('.lbl'), pins=mapa.querySelectorAll('.pin'), btns=pc.querySelectorAll('button');
+    var dir=1, ultimoN=-1, mq=matchMedia('(max-width:860px)');
+    function pintar(l){
+      var p=l/L, a=base.getPointAtLength(Math.max(0,l-3)), b=base.getPointAtLength(Math.min(L,l+3)), pt=base.getPointAtLength(l);
+      var dx=b.x-a.x, dy=b.y-a.y; if(Math.abs(dx)>.3) dir=dx<0?-1:1;
+      var ang=Math.max(-20,Math.min(20,Math.atan2(dy,Math.abs(dx)||.001)*180/Math.PI));
+      grua.setAttribute('transform','translate('+pt.x.toFixed(1)+' '+pt.y.toFixed(1)+')');
+      var e=mq.matches?1.7:1.25; gc.setAttribute('transform','scale('+(e*dir)+' '+e+') rotate('+ang.toFixed(1)+')');
+      hecha.style.strokeDashoffset=String(L-l);
+      var n=0; WL.forEach(function(w,i){ if(l>=w-4) n=i });
+      $('cobBarra').style.setProperty('--p',p.toFixed(3));
+      if(n===ultimoN) return; ultimoN=n;
+      var actual=ORDEN[n];
+      provs.forEach(function(x){ var k=ORDEN.indexOf(x.dataset.p); x.classList.toggle('on',k===n); x.classList.toggle('hecha',k<n) });
+      lbls.forEach(function(x,k){ x.classList.toggle('on',k===n); x.classList.toggle('hecha',k<n) });
+      pins.forEach(function(x,k){ x.classList.toggle('hecha',k<=n) });
+      btns.forEach(function(x){ x.classList.toggle('hecha',ORDEN.indexOf(x.dataset.p)<=n) });
+      $('cobProv').textContent=actual; $('cobN').textContent=(n+1)+'/'+ORDEN.length;
+    }
+    if(QUIETO){ pintar(L); return }
+    cob.classList.add('anim');
+    var pend=false;
+    function calc(){ pend=false; var r=cob.getBoundingClientRect(), tot=cob.offsetHeight-innerHeight;
+      var p=tot>0?Math.min(1,Math.max(0,-r.top/tot)):1; p=Math.min(1,Math.max(0,(p-.04)/.9));
+      var s=p*(WL.length-1), i=Math.min(WL.length-2,Math.floor(s)), f=Math.min(1,Math.max(0,(s-i-.18)/.64)); f=f*f*(3-2*f);
+      pintar(WL[i]+(WL[i+1]-WL[i])*f) }
+    addEventListener('scroll',function(){ if(!pend){ pend=true; requestAnimationFrame(calc) } },{passive:true});
+    addEventListener('resize',calc); calc();
+  })();
 
   /* visor */
   var fotos=Array.prototype.slice.call(d.querySelectorAll('.foto')), vi=0, visor=$('visor');

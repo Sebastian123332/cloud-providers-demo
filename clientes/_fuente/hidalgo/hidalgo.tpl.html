@@ -49,7 +49,7 @@ section{position:relative;padding-block:clamp(80px,11vw,140px)}
 .nav.chica{background:rgba(10,14,26,.92)}
 .nav .wrap{display:flex;align-items:center;gap:20px;padding-block:10px}
 .logo{display:flex;align-items:center;gap:12px;margin-right:auto;text-decoration:none}
-.logo img{width:74px;height:auto}
+.logo img{width:84px;height:auto}
 .logo span{font-family:var(--t);font-weight:900;font-style:italic;font-size:1.45rem;text-transform:uppercase;line-height:.9}
 .logo span small{display:block;font-family:var(--s);font-style:normal;font-weight:600;font-size:.68rem;letter-spacing:.2em;color:var(--g3)}
 .links{display:flex;gap:24px;list-style:none}
@@ -81,6 +81,9 @@ section{position:relative;padding-block:clamp(80px,11vw,140px)}
 .reloj{display:inline-flex;align-items:center;gap:12px;padding:8px 16px 8px 10px;background:rgba(255,255,255,.08);border:1px solid var(--linea2);border-radius:999px;backdrop-filter:blur(8px);font-family:var(--t);font-weight:700;font-size:1.05rem;letter-spacing:.08em;text-transform:uppercase}
 .reloj i{width:12px;height:12px;border-radius:50%;background:#2EE07A;box-shadow:0 0 0 0 rgba(46,224,122,.7);animation:latido 1.8s infinite}
 @keyframes latido{70%{box-shadow:0 0 0 12px rgba(46,224,122,0)}100%{box-shadow:0 0 0 0 rgba(46,224,122,0)}}
+.hero-logo{position:absolute;right:max(18px,4vw);top:110px;width:clamp(150px,24vw,330px);height:auto;filter:drop-shadow(0 18px 40px rgba(0,0,0,.55));opacity:0;transform:translateY(20px) scale(.94);transition:opacity 1s var(--ease) .3s,transform 1.2s var(--ease) .3s}
+.hero.listo .hero-logo,html:not(.js) .hero-logo{opacity:1;transform:none}
+@media(max-width:860px){.hero-logo{position:static;width:150px;margin-bottom:18px}}
 .hero h1{font-size:clamp(3.4rem,9vw,8.4rem);margin:20px 0 18px;max-width:12ch}
 .hero h1 .ln{display:block;overflow:hidden;padding-top:.08em;margin-top:-.08em}
 .hero h1 .ln>span{display:inline-block;transform:translateY(110%);transition:transform 1.1s var(--ease)}
@@ -128,18 +131,47 @@ section{position:relative;padding-block:clamp(80px,11vw,140px)}
 @media(max-width:520px){.razones{grid-template-columns:minmax(0,1fr)}}
 
 /* cobertura */
-.cobertura{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(30px,5vw,60px);align-items:center}
+#cobertura.anim{height:340vh;padding:0}
+#cobertura.anim .cob-pin{position:sticky;top:0;height:100svh;display:flex;align-items:center;padding-top:92px;padding-bottom:20px}
+.cob-pin{width:100%}
+.cobertura{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(24px,4vw,56px);align-items:center;width:100%}
 .mapa{position:relative}
-.mapa svg{width:100%;height:auto}
-.mapa .prov{fill:var(--n3);stroke:var(--az2);stroke-width:2;transition:fill .3s}
-.mapa .prov.on{fill:var(--az)}
-.mapa .ruta{fill:none;stroke:#fff;stroke-width:3;stroke-dasharray:8 8;animation:ruta 1.2s linear infinite}
-@keyframes ruta{to{stroke-dashoffset:-32}}
-.mapa .pin{fill:#fff}
-.provs{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+.mapa svg{width:100%;height:auto;max-height:calc(100svh - 130px);margin-inline:auto;overflow:visible}
+.mapa .prov{fill:var(--n3);stroke:#4A5BD9;stroke-width:1.4;stroke-linejoin:round;transition:fill .5s}
+.mapa .prov.hecha{fill:#1E2A7A}
+.mapa .prov.on{fill:var(--az2)}
+.mapa .ruta-base{fill:none;stroke:rgba(255,255,255,.28);stroke-width:2.5;stroke-dasharray:3 7;stroke-linecap:round}
+.mapa .ruta-hecha{fill:none;stroke:#FFC21A;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 0 6px rgba(255,194,26,.6))}
+.mapa .pin{fill:var(--n);stroke:rgba(255,255,255,.5);stroke-width:2.5;transition:.4s}
+.mapa .pin.hecha{fill:#FFC21A;stroke:#fff}
+.mapa .lbl{font-family:var(--t);font-weight:800;font-size:17px;letter-spacing:.06em;text-transform:uppercase;fill:var(--g3);stroke:var(--n);stroke-width:4px;paint-order:stroke;text-anchor:middle;transition:fill .4s}
+.mapa .lbl.chica{font-size:13px}
+.mapa .lbl.hecha{fill:var(--g1)}
+.mapa .lbl.on{fill:#fff;font-size:21px}
+.mapa .lbl.chica.on{font-size:16px}
+.mapa .mar{font-family:var(--t);font-style:italic;font-weight:600;font-size:13px;letter-spacing:.3em;text-transform:uppercase;fill:rgba(141,148,161,.45);text-anchor:middle}
+.mapa .faro{fill:#FFC21A;animation:faro .7s steps(2) infinite}
+@keyframes faro{50%{fill:#FF6A1A}}
+.cob-estado{display:flex;align-items:center;gap:14px;margin-top:22px;padding:14px 18px;border:1px solid var(--linea2);border-radius:14px;background:var(--n2);max-width:420px}
+.cob-estado svg{width:46px;flex:none;color:#FFC21A}
+.cob-estado small{display:block;color:var(--g3);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+.cob-estado b{font-family:var(--t);font-weight:900;font-style:italic;font-size:1.9rem;text-transform:uppercase;line-height:1}
+.cob-estado span{margin-left:auto;font-family:var(--t);font-weight:800;font-size:1.3rem;color:var(--g2)}
+.cob-barra{height:4px;border-radius:4px;background:var(--linea);margin-top:10px;max-width:420px;overflow:hidden}
+.cob-barra i{display:block;height:100%;width:100%;background:#FFC21A;transform-origin:left;transform:scaleX(var(--p,1))}
+.provs{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
 .provs button{padding:9px 16px;border-radius:999px;border:1px solid var(--linea2);background:var(--n2);font-family:var(--t);font-weight:700;font-size:1.05rem;letter-spacing:.04em;text-transform:uppercase;transition:.25s}
 .provs button:hover,.provs button[aria-pressed="true"]{background:var(--bl);color:var(--ink);border-color:var(--bl)}
-@media(max-width:860px){.cobertura{grid-template-columns:minmax(0,1fr)}}
+.provs button.hecha{border-color:rgba(255,194,26,.6)}
+@media(max-width:860px){
+  .cobertura{grid-template-columns:minmax(0,1fr);gap:10px}
+  #cobertura.anim .cob-pin{padding-top:78px}
+  #cobertura.anim .cob-p,#cobertura.anim .provs{display:none}
+  #cobertura.anim h2{font-size:clamp(2.2rem,10vw,3rem)}
+  .cob-estado{margin-top:12px;padding:10px 14px}.cob-estado b{font-size:1.5rem}.cob-estado svg{width:38px}
+  .mapa svg{max-height:calc(100svh - 330px)}
+  .mapa .lbl{font-size:25px;stroke-width:5px}.mapa .lbl.chica{font-size:19px}.mapa .lbl.on{font-size:30px}.mapa .lbl.chica.on{font-size:23px}.mapa .mar{display:none}.mapa .pin{r:7.5px}
+}
 
 /* galería */
 #trabajos{background:var(--n2);border-block:1px solid var(--linea)}
@@ -258,6 +290,7 @@ dialog.legal::backdrop{background:rgba(5,8,16,.8)}
 <section class="hero" id="inicio">
   <div class="hero-foto"><img src="{{IMG:noche}}" alt="Grúa de Grúas Hidalgo remolcando una vagoneta de noche" fetchpriority="high"></div>
   <div class="wrap">
+    <img class="hero-logo" src="{{LOGO_COLOR}}" alt="Logo de Grúas Hidalgo" width="540" height="445">
     <span class="reloj" id="reloj"><i></i><span id="relojTxt">Disponibles ahora · 24/7</span></span>
     <h1 class="t" aria-label="Lo pesado, lo movemos nosotros"><span class="ln" aria-hidden="true"><span>Lo pesado,</span></span><span class="ln" aria-hidden="true"><span class="az">lo movemos</span></span><span class="ln" aria-hidden="true"><span>nosotros.</span></span></h1>
     <p class="sub">Grúa para <b>camiones pesados las 24 horas, en todo el país</b>. Underlift, arrastre y rescate, grúa telescópica y traslado de pesados, con <b>respuesta rápida y trato personal</b>.</p>
@@ -298,24 +331,16 @@ dialog.legal::backdrop{background:rgba(5,8,16,.8)}
   </div>
 </div></section>
 
-<section id="cobertura"><div class="wrap cobertura">
-  <div class="rv"><span class="eti">Cobertura</span><h2 class="t" style-x="">Vamos a<br><span class="az">todo el país</span></h2>
-    <p style-x="" class="cob-p">Desde Cartago hasta Guanacaste o Limón. Toque su provincia y le preparamos el mensaje.</p>
+<section id="cobertura"><div class="cob-pin"><div class="wrap cobertura">
+  <div><span class="eti">Cobertura</span><h2 class="t">Vamos a<br><span class="az">todo el país</span></h2>
+    <p class="cob-p">Las 7 provincias, carretera y montaña. Baje la página y vea la grúa recorrer Costa Rica, o toque su provincia y le preparamos el mensaje.</p>
+    <div class="cob-estado" aria-hidden="true"><svg viewBox="0 0 64 36" fill="currentColor"><path d="M4 26h40V14H30l-4-8H8L4 14z" opacity=".25"/><path d="M38 26V12h10l6 8v6zM2 26V18h36v8z"/><path d="M8 18L26 4" stroke="currentColor" stroke-width="3"/><path d="M26 4v12" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="29" r="5"/><circle cx="46" cy="29" r="5"/></svg><div><small>Pasando por</small><b id="cobProv">Guanacaste</b></div><span id="cobN">1/7</span></div>
+    <div class="cob-barra" aria-hidden="true"><i id="cobBarra"></i></div>
     <div class="provs" id="provs"></div></div>
-  <div class="mapa rv" aria-hidden="true">
-    <svg viewBox="0 0 500 420" id="mapa">
-      <path class="prov" data-p="Guanacaste" d="M30 60 L150 40 L190 110 L170 200 L120 240 L70 210 L40 140 Z"/>
-      <path class="prov" data-p="Alajuela" d="M150 40 L290 30 L300 120 L250 150 L190 110 Z"/>
-      <path class="prov" data-p="Heredia" d="M290 30 L340 40 L330 130 L300 120 Z"/>
-      <path class="prov" data-p="San José" d="M250 150 L300 120 L330 130 L340 210 L290 240 L240 200 Z"/>
-      <path class="prov" data-p="Cartago" d="M330 130 L380 150 L390 220 L340 210 Z"/>
-      <path class="prov" data-p="Limón" d="M340 40 L440 90 L480 220 L470 300 L390 220 L380 150 L330 130 Z"/>
-      <path class="prov" data-p="Puntarenas" d="M120 240 L170 200 L190 110 L250 150 L240 200 L290 240 L340 210 L390 220 L470 300 L440 380 L330 330 L230 300 L160 280 Z"/>
-      <path class="ruta" d="M365 185 C 320 200, 260 180, 220 160 S 120 140, 90 130"/>
-      <circle class="pin" cx="365" cy="185" r="8"/>
-    </svg>
+  <div class="mapa" aria-hidden="true">
+    {{MAPA}}
   </div>
-</div></section>
+</div></div></section>
 
 <section id="trabajos"><div class="wrap">
   <div class="cab rv"><div><span class="eti">Trabajos</span><h2 class="t">En carretera,<br><span class="az">de día y de noche</span></h2></div><p>Toque una foto para verla en grande.</p></div>
@@ -383,6 +408,7 @@ dialog.legal::backdrop{background:rgba(5,8,16,.8)}
 <footer><div class="wrap">
   <div class="pie"><img src="{{LOGO_BLANCO}}" alt="Grúas Hidalgo" loading="lazy"><div><b style-x="">Grúas Hidalgo</b><br>WhatsApp y teléfono 8838-1397 · 24 horas · Todo Costa Rica</div></div>
   <div class="legales"><button type="button" data-legal="terminos">Términos y condiciones</button><button type="button" data-legal="privacidad">Privacidad y seguridad</button><button type="button" data-legal="cookies">Cookies</button></div>
+  <span>Límites provinciales del mapa: geoBoundaries (CC BY 4.0).</span>
   <span>© <span id="anio">2026</span> Grúas Hidalgo · Página web por <a href="https://ssolanotech.com" target="_blank" rel="noopener noreferrer">Solanotech</a></span>
 </div></footer>
 <a class="fab" href="{{WA}}" target="_blank" rel="noopener noreferrer" aria-label="Escribir por WhatsApp"><svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2c.2-.6.2-1 .1-1.2z"/></svg></a>
