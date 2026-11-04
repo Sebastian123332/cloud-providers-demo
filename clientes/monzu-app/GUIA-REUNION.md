@@ -17,6 +17,25 @@ Guía para publicar la app y para la reunión con el dueño de Monzú (Isaac Mon
 
 ---
 
+## Cómo se registra cada cliente (web pública)
+
+**El usuario es su número de teléfono y la clave es un PIN de 4 números que él mismo escoge.**
+
+| Cómo llega el cliente | Qué pasa |
+|---|---|
+| **Se registra solo**: página → "Monzú Club" → **Unirme gratis** | Pone nombre, teléfono, carro y su PIN. Se le crea la tarjeta al instante. |
+| **Reserva en la página** | El formulario le pide un PIN. Si es nuevo, se le crea la tarjeta; si ya es miembro y pone su PIN, la cita se conecta con su tarjeta. |
+| **Llega sin reservar** (WhatsApp o en la calle) | El dueño, en el panel → Clientes → **"Nuevo cliente"**, pone nombre y teléfono, y le manda la tarjeta por WhatsApp. El cliente la abre y crea su PIN. |
+
+- **Entrar desde cualquier celular:** página → **"Mi tarjeta"** → **"Ya soy miembro"** → teléfono + PIN.
+- **¿Olvidó el PIN?** Le escribe al dueño, que toca **"Restablecer PIN"** en el panel. Le llega su tarjeta por WhatsApp para crear uno nuevo.
+- **Seguridad:**
+  - El PIN se guarda cifrado; ni el dueño lo puede ver.
+  - Después de 5 intentos malos, ese teléfono se bloquea 15 minutos.
+  - Si alguien reserva con el teléfono de otra persona, la cita queda, pero **no ve la tarjeta de esa persona**.
+
+---
+
 ## 1. Publicarlo (una sola vez, unos 10 minutos)
 
 Esta app tiene un pequeño servidor (las reservas y los sellos se guardan), así que **no se sube arrastrando un zip**: se conecta al repositorio de GitHub. La ventaja es que cada vez que se hace un cambio, Netlify la actualiza sola.

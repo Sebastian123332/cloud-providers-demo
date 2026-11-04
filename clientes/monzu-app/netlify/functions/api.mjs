@@ -1,6 +1,6 @@
 // Monzú Detallados · API de reservas, Monzú Club y panel del dueño.
 // Corre como Netlify Function (v2) y guarda los datos en Netlify Blobs (gratis).
-import { randomBytes, timingSafeEqual, createHash } from 'node:crypto';
+import { randomBytes, timingSafeEqual, createHash, scryptSync } from 'node:crypto';
 
 export const config = { path: '/api/*' };
 
@@ -64,7 +64,25 @@ function horasDe(db, f) {
   const occ = ocupadas(db, f), ahora = hoyCR();
   return AJUSTES.horas.map((h) => ({ h, libre: !occ.includes(h) && !(f === ahora.fecha && h <= ahora.hora) }));
 }
-const vistaTarjeta = (c) => ({ nombre: c.nombre, carro: c.carro || '', sellos: c.sellos, meta: AJUSTES.meta, premio: AJUSTES.premio, premios: c.premios || 0, hist: (c.hist || []).slice(0, 12), codigo: 'MZ-' + c.token.slice(0, 4).toUpperCase() });
+const vistaTarjeta = (c) => ({ tienePin: !!c.pinHash, nombre: c.nombre, carro: c.carro || '', sellos: c.sellos, meta: AJUSTES.meta, premio: AJUSTES.premio, premios: c.premios || 0, hist: (c.hist || []).slice(0, 12), codigo: 'MZ-' + c.token.slice(0, 4).toUpperCase() });
+
+/* PIN de Monzú Club: 4 dígitos, guardado cifrado (scrypt) y con bloqueo tras 5 intentos */
+const pinOk = (p) => /^\d{4}$/.test(String(p ?? ''));
+const hashPin = (pin, sal) => scryptSync(String(pin), sal, 32).toString('base64');
+function ponPin(c, pin) { c.pinSal = randomBytes(12).toString('base64'); c.pinHash = hashPin(pin, c.pinSal); c.fallos = 0; c.bloqueo = 0; }
+function revisaPin(c, pin) {
+  if (!c.pinHash) return 'sinpin';
+  if ((c.bloqueo || 0) > Date.now()) return 'bloqueado';
+  const a = Buffer.from(hashPin(pin, c.pinSal)), b = Buffer.from(c.pinHash);
+  if (pinOk(pin) && a.length === b.length && timingSafeEqual(a, b)) { c.fallos = 0; c.bloqueo = 0; return 'ok'; }
+  c.fallos = (c.fallos || 0) + 1; if (c.fallos >= 5) { c.bloqueo = Date.now() + 15 * 60e3; c.fallos = 0; }
+  return 'mal';
+}
+function nuevoCliente(db, tel, nombre, carro) {
+  const c = { tel, nombre, carro: carro || '', token: token(), sellos: 0, premios: 0, hist: [['Bienvenida a Monzú Club', hoyCR().fecha]], creado: new Date().toISOString() };
+  db.clientes[tel] = c; db.tokens[c.token] = tel; return c;
+}
+const nombreOk = (n) => /^[\p{L}\p{M} .'’-]{3,80}$/u.test(n);
 
 /* límites simples por IP (memoria de la instancia) */
 const golpes = new Map();
@@ -107,8 +125,9 @@ export default async (req, context) => {
       if (limite(ip, 'res', 6, 3600e3)) return error('Demasiadas reservas desde esta conexión. Escríbanos por WhatsApp.', 429);
       const nombre = limpia(body.nombre, 80), tel = telCR(body.tel), lugar = limpia(body.lugar, 120), carro = limpia(body.carro, 60), nota = limpia(body.nota, 400);
       const fecha = String(body.fecha || ''), hora = String(body.hora || '');
-      if (!/^[\p{L}\p{M} .'’-]{3,80}$/u.test(nombre)) return error('Revise su nombre.');
+      if (!nombreOk(nombre)) return error('Revise su nombre.');
       if (!tel) return error('Revise el teléfono (8 dígitos).');
+      if (body.pin && !pinOk(body.pin)) return error('El PIN debe tener 4 números.');
       if (lugar.length < 4) return error('Falta la dirección o zona.');
       const m = fechaValida(fecha); if (m) return error(m);
       if (!AJUSTES.horas.includes(hora)) return error('Elija una hora de la lista.');
@@ -119,14 +138,52 @@ export default async (req, context) => {
       const db = await leer();
       if (!horasDe(db, fecha).find((x) => x.h === hora && x.libre)) return error('Esa hora se acaba de ocupar. Elija otra, por favor.', 409);
       if (db.citas.filter((c) => c.tel === tel && c.estado !== 'cancelada' && c.estado !== 'hecha').length >= 3) return error('Ya tiene 3 citas pendientes. Escríbanos por WhatsApp para cambiarlas.');
-      let c = db.clientes[tel], nueva = false;
-      if (!c) { c = { tel, nombre, carro, token: token(), sellos: 0, premios: 0, hist: [['Bienvenida a Monzú Club', hoyCR().fecha]], creado: new Date().toISOString() }; db.clientes[tel] = c; db.tokens[c.token] = tel; nueva = true; }
-      else { c.nombre = nombre; if (carro) c.carro = carro; }
+      let c = db.clientes[tel], nueva = false, tk = null, aviso = '';
+      if (!c) { c = nuevoCliente(db, tel, nombre, carro); nueva = true; if (pinOk(body.pin)) ponPin(c, body.pin); tk = c.token; }
+      else {
+        if (carro && !c.carro) c.carro = carro;
+        if (!c.pinHash) aviso = 'sinpin';
+        else if (!body.pin) aviso = 'conpin';
+        else { const r = revisaPin(c, String(body.pin)); if (r === 'ok') tk = c.token; else aviso = r === 'bloqueado' ? 'bloqueado' : 'pinmal'; }
+      }
       const cita = { id: id(), tel, nombre, fecha, hora, vehiculo: limpia(body.vehiculo, 30), carro, lineas, total, desde: !!body.desde, aroma: limpia(body.aroma, 30), lugar, nota, estado: 'pendiente', creada: new Date().toISOString() };
       db.citas.push(cita);
       db.citas = db.citas.filter((x) => x.fecha >= sumaDias(hoyCR().fecha, -120)).slice(-2000);
       await escribir(db);
-      return json({ ok: true, cita: { id: cita.id, fecha, hora }, tarjeta: c.token, nueva });
+      return json({ ok: true, cita: { id: cita.id, fecha, hora }, tarjeta: tk, nueva, aviso, tienePin: !!c.pinHash });
+    }
+    if (ruta === 'registro' && req.method === 'POST') {
+      if (body.web) return json({ ok: true });
+      if (limite(ip, 'reg', 8, 3600e3)) return error('Demasiados registros desde esta conexión. Intente más tarde.', 429);
+      const nombre = limpia(body.nombre, 80), tel = telCR(body.tel), carro = limpia(body.carro, 60);
+      if (!nombreOk(nombre)) return error('Revise su nombre.');
+      if (!tel) return error('Revise el teléfono (8 dígitos).');
+      if (!pinOk(body.pin)) return error('El PIN debe tener 4 números.');
+      if (!body.consentimiento) return error('Debe aceptar los términos y autorizar el uso de sus datos.');
+      const db = await leer(), ya = db.clientes[tel];
+      if (ya) return error(ya.pinHash ? 'Ese teléfono ya está en Monzú Club. Entre con su teléfono y su PIN.' : 'Ese teléfono ya tiene tarjeta. Ábrala con el enlace que le enviamos por WhatsApp para crear su PIN, o pídanos el enlace.', 409);
+      const c = nuevoCliente(db, tel, nombre, carro); ponPin(c, body.pin);
+      await escribir(db); return json({ ok: true, tarjeta: c.token });
+    }
+    if (ruta === 'entrar' && req.method === 'POST') {
+      if (limite(ip, 'ent', 20, 900e3)) return error('Demasiados intentos. Espere 15 minutos.', 429);
+      const tel = telCR(body.tel); if (!tel || !pinOk(body.pin)) return error('Escriba su teléfono (8 dígitos) y su PIN (4 números).');
+      const db = await leer(), c = db.clientes[tel];
+      if (!c) return error('Teléfono o PIN incorrectos.', 401);
+      const r = revisaPin(c, String(body.pin));
+      if (r === 'sinpin') return error('Su tarjeta todavía no tiene PIN. Ábrala con el enlace que le enviamos por WhatsApp para crearlo, o pídanos el enlace.', 403);
+      await escribir(db);
+      if (r === 'bloqueado') return error('Demasiados intentos con ese teléfono. Espere 15 minutos o pida a Monzú que le restablezca el PIN.', 429);
+      if (r !== 'ok') return error('Teléfono o PIN incorrectos.', 401);
+      return json({ ok: true, tarjeta: c.token });
+    }
+    if (ruta === 'pin' && req.method === 'POST') {
+      const t = String(body.t || ''); if (!/^[\w-]{20,40}$/.test(t)) return error('Tarjeta no encontrada.', 404);
+      if (!pinOk(body.pin)) return error('El PIN debe tener 4 números.');
+      const db = await leer(), tel = db.tokens[t], c = tel && db.clientes[tel];
+      if (!c) return error('Tarjeta no encontrada.', 404);
+      if (c.pinHash) return error('Esta tarjeta ya tiene PIN. Si lo olvidó, pídale a Monzú que se lo restablezca.', 409);
+      ponPin(c, body.pin); await escribir(db); return json({ ok: true });
     }
     if (ruta === 'tarjeta' && req.method === 'GET') {
       const t = url.searchParams.get('t') || ''; if (!/^[\w-]{20,40}$/.test(t)) return error('Tarjeta no encontrada.', 404);
@@ -146,7 +203,7 @@ export default async (req, context) => {
         const desde = sumaDias(hoyCR().fecha, -7);
         const citas = db.citas.filter((c) => c.fecha >= desde).sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora))
           .map((c) => ({ ...c, sellos: db.clientes[c.tel]?.sellos ?? 0, tarjeta: db.clientes[c.tel]?.token }));
-        const clientes = Object.values(db.clientes).map((c) => ({ nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token }))
+        const clientes = Object.values(db.clientes).map((c) => ({ nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token, tienePin: !!c.pinHash }))
           .sort((a, b) => b.sellos - a.sellos || a.nombre.localeCompare(b.nombre));
         return json({ ok: true, hoy: hoyCR().fecha, meta: AJUSTES.meta, premio: AJUSTES.premio, demo, citas, clientes });
       }
@@ -158,6 +215,19 @@ export default async (req, context) => {
         else if (a === 'terminar' && c.estado !== 'hecha' && c.estado !== 'cancelada') { c.estado = 'hecha'; const cl = db.clientes[c.tel]; if (cl) darSello(cl, (c.lineas[0] || ['Lavado'])[0]); }
         else return error('Esa acción no aplica a esta cita.');
         await escribir(db); return json({ ok: true, estado: c.estado });
+      }
+      if (accion === 'cliente' && req.method === 'POST') {
+        const nombre = limpia(body.nombre, 80), tel = telCR(body.tel), carro = limpia(body.carro, 60);
+        if (!nombreOk(nombre)) return error('Revise el nombre.');
+        if (!tel) return error('Revise el teléfono (8 dígitos).');
+        const ya = db.clientes[tel]; if (ya) return json({ ok: true, existia: true, tarjeta: ya.token, nombre: ya.nombre, tel });
+        const c = nuevoCliente(db, tel, nombre, carro); await escribir(db);
+        return json({ ok: true, existia: false, tarjeta: c.token, nombre, tel });
+      }
+      if (accion === 'pin-reset' && req.method === 'POST') {
+        const tel = db.tokens[String(body.t || '')], c = tel && db.clientes[tel]; if (!c) return error('Tarjeta no encontrada.', 404);
+        delete c.pinHash; delete c.pinSal; c.fallos = 0; c.bloqueo = 0; await escribir(db);
+        return json({ ok: true, tarjeta: c.token, tel: c.tel, nombre: c.nombre });
       }
       if ((accion === 'sello' || accion === 'canjear' || accion === 'tarjeta') ) {
         const t = String((req.method === 'GET' ? url.searchParams.get('t') : body.t) || '');

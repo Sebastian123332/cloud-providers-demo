@@ -110,6 +110,10 @@ a{color:inherit}
 /* clientes */
 .buscar input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n3)}
 .lista{display:grid;gap:10px}
+.nuevo{background:var(--n3);border:1px solid var(--tq);border-radius:14px;padding:12px 14px}
+.nuevo summary{cursor:pointer;font-weight:800;color:var(--tq2)}
+.nuevo form{display:grid;gap:10px;margin-top:12px}
+.sinpin{font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:999px;background:rgba(255,201,77,.15);color:var(--oro);margin-left:6px;vertical-align:middle}
 .cli{background:var(--n3);border:1px solid var(--linea);border-radius:14px;padding:12px;display:grid;gap:8px}
 .cli-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .cli-top b{display:block}
@@ -166,6 +170,16 @@ a{color:inherit}
   </section>
 
   <section class="sec" id="sec-clientes" aria-label="Clientes">
+    <details class="nuevo" id="nuevoCli">
+      <summary>+ Nuevo cliente (llegó sin reservar)</summary>
+      <form id="fNuevo" novalidate>
+        <div class="campo"><label for="nNombre">Nombre</label><input id="nNombre" maxlength="80" autocomplete="off"></div>
+        <div class="campo"><label for="nTel">Teléfono</label><input id="nTel" type="tel" inputmode="tel" maxlength="16" autocomplete="off" placeholder="8888-0000"></div>
+        <div class="campo"><label for="nCarro">Carro (opcional)</label><input id="nCarro" maxlength="60" autocomplete="off"></div>
+        <button class="btn b-tq" type="submit">Crear tarjeta y enviarla por WhatsApp</button>
+        <p class="msg" id="mNuevo" role="alert"></p>
+      </form>
+    </details>
     <div class="buscar"><label class="sr-only" for="buscar" hidden>Buscar cliente</label><input id="buscar" type="search" placeholder="Buscar por nombre o teléfono" autocomplete="off"></div>
     <div id="listaCli" class="lista"></div>
   </section>

@@ -92,6 +92,27 @@ a{color:inherit}
 .pie-ov{color:var(--gr)}
 .ov .app{gap:16px}
 [hidden]{display:none!important}
+.acceso{display:grid;gap:14px}
+.tit{font-family:var(--t);font-style:italic;font-weight:900;text-transform:uppercase;font-size:2.2rem;line-height:1}
+.sub{color:var(--gr)}.sub b{color:var(--bl)}
+.caja-f{display:grid;gap:12px;background:var(--n3);border:1px solid var(--linea);border-radius:18px;padding:16px}
+.cf{display:grid;gap:6px;font-size:.75rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gr)}
+.cf input,.crea-pin input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:500 1rem var(--s);letter-spacing:normal;text-transform:none}
+.cf input:focus,.crea-pin input:focus{outline:2px solid var(--tq);border-color:transparent}
+.cf input[aria-invalid="true"]{border-color:#FF7A6B}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.casilla{display:flex;gap:10px;align-items:flex-start;font-size:.82rem;color:var(--gr)}
+.casilla input{width:20px;height:20px;flex:none;accent-color:var(--tq);margin-top:1px}
+.casilla a{color:var(--tq2)}
+.msg{min-height:1.2em;font-size:.88rem;font-weight:600}
+.msg.mal{color:#FF8A7A}.msg.bien{color:var(--ok)}
+.olvido{font-size:.82rem;color:var(--tq2);text-align:center}
+.trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.crea-pin{display:grid;gap:10px;padding:16px;border-radius:18px;background:rgba(76,195,212,.1);border:1px solid rgba(76,195,212,.45)}
+.crea-pin p{color:var(--gr);font-size:.88rem}
+.usuario{text-align:center;font-size:.8rem;color:var(--gr)}
+.salir{justify-self:center;font-size:.82rem;color:var(--gr2);text-decoration:underline;text-underline-offset:3px}
+
 #vista{display:grid;gap:14px}
 .app > .btn{width:100%}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
@@ -105,12 +126,35 @@ a{color:inherit}
 
   <div class="estado" id="cargando"><div class="cargando" aria-hidden="true"></div><p>Cargando su tarjeta…</p></div>
 
-  <div class="estado" id="sinTarjeta" hidden>
-    <h1>Su tarjeta <span class="tq2">Monzú Club</span></h1>
-    <p id="sinTxt">Su tarjeta se crea con su primera cita. Reserve en línea y le aparece aquí, lista para guardar en su celular.</p>
-    <a class="btn btn-a" href="/#agendar">Reservar mi cita</a>
-    <a class="btn btn-b" href="https://wa.me/50672686906?text=Hola%20Monz%C3%BA%2C%20no%20encuentro%20mi%20tarjeta%20Monz%C3%BA%20Club" target="_blank" rel="noopener noreferrer">¿Perdió su enlace? Escríbanos</a>
-  </div>
+  <section class="acceso" id="acceso" hidden aria-labelledby="accT">
+    <h1 id="accT" class="tit">Monzú <span class="tq2">Club</span></h1>
+    <p class="sub">Su tarjeta de cliente frecuente: <b>10 sellos = Lavado Premium gratis</b>. Su usuario es su <b>teléfono</b> y su clave, un <b>PIN de 4 números</b>.</p>
+    <div class="so" role="tablist" aria-label="Entrar o registrarse">
+      <button type="button" role="tab" aria-selected="true" data-acc="entrar" id="tabEntrar">Ya soy miembro</button>
+      <button type="button" role="tab" aria-selected="false" data-acc="registro" id="tabRegistro">Unirme gratis</button>
+    </div>
+    <form class="caja-f" id="fEntrar" novalidate>
+      <label class="cf">Teléfono<input id="eTel" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="8888-0000"></label>
+      <label class="cf">PIN (4 números)<input id="ePin" type="password" inputmode="numeric" autocomplete="current-password" maxlength="4" pattern="[0-9]*" placeholder="••••"></label>
+      <button class="btn btn-a" type="submit" id="bEntrar">Ver mi tarjeta</button>
+      <p class="msg" id="mEntrar" role="alert"></p>
+      <a class="olvido" href="https://wa.me/50672686906?text=Hola%20Monz%C3%BA%2C%20olvid%C3%A9%20mi%20PIN%20de%20Monz%C3%BA%20Club" target="_blank" rel="noopener noreferrer">¿Olvidó su PIN o su tarjeta no tiene PIN? Escríbanos</a>
+    </form>
+    <form class="caja-f" id="fRegistro" novalidate hidden>
+      <label class="cf">Nombre completo<input id="rNombre" autocomplete="name" maxlength="80" placeholder="Juan Pérez"></label>
+      <label class="cf">Teléfono / WhatsApp<input id="rTel" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="8888-0000"></label>
+      <label class="cf">Carro (opcional)<input id="rCarro" maxlength="60" placeholder="Ej. Toyota RAV4 2019"></label>
+      <div class="dos">
+        <label class="cf">Cree su PIN<input id="rPin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" pattern="[0-9]*" placeholder="4 números"></label>
+        <label class="cf">Repita el PIN<input id="rPin2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" pattern="[0-9]*" placeholder="4 números"></label>
+      </div>
+      <div class="trampa" aria-hidden="true"><label>No llenar<input id="rWeb" tabindex="-1" autocomplete="off"></label></div>
+      <label class="casilla"><input type="checkbox" id="rOk"><span>Acepto los términos de Monzú Club y autorizo a Monzú Detallados a guardar mis datos y mis sellos (Ley 8968). <a href="/#contacto">Ver privacidad</a></span></label>
+      <button class="btn btn-a" type="submit" id="bRegistro">Crear mi tarjeta</button>
+      <p class="msg" id="mRegistro" role="alert"></p>
+    </form>
+    <a class="btn btn-b" href="/#agendar">Reservar una cita</a>
+  </section>
 
   <div id="vista" hidden>
     <div class="tarjeta" id="tarjeta">
@@ -119,12 +163,21 @@ a{color:inherit}
       <div class="tj-pie"><b id="tjCuenta"></b><span id="tjFalta"></span></div>
       <div class="barra"><i id="tjBarra"></i></div>
     </div>
+    <form class="crea-pin" id="crearPin" hidden novalidate>
+      <b>🔐 Cree su PIN de 4 números</b>
+      <p>Así entra a su tarjeta desde cualquier celular, solo con su teléfono y su PIN.</p>
+      <div class="dos"><input id="nPin" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" placeholder="PIN" aria-label="Nuevo PIN"><input id="nPin2" type="password" inputmode="numeric" autocomplete="new-password" maxlength="4" placeholder="Repita" aria-label="Repita el PIN"></div>
+      <button class="btn btn-a" type="submit">Guardar PIN</button>
+      <p class="msg" id="mPin" role="alert"></p>
+    </form>
     <p class="aviso oro" id="premioMsg" hidden></p>
     <p class="aviso cita" id="proxCita" hidden></p>
     <div class="qr-caja"><canvas id="qr" width="118" height="118" aria-label="Código QR de su tarjeta"></canvas><div><b>Su código Monzú</b><p>Muéstrelo al terminar el lavado para sumar su sello.</p><code id="tjCodigo"></code></div></div>
     <div class="bloque"><h3>Historial</h3><div class="hist" id="hist"></div></div>
     <button type="button" class="btn btn-a" id="btnInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Tenerla siempre en mi celular</button>
     <a class="btn btn-b" href="/#agendar">Reservar otra cita</a>
+    <p class="usuario" id="usuario"></p>
+    <button type="button" class="salir" id="btnSalir">Salir de esta tarjeta</button>
   </div>
   <p class="pie">Monzú Detallados · Cartago · <a href="/#contacto">Contacto</a></p>
 </main>

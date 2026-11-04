@@ -36,8 +36,14 @@
   function listo(j,x){
     var L=$('listo'); L.hidden=false;
     var ff=fmtFecha(x.fecha); $('listoTxt').textContent=ff.charAt(0).toUpperCase()+ff.slice(1)+' · '+fmtHora(x.hora)+'\nMonzú le confirma la cita por WhatsApp.';
-    $('listoTarjeta').href='tarjeta.html?t='+encodeURIComponent(j.tarjeta);
-    $('listoNueva').textContent=j.nueva?'¡Bienvenido a Monzú Club! Ya tiene su tarjeta: guárdela en su celular y junte sellos.':'Cuando terminemos el lavado le sumamos un sello en su tarjeta.';
+    var A={conpin:'Ya es miembro de Monzú Club 💧 Entre a su tarjeta con su teléfono y su PIN.',pinmal:'Su cita quedó reservada, pero el PIN no coincide. Entre a su tarjeta con su teléfono y su PIN.',bloqueado:'Su cita quedó reservada. Por seguridad, espere 15 minutos para entrar a su tarjeta.',sinpin:'Ya tiene tarjeta Monzú Club: ábrala con el enlace que le enviamos por WhatsApp y cree su PIN.'};
+    if(j.tarjeta){
+      $('listoTarjeta').href='tarjeta.html?t='+encodeURIComponent(j.tarjeta); $('listoTarjeta').textContent='💧 Ver mi tarjeta Monzú Club';
+      $('listoNueva').textContent=j.nueva?(j.tienePin?'¡Bienvenido a Monzú Club! Su usuario es su teléfono '+x.tel+' y su clave el PIN que escogió. Con eso entra a su tarjeta desde cualquier celular.':'¡Bienvenido a Monzú Club! Ya tiene su tarjeta: ábrala y cree su PIN para entrar desde cualquier celular.'):'Cuando terminemos el lavado le sumamos un sello en su tarjeta.';
+    } else {
+      $('listoTarjeta').href='tarjeta.html'; $('listoTarjeta').textContent='💧 Entrar a mi tarjeta';
+      $('listoNueva').textContent=A[j.aviso]||A.conpin;
+    }
     estado('',false); L.scrollIntoView({behavior:QUIETO?'auto':'smooth',block:'center'});
   }
   $('listoWA').addEventListener('click',function(){ if(ultimoDato) abrirWA(mensaje(ultimoDato.x,ultimoDato.e)) });
@@ -48,9 +54,10 @@
     if(Date.now()-ultimo<15000){ estado('Su cita ya se envió. Espere unos segundos para enviar otra.',true); return }
     var e=eleccion(), mal=[];
     var x={nombre:limpiar($('fNombre').value,80), tel:limpiar($('fTel').value,16), lugar:limpiar($('fLugar').value,120), carro:limpiar($('fVeh').value,60), nota:limpiar($('fNota').value,400),
-      fecha:$('fFecha').value, hora:horaSel, vehiculo:e.v==='sedan'?'Sedán':'SUV / Pick up / XL', lineas:e.lineas, desde:e.desde, aroma:aroma, consentimiento:true, web:$('fWeb').value};
+      fecha:$('fFecha').value, hora:horaSel, pin:$('fPin').value.trim(), vehiculo:e.v==='sedan'?'Sedán':'SUV / Pick up / XL', lineas:e.lineas, desde:e.desde, aroma:aroma, consentimiento:true, web:$('fWeb').value};
     var okN=/^[\p{L}\p{M} .'’-]{3,80}$/u.test(x.nombre); $('fNombre').setAttribute('aria-invalid',String(!okN)); if(!okN) mal.push('su nombre');
     var t=x.tel.replace(/[^\d+]/g,'').replace(/^\+?506/,''), okT=/^[2-8]\d{7}$/.test(t); $('fTel').setAttribute('aria-invalid',String(!okT)); if(!okT) mal.push('un teléfono de 8 dígitos');
+    var okP=!x.pin||/^\d{4}$/.test(x.pin); $('fPin').setAttribute('aria-invalid',String(!okP)); if(!okP) mal.push('un PIN de 4 números (o déjelo vacío)');
     var okL=x.lugar.length>=4; $('fLugar').setAttribute('aria-invalid',String(!okL)); if(!okL) mal.push('la dirección o zona');
     var okF=/^\d{4}-\d{2}-\d{2}$/.test(x.fecha); $('fFecha').setAttribute('aria-invalid',String(!okF)); if(!okF) mal.push('la fecha');
     if(okF&&!x.hora){ cajaH.setAttribute('aria-invalid','true'); mal.push('la hora') }

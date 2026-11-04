@@ -39,23 +39,66 @@
     var h=$('hist'); h.textContent='';
     t.hist.forEach(function(x){ var r=d.createElement('div'), b=d.createElement('b'), sp=d.createElement('span'); b.textContent=x[0]; sp.textContent=fmtF(x[1]); r.appendChild(b); r.appendChild(sp); h.appendChild(r) });
   }
-  function muestra(id){ ['cargando','sinTarjeta','vista'].forEach(function(x){ $(x).hidden=x!==id }) }
+  function muestra(id){ ['cargando','acceso','vista'].forEach(function(x){ $(x).hidden=x!==id }) }
   function carga(primera){
-    if(!tk){ muestra('sinTarjeta'); return }
+    if(!tk){ acceso(location.hash==='#registro'?'registro':'entrar'); return }
     fetch('/api/tarjeta?t='+encodeURIComponent(tk),{headers:{accept:'application/json'},cache:'no-store'})
       .then(function(r){ return r.json().then(function(j){ return {r:r,j:j} }) })
       .then(function(o){
-        if(!o.j.ok){ if(o.r.status===404){ try{ localStorage.removeItem(CLAVE) }catch(e){} $('sinTxt').textContent='No encontramos esa tarjeta. Revise el enlace que le enviamos o escríbanos por WhatsApp.'; muestra('sinTarjeta') } return }
+        if(!o.j.ok){ if(o.r.status===404){ olvida(); acceso('entrar'); msg('mEntrar','No encontramos esa tarjeta. Entre con su teléfono y su PIN.',true) } return }
         var s=o.j.tarjeta.sellos, antes=ultimo;
         var nuevo=antes!==null && s>antes;
         if(primera||nuevo||antes===null||s!==antes||JSON.stringify(o.j)!==carga.prev){ pinta(o.j,nuevo); carga.prev=JSON.stringify(o.j) }
         if(primera){ dibujaQR(location.origin+'/tarjeta.html?t='+tk); muestra('vista') }
+        $('crearPin').hidden=!!o.j.tarjeta.tienePin;
+        $('usuario').textContent=o.j.tarjeta.tienePin?'Para entrar desde otro celular: su teléfono y su PIN.':'';
         if(nuevo){ if(navigator.vibrate) navigator.vibrate([80,60,120]); toast(s>=o.j.tarjeta.meta?'🎁 ¡Lavado gratis desbloqueado!':'💧 ¡Sello agregado! '+s+' de '+o.j.tarjeta.meta,' Gracias por lavar con Monzú.') }
         if(antes!==null && s<antes && s===0) toast('🎁 ¡Disfrute su lavado gratis!',' Su tarjeta empieza de nuevo.');
         ultimo=s;
       })
-      .catch(function(){ if(primera){ $('sinTxt').textContent='No hay conexión en este momento. Revise su internet e intente de nuevo.'; muestra('sinTarjeta') } });
+      .catch(function(){ if(primera){ acceso('entrar'); msg('mEntrar','No hay conexión en este momento. Revise su internet e intente de nuevo.',true) } });
   }
+  /* ---------- entrar, registrarse, crear PIN y salir ---------- */
+  function msg(id,t,mal){ var m=$(id); m.textContent=t; m.className='msg '+(mal?'mal':'bien') }
+  function olvida(){ tk=''; ultimo=null; try{ localStorage.removeItem(CLAVE) }catch(e){} history.replaceState(null,'','/tarjeta.html') }
+  function usa(nuevo){ tk=nuevo; try{ localStorage.setItem(CLAVE,tk) }catch(e){} history.replaceState(null,'','/tarjeta.html?t='+encodeURIComponent(tk)); muestra('cargando'); carga(true) }
+  function acceso(cual){ muestra('acceso'); pestana(cual) }
+  function pestana(cual){ $('tabEntrar').setAttribute('aria-selected',String(cual==='entrar')); $('tabRegistro').setAttribute('aria-selected',String(cual==='registro')); $('fEntrar').hidden=cual!=='entrar'; $('fRegistro').hidden=cual!=='registro' }
+  $('tabEntrar').addEventListener('click',function(){ pestana('entrar') });
+  $('tabRegistro').addEventListener('click',function(){ pestana('registro') });
+  function telOk(v){ var t=String(v||'').replace(/[^\d+]/g,'').replace(/^\+?506/,''); return /^[2-8]\d{7}$/.test(t)?t:'' }
+  function post(ruta,datos){ return fetch('/api/'+ruta,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(datos)}).then(function(r){ return r.json() }) }
+  $('fEntrar').addEventListener('submit',function(e){
+    e.preventDefault(); var tel=telOk($('eTel').value), pin=$('ePin').value.trim();
+    $('eTel').setAttribute('aria-invalid',String(!tel)); $('ePin').setAttribute('aria-invalid',String(!/^\d{4}$/.test(pin)));
+    if(!tel||!/^\d{4}$/.test(pin)){ msg('mEntrar','Escriba su teléfono (8 dígitos) y su PIN (4 números).',true); return }
+    $('bEntrar').disabled=true; msg('mEntrar','Buscando su tarjeta…',false);
+    post('entrar',{tel:tel,pin:pin}).then(function(j){ $('bEntrar').disabled=false; if(!j.ok){ msg('mEntrar',j.error||'No se pudo entrar.',true); return } $('ePin').value=''; usa(j.tarjeta) })
+      .catch(function(){ $('bEntrar').disabled=false; msg('mEntrar','Sin conexión. Intente de nuevo.',true) });
+  });
+  $('fRegistro').addEventListener('submit',function(e){
+    e.preventDefault(); if($('rWeb').value) return;
+    var nombre=$('rNombre').value.trim().replace(/\s+/g,' '), tel=telOk($('rTel').value), pin=$('rPin').value.trim(), mal=[];
+    var okN=/^[\p{L}\p{M} .'’-]{3,80}$/u.test(nombre); $('rNombre').setAttribute('aria-invalid',String(!okN)); if(!okN) mal.push('su nombre');
+    $('rTel').setAttribute('aria-invalid',String(!tel)); if(!tel) mal.push('un teléfono de 8 dígitos');
+    var okP=/^\d{4}$/.test(pin); $('rPin').setAttribute('aria-invalid',String(!okP)); if(!okP) mal.push('un PIN de 4 números');
+    if(okP&&pin!==$('rPin2').value.trim()){ $('rPin2').setAttribute('aria-invalid','true'); mal.push('que los dos PIN sean iguales') }
+    if(!$('rOk').checked) mal.push('aceptar los términos');
+    if(mal.length){ msg('mRegistro','Falta: '+mal.join(', ')+'.',true); return }
+    $('bRegistro').disabled=true; msg('mRegistro','Creando su tarjeta…',false);
+    post('registro',{nombre:nombre,tel:tel,carro:$('rCarro').value.trim(),pin:pin,consentimiento:true,web:$('rWeb').value}).then(function(j){
+      $('bRegistro').disabled=false; if(!j.ok){ msg('mRegistro',j.error||'No se pudo registrar.',true); if(/ya est/.test(j.error||'')){ $('eTel').value=$('rTel').value; pestana('entrar') } return }
+      usa(j.tarjeta); setTimeout(function(){ toast('💧 ¡Bienvenido a Monzú Club!',' Su usuario es su teléfono y su clave el PIN que escogió.') },900);
+    }).catch(function(){ $('bRegistro').disabled=false; msg('mRegistro','Sin conexión. Intente de nuevo.',true) });
+  });
+  $('crearPin').addEventListener('submit',function(e){
+    e.preventDefault(); var a=$('nPin').value.trim(), b=$('nPin2').value.trim();
+    if(!/^\d{4}$/.test(a)){ msg('mPin','El PIN debe tener 4 números.',true); return } if(a!==b){ msg('mPin','Los dos PIN no son iguales.',true); return }
+    post('pin',{t:tk,pin:a}).then(function(j){ if(!j.ok){ msg('mPin',j.error||'No se pudo guardar.',true); return } $('crearPin').hidden=true; toast('🔐 PIN guardado',' Ya puede entrar desde cualquier celular con su teléfono y su PIN.'); carga(false) })
+      .catch(function(){ msg('mPin','Sin conexión. Intente de nuevo.',true) });
+  });
+  $('btnSalir').addEventListener('click',function(){ if(!confirm('¿Salir de esta tarjeta en este celular? Para volver a entrar necesita su teléfono y su PIN.')) return; olvida(); acceso('entrar') });
+
   carga(true);
   /* se actualiza sola mientras está abierta */
   function arranca(){ clearInterval(tPoll); tPoll=setInterval(function(){ if(!d.hidden) carga(false) },8000) }

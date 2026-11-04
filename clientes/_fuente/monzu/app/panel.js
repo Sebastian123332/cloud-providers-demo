@@ -130,16 +130,28 @@
     if(!lista.length){ L.appendChild(el('p','vacio',datos.clientes.length?'No hay clientes con esa búsqueda.':'Todavía no hay clientes. Se agregan solos con la primera reserva.')); return }
     lista.forEach(function(c){
       var box=el('div','cli'), top=el('div','cli-top'), izq=el('div');
-      izq.appendChild(el('b',null,c.nombre)); izq.appendChild(el('small',null,c.tel.slice(0,4)+'-'+c.tel.slice(4)+(c.carro?' · '+c.carro:'')+(c.premios?' · '+c.premios+' premio(s) canjeado(s)':'')));
+      var nb=el('b',null,c.nombre); if(!c.tienePin) nb.appendChild(el('span','sinpin','Sin PIN')); izq.appendChild(nb); izq.appendChild(el('small',null,c.tel.slice(0,4)+'-'+c.tel.slice(4)+(c.carro?' · '+c.carro:'')+(c.premios?' · '+c.premios+' premio(s) canjeado(s)':'')));
       var em=el('em',null,c.sellos>=datos.meta?'🎁 Premio':c.sellos+'/'+datos.meta); if(c.sellos>=datos.meta) em.className='oro';
       top.appendChild(izq); top.appendChild(em); box.appendChild(top); box.appendChild(mini(c.sellos,datos.meta));
       var acc=el('div','acc');
       if(c.sellos>=datos.meta) acc.appendChild(boton('Canjear premio','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
       else acc.appendChild(boton('Dar sello','b-ok',function(){ if(confirm('¿Dar un sello a '+c.nombre+'?')) sello(c.tarjeta,c.nombre) },'gota'));
       acc.appendChild(boton('Enviar tarjeta','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 💧 Esta es su tarjeta Monzú Club, donde ve sus sellos: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en la pantalla de inicio de su celular para tenerla siempre a mano.') },'wa'));
+      if(c.tienePin) acc.appendChild(boton('Restablecer PIN','b-bor',function(){ if(!confirm('¿Restablecer el PIN de '+c.nombre+'? Le enviamos su tarjeta por WhatsApp para que cree uno nuevo.')) return;
+        api('pin-reset',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('PIN restablecido. Envíele la tarjeta.'); abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 🔐 Le restablecimos el PIN de Monzú Club. Abra su tarjeta aquí y cree uno nuevo: '+enlaceTarjeta(c.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }));
       box.appendChild(acc); L.appendChild(box);
     });
   }
+  $('fNuevo').addEventListener('submit',function(e){
+    e.preventDefault(); var m=$('mNuevo'), nombre=$('nNombre').value.trim(), tel=$('nTel').value.trim();
+    if(nombre.length<3||!/^[2-8]\d{7}$/.test(tel.replace(/\D/g,'').replace(/^506/,''))){ m.textContent='Escriba el nombre y un teléfono de 8 dígitos.'; m.className='msg mal'; return }
+    api('cliente',{nombre:nombre,tel:tel,carro:$('nCarro').value.trim()}).then(function(j){
+      if(!j.ok){ m.textContent=j.error||'No se pudo.'; m.className='msg mal'; return }
+      m.textContent=j.existia?'Ese teléfono ya tenía tarjeta ('+j.nombre+'). Se la reenviamos.':'✓ Tarjeta creada.'; m.className='msg bien';
+      abrirWA(j.tel,'¡Hola '+j.nombre.split(' ')[0]+'! 💧 Bienvenido a Monzú Club. Esta es su tarjeta de cliente frecuente, donde ve sus sellos (10 sellos = lavado gratis): '+enlaceTarjeta(j.tarjeta)+'\nÁbrala, cree su PIN de 4 números y guárdela en la pantalla de inicio de su celular.');
+      $('fNuevo').reset(); refrescar();
+    }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
+  });
   $('buscar').addEventListener('input',function(){ if(datos) clientes() });
 
   /* ---------- escáner con la cámara ---------- */
