@@ -11,11 +11,13 @@
 <meta property="og:locale" content="es_CR">
 <meta name="theme-color" content="#0A0E1A">
 <link rel="icon" type="image/svg+xml" href="{{ICONO}}">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+{{SEO}}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,600;0,700;0,800;1,800;1,900&family=Barlow:wght@400;500;600;700&display=swap">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"LocalBusiness","name":"Grúas Hidalgo","description":"Grúa para camiones pesados las 24 horas en todo Costa Rica: underlift, arrastre y rescate, grúa telescópica y traslado de pesados.","telephone":"+506 8838-1397","areaServed":"Costa Rica","openingHours":"Mo-Su 00:00-23:59","founder":"Pablo Hidalgo Quirós"}
+{"@context":"https://schema.org","@type":"LocalBusiness","name":"Grúas Hidalgo","description":"Grúa para camiones pesados las 24 horas en todo Costa Rica: underlift, arrastre y rescate, grúa telescópica y traslado de pesados.","telephone":"+506 8838-1397","areaServed":"Costa Rica","openingHours":"Mo-Su 00:00-23:59","founder":"Pablo Hidalgo Quirós","url":"{{DOM}}/","logo":"{{DOM}}/logo.png","image":"{{DOM}}/og.jpg"}
 </script>
 <style>
 :root{
@@ -42,7 +44,6 @@ section{position:relative;padding-block:clamp(80px,11vw,140px)}
 .cab h2{font-size:clamp(2.8rem,7vw,5.6rem);margin-top:12px}
 .cab p{color:var(--g2);max-width:44ch}
 .trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.demobar{background:var(--g1);color:var(--ink);font-size:.8rem;font-weight:600;text-align:center;padding:7px 14px}
 
 /* nav */
 .nav{position:sticky;top:0;z-index:60;background:rgba(10,14,26,.6);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--linea);transition:background .3s}
@@ -73,7 +74,7 @@ section{position:relative;padding-block:clamp(80px,11vw,140px)}
 }
 
 /* portada */
-.hero{min-height:calc(100svh - 34px);display:flex;align-items:flex-end;padding:0;overflow:hidden}
+.hero{min-height:100svh;display:flex;align-items:flex-end;padding:0;overflow:hidden}
 .hero-foto{position:absolute;inset:0}
 .hero-foto img{width:100%;height:100%;object-fit:cover;object-position:35% 50%;transform:scale(calc(1.08 + var(--sy,0)*.0002)) translateY(calc(var(--sy,0)*.15px))}
 .hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,14,26,.35) 0%,rgba(10,14,26,.15) 35%,rgba(10,14,26,.92) 78%,var(--n) 100%),linear-gradient(90deg,rgba(10,14,26,.75),transparent 60%)}
@@ -221,36 +222,9 @@ dialog.visor::backdrop{background:rgba(5,8,16,.94)}
 @media(max-width:900px){.sol{grid-template-columns:minmax(0,1fr)}.lado{position:relative;top:0}}
 @media(max-width:520px){.dos{grid-template-columns:minmax(0,1fr)}}
 
-/* QR */
-#qr{background:var(--g1);color:var(--ink)}
-#qr .eti{color:var(--az)}#qr .eti::before{background:var(--az)}
-#qr .cab p{color:var(--g4)}
-.qrs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;max-width:900px}
-.qr{background:var(--n);color:#fff;border-radius:16px;padding:24px;display:grid;grid-template-columns:150px minmax(0,1fr);gap:22px;align-items:center}
-.qr .codigo{background:#fff;border-radius:10px;padding:10px}
-.qr .codigo svg{width:100%;height:auto}
-.qr h3{font-family:var(--t);font-weight:900;font-style:italic;text-transform:uppercase;font-size:2rem;line-height:.95}
-.qr p{color:var(--g2);font-size:.9rem;margin-top:8px}
-.qr .est{color:#FFC21A;letter-spacing:3px;margin-top:6px}
-@media(max-width:760px){.qrs{grid-template-columns:minmax(0,1fr)}.qr{grid-template-columns:110px minmax(0,1fr)}}
-
-.paleta .c1{--c:#2B3AA8}.paleta .c2{--c:#3D50D6}.paleta .c3{--c:#0A0E1A}.paleta .c4{--c:#8D94A1}.paleta .c5{--c:#E9ECF1}.paleta .c6{--c:#FFFFFF}
 .cob-p{color:var(--g2);margin-top:16px;max-width:44ch}
 #cobertura h2{font-size:clamp(2.8rem,7vw,5.6rem);margin-top:12px}
-.qrs{margin-top:22px}
 .pie b{color:#fff;font-family:var(--t);font-size:1.3rem;text-transform:uppercase}
-/* paleta (solo demo) */
-.paleta{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-top:26px}
-.color{border-radius:12px;overflow:hidden;border:1px solid #D8DCE3;background:#fff;font-size:.82rem}
-.color i{display:block;height:80px;background:var(--c)}
-.color div{padding:10px 12px}
-.color b{display:block;font-family:var(--t);font-weight:800;font-size:1.1rem;text-transform:uppercase}
-.color code{color:var(--g4)}
-.logos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px}
-.logos div{border-radius:12px;padding:20px;display:grid;place-items:center;border:1px solid #D8DCE3}
-.logos div:nth-child(1){background:#fff}.logos div:nth-child(2){background:var(--n)}.logos div:nth-child(3){background:var(--g2)}
-.logos img{width:100%;max-width:220px}
-@media(max-width:820px){.paleta{grid-template-columns:repeat(3,minmax(0,1fr))}.logos{grid-template-columns:minmax(0,1fr)}}
 
 footer{border-top:1px solid var(--linea);padding-block:40px 100px;color:var(--g3);font-size:.88rem}
 footer .wrap{display:grid;gap:18px}
@@ -275,7 +249,6 @@ dialog.legal::backdrop{background:rgba(5,8,16,.8)}
 </style>
 </head>
 <body>
-<div class="demobar">Demo de ejemplo hecha por Solanotech para Grúas Hidalgo</div>
 
 <header class="nav" id="nav"><div class="wrap">
   <a class="logo" href="#inicio" aria-label="Grúas Hidalgo, inicio"><img src="{{LOGO_BLANCO}}" alt="" width="540" height="445"><span>Grúas Hidalgo<small>24 horas · todo el país</small></span></a>
@@ -387,22 +360,6 @@ dialog.legal::backdrop{background:rgba(5,8,16,.8)}
   </div>
 </div></section>
 
-<section id="qr"><div class="wrap">
-  <div class="cab rv"><div><span class="eti">Incluido con la página</span><h2 class="t">Logo, colores<br>y códigos QR</h2></div><p>El logo redibujado en vector, la paleta de la marca y dos QR para la grúa, tarjetas y stickers.</p></div>
-  <div class="logos rv"><div><img src="{{LOGO_COLOR}}" alt="Logo Grúas Hidalgo a color"></div><div><img src="{{LOGO_BLANCO}}" alt="Logo Grúas Hidalgo en blanco"></div><div><img src="{{LOGO_NEGRO}}" alt="Logo Grúas Hidalgo en negro"></div></div>
-  <div class="paleta rv">
-    <div class="color" style-x=""><i class="c1"></i><div><b>Azul Hidalgo</b><code>#2B3AA8</code></div></div>
-    <div class="color"><i class="c2"></i><div><b>Azul brillo</b><code>#3D50D6</code></div></div>
-    <div class="color"><i class="c3"></i><div><b>Negro noche</b><code>#0A0E1A</code></div></div>
-    <div class="color"><i class="c4"></i><div><b>Gris acero</b><code>#8D94A1</code></div></div>
-    <div class="color"><i class="c5"></i><div><b>Gris claro</b><code>#E9ECF1</code></div></div>
-    <div class="color"><i class="c6"></i><div><b>Blanco</b><code>#FFFFFF</code></div></div>
-  </div>
-  <div class="qrs" style-x="">
-    <div class="qr rv"><div class="codigo">{{QR_RESENA}}</div><div><h3>Califíquenos en Google</h3><div class="est">★★★★★</div><p>Al terminar el servicio, el cliente lo escanea y deja su reseña.</p></div></div>
-    <div class="qr rv"><div class="codigo">{{QR_WEB}}</div><div><h3>Abra nuestra página</h3><p>Para la puerta de la grúa: servicios y contacto desde el celular.</p></div></div>
-  </div>
-</div></section>
 </main>
 
 <footer><div class="wrap">
