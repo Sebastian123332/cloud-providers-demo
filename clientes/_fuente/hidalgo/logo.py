@@ -22,7 +22,7 @@ def logo(tema='color'):
     d24,_=txt('black','24 HRS',300,186,54,ls=2)
     dH,wH=txt('black','H',0,0,118)
     dI,wI=txt('black','IDALGO',0,0,86,ls=1)
-    tot=wH-4+wI; xH=300-tot/2; xI=xH+wH-4
+    tot=wH-26+wI; xH=300-tot/2; xI=xH+wH-26
     dH,_=txt('black','H',xH,312,118); dI,_=txt('black','IDALGO',xI,298,86,anchor='start',ls=1)
     dG,_=txt('black','GRÚAS',300,384,70,ls=3)
     shield='M300 40 L482 104 L456 392 Q300 448 144 392 L118 104 Z'
