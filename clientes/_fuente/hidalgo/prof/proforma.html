@@ -1,0 +1,86 @@
+<dialog class="legal pro" id="dlg-proformas" aria-labelledby="t-proformas">
+  <div class="lg-head"><h2 id="t-proformas">Proformas</h2><button type="button" data-cerrar aria-label="Cerrar">✕</button></div>
+  <div class="pro-in">
+    <form class="pro-form" id="pf" novalidate>
+      <p class="pro-nota">Herramienta interna de Grúas Hidalgo. Llene los datos y descargue la proforma en PDF con el logo y los colores de la empresa. Todo queda guardado solo en este navegador.</p>
+      <fieldset>
+        <legend>Cliente</legend>
+        <label class="pf">Nombre o razón social *<input id="pf-cliente" maxlength="90" placeholder="Ej. Transportes del Valle S.A."></label>
+        <div class="pro-dos">
+          <label class="pf">Cédula<input id="pf-cedula" maxlength="20" inputmode="numeric" placeholder="3-101-000000"></label>
+          <label class="pf">Teléfono<input id="pf-tel" maxlength="40" inputmode="tel" placeholder="8888-0000"></label>
+        </div>
+        <label class="pf">Correo<input id="pf-correo" type="email" maxlength="80" placeholder="correo@empresa.com"></label>
+        <label class="pf">Dirección<input id="pf-dir" maxlength="120" placeholder="Ej. Zona Industrial, Cartago"></label>
+      </fieldset>
+      <fieldset>
+        <legend>Servicio</legend>
+        <div class="pro-dos">
+          <label class="pf">Vehículo<input id="pf-veh" maxlength="60" placeholder="Ej. Cabezal Freightliner"></label>
+          <label class="pf">Placa<input id="pf-placa" maxlength="20" placeholder="CL 123456"></label>
+        </div>
+        <label class="pf">Desde (dónde está)<input id="pf-origen" maxlength="90" placeholder="Ej. Ruta 32, Guápiles"></label>
+        <label class="pf">Hasta (destino)<input id="pf-destino" maxlength="90" placeholder="Ej. Taller en Cartago"></label>
+      </fieldset>
+      <fieldset class="pro-servicios">
+        <legend>Detalle y precios</legend>
+        <div class="ln-cab" aria-hidden="true"><span>Descripción</span><span>Cant.</span><span>Precio unit. (₡)</span><span>Total</span></div>
+        <div id="pf-lineas"></div>
+        <button type="button" class="pro-mas" id="pf-mas">+ Agregar línea</button>
+        <div class="ln-tot" id="pf-totales" aria-live="polite"></div>
+      </fieldset>
+      <fieldset>
+        <legend>Proforma</legend>
+        <div class="pro-tres">
+          <label class="pf">N.º<input id="pf-num" inputmode="numeric" maxlength="6"></label>
+          <label class="pf">Fecha<input id="pf-fecha" type="date"></label>
+          <label class="pf">Válida (días)<input id="pf-validez" inputmode="numeric" maxlength="3" value="15"></label>
+        </div>
+        <div class="pro-dos">
+          <label class="pf">IVA (%)<input id="pf-iva" inputmode="numeric" maxlength="2" value="13"></label>
+          <label class="pf">Forma de pago<input id="pf-pago" maxlength="70" value="Contado: transferencia o SINPE Móvil"></label>
+        </div>
+        <label class="pf">Observaciones (opcional)<textarea id="pf-obs" maxlength="400" placeholder="Ej. Incluye maniobra de rescate. Peajes por cuenta del cliente."></textarea></label>
+      </fieldset>
+      <details class="pro-emp" id="pf-emp">
+        <summary>Datos de Grúas Hidalgo (se llenan una vez)</summary>
+        <div class="pro-dos">
+          <label class="pf">Firma: nombre<input id="pf-firma" maxlength="60" value="Pablo Hidalgo Quirós"></label>
+          <label class="pf">Cargo<input id="pf-cargo" maxlength="40" value="Propietario"></label>
+        </div>
+        <label class="pf">Cédula de quien firma (opcional)<input id="pf-fced" maxlength="20" placeholder="0-0000-0000"></label>
+        <label class="pf">Datos para el pago<textarea id="pf-banco" maxlength="300" placeholder="Ej. Banco Nacional · IBAN CR00 0000 0000 0000 0000 00&#10;SINPE Móvil: 8888-8888 a nombre de ..."></textarea></label>
+      </details>
+      <div class="pro-acc">
+        <button type="button" class="btn btn-a pro-pdf" id="pf-pdf">Descargar PDF</button>
+        <button type="button" class="pro-limpiar" id="pf-limpiar">Nueva proforma</button>
+      </div>
+      <p class="pro-msg" id="pf-msg" role="status"></p>
+    </form>
+    <div class="pro-vista" aria-label="Vista previa de la proforma">
+      <div class="hoja" id="hoja">
+        <img class="hoja-marca" src="{{PRO_MARCA}}" alt="">
+        <div class="h-cab">
+          <img class="h-logo" src="{{PRO_LOGO}}" alt="">
+          <div class="h-emp"><b>GRÚAS HIDALGO</b><span>Grúa para camiones pesados · 24 horas · Todo Costa Rica</span><strong>WhatsApp 8838-1397 · <i class="h-web">{{PRO_WEB}}</i></strong></div>
+          <div class="h-num"><b>PROFORMA</b><span id="hv-num"></span><em id="hv-fecha"></em></div>
+        </div>
+        <div class="h-cuerpo" id="hv-cuerpo">
+          <div class="h-cajas">
+            <div class="h-caja"><small>Cliente</small><b id="hv-cliente"></b><p id="hv-datos"></p></div>
+            <div class="h-caja"><small>Servicio</small><p id="hv-serv"></p></div>
+          </div>
+          <p class="h-saludo">Por este medio le presentamos la cotización solicitada para el servicio de grúa:</p>
+          <table class="h-tabla" id="hv-tabla"></table>
+          <p class="h-obs" id="hv-obs"></p>
+          <p class="h-cond" id="hv-cond"></p>
+          <div class="h-fin">
+            <div class="h-banco" id="hv-banco-c"><small>Datos para el pago</small><p id="hv-banco"></p></div>
+            <div class="h-firma"><i></i><b id="hv-firma"></b><span id="hv-cargo"></span></div>
+          </div>
+        </div>
+        <div class="h-pie">Grúas Hidalgo · WhatsApp 8838-1397 · 24 horas · Todo Costa Rica</div>
+      </div>
+    </div>
+  </div>
+</dialog>
