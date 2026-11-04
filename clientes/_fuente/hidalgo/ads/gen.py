@@ -64,6 +64,7 @@ a3='''<style>%s</style><div style="position:absolute;inset:0;background:radial-g
 <div class="t" style="font-size:112px">Vamos a<br><span class="am">todo el país</span></div></div>
 <div class="mapa" style="position:absolute;left:30px;right:30px;top:300px;height:780px;display:grid;place-items:center"><div style="width:860px">%s</div></div>
 <div style="position:absolute;left:50px;right:50px;bottom:180px;display:flex;justify-content:center;gap:14px"><span class="pill"><i></i>Las 7 provincias</span><span class="pill" style="border-color:#FFC21A">Carretera y montaña</span></div>'''%(mcss,LOGO,m)
-for n,c in [('1-emergencia',a1),('2-servicios',a2),('3-cobertura',a3)]:
+if __name__=='__main__':
+  for n,c in [('1-emergencia',a1),('2-servicios',a2),('3-cobertura',a3)]:
     open(H+'ads/%s.html'%n,'w').write(pag(c))
 print('ok')
