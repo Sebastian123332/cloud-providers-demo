@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   var d=document, $=function(i){ return d.getElementById(i) };
-  var GUARDA='monzu-panel', clave='', datos=null, filtro='hoy', vistos=null, tPoll=null, stream=null, rafId=0;
+  var ultimoTel='', GUARDA='monzu-panel', clave='', datos=null, filtro='hoy', vistos=null, tPoll=null, stream=null, rafId=0;
   var NS='http://www.w3.org/2000/svg';
   function svg(paths){ var s=d.createElementNS(NS,'svg'); s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('fill','none'); s.setAttribute('stroke','currentColor'); s.setAttribute('stroke-width','2.4'); s.setAttribute('stroke-linecap','round'); s.setAttribute('stroke-linejoin','round'); s.setAttribute('aria-hidden','true');
     paths.forEach(function(p){ var e=d.createElementNS(NS,'path'); e.setAttribute('d',p); s.appendChild(e) }); return s }
@@ -18,6 +18,13 @@
   function mini(s,meta){ var m=el('div','mini'), sp=el('span'); for(var i=0;i<meta;i++){ var x=el('i'); if(i<s) x.className='on'; sp.appendChild(x) } m.appendChild(sp); m.appendChild(d.createTextNode(Math.min(s,meta)+'/'+meta+' sellos')); return m }
   function toast(t,mal){ var e=$('toast'); e.textContent=t; e.className='toast on'+(mal?' mal':''); clearTimeout(toast.t); toast.t=setTimeout(function(){ e.className='toast'+(mal?' mal':'') },3000) }
   function enlaceTarjeta(tk){ return location.origin+'/tarjeta.html?t='+encodeURIComponent(tk) }
+  function hojaWA(titulo,tel,txt){
+    var h=$('hojaWA'); h.textContent='';
+    h.appendChild(el('b',null,titulo));
+    var a=el('a','btn b-wa','Enviar por WhatsApp'); a.href='https://wa.me/506'+tel+'?text='+encodeURIComponent(txt); a.target='_blank'; a.rel='noopener noreferrer';
+    a.addEventListener('click',function(){ setTimeout(function(){ h.hidden=true },300) });
+    var c=boton('Ahora no','b-bor',function(){ h.hidden=true }); h.appendChild(a); h.appendChild(c); h.hidden=false;
+  }
   function abrirWA(tel,txt){ var url='https://wa.me/506'+tel+'?text='+encodeURIComponent(txt); var w=window.open(url,'_blank'); if(w) w.opener=null; else location.assign(url) }
 
   /* ---------- API ---------- */
@@ -101,7 +108,7 @@
       box.appendChild(mini(c.sellos,datos.meta));
       var acc=el('div','acc');
       if(c.estado==='pendiente'){
-        acc.appendChild(boton('Confirmar','b-tq',function(){ accion(c,'confirmar',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 👋 Le confirmamos su cita en Monzú Detallados para el '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+' en '+c.lugar+'.\n\nSu tarjeta Monzú Club 💧: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en su celular y junte sellos para su lavado gratis.') }) },'ok'));
+        acc.appendChild(boton('Confirmar','b-tq',function(){ accion(c,'confirmar',function(){ hojaWA('✓ Cita confirmada. Avísele a '+c.nombre.split(' ')[0]+':',c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 👋 Le confirmamos su cita en Monzú Detallados para el '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+' en '+c.lugar+'.\n\nSu tarjeta Monzú Club 💧: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en su celular y junte sellos para su lavado gratis.') }) },'ok'));
         acc.appendChild(boton('Cancelar','b-rojo',function(){ if(confirm('¿Cancelar la cita de '+c.nombre+'? La hora queda libre otra vez.')) accion(c,'cancelar') },'x'));
       } else if(c.estado==='confirmada'){
         if(c.sellos>=datos.meta) acc.appendChild(boton('Canjear lavado gratis','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
@@ -126,10 +133,10 @@
   /* ---------- clientes ---------- */
   function clientes(){
     var L=$('listaCli'), q=$('buscar').value.trim().toLowerCase(); L.textContent='';
-    var lista=datos.clientes.filter(function(c){ return !q || c.nombre.toLowerCase().indexOf(q)>=0 || c.tel.indexOf(q.replace(/\D/g,''))>=0&&q.replace(/\D/g,'') });
+    var lista=datos.clientes.slice().sort(function(a,b){ return String(b.creado||'').localeCompare(String(a.creado||'')) }).filter(function(c){ return !q || c.nombre.toLowerCase().indexOf(q)>=0 || c.tel.indexOf(q.replace(/\D/g,''))>=0&&q.replace(/\D/g,'') });
     if(!lista.length){ L.appendChild(el('p','vacio',datos.clientes.length?'No hay clientes con esa búsqueda.':'Todavía no hay clientes. Se agregan solos con la primera reserva.')); return }
     lista.forEach(function(c){
-      var box=el('div','cli'), top=el('div','cli-top'), izq=el('div');
+      var box=el('div','cli'+(c.tel===ultimoTel?' recien':'')), top=el('div','cli-top'), izq=el('div');
       var nb=el('b',null,c.nombre); if(!c.tienePin) nb.appendChild(el('span','sinpin','Sin PIN')); izq.appendChild(nb); izq.appendChild(el('small',null,c.tel.slice(0,4)+'-'+c.tel.slice(4)+(c.carro?' · '+c.carro:'')+(c.premios?' · '+c.premios+' premio(s) canjeado(s)':'')));
       var em=el('em',null,c.sellos>=datos.meta?'🎁 Premio':c.sellos+'/'+datos.meta); if(c.sellos>=datos.meta) em.className='oro';
       top.appendChild(izq); top.appendChild(em); box.appendChild(top); box.appendChild(mini(c.sellos,datos.meta));
@@ -138,7 +145,7 @@
       else acc.appendChild(boton('Dar sello','b-ok',function(){ if(confirm('¿Dar un sello a '+c.nombre+'?')) sello(c.tarjeta,c.nombre) },'gota'));
       acc.appendChild(boton('Enviar tarjeta','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 💧 Esta es su tarjeta Monzú Club, donde ve sus sellos: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en la pantalla de inicio de su celular para tenerla siempre a mano.') },'wa'));
       if(c.tienePin) acc.appendChild(boton('Restablecer PIN','b-bor',function(){ if(!confirm('¿Restablecer el PIN de '+c.nombre+'? Le enviamos su tarjeta por WhatsApp para que cree uno nuevo.')) return;
-        api('pin-reset',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('PIN restablecido. Envíele la tarjeta.'); abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 🔐 Le restablecimos el PIN de Monzú Club. Abra su tarjeta aquí y cree uno nuevo: '+enlaceTarjeta(c.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }));
+        api('pin-reset',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } hojaWA('🔐 PIN restablecido. Mándele su tarjeta para que cree uno nuevo:',c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 🔐 Le restablecimos el PIN de Monzú Club. Abra su tarjeta aquí y cree uno nuevo: '+enlaceTarjeta(c.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }));
       box.appendChild(acc); L.appendChild(box);
     });
   }
@@ -147,8 +154,9 @@
     if(nombre.length<3||!/^[2-8]\d{7}$/.test(tel.replace(/\D/g,'').replace(/^506/,''))){ m.textContent='Escriba el nombre y un teléfono de 8 dígitos.'; m.className='msg mal'; return }
     api('cliente',{nombre:nombre,tel:tel,carro:$('nCarro').value.trim()}).then(function(j){
       if(!j.ok){ m.textContent=j.error||'No se pudo.'; m.className='msg mal'; return }
-      m.textContent=j.existia?'Ese teléfono ya tenía tarjeta ('+j.nombre+'). Se la reenviamos.':'✓ Tarjeta creada.'; m.className='msg bien';
-      abrirWA(j.tel,'¡Hola '+j.nombre.split(' ')[0]+'! 💧 Bienvenido a Monzú Club. Esta es su tarjeta de cliente frecuente, donde ve sus sellos (10 sellos = lavado gratis): '+enlaceTarjeta(j.tarjeta)+'\nÁbrala, cree su PIN de 4 números y guárdela en la pantalla de inicio de su celular.');
+      m.textContent=j.existia?'⚠️ Ese teléfono ya tenía tarjeta, a nombre de '+j.nombre+'. Cada número tiene una sola tarjeta: no se creó otra.':'✓ Tarjeta creada para '+j.nombre+'.'; m.className=j.existia?'msg mal':'msg bien';
+      $('buscar').value=j.tel; ultimoTel=j.tel;
+      hojaWA(j.existia?'Reenviarle su tarjeta a '+j.nombre.split(' ')[0]+':':'Mándele su tarjeta a '+j.nombre.split(' ')[0]+':',j.tel,'¡Hola '+j.nombre.split(' ')[0]+'! 💧 Bienvenido a Monzú Club. Esta es su tarjeta de cliente frecuente, donde ve sus sellos (10 sellos = lavado gratis): '+enlaceTarjeta(j.tarjeta)+'\nÁbrala, cree su PIN de 4 números y guárdela en la pantalla de inicio de su celular.');
       $('fNuevo').reset(); refrescar();
     }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
   });
@@ -192,7 +200,7 @@
   d.querySelectorAll('.tabs button').forEach(function(b){ b.addEventListener('click',function(){
     d.querySelectorAll('.tabs button').forEach(function(x){ x.setAttribute('aria-selected',String(x===b)) });
     d.querySelectorAll('.sec').forEach(function(s){ if(s.id) s.classList.toggle('on',s.id==='sec-'+b.dataset.sec) });
-    if(b.dataset.sec!=='escanear') paraCam(); if(b.dataset.sec==='citas'){ $('badge').hidden=true }
+    $('hojaWA').hidden=true; if(b.dataset.sec!=='escanear') paraCam(); if(b.dataset.sec==='citas'){ $('badge').hidden=true }
     scrollTo(0,0);
   }) });
 

@@ -55,13 +55,14 @@ async function api(p, ruta, datos) { return p.evaluate(async ([r, d]) => (await 
   const P = await nuevoCel(); await P.p.goto(B + '/panel.html'); await P.p.fill('#clave', 'monzu2026'); await P.p.tap('#entrar'); await P.p.waitForSelector('#app:not([hidden])');
   await P.p.tap('.tabs button[data-sec="clientes"]'); await P.p.tap('#nuevoCli summary');
   await P.p.fill('#nNombre', 'Luis Quesada'); await P.p.fill('#nTel', '8555-0099');
-  const [wa] = await Promise.all([P.c.waitForEvent('page').catch(() => null), P.p.tap('#fNuevo button')]); if (wa) { R.waNuevo = decodeURIComponent(wa.url()).slice(0, 80); await wa.close(); }
-  await sleep(1200);
+  await P.p.tap('#fNuevo button'); await P.p.waitForSelector('#hojaWA:not([hidden])'); R.waNuevo = decodeURIComponent(await P.p.getAttribute('#hojaWA a', 'href')).slice(0, 70);
+  await P.p.tap('#hojaWA .b-bor'); await sleep(1200);
   R.sinPinEtiqueta = await P.p.evaluate(() => [...document.querySelectorAll('.cli')].filter((c) => c.textContent.includes('Luis Quesada') && c.textContent.includes('Sin PIN')).length);
   await P.p.screenshot({ path: O + 'p5-panel-clientes.png', fullPage: true });
+  await P.p.fill('#buscar', ''); await P.p.dispatchEvent('#buscar', 'input'); await sleep(200);
   P.p.once('dialog', (d) => d.accept());
   const btnRes = await P.p.evaluateHandle(() => [...document.querySelectorAll('.cli')].find((c) => c.textContent.includes('Daniela')).querySelector('.b-bor'));
-  const [wa2] = await Promise.all([P.c.waitForEvent('page').catch(() => null), btnRes.asElement().tap()]); if (wa2) await wa2.close();
+  await btnRes.asElement().tap(); await P.p.waitForSelector('#hojaWA:not([hidden])'); R.hojaPin = await P.p.textContent('#hojaWA b');
   await sleep(800);
   R.trasRestablecer = (await api(P.p, 'entrar', { tel: '86665544', pin: '7777' })).error;
   console.log(JSON.stringify(R, null, 1)); console.log('errores', errs);

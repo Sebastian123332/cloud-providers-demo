@@ -110,6 +110,9 @@ a{color:inherit}
 /* clientes */
 .buscar input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n3)}
 .lista{display:grid;gap:10px}
+.hoja-wa{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:21;width:min(94vw,460px);background:var(--n4);border:1px solid var(--linea2);border-radius:18px;padding:14px;display:grid;gap:10px;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.hoja-wa b{font-size:.95rem}
+.cli.recien{border-color:var(--tq);box-shadow:0 0 0 3px rgba(76,195,212,.18)}
 .nuevo{background:var(--n3);border:1px solid var(--tq);border-radius:14px;padding:12px 14px}
 .nuevo summary{cursor:pointer;font-weight:800;color:var(--tq2)}
 .nuevo form{display:grid;gap:10px;margin-top:12px}
@@ -130,6 +133,7 @@ a{color:inherit}
 </head>
 <body>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div class="hoja-wa" id="hojaWA" role="dialog" aria-live="polite" hidden></div>
 
 <form class="login" id="login" novalidate>
   <img src="{{LOGO}}" alt="Monzú Detallados">

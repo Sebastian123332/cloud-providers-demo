@@ -50,8 +50,8 @@ function vigila(p, nom, errs) {
   await p.tap('.filtros button[data-f="prox"]'); await sleep(300);
   await p.screenshot({ path: O + 'd1-citas.png' });
   // confirmar (abre WhatsApp en otra pestaña)
-  const [wa] = await Promise.all([dctx.waitForEvent('page').catch(() => null), p.tap('.cita .b-tq')]);
-  const waUrl = wa ? wa.url() : '(sin pestaña)'; if (wa) await wa.close();
+  await p.tap('.cita .b-tq'); await p.waitForSelector('#hojaWA:not([hidden])');
+  const waUrl = await p.getAttribute('#hojaWA a', 'href'); await p.screenshot({ path: O + 'd2-confirmada.png' }); await p.tap('#hojaWA .b-bor');
   await sleep(800); await p.screenshot({ path: O + 'd2-confirmada.png' });
   // terminado -> sello
   await p.tap('.cita .b-ok'); await sleep(1000);

@@ -33,7 +33,7 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   X-Robots-Tag: noindex
 /panel.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-aum+w8kuGliJTAUwywIFxVCVz0zcm6bahGAkPM+1Xa4=' 'self'; style-src 'sha256-1AUjCYTJyECmXH6bp1qgjMpmSFn5Wi0EgAf4M6kTGrQ=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-mg50CnTfSAaQPIvz3guB5Sw0N6os04nMnaYlgs/OaqQ=' 'self'; style-src 'sha256-XUiKGLlcGD8wMrd23wK2EOIWeJOUxv9UZKo1jDqicg4=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -43,7 +43,7 @@
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 /panel
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-aum+w8kuGliJTAUwywIFxVCVz0zcm6bahGAkPM+1Xa4=' 'self'; style-src 'sha256-1AUjCYTJyECmXH6bp1qgjMpmSFn5Wi0EgAf4M6kTGrQ=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-mg50CnTfSAaQPIvz3guB5Sw0N6os04nMnaYlgs/OaqQ=' 'self'; style-src 'sha256-XUiKGLlcGD8wMrd23wK2EOIWeJOUxv9UZKo1jDqicg4=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

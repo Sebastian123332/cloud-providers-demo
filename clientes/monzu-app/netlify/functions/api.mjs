@@ -203,7 +203,7 @@ export default async (req, context) => {
         const desde = sumaDias(hoyCR().fecha, -7);
         const citas = db.citas.filter((c) => c.fecha >= desde).sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora))
           .map((c) => ({ ...c, sellos: db.clientes[c.tel]?.sellos ?? 0, tarjeta: db.clientes[c.tel]?.token }));
-        const clientes = Object.values(db.clientes).map((c) => ({ nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token, tienePin: !!c.pinHash }))
+        const clientes = Object.values(db.clientes).map((c) => ({ nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token, tienePin: !!c.pinHash, creado: c.creado || '' }))
           .sort((a, b) => b.sellos - a.sellos || a.nombre.localeCompare(b.nombre));
         return json({ ok: true, hoy: hoyCR().fecha, meta: AJUSTES.meta, premio: AJUSTES.premio, demo, citas, clientes });
       }
