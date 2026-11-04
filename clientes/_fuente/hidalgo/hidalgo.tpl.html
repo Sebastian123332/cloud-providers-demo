@@ -288,6 +288,9 @@ dialog.legal.pro{width:min(1260px,calc(100vw - 24px));max-height:calc(100vh - 24
 .pro-acc{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
 .pro-limpiar{background:none;border:0;border-bottom:2px solid var(--az3);padding:2px 0;font:700 .92rem var(--s);color:var(--g1)}
 .pro-msg{min-height:1.3em;font-size:.92rem;font-weight:600}
+.pro-extra{display:flex;flex-wrap:wrap;gap:10px}.pro-extra:empty{display:none}
+.pro-alt{display:inline-flex;align-items:center;padding:10px 16px;border-radius:8px;border:1px solid var(--az3);background:rgba(140,156,255,.12);color:#fff;font:700 .92rem var(--s);text-decoration:none}
+.pro-alt:hover{background:rgba(140,156,255,.25)}
 .pro-msg.mal{color:#FF8A7A}.pro-msg.bien{color:#4BE08F}
 /* hoja: 1 unidad = 1 punto de la carta (612 x 792) */
 .pro-vista{position:sticky;top:76px;container-type:inline-size}
@@ -554,6 +557,7 @@ dialog.legal::backdrop{background:rgba(5,8,16,.8)}
         <button type="button" class="pro-limpiar" id="pf-limpiar">Nueva proforma</button>
       </div>
       <p class="pro-msg" id="pf-msg" role="status"></p>
+      <div class="pro-extra" id="pf-extra"></div>
     </form>
     <div class="pro-vista" aria-label="Vista previa de la proforma">
       <div class="hoja" id="hoja">

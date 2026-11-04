@@ -110,8 +110,8 @@
       var ls=o&&Array.isArray(o.lineas)?o.lineas.filter(function(l){ return l&&typeof l==='object' }).slice(0,MAX_LINEAS):null;
       (ls&&ls.length?ls:[LINEA_BASE]).forEach(function(l){ agrega({d:String(l.d||''),c:String(l.c||'1'),p:String(l.p||'')}) });
     }
-    function cambio(){ botones(); vista(); guarda() }
-    function msg(t,mal){ var m=$('pf-msg'); m.textContent=t; m.className='pro-msg '+(mal?'mal':'bien') }
+    function cambio(){ botones(); vista(); guarda(); var x=$('pf-extra'); if(x) x.textContent='' }
+    function msg(t,mal){ var m=$('pf-msg'); m.textContent=t; m.className='pro-msg '+(mal?'mal':'bien'); if(t&&m.scrollIntoView) m.scrollIntoView({block:'nearest'}) }
 
     /* --- PDF (carta, en puntos) --- */
     var NAVY=[10,14,26], AZUL=[43,58,168], GRIS=[241,243,247], TXT=[26,31,46], SUAVE=[74,81,99];
@@ -199,15 +199,37 @@
       if(!D.cliente){ msg('Falta el nombre del cliente.',true); $('pf-cliente').focus(); return }
       if(!D.items.length){ msg('Agregue al menos una línea con descripción y precio.',true); return }
       if(malas){ msg('Hay líneas sin descripción o sin precio. Complételas o quítelas con la ✕.',true); return }
-      if(!window.jspdf || !window.jspdf.jsPDF){ msg('No se pudo cargar el generador de PDF. Revise la conexión a internet y vuelva a intentar.',true); return }
+      if(!window.jspdf || !window.jspdf.jsPDF){ msg('No se cargó el generador de PDF. Recargue la página (en compu: Ctrl + F5) y vuelva a intentar.',true); return }
+      var r, nombre;
       try{
-        var r, ks=[1,.93,.86,.8,.74,.68];
+        var ks=[1,.93,.86,.8,.74,.68];
         for(var i=0;i<ks.length;i++){ r=dibuja(window.jspdf.jsPDF,D,ks[i]); if(r.fin<=748) break; }
-        var nombre=('Proforma '+String(num('num')||1).padStart(4,'0')+' '+D.cliente).replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').trim().slice(0,90).replace(/[.\s]+$/,'');
-        r.doc.save(nombre+'.pdf');
-        try{ var n=num('num')||1; if(n>=sig()) localStorage.setItem(CUENTA,String(n+1)) }catch(e){}
-        msg(r.fin<=748 ? 'Listo: se descargó la proforma '+D.num+'.' : 'Se descargó, pero hay mucho texto: revise el PDF y acorte descripciones u observaciones.', r.fin>748);
-      }catch(e){ msg('No se pudo crear el PDF. Intente de nuevo.',true) }
+        nombre=('Proforma '+String(num('num')||1).padStart(4,'0')+' '+D.cliente).replace(/[\\/:*?"<>|]+/g,'').replace(/\s+/g,' ').trim().slice(0,90).replace(/[.\s]+$/,'')+'.pdf';
+      }catch(e){ if(window.console) console.error(e); msg('No se pudo crear el PDF ('+(e&&e.message||'error')+'). Intente de nuevo.',true); return }
+      var bajo=false; try{ r.doc.save(nombre); bajo=true }catch(e){ if(window.console) console.error(e) }
+      try{ var n=num('num')||1; if(n>=sig()) localStorage.setItem(CUENTA,String(n+1)) }catch(e){}
+      extras(r.doc,nombre);
+      var app=/FBAN|FBAV|FB_IAB|Instagram|WhatsApp|Line\//i.test(navigator.userAgent);
+      if(app) msg('Está dentro de la app de Facebook/WhatsApp, que no deja descargar. Use "Abrir PDF" o "Compartir PDF", o abra la página en Chrome o Safari.',true);
+      else if(!bajo) msg('El navegador no dejó descargar. Use "Abrir PDF" o "Compartir PDF".',true);
+      else msg(r.fin<=748 ? 'Listo: se descargó la proforma '+D.num+'. Si no la ve, use "Abrir PDF" o "Compartir PDF".' : 'Se descargó, pero hay mucho texto: revise el PDF y acorte descripciones u observaciones.', r.fin>748);
+    }
+    /* plan B: abrir o compartir el PDF (iPhone, apps, descargas bloqueadas) */
+    var urlPdf=null;
+    function extras(doc,nombre){
+      var c=$('pf-extra'); c.textContent='';
+      var blob; try{ blob=doc.output('blob') }catch(e){ return }
+      if(urlPdf) URL.revokeObjectURL(urlPdf); urlPdf=URL.createObjectURL(blob);
+      var a=document.createElement('a'); a.href=urlPdf; a.target='_blank'; a.rel='noopener'; a.className='pro-alt'; a.textContent='Abrir PDF';
+      c.appendChild(a);
+      try{
+        var f=new File([blob],nombre,{type:'application/pdf'});
+        if(navigator.canShare && navigator.canShare({files:[f]})){
+          var s=document.createElement('button'); s.type='button'; s.className='pro-alt'; s.textContent='Compartir PDF (WhatsApp, correo…)';
+          s.addEventListener('click',function(){ navigator.share({files:[f],title:nombre}).catch(function(){}) });
+          c.appendChild(s);
+        }
+      }catch(e){}
     }
     carga();
     if(!num('num')) $('pf-num').value=String(sig());
