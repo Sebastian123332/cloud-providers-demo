@@ -1,7 +1,13 @@
 /*
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-rzuLtxhleqo7Nq98xUs5C3VLncQgl6O0DaP1P6OSSA4=' https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js; style-src 'sha256-xUc8R+/n1VFjYw+RWe3j60ZHMlAdjvgSifhDq4qAi3U=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-klWpl7317lKUFicC9BoJQf/+cTuFkOI0BUIQ1ywfU6M=' 'self'; style-src 'sha256-omp/Fna9d1Vj+8EpGREqV+hXCuk5kV+I4ZOCmLJ82Rk='; font-src 'self'; img-src 'self' data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests; frame-ancestors 'none'
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable
+/js/*
+  Cache-Control: public, max-age=31536000, immutable

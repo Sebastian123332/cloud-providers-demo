@@ -221,6 +221,9 @@
       filas().forEach(function(f){ f.remove() }); agrega(LINEA_BASE);
       $('pf-fecha').value=hoyISO(); $('pf-num').value=String(Math.max(sig(),(num('num')||0)+0));
       cambio(); $('pf-cliente').focus(); msg('Proforma nueva: '+nro()+'.',false) });
-    d.querySelectorAll('[data-legal="proformas"]').forEach(function(b){ b.addEventListener('click',function(){ setTimeout(vista,30) }) });
+    /* se abre solo con el enlace privado ...#proformas (no hay botón público) */
+    function abrirP(){ var x=$('dlg-proformas'); if(!x.open){ x.showModal(); x.scrollTop=0 } setTimeout(vista,30) }
+    if(location.hash==='#proformas') setTimeout(abrirP,50);
+    addEventListener('hashchange',function(){ if(location.hash==='#proformas') abrirP() });
     botones(); vista();
   })();

@@ -120,5 +120,4 @@
   d.querySelectorAll('[data-legal]').forEach(function(b){ b.addEventListener('click',function(e){ e.preventDefault(); abrir(b.dataset.legal) }) });
   d.querySelectorAll('dialog.legal').forEach(function(x){ x.querySelector('[data-cerrar]').addEventListener('click',function(){ x.close() }); x.addEventListener('click',function(e){ if(e.target===x) x.close() }) });
 /*__PROFORMA__*/
-  if(location.hash==='#proformas') setTimeout(function(){ d.querySelector('[data-legal="proformas"]').click() },50);
 })();
