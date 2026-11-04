@@ -1,7 +1,7 @@
 # Guía Solanotech: dominio, Netlify y Google
 
 Pasos para que la página de un cliente tenga su propio dominio (`www.nombre.com`) y aparezca en Google.
-Ejemplo usado: **Grúas Hidalgo** (sitio en Netlify `bright-cassata-df850f.netlify.app`).
+Ejemplo usado: **Grúas Hidalgo** (sitio en Netlify `bright-cassata-df850f.netlify.app`, dominio `gruashidalgoo.com` comprado en Cloudflare).
 
 > Los precios son aproximados: revíselos el día de la compra.
 

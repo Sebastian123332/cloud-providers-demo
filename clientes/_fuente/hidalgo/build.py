@@ -2,7 +2,7 @@ import re, base64, hashlib, io, os, sys, segno
 D=os.path.dirname(os.path.abspath(__file__))+'/'
 t=open(D+'hidalgo.tpl.html',encoding='utf-8').read().replace(' style-x=""','')
 js=open(D+'hidalgo.js',encoding='utf-8').read()
-DOM='https://bright-cassata-df850f.netlify.app'
+DOM='https://www.gruashidalgoo.com'
 b64f=lambda f:base64.b64encode(open(D+'prof/'+f,'rb').read()).decode()
 pjs=open(D+'prof/proforma.js',encoding='utf-8').read().replace('__F_REG__',b64f('hr.ttf')).replace('__F_BOLD__',b64f('hb.ttf')).replace('__F_TIT__',b64f('ht.ttf')).replace('__WEB__',DOM.split('//')[1])
 js=js.replace('/*__PROFORMA__*/',pjs)

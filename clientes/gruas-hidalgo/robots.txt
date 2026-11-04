@@ -1,3 +1,3 @@
 User-agent: *
 Allow: /
-Sitemap: https://bright-cassata-df850f.netlify.app/sitemap.xml
+Sitemap: https://www.gruashidalgoo.com/sitemap.xml
