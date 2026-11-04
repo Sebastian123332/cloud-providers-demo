@@ -225,5 +225,6 @@
     function abrirP(){ var x=$('dlg-proformas'); if(!x.open){ x.showModal(); x.scrollTop=0 } setTimeout(vista,30) }
     if(location.hash==='#proformas') setTimeout(abrirP,50);
     addEventListener('hashchange',function(){ if(location.hash==='#proformas') abrirP() });
+    d.querySelectorAll('[data-legal="proformas"]').forEach(function(b){ b.addEventListener('click',function(){ setTimeout(vista,30) }) });
     botones(); vista();
   })();
