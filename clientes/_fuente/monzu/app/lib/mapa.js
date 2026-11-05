@@ -9,6 +9,14 @@
   function el(tag, css, padre) { var e = document.createElement(tag); for (var k in css) e.style[k] = css[k]; if (padre) padre.appendChild(e); return e; }
   function boton(txt, titulo, padre, css) { var b = el('button', Object.assign({ width: '40px', height: '40px', borderRadius: '10px', border: '0', background: '#fff', color: '#07141A', font: '700 20px system-ui', boxShadow: '0 2px 8px rgba(0,0,0,.35)', cursor: 'pointer' }, css || {}), padre); b.type = 'button'; b.textContent = txt; b.setAttribute('aria-label', titulo); return b; }
 
+  // Dirección aproximada del punto (calle y lugar) con OpenStreetMap; si falla, devuelve ''.
+  window.MonzuDireccion = function (u) {
+    return fetch('https://nominatim.openstreetmap.org/reverse?format=jsonv2&zoom=17&accept-language=es&lat=' + u.lat + '&lon=' + u.lng, { headers: { accept: 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : {}; }).then(function (j) {
+        var a = (j && j.address) || {}, partes = [a.road || a.pedestrian || a.neighbourhood, a.suburb || a.quarter || a.village || a.hamlet, a.town || a.city || a.county].filter(Boolean);
+        return partes.filter(function (x, i) { return partes.indexOf(x) === i; }).join(', ').slice(0, 110);
+      }).catch(function () { return ''; });
+  };
   window.MonzuMapa = function (caja, op) {
     op = op || {};
     var z = 16, c = aPx(op.lat || 9.8644, op.lng || -83.9194, z), cache = {};
@@ -28,6 +36,12 @@
     var atrib = el('a', { position: 'absolute', right: '4px', bottom: '4px', background: 'rgba(255,255,255,.85)', color: '#333', font: '11px system-ui', padding: '1px 5px', borderRadius: '4px', textDecoration: 'none' }, marco);
     atrib.href = 'https://www.openstreetmap.org/copyright'; atrib.target = '_blank'; atrib.rel = 'noopener noreferrer'; atrib.textContent = '© OpenStreetMap';
 
+    // botón para confirmar la ubicación (guarda y cierra el mapa)
+    if (op.alConfirmar) {
+      var ok = boton('✓ Usar esta ubicación', 'Usar esta ubicación', marco, { position: 'absolute', left: '50%', bottom: '14px', transform: 'translateX(-50%)', width: 'auto', height: 'auto', padding: '12px 20px', borderRadius: '999px', background: 'linear-gradient(135deg,#3B82F6,#2563EB)', color: '#fff', font: '700 15px system-ui', whiteSpace: 'nowrap', boxShadow: '0 8px 22px rgba(37,99,235,.55)' });
+      ok.addEventListener('click', function () { var g = aGeo(c.x, c.y, z); op.alConfirmar({ lat: +g.lat.toFixed(5), lng: +g.lng.toFixed(5) }); });
+      atrib.style.bottom = 'auto'; atrib.style.top = '4px'; atrib.style.right = 'auto'; atrib.style.left = '4px';
+    }
     function pinta() {
       var w = marco.clientWidth, h = marco.clientHeight, x0 = c.x - w / 2, y0 = c.y - h / 2, n = Math.pow(2, z), vivos = {};
       for (var tx = Math.floor(x0 / T); tx <= Math.floor((x0 + w) / T); tx++) for (var ty = Math.floor(y0 / T); ty <= Math.floor((y0 + h) / T); ty++) {

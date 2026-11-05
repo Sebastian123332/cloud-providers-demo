@@ -4,13 +4,15 @@
   /* el botón Reservar dentro de "¿Qué incluye?" cierra la ventana */
   d.querySelectorAll('dialog.legal [data-elige]').forEach(function(a){ a.addEventListener('click',function(){ a.closest('dialog').close() }) });
   var cajaH=$('horas');
-  /* ubicación con mapa */
+  /* ubicación con mapa: el cliente mueve el mapa, toca "Usar esta ubicación" y listo */
   var ubic=null, mapa=null;
-  function ubiTexto(){ var p=$('ubiTxt'); p.textContent=''; if(!ubic){ p.className='ubica-txt'; p.textContent='Opcional: marque dónde está el carro y llegamos directo.'; return }
-    p.className='ubica-txt ok'; p.appendChild(d.createTextNode('✓ Ubicación marcada. ')); var a=d.createElement('a'); a.href='https://www.google.com/maps?q='+ubic.lat+','+ubic.lng; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent='Ver en Google Maps'; p.appendChild(a) }
-  function abreMapa(){ var m=$('mapa'); if(!window.MonzuMapa) return null; m.hidden=false; if(!mapa) mapa=window.MonzuMapa(m,{alCambiar:function(u){ ubic=u; ubiTexto() }}); return mapa }
-  $('bMapa').addEventListener('click',function(){ var m=abreMapa(); if(m&&!ubic){ $('ubiTxt').className='ubica-txt'; $('ubiTxt').textContent='Mueva el mapa hasta que la flecha roja quede donde está el carro.' } });
-  $('bMiUbi').addEventListener('click',function(){ var m=abreMapa(); if(!m) return; $('ubiTxt').className='ubica-txt'; $('ubiTxt').textContent='Buscando su ubicación…'; m.miUbicacion(function(t){ $('ubiTxt').className='ubica-txt'; $('ubiTxt').textContent=t }) });
+  function ubiTexto(t){ var p=$('ubiTxt'); p.textContent=''; if(t){ p.className='ubica-txt'; p.textContent=t; return } if(!ubic){ p.className='ubica-txt'; p.textContent='Opcional: marque dónde está el carro y llegamos directo.'; return }
+    p.className='ubica-txt ok'; p.appendChild(d.createTextNode('📍 Ubicación guardada · ')); var a=d.createElement('a'); a.href='https://www.google.com/maps?q='+ubic.lat+','+ubic.lng; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent='ver en Google Maps'; p.appendChild(a) }
+  function confirma(u){ ubic=u; $('mapa').hidden=true; ubiTexto(); $('bMapa').textContent='🗺️ Cambiar ubicación'; $('fLugar').removeAttribute('aria-invalid');
+    if(!$('fLugar').value.trim()&&window.MonzuDireccion){ $('fLugar').placeholder='Buscando la dirección…'; window.MonzuDireccion(u).then(function(t){ $('fLugar').placeholder='Ej. San Nicolás, 200 m norte de la iglesia'; if(t&&!$('fLugar').value.trim()) $('fLugar').value=t }) } }
+  function abreMapa(){ var m=$('mapa'); if(!window.MonzuMapa) return null; m.hidden=false; if(!mapa) mapa=window.MonzuMapa(m,{lat:ubic&&ubic.lat,lng:ubic&&ubic.lng,alConfirmar:confirma}); return mapa }
+  $('bMapa').addEventListener('click',function(){ abreMapa(); ubiTexto('Mueva el mapa hasta que la flecha roja quede donde está el carro y toque “Usar esta ubicación”.') });
+  $('bMiUbi').addEventListener('click',function(){ var m=abreMapa(); if(!m) return; ubiTexto('Buscando su ubicación…'); m.miUbicacion(function(t){ ubiTexto(t) }); setTimeout(function(){ if(!ubic) ubiTexto('Revise que la flecha esté en el lugar correcto y toque “Usar esta ubicación”.') },2500) });
   function fmtHora(h){ var p=h.split(':'), n=+p[0]; return (n>12?n-12:n)+':'+p[1]+(n<12?' a. m.':' p. m.') }
   function fmtFecha(f){ var x=new Date(f+'T12:00:00'); return x.toLocaleDateString('es-CR',{weekday:'long',day:'numeric',month:'long'}) }
   function aviso(t){ cajaH.textContent=''; var p=d.createElement('p'); p.className='horas-aviso'; p.textContent=t; cajaH.appendChild(p) }
@@ -69,7 +71,7 @@
     var okN=/^[\p{L}\p{M} .'’-]{3,80}$/u.test(x.nombre); $('fNombre').setAttribute('aria-invalid',String(!okN)); if(!okN) mal.push('su nombre');
     var t=x.tel.replace(/[^\d+]/g,'').replace(/^\+?506/,''), okT=/^[2-8]\d{7}$/.test(t); $('fTel').setAttribute('aria-invalid',String(!okT)); if(!okT) mal.push('un teléfono de 8 dígitos');
     var okP=!x.pin||/^\d{4}$/.test(x.pin); $('fPin').setAttribute('aria-invalid',String(!okP)); if(!okP) mal.push('un PIN de 4 números (o déjelo vacío)');
-    var okL=x.lugar.length>=4; $('fLugar').setAttribute('aria-invalid',String(!okL)); if(!okL) mal.push('la dirección o zona');
+    var okL=x.lugar.length>=4||!!x.ubic; $('fLugar').setAttribute('aria-invalid',String(!okL)); if(!okL) mal.push('la dirección o su ubicación en el mapa');
     var okF=/^\d{4}-\d{2}-\d{2}$/.test(x.fecha); $('fFecha').setAttribute('aria-invalid',String(!okF)); if(!okF) mal.push('la fecha');
     if(okF&&!x.hora){ cajaH.setAttribute('aria-invalid','true'); mal.push('la hora') }
     if(!e.lineas.length) mal.push('un paquete o adicional');

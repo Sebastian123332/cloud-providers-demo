@@ -134,6 +134,8 @@ function generaFijas(db) {
   }
   return out;
 }
+// dirección escrita o, si no escribió, la ubicación marcada en el mapa
+function lugarDe(b) { const l = limpia(b.lugar, 120); if (l.length >= 4) return l; return ubicOk(b.ubic) ? 'Ubicación marcada en el mapa' : ''; }
 // ubicación del mapa: solo números dentro de Costa Rica, redondeados (~1 m)
 function ubicOk(u) {
   if (!u || typeof u !== 'object') return null;
@@ -340,12 +342,12 @@ export async function manejar(req, opts) {
     if (ruta === 'reservar' && req.method === 'POST') {
       if (body.web) return json({ ok: true });                                   // trampa anti robots
       if (limite(ip, 'res', 6, 3600e3)) return error('Demasiadas reservas desde esta conexión. Escríbanos por WhatsApp.', 429);
-      const nombre = limpia(body.nombre, 80), tel = telCR(body.tel), lugar = limpia(body.lugar, 120), carro = limpia(body.carro, 60), nota = limpia(body.nota, 400);
+      const nombre = limpia(body.nombre, 80), tel = telCR(body.tel), carro = limpia(body.carro, 60), nota = limpia(body.nota, 400);
       const fecha = String(body.fecha || ''), hora = String(body.hora || '');
       if (!nombreOk(nombre)) return error('Revise su nombre.');
       if (!tel) return error('Revise el teléfono (8 dígitos).');
       if (body.pin && !pinOk(body.pin)) return error('El PIN debe tener 4 números.');
-      if (lugar.length < 4) return error('Falta la dirección o zona.');
+      const lugar = lugarDe(body); if (!lugar) return error('Escriba la dirección o marque su ubicación en el mapa.');
       const m = fechaValida(fecha); if (m) return error(m);
       if (!CFG.horas.includes(hora)) return error('Elija una hora de la lista.');
       if (body.consentimiento !== true) return error('Debe aceptar los términos y autorizar el uso de sus datos.');
@@ -444,10 +446,10 @@ export async function manejar(req, opts) {
     if (ruta === 'reservar-rapido' && req.method === 'POST') {                    // reserva desde la tarjeta: ya conocemos al cliente
       if (limite(ip, 'res', 6, 3600e3)) return error('Demasiadas reservas desde esta conexión. Escríbanos por WhatsApp.', 429);
       const t = String(body.t || ''); if (!/^[\w-]{20,40}$/.test(t)) return error('Tarjeta no encontrada.', 404);
-      const fecha = String(body.fecha || ''), hora = String(body.hora || ''), lugar = limpia(body.lugar, 120), nota = limpia(body.nota, 400);
+      const fecha = String(body.fecha || ''), hora = String(body.hora || ''), nota = limpia(body.nota, 400);
       const m = fechaValida(fecha); if (m) return error(m);
       if (!CFG.horas.includes(hora)) return error('Elija una hora de la lista.');
-      if (lugar.length < 4) return error('Falta la dirección o zona.');
+      const lugar = lugarDe(body); if (!lugar) return error('Escriba la dirección o marque su ubicación en el mapa.');
       const pago = AJUSTES.pagos.includes(body.pago) ? body.pago : null; if (!pago) return error('Elija cómo va a pagar.');
       if (!cotiza(body.veh, body.paq, body.extras).lineas.length) return error('Elija un paquete o un adicional.');
       return await transaccion((db) => {

@@ -178,10 +178,12 @@
     R.veh&&R.paq.pintaPrecios(function(k){ var P=CAT.paq[k]; return P?col(P[R.veh.get()||'sedan']):'' });
     $('rTotal').textContent=q.algo?(q.desde?'desde ':'')+col(q.tot+multaAct):'—';
     var mn=$('rMultaNota'); mn.hidden=!(multaAct>0); if(multaAct>0) mn.textContent='Incluye la multa pendiente de '+col(multaAct)+'.' }
-  function ubiTxt(){ var p=$('rUbiTxt'); p.textContent=''; if(!rUbic) return; p.appendChild(d.createTextNode('✓ Ubicación marcada · ')); var a=d.createElement('a'); a.href='https://www.google.com/maps?q='+rUbic.lat+','+rUbic.lng; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent='ver en Google Maps'; a.className='tq2'; p.appendChild(a) }
-  function abreMapa(){ var m=$('rMapa'); if(!window.MonzuMapa) return null; m.hidden=false; if(!rMapa) rMapa=window.MonzuMapa(m,{lat:rUbic&&rUbic.lat,lng:rUbic&&rUbic.lng,alCambiar:function(u){ rUbic=u; ubiTxt() }}); return rMapa }
-  $('rVerMapa').addEventListener('click',function(){ abreMapa(); if(!rUbic) $('rUbiTxt').textContent='Mueva el mapa hasta que la flecha roja quede donde está el carro.' });
-  $('rMiUbi').addEventListener('click',function(){ var m=abreMapa(); if(!m) return; $('rUbiTxt').textContent='Buscando su ubicación…'; m.miUbicacion(function(t){ $('rUbiTxt').textContent=t }) });
+  function ubiTxt(t){ var p=$('rUbiTxt'); p.textContent=''; if(t){ p.textContent=t; return } if(!rUbic) return; p.appendChild(d.createTextNode('📍 Ubicación guardada · ')); var a=d.createElement('a'); a.href='https://www.google.com/maps?q='+rUbic.lat+','+rUbic.lng; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent='ver en Google Maps'; a.className='tq2'; p.appendChild(a) }
+  function confirma(u){ rUbic=u; $('rMapa').hidden=true; ubiTxt(); $('rVerMapa').textContent='🗺️ Cambiar';
+    if(window.MonzuDireccion){ var i=$('rLugar'), vieja=i.value; i.placeholder='Buscando la dirección…'; window.MonzuDireccion(u).then(function(t){ i.placeholder='Ej. San Nicolás, 200 m norte de la iglesia'; if(t&&i.value===vieja) i.value=t }) } }
+  function abreMapa(){ var m=$('rMapa'); if(!window.MonzuMapa) return null; m.hidden=false; if(!rMapa) rMapa=window.MonzuMapa(m,{lat:rUbic&&rUbic.lat,lng:rUbic&&rUbic.lng,alConfirmar:confirma}); return rMapa }
+  $('rVerMapa').addEventListener('click',function(){ abreMapa(); ubiTxt('Mueva el mapa hasta que la flecha roja quede donde está el carro y toque “Usar esta ubicación”.') });
+  $('rMiUbi').addEventListener('click',function(){ var m=abreMapa(); if(!m) return; ubiTxt('Buscando su ubicación…'); m.miUbicacion(function(t){ ubiTxt(t) }); setTimeout(function(){ if($('rMapa').hidden===false) ubiTxt('Revise que la flecha esté en su casa y toque “Usar esta ubicación”.') },2500) });
   function prepRapida(t){
     rapidaLista=true; var pf=t.pref||{};
     if(pf.lugar) $('rLugar').value=pf.lugar; if(pf.ubic){ rUbic=pf.ubic; ubiTxt() }
@@ -197,7 +199,7 @@
   $('rReservar').addEventListener('click',function(){
     if(!R.paq) return; var q=cotizaL(), mal=[], w=R.cuando;
     if(!q.algo) mal.push('el servicio'); if(!w.fecha) mal.push('el día'); else if(!w.hora) mal.push('la hora');
-    var lugar=$('rLugar').value.trim(); if(lugar.length<4) mal.push('la dirección'); if(!R.pago.get()) mal.push('cómo va a pagar');
+    var lugar=$('rLugar').value.trim(); if(lugar.length<4&&!rUbic) mal.push('la dirección o su ubicación en el mapa'); if(!R.pago.get()) mal.push('cómo va a pagar');
     if(mal.length){ msg('rMsg','Falta: '+mal.join(', ')+'.',true); return }
     var b=$('rReservar'); b.disabled=true; msg('rMsg','Reservando…',false);
     post('reservar-rapido',{t:tk,fecha:w.fecha,hora:w.hora,paq:R.paq.get(),veh:R.veh.get(),extras:R.ext.get(),pago:R.pago.get(),lugar:lugar,ubic:rUbic}).then(function(j){

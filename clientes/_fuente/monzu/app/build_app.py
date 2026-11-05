@@ -226,7 +226,7 @@ t = rep(t, '<h3>1. Qué datos se piden</h3><p>Nombre, teléfono, fecha y hora de
         '<h3>1. Qué datos se piden</h3><p>Nombre, teléfono, fecha y hora de la cita, dirección o zona, el vehículo, los servicios y su comentario. Para Monzú Club se guardan además sus sellos, su historial de lavados y su PIN, que se guarda cifrado: nadie puede leerlo, ni Monzú.</p>')
 t = rep(t, '<li>El formulario no guarda nada en ningún servidor: el mensaje se arma en su navegador y usted decide si lo envía.</li><li>Al enviarlo pasa por WhatsApp (Meta), con su propia política de privacidad.</li>',
         '<li>Su reserva y su tarjeta se guardan en el servidor del sitio, contratado con Cloudflare, Inc. (Estados Unidos), con conexión cifrada. Al aceptar, usted autoriza esa transferencia para prestar el servicio.</li><li>Solo Monzú Detallados puede ver los datos, desde un panel con contraseña. Nadie más los recibe, ni se venden.</li><li>Su tarjeta tiene un enlace único y secreto: no comparta ese enlace ni su PIN.</li><li>Las citas se borran solas a los 4 meses. La tarjeta se mantiene mientras usted la use, y puede borrarla cuando quiera con el botón “Borrar mi tarjeta y mis datos”.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>')
-t = rep(t, '<li>Las tipografías se cargan desde Google Fonts, que recibe datos técnicos como su dirección IP.</li>', '<li>Las tipografías y todo el contenido se sirven desde el mismo sitio: no hay rastreadores, publicidad ni análisis de terceros.</li><li>Si usted marca su ubicación, el mapa se carga desde OpenStreetMap y solo se guarda el punto que usted elige, para llegar a su cita. Su ubicación se pide solo si toca “Usar mi ubicación”.</li>')
+t = rep(t, '<li>Las tipografías se cargan desde Google Fonts, que recibe datos técnicos como su dirección IP.</li>', '<li>Las tipografías y todo el contenido se sirven desde el mismo sitio: no hay rastreadores, publicidad ni análisis de terceros.</li><li>Si usted marca su ubicación, el mapa y la dirección aproximada se obtienen de OpenStreetMap y solo se guarda el punto que usted elige, para llegar a su cita. Su ubicación se pide solo si toca “Usar mi ubicación”.</li>')
 t = rep(t, '<h3>5. Sus derechos</h3>', '<h3>5. Responsable</h3><p>El responsable de la base de datos es Monzú Detallados (Isaac Monge), Cartago. Solanotech actúa solo como encargado técnico (desarrollo y mantenimiento del sitio) y no usa los datos para nada más.</p>\n    <h3>6. Sus derechos</h3>')
 t = rep(t, '<h3>Servicios de terceros</h3><p>Google Fonts entrega las tipografías. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>',
         '<h3>Almacenamiento en su navegador</h3><p>Para que no tenga que escribir su PIN cada vez, su navegador guarda el enlace de su tarjeta Monzú Club. Es una función necesaria y no sirve para rastrearle; se borra con “Salir de esta tarjeta”.</p><h3>Servicios de terceros</h3><p>Ninguno al navegar. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>')
@@ -241,7 +241,8 @@ t = t.replace('{{QR_RESENA}}', qr_svg('https://www.google.com/maps/search/Monzu+
 t = t.replace('{{WA}}', 'https://wa.me/50672686906?text=Hola%20Monz%C3%BA%20Detallados%2C%20quiero%20informaci%C3%B3n%20para%20un%20detallado')
 assert not re.search(r'\{\{|__JS__', t) and ' style="' not in t
 OSM = ' https://tile.openstreetmap.org'
-csp_index = csp_de(t, extra_script=" 'self'", img="'self' data:" + OSM)
+NOMI = " https://nominatim.openstreetmap.org"
+csp_index = csp_de(t, extra_script=" 'self'", img="'self' data:" + OSM, connect="'self'" + NOMI)
 open(OUT + '/index.html', 'w', encoding='utf-8').write(con_csp(t, csp_index))
 # ---------------- páginas legales sueltas (Meta las pide para aprobar la cuenta de WhatsApp) ----------------
 NEGOCIO = '<p class="neg"><b>Monzú Detallados</b> · Responsable: Isaac Monge · Detallado de vehículos a domicilio · Cartago, Costa Rica · WhatsApp y teléfono <a href="tel:+50672686906">7268-6906</a> · <a href="%s/">%s</a></p>' % (DOM, DOM.replace('https://', ''))
@@ -288,7 +289,7 @@ for pag in ('tarjeta', 'panel'):
     for k, v in comun.items(): p = p.replace(k, v)
     assert not re.search(r'\{\{|__JS__', p) and ' style="' not in p, pag
     csps[pag] = csp_de(p, extra_script=" 'self'", img="'self' data: blob:" if pag == 'panel' else "'self' data:" + OSM,
-                       tt_pol="monzu-sw" if pag == 'tarjeta' else "'none'", worker=pag == 'tarjeta')
+                       tt_pol="monzu-sw" if pag == 'tarjeta' else "'none'", worker=pag == 'tarjeta', connect="'self'" + (NOMI if pag == 'tarjeta' else ''))
     open('%s/%s.html' % (OUT, pag), 'w', encoding='utf-8').write(con_csp(p, csps[pag]))
 
 # service worker de la tarjeta (recordatorios por notificación)
