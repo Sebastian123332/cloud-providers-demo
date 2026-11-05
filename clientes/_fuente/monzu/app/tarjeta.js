@@ -170,7 +170,11 @@
   var R={}, rUbic=null, rMapa=null;
   function cotizaL(){ if(!CAT) return null; var v=R.veh.get()||'sedan', P=CAT.paq[R.paq.get()], tot=0, desde=false;
     if(P) tot+=P[v]; R.ext.get().forEach(function(k){ var x=CAT.ext[k]; if(!x) return; if(x.desde) desde=true; tot+=(x.conPaq&&P)?x.conPaq:x.p }); return {tot:tot,desde:desde,algo:!!P||R.ext.get().length>0} }
-  function pintaTotal(){ if(!R.paq) return; var q=cotizaL(); if(!q) return;
+  function pintaInc(){ var P=CAT&&CAT.paq[R.paq.get()], b=$('rIncBtn'), L=$('rInc'); b.hidden=!(P&&P.incluye); if(!P||!P.incluye){ L.hidden=true; return }
+    var nom=P.n.replace('Detallado ',''), abierto=!L.hidden; b.textContent='¿Qué incluye el '+nom+'? '+(abierto?'↑':'↓'); b.setAttribute('aria-expanded',String(abierto));
+    L.textContent=''; P.incluye.forEach(function(x){ var li=d.createElement('li'); li.textContent=x; if(/:$/.test(x)) li.className='tit'; L.appendChild(li) }) }
+  $('rIncBtn').addEventListener('click',function(){ $('rInc').hidden=!$('rInc').hidden; pintaInc() });
+  function pintaTotal(){ if(!R.paq) return; var q=cotizaL(); if(!q) return; pintaInc();
     R.veh&&R.paq.pintaPrecios(function(k){ var P=CAT.paq[k]; return P?col(P[R.veh.get()||'sedan']):'' });
     $('rTotal').textContent=q.algo?(q.desde?'desde ':'')+col(q.tot+multaAct):'—';
     var mn=$('rMultaNota'); mn.hidden=!(multaAct>0); if(multaAct>0) mn.textContent='Incluye la multa pendiente de '+col(multaAct)+'.' }

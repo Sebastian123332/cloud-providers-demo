@@ -31,7 +31,10 @@ const inicioCita = (c) => Date.parse(c.fecha + 'T' + c.hora + ':00-06:00'); // C
 
 /* ---------- precios oficiales: el servidor calcula el total, no confía en el navegador ---------- */
 const CATALOGO = {
-  paq: { premium: { n: 'Detallado Premium', sedan: 16000, suv: 18000 }, deluxe: { n: 'Detallado Deluxe', sedan: 32000, suv: 35000 } },
+  paq: {
+    premium: { n: 'Detallado Premium', sedan: 16000, suv: 18000, incluye: ['Aspirado profundo y limpieza de plásticos internos, con restaurador e hidratante para plásticos y cuero', 'Pre-lavado para quitar la suciedad sin rayar, y lavado con shampoo pH neutro que cuida los cerámicos', 'Limpieza y detallado de llantas, aros y guardabarros, con hidrofobia (repelencia)', 'Detallado de vidrios con repelencia', 'Cera cerámica'] },
+    deluxe: { n: 'Detallado Deluxe', sedan: 32000, suv: 35000, incluye: ['Todo el Detallado Premium, más:', 'Limpieza minuciosa del interior', 'Eliminación de manchas superficiales en asientos y puertas', 'Descontaminación de pintura', 'Sellado cerámico de 10 meses', 'Restaurador de partes negras externas', 'Aromatizante, si lo desea'] },
+  },
   ext: {
     motor: { n: 'Limpieza de motor', p: 8000, conPaq: 5000 }, asientos: { n: 'Limpieza de asientos', p: 25000 }, techo: { n: 'Limpieza de techo', p: 10000 },
     tapiceria: { n: 'Tapicería completa', p: 30000, desde: true }, colchon: { n: 'Limpieza de colchón', p: 10000 },

@@ -78,12 +78,45 @@ t = re.sub(r'          <div class="campo"><label for="fHora">Hora</label><select
 assert 'id="horas"' in t
 t = rep(t, '<div class="campo"><label for="fTel">Teléfono / WhatsApp</label><input id="fTel" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="8888-0000"></div>',
         '<div class="campo"><label for="fTel">Teléfono / WhatsApp</label><input id="fTel" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="8888-0000"></div>\n          <div class="campo full"><label for="fPin">PIN de Monzú Club (4 números)</label><input id="fPin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••" aria-describedby="fPinAyuda"><small class="ayuda-pin" id="fPinAyuda">¿Es nuevo? Invente un PIN y con su teléfono entra a su tarjeta de sellos. ¿Ya es miembro? Use el suyo.</small></div>')
+# ---------------- "¿Qué incluye?" de cada paquete ----------------
+INC = {
+ 'premium': ('Premium', '₡16.000', '₡18.000', None, [
+   ('🧽', 'Interior', 'Aspirado profundo y limpieza de plásticos internos, con restaurador e hidratante para plásticos y cuero.'),
+   ('🚿', 'Lavado exterior', 'Pre-lavado para quitar la suciedad sin rayar, y lavado con shampoo pH neutro que cuida los cerámicos.'),
+   ('🛞', 'Llantas, aros y guardabarros', 'Limpieza y detallado, con hidrofobia (repelencia).'),
+   ('🪟', 'Vidrios', 'Detallado de vidrios con repelencia.'),
+   ('✨', 'Protección y brillo', 'Cera cerámica.')]),
+ 'deluxe': ('Deluxe', '₡32.000', '₡35.000', 'Todo lo del Detallado Premium, más:', [
+   ('🧼', 'Interior a fondo', 'Limpieza minuciosa del interior.'),
+   ('💺', 'Asientos y puertas', 'Eliminación de manchas superficiales en asientos y puertas.'),
+   ('🎨', 'Pintura', 'Descontaminación de pintura.'),
+   ('🛡️', 'Sellado cerámico de 10 meses', 'Protección duradera para la pintura.'),
+   ('⚫', 'Partes negras', 'Restaurador de partes negras externas.'),
+   ('🌸', 'Aroma', 'Aromatizante, si lo desea.')]),
+}
+dlgs = ''
+for k, (nom, ps, pv, intro, pasos) in INC.items():
+    t = rep(t, '<a class="btn %s" href="#agendar" data-elige="%s">' % ('btn-b' if k == 'premium' else 'btn-a', k),
+            '<button type="button" class="incluye" data-legal="inc-%s">¿Qué incluye el %s? <span aria-hidden="true">→</span></button>\n      <a class="btn %s" href="#agendar" data-elige="%s">' % (k, nom, 'btn-b' if k == 'premium' else 'btn-a', k))
+    li = ''.join('<li><span class="inc-ico" aria-hidden="true">%s</span><div><b>%s</b><p>%s</p></div></li>' % p for p in pasos)
+    dlgs += ('<dialog class="legal inc" id="dlg-inc-%s" aria-labelledby="t-inc-%s">\n  <div class="lg-head"><h2 id="t-inc-%s">Detallado %s</h2><button type="button" data-cerrar aria-label="Cerrar">✕</button></div>\n'
+             '  <div class="lg-body"><div class="inc-precios"><div><small>Sedán</small><b>%s</b></div><div><small>SUV · Pick up · XL</small><b>%s</b></div></div>%s\n'
+             '    <ol class="inc-lista">%s</ol>\n    <p class="inc-nota">Lo hacemos a domicilio en Cartago. El precio no incluye el domicilio, que depende de la ubicación del vehículo.</p>\n'
+             '    <a class="btn btn-a" href="#agendar" data-elige="%s">Reservar el %s</a></div>\n</dialog>\n') % (k, k, k, nom, ps, pv, ('<p class="inc-intro">%s</p>' % intro) if intro else '', li, k, nom)
+t = rep(t, '<dialog class="legal" id="dlg-terminos"', dlgs + '<dialog class="legal" id="dlg-terminos"')
 # ubicación con mapa (flecha fija, el cliente mueve el mapa o usa su ubicación)
 MAPA_HTML = '''<div class="ubica"><div class="ubica-btns"><button type="button" class="btn-ubi" id="bMiUbi">📍 Usar mi ubicación</button><button type="button" class="btn-ubi" id="bMapa">🗺️ Marcar en el mapa</button></div>
             <div class="mapa" id="mapa" hidden></div><p class="ubica-txt" id="ubiTxt">Opcional: marque dónde está el carro y llegamos directo.</p></div>'''
 t = rep(t, '<input id="fLugar" maxlength="120" placeholder="Ej. San Nicolás, 200 m norte de la iglesia"></div>',
         '<input id="fLugar" maxlength="120" placeholder="Ej. San Nicolás, 200 m norte de la iglesia">' + MAPA_HTML + '</div>')
 t = rep(t, '\n<script>\n', '\n<script src="/js/mapa.js"></script>\n<script>\n')
+# permiso para escribirle por WhatsApp (Meta exige que el cliente lo acepte)
+t = rep(t, 'Autorizo a Monzú Detallados a usar mis datos para atender esta cita,', 'Autorizo a Monzú Detallados a usar mis datos para atender esta cita y a enviarme por WhatsApp la confirmación y los recordatorios de mis citas,')
+t = rep(t, '<button type="button" data-legal="cookies">Cookies</button></div>', '<button type="button" data-legal="cookies">Cookies</button><a href="/privacidad">Política de privacidad</a><a href="/terminos">Términos</a><a href="/eliminar-datos">Eliminar mis datos</a></div>')
+META = os.environ.get('MONZU_META_TAG', '').strip()
+if META:
+    assert re.fullmatch(r'[a-z0-9]{20,40}', META), 'código de verificación de Meta inválido'
+    t = rep(t, '<meta property="og:type" content="website">', '<meta name="facebook-domain-verification" content="%s">\n<meta property="og:type" content="website">' % META)
 # método de pago + política de multa
 t = rep(t, '          <div class="campo full"><label for="fNota">Comentario (opcional)</label>',
         '''          <div class="campo full"><span class="lbl" id="lblPago">¿Cómo va a pagar?</span><div class="pagos" id="pagos" role="radiogroup" aria-labelledby="lblPago">
@@ -158,6 +191,18 @@ CSS = '''
 .pago input:focus-visible+span{outline:2px solid var(--tq2);outline-offset:2px}
 .politica{margin-top:8px;padding:10px 12px;border-radius:12px;background:rgba(255,201,77,.08);border:1px solid rgba(255,201,77,.35)}
 .listo .listo-multa{color:#FFC94D;font-weight:700}
+.incluye{align-self:flex-start;background:none;border:0;padding:4px 0;font:700 .95rem var(--s);color:var(--tq2);text-decoration:underline;text-underline-offset:4px;text-decoration-color:rgba(139,227,238,.5);cursor:pointer}
+.incluye:hover{color:var(--bl)}
+.legales a{color:var(--gr);text-decoration:underline;text-underline-offset:3px}.legales a:hover{color:var(--tq)}
+.inc .lg-body{display:grid;gap:16px}
+.inc-precios{display:grid;grid-template-columns:1fr 1fr;gap:10px}.inc-precios div{background:var(--n);border:1px solid var(--linea2);border-radius:14px;padding:12px}
+.inc-precios small{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gr)}.inc-precios b{font-family:var(--t);font-style:italic;font-weight:900;font-size:1.6rem}
+.inc-intro{font-weight:700;color:var(--tq2)}
+.inc-lista{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.inc-lista li{display:grid;grid-template-columns:42px minmax(0,1fr);gap:12px;align-items:start;background:var(--n);border:1px solid var(--linea);border-radius:14px;padding:12px}
+.inc-ico{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:1.3rem;background:rgba(76,195,212,.12)}
+.inc-lista b{display:block}.inc-lista p{color:var(--gr);font-size:.9rem;margin:2px 0 0}
+.inc-nota{font-size:.82rem;color:var(--gr)}
 .ubica{display:grid;gap:8px;margin-top:8px}.ubica-btns{display:flex;flex-wrap:wrap;gap:8px}
 .btn-ubi{padding:9px 12px;border-radius:10px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:700 .85rem var(--s);cursor:pointer}
 .btn-ubi:hover{border-color:var(--tq)}.ubica-txt{font-size:.8rem;color:var(--gr)}.ubica-txt.ok{color:#8EE0B1}
@@ -177,6 +222,7 @@ t = rep(t, '<li>Las tipografías se cargan desde Google Fonts, que recibe datos 
 t = rep(t, '<h3>5. Sus derechos</h3>', '<h3>5. Responsable</h3><p>El responsable de la base de datos es Monzú Detallados (Isaac Monge), Cartago. Solanotech actúa solo como encargado técnico (desarrollo y mantenimiento del sitio) y no usa los datos para nada más.</p>\n    <h3>6. Sus derechos</h3>')
 t = rep(t, '<h3>Servicios de terceros</h3><p>Google Fonts entrega las tipografías. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>',
         '<h3>Almacenamiento en su navegador</h3><p>Para que no tenga que escribir su PIN cada vez, su navegador guarda el enlace de su tarjeta Monzú Club. Es una función necesaria y no sirve para rastrearle; se borra con “Salir de esta tarjeta”.</p><h3>Servicios de terceros</h3><p>Ninguno al navegar. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>')
+t = rep(t, '<li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>', '<li>Con su permiso, le enviamos por WhatsApp la confirmación y los recordatorios de su cita, desde el número oficial de Monzú y con la plataforma oficial de WhatsApp Business (Meta). No le enviamos publicidad. Para no recibirlos, responda “NO” o escríbanos.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>')
 t = t.replace('{{FECHA}}', FECHA)
 imgs = {'logo': uri('logo.webp', 'image/webp'), 'fav64': uri('fav64.png', 'image/png'), 'fav180': uri('fav180.png', 'image/png')}
 for k in ['deluxe', 'motor', 'tapiceria', 'scents1', 'scents2', 'scents3']: imgs[k] = uri(k + '.webp', 'image/webp')
@@ -189,6 +235,41 @@ assert not re.search(r'\{\{|__JS__', t) and ' style="' not in t
 OSM = ' https://tile.openstreetmap.org'
 csp_index = csp_de(t, extra_script=" 'self'", img="'self' data:" + OSM)
 open(OUT + '/index.html', 'w', encoding='utf-8').write(con_csp(t, csp_index))
+# ---------------- páginas legales sueltas (Meta las pide para aprobar la cuenta de WhatsApp) ----------------
+NEGOCIO = '<p class="neg"><b>Monzú Detallados</b> · Responsable: Isaac Monge · Detallado de vehículos a domicilio · Cartago, Costa Rica · WhatsApp y teléfono <a href="tel:+50672686906">7268-6906</a> · <a href="%s/">%s</a></p>' % (DOM, DOM.replace('https://', ''))
+def cuerpo_dialogo(html, ident):
+    m = re.search(r'<dialog class="legal" id="dlg-%s"[^>]*>.*?<div class="lg-body">(.*?)</div>\s*</dialog>' % ident, html, re.S); assert m, ident
+    return re.sub(r'<button type="button" data-legal="[a-z]+">([^<]*)</button>', r'\1', m.group(1)).strip()
+LEGAL_CSS = FUENTES + '''*{box-sizing:border-box;margin:0;padding:0}
+body{background:#07090B;color:#F3F7FA;font:400 1rem/1.6 "Inter",system-ui,sans-serif;padding:28px 18px 60px}
+main{max-width:760px;margin:0 auto;display:grid;gap:14px}
+a{color:#8BE3EE}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.top img{height:46px;width:auto}
+h1{font-family:"Exo 2",sans-serif;font-style:italic;font-weight:900;text-transform:uppercase;font-size:clamp(1.8rem,6vw,2.6rem);line-height:1.05}
+h3{font-family:"Exo 2",sans-serif;font-weight:800;font-size:1.15rem;margin-top:10px;color:#8BE3EE}
+p,li{color:#C9D3DB}ul,ol{padding-left:22px;display:grid;gap:6px}
+.neg{background:#141A20;border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:14px;font-size:.92rem}
+.pie{font-size:.85rem;color:#A2AEB9;border-top:1px solid rgba(255,255,255,.1);padding-top:14px;display:flex;gap:14px;flex-wrap:wrap}
+'''
+def pagina_legal(titulo, cont, ruta):
+    html = ('<!doctype html>\n<html lang="es">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n<title>%s · Monzú Detallados</title>\n'
+            '<meta name="description" content="%s de Monzú Detallados, detallado de vehículos a domicilio en Cartago, Costa Rica.">\n<link rel="canonical" href="%s/%s">\n<link rel="icon" type="image/png" href="%s">\n<style>\n%s</style>\n</head>\n<body>\n<main>\n'
+            '<div class="top"><a href="/"><img src="%s" alt="Monzú Detallados" width="640" height="322"></a><a href="/">← Volver a la página</a></div>\n<h1>%s</h1>\n%s\n%s\n<p>Última actualización: %s.</p>\n'
+            '<nav class="pie"><a href="/terminos">Términos y condiciones</a><a href="/privacidad">Política de privacidad</a><a href="/eliminar-datos">Eliminar mis datos</a><a href="/#contacto">Contacto</a></nav>\n</main>\n</body>\n</html>\n') % (
+            titulo, titulo, DOM, ruta, imgs['fav180'], LEGAL_CSS, imgs['logo'], titulo, NEGOCIO, cont, FECHA)
+    est = re.findall(r'<style>(.*?)</style>', html, re.S)
+    csp = "; ".join(["default-src 'none'", "style-src " + " ".join(h(e) for e in est), "font-src 'self'", "img-src 'self' data:", "form-action 'none'", "base-uri 'none'", "frame-ancestors 'none'", "upgrade-insecure-requests"])
+    open('%s/%s.html' % (OUT, ruta), 'w', encoding='utf-8').write(con_csp(html, csp)); return csp
+BORRAR = '''<p>Usted puede pedir en cualquier momento que borremos todos sus datos: nombre, teléfono, carro, dirección, ubicación, citas, sellos y el número de WhatsApp al que le enviamos recordatorios.</p>
+<h3>Opción 1: usted mismo, desde su tarjeta</h3><ol><li>Entre a <a href="/tarjeta">su tarjeta Monzú Club</a> con su teléfono y su PIN.</li><li>Abajo toque <b>“Borrar mi tarjeta y mis datos”</b> y confirme con su PIN.</li><li>Se borran al instante su tarjeta, sus sellos, su historial y sus citas.</li></ol>
+<h3>Opción 2: pídanoslo por WhatsApp</h3><p>Escriba “Quiero borrar mis datos” al <a href="https://wa.me/50672686906?text=Quiero%20borrar%20mis%20datos%20de%20Monz%C3%BA%20Detallados">7268-6906</a> desde el número con el que agendó. Los borramos en un plazo máximo de 5 días hábiles, como indica la Ley 8968, y le confirmamos por el mismo medio.</p>
+<h3>Dejar de recibir recordatorios por WhatsApp</h3><p>Responda <b>“NO”</b> a cualquier recordatorio o escríbanos, y dejamos de enviarle mensajes automáticos. Solo le escribiremos si usted nos escribe primero.</p>
+<h3>Facebook e Instagram</h3><p>Este sitio no usa inicio de sesión con Facebook ni recibe datos de su cuenta de Facebook. Si nos escribió por Facebook o WhatsApp, puede borrar esa conversación desde la propia aplicación.</p>'''
+csp_legal = {}
+csp_legal['terminos'] = pagina_legal('Términos y condiciones', cuerpo_dialogo(t, 'terminos'), 'terminos')
+csp_legal['privacidad'] = pagina_legal('Política de privacidad', cuerpo_dialogo(t, 'privacidad'), 'privacidad')
+csp_legal['eliminar-datos'] = pagina_legal('Eliminación de datos', BORRAR, 'eliminar-datos')
+
 
 # ---------------- 2) tarjeta y 3) panel ----------------
 comun = {'{{LOGO}}': imgs['logo'], '{{FAV}}': imgs['fav180'], '{{FECHA}}': FECHA}
@@ -221,7 +302,7 @@ dv = ImageDraw.Draw(velo)
 for xx in range(1200): dv.line([(xx, 0), (xx, 630)], fill=(7, 9, 11, int(235 * max(0, 1 - xx / 760))))
 og = Image.alpha_composite(og.convert('RGBA'), velo); l = logo.copy(); l.thumbnail((520, 300)); og.paste(l, (70, (630 - l.height) // 2), l)
 og.convert('RGB').save(OUT + '/og.jpg', quality=86)
-open(OUT + '/sitemap.xml', 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>%s/</loc></url></urlset>\n' % DOM)
+open(OUT + '/sitemap.xml', 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>%s/</loc></url><url><loc>%s/privacidad</loc></url><url><loc>%s/terminos</loc></url><url><loc>%s/eliminar-datos</loc></url></urlset>\n' % (DOM, DOM, DOM, DOM))
 
 # ---------------- cabeceras y robots ----------------
 base = "  X-Frame-Options: DENY\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  Cross-Origin-Opener-Policy: same-origin\n  Cross-Origin-Resource-Policy: same-origin\n  X-Permitted-Cross-Domain-Policies: none\n"
@@ -232,6 +313,8 @@ for ruta, csp, extra in [('/', csp_index, sin_cam), ('/index.html', csp_index, s
                          ('/panel.html', csps['panel'], "  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n"),
                          ('/panel', csps['panel'], "  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n")]:
     hd += ruta + "\n  Content-Security-Policy: " + csp + "\n" + base + extra
+for k, c in csp_legal.items():
+    for ruta in ('/' + k, '/' + k + '.html'): hd += ruta + "\n  Content-Security-Policy: " + c + "\n" + base + sin_cam
 hd += "/sw.js\n  Cache-Control: no-cache\n  Content-Security-Policy: default-src 'none'; img-src 'self'\n  X-Content-Type-Options: nosniff\n"
 hd += "/js/*\n  Cache-Control: public, max-age=604800\n  X-Content-Type-Options: nosniff\n/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n"
 open(OUT + '/_headers', 'w').write(hd)

@@ -119,6 +119,9 @@ a{color:inherit}
 .inp:focus{outline:2px solid var(--tq);border-color:transparent}
 .mapa-c{margin-top:2px}
 .rap-total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--linea2);padding-top:12px}.rap-total span{color:var(--gr);font-weight:600}.rap-total b{font-family:var(--t);font-style:italic;font-weight:900;font-size:1.8rem}
+.ver-inc{justify-self:start;font-weight:700;font-size:.86rem;color:var(--tq2);text-decoration:underline;text-underline-offset:3px}
+.inc-l{list-style:none;display:grid;gap:6px;background:var(--n);border:1px solid var(--linea);border-radius:14px;padding:12px;font-size:.84rem;color:var(--gr)}
+.inc-l li{padding-left:22px;position:relative}.inc-l li::before{content:"✓";position:absolute;left:0;color:var(--tq2);font-weight:800}.inc-l li.tit{padding-left:0;color:var(--bl);font-weight:700}.inc-l li.tit::before{content:none}
 .cambio{display:grid;gap:8px;border-top:1px solid rgba(76,195,212,.3);padding-top:10px;text-align:left}
 .acceso{display:grid;gap:14px}
 .tit{font-family:var(--t);font-style:italic;font-weight:900;text-transform:uppercase;font-size:2.2rem;line-height:1}
@@ -204,7 +207,7 @@ a{color:inherit}
     <section class="rapida" id="rapida" aria-labelledby="rapT">
       <h2 id="rapT">⚡ Reservar rápido</h2>
       <p class="rap-sub">Elija el servicio, el día y la hora. Sus datos ya los tenemos.</p>
-      <div class="paso-r"><span class="lbl">Servicio</span><div class="chips-s" id="rPaq"></div></div>
+      <div class="paso-r"><span class="lbl">Servicio</span><div class="chips-s" id="rPaq"></div><button type="button" class="ver-inc" id="rIncBtn" aria-expanded="false">¿Qué incluye el Premium? ↓</button><ul class="inc-l" id="rInc" hidden></ul></div>
       <div class="paso-r"><span class="lbl">Vehículo</span><div class="chips-s" id="rVeh"></div></div>
       <div class="paso-r"><span class="lbl">Adicionales (opcional)</span><div class="chips-s" id="rExt"></div></div>
       <div class="paso-r"><span class="lbl">Día</span><div class="dias" id="rDias"></div></div>

@@ -1,6 +1,8 @@
   /* ===== reservas con horario real (servidor /api) ===== */
   var abierto=Date.now(), ultimo=0, horaSel='', API=true;
   function estado(t,mal){ var s=$('estado'); s.textContent=t; s.className='estado '+(mal?'mal':'bien') }
+  /* el botón Reservar dentro de "¿Qué incluye?" cierra la ventana */
+  d.querySelectorAll('dialog.legal [data-elige]').forEach(function(a){ a.addEventListener('click',function(){ a.closest('dialog').close() }) });
   var cajaH=$('horas');
   /* ubicación con mapa */
   var ubic=null, mapa=null;
