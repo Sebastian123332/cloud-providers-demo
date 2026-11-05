@@ -1,3 +1,5 @@
 node_modules/
 .netlify/
-datos-local.json
+.wrangler/
+.dev.vars
+datos-local*.json
