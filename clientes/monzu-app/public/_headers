@@ -18,6 +18,28 @@
   Cross-Origin-Resource-Policy: same-origin
   X-Permitted-Cross-Domain-Policies: none
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+/demo
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-w4iw2orI4zIaUksI2Z4do7p5RWPmpslBzZ9CKqcoLRE='; style-src 'sha256-gMFTdRKNdojT5TD58Gdxs4cJq/l0EXXhXP2fp4LzIzM='; font-src 'self'; img-src 'self' data:; connect-src 'none'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  X-Robots-Tag: noindex
+/demo.html
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-w4iw2orI4zIaUksI2Z4do7p5RWPmpslBzZ9CKqcoLRE='; style-src 'sha256-gMFTdRKNdojT5TD58Gdxs4cJq/l0EXXhXP2fp4LzIzM='; font-src 'self'; img-src 'self' data:; connect-src 'none'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  X-Robots-Tag: noindex
 /tarjeta.html
   Content-Security-Policy: default-src 'none'; script-src 'sha256-C5VUMI4q9xikAcB7EXb6Rd0J11nn6sC1+3SOxfu5RMc=' 'self'; style-src 'sha256-9EskfFpZWzW7NuwrxNkpfzAW5bVHAvImMcJIxPfiKZg='; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY

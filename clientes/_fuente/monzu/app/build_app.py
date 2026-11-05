@@ -22,12 +22,12 @@ h = lambda x: "'sha256-" + base64.b64encode(hashlib.sha256(x.encode()).digest())
 def rep(t, a, b, n=1):
     c = t.count(a); assert c == n, (c, a[:90]); return t.replace(a, b)
 
-def csp_de(t, extra_script="", connect="'self'", img="'self' data:"):
+def csp_de(t, extra_script="", connect="'self'", img="'self' data:", tt=True):
     est = re.findall(r'<style>(.*?)</style>', t, re.S); scr = re.findall(r'<script>(.*?)</script>', t, re.S)
     assert len(scr) == 1, len(scr)
     return "; ".join(["default-src 'none'", "script-src " + h(scr[0]) + extra_script, "style-src " + " ".join(h(e) for e in est),
                       "font-src 'self'", "img-src " + img, "connect-src " + connect, "manifest-src 'self'", "form-action 'none'", "base-uri 'none'",
-                      "object-src 'none'", "require-trusted-types-for 'script'", "trusted-types 'none'", "frame-ancestors 'none'", "upgrade-insecure-requests"])
+                      "object-src 'none'"] + (["require-trusted-types-for 'script'", "trusted-types 'none'"] if tt else []) + ["frame-ancestors 'none'", "upgrade-insecure-requests"])
 
 def con_csp(t, csp):
     return t.replace('<meta charset="utf-8">\n', '<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="' + csp.replace("; frame-ancestors 'none'", '') + '">\n<meta name="referrer" content="strict-origin-when-cross-origin">\n', 1)
@@ -172,8 +172,13 @@ for pag in ('tarjeta', 'panel'):
     csps[pag] = csp_de(p, extra_script=" 'self'", img="'self' data: blob:" if pag == 'panel' else "'self' data:")
     open('%s/%s.html' % (OUT, pag), 'w', encoding='utf-8').write(con_csp(p, csps[pag]))
 
-# ---------------- producción: sin página de demostración ----------------
-if os.path.exists(OUT + '/demo.html'): os.remove(OUT + '/demo.html')
+# ---------------- demostración con dos celulares (para enseñarle al dueño, sin contraseña) ----------------
+demo = open(A + '../../../monzu-club-demo/index.html', encoding='utf-8').read()
+demo = demo.replace('Demostración hecha por Solanotech para Monzú Detallados', 'Demostración de Monzú Club · <a href="/">ver la página de Monzú</a>', 1)
+demo = demo.replace('.demobar{', '.demobar a{color:inherit;text-decoration:underline}\n.demobar{', 1)
+demo = sin_google(demo)
+csp_demo = csp_de(demo, connect="'none'", tt=False)  # demo sin datos ni formularios: dibuja íconos con innerHTML
+open(OUT + '/demo.html', 'w', encoding='utf-8').write(con_csp(demo, csp_demo))
 
 # ---------------- imagen para compartir (WhatsApp / Facebook) y sitemap ----------------
 og = Image.open(M + 'img/portada.png').convert('RGB'); w, hh = og.size; esc = max(1200 / w, 630 / hh)
@@ -189,12 +194,12 @@ open(OUT + '/sitemap.xml', 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<
 base = "  X-Frame-Options: DENY\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  Cross-Origin-Opener-Policy: same-origin\n  Cross-Origin-Resource-Policy: same-origin\n  X-Permitted-Cross-Domain-Policies: none\n"
 sin_cam = "  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()\n"
 hd = ''
-for ruta, csp, extra in [('/', csp_index, sin_cam), ('/index.html', csp_index, sin_cam),
+for ruta, csp, extra in [('/', csp_index, sin_cam), ('/index.html', csp_index, sin_cam), ('/demo', csp_demo, sin_cam + "  X-Robots-Tag: noindex\n"), ('/demo.html', csp_demo, sin_cam + "  X-Robots-Tag: noindex\n"),
                          ('/tarjeta.html', csps['tarjeta'], sin_cam + "  X-Robots-Tag: noindex\n"), ('/tarjeta', csps['tarjeta'], sin_cam + "  X-Robots-Tag: noindex\n"),
                          ('/panel.html', csps['panel'], "  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n"),
                          ('/panel', csps['panel'], "  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n")]:
     hd += ruta + "\n  Content-Security-Policy: " + csp + "\n" + base + extra
 hd += "/js/*\n  Cache-Control: public, max-age=604800\n  X-Content-Type-Options: nosniff\n/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n"
 open(OUT + '/_headers', 'w').write(hd)
-open(OUT + '/robots.txt', 'w').write('User-agent: *\nAllow: /\nDisallow: /panel.html\nDisallow: /panel\nDisallow: /tarjeta.html\nDisallow: /api/\nSitemap: %s/sitemap.xml\n' % DOM)
+open(OUT + '/robots.txt', 'w').write('User-agent: *\nAllow: /\nDisallow: /demo\nDisallow: /panel.html\nDisallow: /panel\nDisallow: /tarjeta.html\nDisallow: /api/\nSitemap: %s/sitemap.xml\n' % DOM)
 print('listo ->', OUT, {f: os.path.getsize(OUT + '/' + f) for f in os.listdir(OUT) if f.endswith('.html')})
