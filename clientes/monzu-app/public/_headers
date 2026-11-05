@@ -41,7 +41,7 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
   X-Robots-Tag: noindex
 /tarjeta.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-vK6mV0yPnqKeMUL8Kuq6hp/Podg1f3wU7asojBkREOY=' 'self'; style-src 'sha256-n2S2/ahugUHF9Emms0ru9VpofXXH7BUv6UiAr4bjF4I='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-vK6mV0yPnqKeMUL8Kuq6hp/Podg1f3wU7asojBkREOY=' 'self'; style-src 'sha256-pXSMRXoIHeMXjw1xrli1QLxgB5DF+en51n8y8c+kO8o='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -52,7 +52,7 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
   X-Robots-Tag: noindex
 /tarjeta
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-vK6mV0yPnqKeMUL8Kuq6hp/Podg1f3wU7asojBkREOY=' 'self'; style-src 'sha256-n2S2/ahugUHF9Emms0ru9VpofXXH7BUv6UiAr4bjF4I='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-vK6mV0yPnqKeMUL8Kuq6hp/Podg1f3wU7asojBkREOY=' 'self'; style-src 'sha256-pXSMRXoIHeMXjw1xrli1QLxgB5DF+en51n8y8c+kO8o='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

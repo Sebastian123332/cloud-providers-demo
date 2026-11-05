@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-vK6mV0yPnqKeMUL8Kuq6hp/Podg1f3wU7asojBkREOY=' 'self'; style-src 'sha256-n2S2/ahugUHF9Emms0ru9VpofXXH7BUv6UiAr4bjF4I='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-vK6mV0yPnqKeMUL8Kuq6hp/Podg1f3wU7asojBkREOY=' 'self'; style-src 'sha256-pXSMRXoIHeMXjw1xrli1QLxgB5DF+en51n8y8c+kO8o='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mi tarjeta · Monzú Club</title>
@@ -168,6 +168,7 @@ a{color:inherit}
 .trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .crea-pin{display:grid;gap:10px;padding:16px;border-radius:18px;background:rgba(76,195,212,.1);border:1px solid rgba(76,195,212,.45)}
 .crea-pin p{color:var(--gr);font-size:.88rem}
+.nuevo-cli{display:grid;gap:10px;padding:16px;border-radius:22px;background:linear-gradient(180deg,rgba(245,166,35,.12),rgba(20,28,45,.72));border:1px solid rgba(245,166,35,.35)}.nuevo-cli p{color:var(--gr);font-size:.9rem}.nuevo-cli p b{color:var(--bl)}
 .usuario{text-align:center;font-size:.8rem;color:var(--gr)}
 .salir{justify-self:center;font-size:.82rem;color:var(--gr2);text-decoration:underline;text-underline-offset:3px}
 
@@ -228,7 +229,8 @@ body{background:radial-gradient(460px 380px at 100% -8%,rgba(245,166,35,.28),tra
       <button class="btn btn-a" type="submit" id="bRegistro">Crear mi tarjeta</button>
       <p class="msg" id="mRegistro" role="alert"></p>
     </form>
-    <a class="btn btn-b" href="/#agendar">Reservar una cita</a>
+    <div class="nuevo-cli"><b>¿Primera vez con Monzú?</b><p>Reserve su primer lavado en nuestra página: ahí ve los servicios y precios, y <b>su tarjeta Monzú Club se crea sola</b> al reservar.</p>
+      <a class="btn btn-a" href="/#paquetes">Ver servicios y reservar</a></div>
   </section>
 
   <div id="vista" hidden>

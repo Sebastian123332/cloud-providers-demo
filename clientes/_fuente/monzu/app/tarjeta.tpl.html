@@ -141,6 +141,7 @@ a{color:inherit}
 .trampa{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .crea-pin{display:grid;gap:10px;padding:16px;border-radius:18px;background:rgba(76,195,212,.1);border:1px solid rgba(76,195,212,.45)}
 .crea-pin p{color:var(--gr);font-size:.88rem}
+.nuevo-cli{display:grid;gap:10px;padding:16px;border-radius:22px;background:linear-gradient(180deg,rgba(245,166,35,.12),rgba(20,28,45,.72));border:1px solid rgba(245,166,35,.35)}.nuevo-cli p{color:var(--gr);font-size:.9rem}.nuevo-cli p b{color:var(--bl)}
 .usuario{text-align:center;font-size:.8rem;color:var(--gr)}
 .salir{justify-self:center;font-size:.82rem;color:var(--gr2);text-decoration:underline;text-underline-offset:3px}
 
@@ -201,7 +202,8 @@ body{background:radial-gradient(460px 380px at 100% -8%,rgba(245,166,35,.28),tra
       <button class="btn btn-a" type="submit" id="bRegistro">Crear mi tarjeta</button>
       <p class="msg" id="mRegistro" role="alert"></p>
     </form>
-    <a class="btn btn-b" href="/#agendar">Reservar una cita</a>
+    <div class="nuevo-cli"><b>¿Primera vez con Monzú?</b><p>Reserve su primer lavado en nuestra página: ahí ve los servicios y precios, y <b>su tarjeta Monzú Club se crea sola</b> al reservar.</p>
+      <a class="btn btn-a" href="/#paquetes">Ver servicios y reservar</a></div>
   </section>
 
   <div id="vista" hidden>

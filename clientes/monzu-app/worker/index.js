@@ -9,6 +9,8 @@ export default {
       if (!env.DB) return new Response(JSON.stringify({ ok: false, error: 'Falta la base de datos D1 (enlace DB).' }), { status: 503, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' } });
       return manejar(request, { ip: request.headers.get('cf-connecting-ip') || 'local', env, almacen: almacenD1(env.DB) });
     }
+    // club.sudominio.com abre directo la app del cliente (Monzú Club); el dominio principal es la página para clientes nuevos
+    if (url.hostname.startsWith('club.') && url.pathname === '/') return env.ASSETS.fetch(new Request(url.origin + '/tarjeta', request));
     return env.ASSETS.fetch(request);
   },
   // Cada 10 minutos: renueva las citas fijas y manda los recordatorios de 24 h y 1 h antes.
