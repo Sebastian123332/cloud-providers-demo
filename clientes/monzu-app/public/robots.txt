@@ -4,4 +4,4 @@ Disallow: /panel.html
 Disallow: /panel
 Disallow: /tarjeta.html
 Disallow: /api/
-Sitemap: https://monzu-detallados.netlify.app/sitemap.xml
+Sitemap: https://demomonzu.sebas43br.workers.dev/sitemap.xml

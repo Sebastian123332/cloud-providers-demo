@@ -13,7 +13,7 @@ M = A + '../'
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.abspath(A + '../../../monzu-app/public')
 FECHA = '5 de noviembre de 2026'
 # Dominio público: cámbielo aquí cuando se conecte el dominio propio (o use MONZU_DOMINIO=https://... al construir)
-DOM = os.environ.get('MONZU_DOMINIO', 'https://monzu-detallados.netlify.app').rstrip('/')
+DOM = os.environ.get('MONZU_DOMINIO', 'https://demomonzu.sebas43br.workers.dev').rstrip('/')
 os.makedirs(OUT + '/js', exist_ok=True)
 
 def uri(f, m): return 'data:%s;base64,%s' % (m, base64.b64encode(open(M + 'img/' + f, 'rb').read()).decode())
