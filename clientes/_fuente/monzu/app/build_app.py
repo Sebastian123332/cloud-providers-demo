@@ -95,14 +95,22 @@ INC = {
    ('🌸', 'Aroma', 'Aromatizante, si lo desea.')]),
 }
 dlgs = ''
+EXTRA_K = {'Limpieza de motor': 'motor', 'Limpieza de asientos': 'asientos', 'Limpieza de techo': 'techo', 'Tapicería completa': 'tapiceria', 'Limpieza de colchones': 'colchon'}
+for nomx, kx in EXTRA_K.items():
+    t, nn = re.subn(r'(<h3>%s</h3><p>[^<]*</p>)<b>' % re.escape(nomx), r'\1<b data-x="%s">' % kx, t); assert nn == 1, nomx
+# listas de "incluye" en las tarjetas de paquetes: si el dueño las cambia, se reemplazan
+BASE_INC = {'premium': ['Aspirado profundo y limpieza de plásticos internos, con restaurador e hidratante para plásticos y cuero', 'Pre-lavado para quitar la suciedad sin rayar, y lavado con shampoo pH neutro que cuida los cerámicos', 'Limpieza y detallado de llantas, aros y guardabarros, con hidrofobia (repelencia)', 'Detallado de vidrios con repelencia', 'Cera cerámica'],
+            'deluxe': ['Todo el Detallado Premium, más:', 'Limpieza minuciosa del interior', 'Eliminación de manchas superficiales en asientos y puertas', 'Descontaminación de pintura', 'Sellado cerámico de 10 meses', 'Restaurador de partes negras externas', 'Aromatizante, si lo desea']}
+for kx in BASE_INC:
+    t, nn = re.subn(r'(<article class="paq[^"]*" data-paq="%s">.*?)<ul>' % kx, lambda m: m.group(1) + '<ul data-inc-lista="%s" data-inc-base="%s" data-inc-base2="%s">' % (kx, kx, '|'.join(BASE_INC[kx]).replace('"', '&quot;')), t, count=1, flags=re.S); assert nn == 1, kx
 for k, (nom, ps, pv, intro, pasos) in INC.items():
     t = rep(t, '<a class="btn %s" href="#agendar" data-elige="%s">' % ('btn-b' if k == 'premium' else 'btn-a', k),
             '<button type="button" class="incluye" data-legal="inc-%s">¿Qué incluye el %s? <span aria-hidden="true">→</span></button>\n      <a class="btn %s" href="#agendar" data-elige="%s">' % (k, nom, 'btn-b' if k == 'premium' else 'btn-a', k))
     li = ''.join('<li><span class="inc-ico" aria-hidden="true">%s</span><div><b>%s</b><p>%s</p></div></li>' % p for p in pasos)
     dlgs += ('<dialog class="legal inc" id="dlg-inc-%s" aria-labelledby="t-inc-%s">\n  <div class="lg-head"><h2 id="t-inc-%s">Detallado %s</h2><button type="button" data-cerrar aria-label="Cerrar">✕</button></div>\n'
-             '  <div class="lg-body"><div class="inc-precios"><div><small>Sedán</small><b>%s</b></div><div><small>SUV · Pick up · XL</small><b>%s</b></div></div>%s\n'
+             '  <div class="lg-body"><div class="inc-precios"><div><small>Sedán</small><b data-inc-precio="%s-sedan">%s</b></div><div><small>SUV · Pick up · XL</small><b data-inc-precio="%s-suv">%s</b></div></div>%s\n'
              '    <ol class="inc-lista">%s</ol>\n    <p class="inc-nota">Lo hacemos a domicilio en Cartago. El precio no incluye el domicilio, que depende de la ubicación del vehículo.</p>\n'
-             '    <a class="btn btn-a" href="#agendar" data-elige="%s">Reservar el %s</a></div>\n</dialog>\n') % (k, k, k, nom, ps, pv, ('<p class="inc-intro">%s</p>' % intro) if intro else '', li, k, nom)
+             '    <a class="btn btn-a" href="#agendar" data-elige="%s">Reservar el %s</a></div>\n</dialog>\n') % (k, k, k, nom, k, ps, k, pv, ('<p class="inc-intro">%s</p>' % intro) if intro else '', li, k, nom)
 t = rep(t, '<dialog class="legal" id="dlg-terminos"', dlgs + '<dialog class="legal" id="dlg-terminos"')
 # ubicación con mapa (flecha fija, el cliente mueve el mapa o usa su ubicación)
 MAPA_HTML = '''<div class="ubica"><div class="ubica-btns"><button type="button" class="btn-ubi" id="bMiUbi">📍 Usar mi ubicación</button><button type="button" class="btn-ubi" id="bMapa">🗺️ Marcar en el mapa</button></div>

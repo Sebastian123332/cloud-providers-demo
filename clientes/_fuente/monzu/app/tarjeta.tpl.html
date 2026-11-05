@@ -6,7 +6,7 @@
 <title>Mi tarjeta · Monzú Club</title>
 <meta name="description" content="Tarjeta de cliente frecuente de Monzú Detallados.">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#07090B">
+<meta name="theme-color" content="#070B14">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Monzú Club">
@@ -147,6 +147,23 @@ a{color:inherit}
 #vista{display:grid;gap:14px}
 .app > .btn{width:100%}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+/* ===== estilo dashboard (azul noche, tarjetas de vidrio) ===== */
+:root{--n:#070B14;--n3:rgba(20,28,45,.72);--n4:#1A2438;--linea:rgba(148,163,184,.12);--linea2:rgba(148,163,184,.22);--gr:#94A3B8;--gr2:#64748B}
+html{background:#070B14}
+body{background:radial-gradient(460px 380px at 100% -8%,rgba(245,166,35,.28),transparent 62%),radial-gradient(620px 480px at 0% 0%,rgba(59,130,246,.18),transparent 60%),radial-gradient(500px 420px at 50% 115%,rgba(37,99,235,.14),transparent 60%),#070B14;background-attachment:fixed}
+.bloque,.caja-f,.rapida,.aviso.cita,.notif,.crea-pin,.dlg-caja,.chips span{background:var(--n3);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid var(--linea);box-shadow:0 20px 40px -24px rgba(0,0,0,.8),inset 0 1px 0 rgba(255,255,255,.04)}
+.bloque,.rapida,.aviso.cita,.caja-f{border-radius:22px}
+.rapida{background:linear-gradient(180deg,rgba(59,130,246,.14),rgba(20,28,45,.72))}
+.btn-a{background:linear-gradient(135deg,#3B82F6,#2563EB);color:#fff;box-shadow:0 10px 24px -12px rgba(59,130,246,.9)}
+.chip[aria-pressed="true"],.dia[aria-pressed="true"],.so button[aria-selected="true"]{background:linear-gradient(135deg,#3B82F6,#2563EB);color:#fff;border-color:transparent}
+.chip[aria-pressed="true"] small,.dia[aria-pressed="true"] small,.dia[aria-pressed="true"] em{color:#DBEAFE}
+.chip,.dia,.inp{background:rgba(7,11,20,.6)}
+.hola h1{font-family:var(--s);font-style:normal;font-weight:700;letter-spacing:-.02em}
+.hola small{color:#93C5FD}
+.rapida h2{color:#fff}
+.rap-total b{font-family:var(--s);font-style:normal;font-weight:700;letter-spacing:-.02em}
+.aviso.cita{color:#BFDBFE}
+.ver-inc,.tq2,.olvido{color:#93C5FD}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>

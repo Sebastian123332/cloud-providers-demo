@@ -90,3 +90,18 @@
       .catch(function(){ ultimo=Date.now(); abrirWA(mensaje(x,e)); estado('No pudimos guardar la cita en línea, así que abrimos WhatsApp con su solicitud.',false) })
       .then(function(){ btn.disabled=false });
   });
+
+  /* ===== precios en vivo: el dueño los cambia en su panel ===== */
+  fetch('/api/catalogo',{headers:{accept:'application/json'}}).then(function(r){ return r.json() }).then(function(C){
+    if(!C||!C.ok) return;
+    ['premium','deluxe'].forEach(function(k){ var P=C.paq[k]; if(!P) return; PAQ[k].sedan=P.sedan; PAQ[k].suv=P.suv; PAQ[k].n=P.n;
+      d.querySelectorAll('[data-inc-precio="'+k+'-sedan"]').forEach(function(b){ b.textContent=col(P.sedan) }); d.querySelectorAll('[data-inc-precio="'+k+'-suv"]').forEach(function(b){ b.textContent=col(P.suv) });
+      var base=d.querySelector('[data-inc-base="'+k+'"]'); if(base&&P.incluye&&P.incluye.length&&P.incluye.join('|')!==base.dataset.incBase2){
+        [].forEach.call(d.querySelectorAll('[data-inc-lista="'+k+'"]'),function(ul){ ul.textContent=''; P.incluye.forEach(function(t){ var li=d.createElement('li'); li.textContent=t; ul.appendChild(li) }) }) } });
+    var marcados=[].map.call(cajaEx.querySelectorAll('input:checked'),function(i){ return i.value });
+    EXTRAS.length=0; Object.keys(C.ext).forEach(function(k){ var x=C.ext[k]; EXTRAS.push({k:k,n:x.n,p:x.p,conPaq:x.conPaq,desde:x.desde,d:x.desde?'Desde '+col(x.p):(x.conPaq!=null?col(x.conPaq)+' con detallado':'')}) });
+    cajaEx.textContent=''; EXTRAS.forEach(function(x){ var l=d.createElement('label'); l.className='op'; var i=d.createElement('input'); i.type='checkbox'; i.value=x.k; i.checked=marcados.indexOf(x.k)>=0; var sp=d.createElement('span'); sp.textContent=x.n; var sm=d.createElement('small'); sm.textContent=x.d||col(x.p); sp.appendChild(sm); l.appendChild(i); l.appendChild(sp); cajaEx.appendChild(l) });
+    d.querySelectorAll('[data-x]').forEach(function(b){ var x=C.ext[b.dataset.x], art=b.closest('article'); if(!x){ if(art) art.hidden=true; return }
+      b.textContent=(x.desde?'Desde ':'')+col(x.p); if(x.conPaq!=null){ var sm=d.createElement('small'); sm.textContent=' · '+col(x.conPaq)+' si lo suma a un detallado'; b.appendChild(sm) } });
+    pintaPaquetes();
+  }).catch(function(){});

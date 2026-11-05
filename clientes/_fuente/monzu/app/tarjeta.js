@@ -148,7 +148,7 @@
       }).catch(function(){ cajaH.textContent='Sin conexión.' });
     }
     catalogo().then(function(C){ cajaD.textContent=''; var h=hoyCR();
-      for(var i=0;i<=Math.min(C.diasAdelante,30);i++){ (function(f){ var x=new Date(f+'T12:00:00Z'); if(C.dias.indexOf(x.getUTCDay())<0) return;
+      for(var i=0;i<=Math.min(C.diasAdelante,30);i++){ (function(f){ var x=new Date(f+'T12:00:00Z'); if(C.dias.indexOf(x.getUTCDay())<0) return; if((C.cerrados||[]).some(function(z){ return f>=z.desde&&f<=z.hasta })) return;
         var b=d.createElement('button'); b.type='button'; b.className='dia'; b.setAttribute('aria-pressed','false');
         var a=d.createElement('small'), n=d.createElement('b'), m=d.createElement('em'); a.textContent=f===h?'hoy':DS[x.getUTCDay()]; n.textContent=x.getUTCDate(); m.textContent=MS[x.getUTCMonth()];
         b.appendChild(a); b.appendChild(n); b.appendChild(m); b.setAttribute('aria-label',fmtFL(f));

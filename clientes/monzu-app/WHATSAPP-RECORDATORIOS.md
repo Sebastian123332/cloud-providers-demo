@@ -46,6 +46,21 @@ El dueño no toca ningún botón. Se usa la API oficial de WhatsApp de Meta, as�
 4. Ejemplos que pide Meta: `Andrea` · `mañana` · `10:00 a. m.` · `Tres Ríos, casa 25` · `https://demomonzu.sebas43br.workers.dev/tarjeta.html`.
 5. Envíela a revisión. Normalmente la aprueban en minutos o en pocas horas.
 
+## Paso 4b. Segunda plantilla: pedir la reseña de Google
+Esta plantilla se manda sola cuando el dueño marca un lavado como **Terminado**. Se crea igual que la anterior:
+- **Categoría:** Utilidad.
+- **Nombre:** `pedir_resena`.
+- **Idioma:** Español.
+- **Cuerpo:**
+
+  ```
+  ¡Gracias por lavar con Monzú Detallados, {{1}}! ¿Cómo le quedó su carro? Nos ayuda muchísimo si nos califica en Google: {{2}} ¡Que tenga un excelente día!
+  ```
+
+- **Ejemplos:** `Andrea` · `https://g.page/r/xxxx/review`.
+
+El enlace de reseñas se pega en **Panel → Ajustes → Reseñas de Google**. Mientras esta plantilla no esté aprobada, el panel abre el mensaje de WhatsApp listo para enviar con un toque.
+
 ## Paso 5. Llave permanente (token)
 1. Vaya a **business.facebook.com → Configuración del negocio → Usuarios → Usuarios del sistema → Agregar**.
 2. Cree un usuario con rol **Administrador**.

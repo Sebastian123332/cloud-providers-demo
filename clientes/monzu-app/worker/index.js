@@ -1,5 +1,5 @@
 // Worker de Cloudflare para Monzú: /api/* lo atiende el servidor; todo lo demás son los archivos de la página (public/).
-import { manejar, recordar } from '../nucleo/api.mjs';
+import { manejar, tareas } from '../nucleo/api.mjs';
 import { almacenD1 } from '../nucleo/d1.mjs';
 
 export default {
@@ -11,8 +11,8 @@ export default {
     }
     return env.ASSETS.fetch(request);
   },
-  // Cada 10 minutos: manda los recordatorios de 24 h y 1 h antes de cada cita.
+  // Cada 10 minutos: renueva las citas fijas y manda los recordatorios de 24 h y 1 h antes.
   async scheduled(evento, env, ctx) {
-    if (env.DB) ctx.waitUntil(recordar({ env, almacen: almacenD1(env.DB) }));
+    if (env.DB) ctx.waitUntil(tareas({ env, almacen: almacenD1(env.DB) }));
   },
 };
