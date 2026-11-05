@@ -204,6 +204,19 @@ async function claveVapid() {
   return transaccion((s) => (s.vapid ? { res: s.vapid, cambio: false } : (s.vapid = nueva, { res: nueva, cambio: true })), 'seguridad');
 }
 const horaBonita = (h) => { const [a, m] = h.split(':').map(Number); return (a > 12 ? a - 12 : a) + ':' + String(m).padStart(2, '0') + (a < 12 ? ' a. m.' : ' p. m.'); };
+// WhatsApp automático (API oficial de Meta). Solo funciona si el dueño configuró WA_TOKEN y WA_NUMERO_ID en Cloudflare.
+// Usa la plantilla aprobada "recordatorio_cita" (o WA_PLANTILLA) con 5 datos: nombre, cuándo, hora, lugar y enlace de la tarjeta.
+const waActivo = () => !!(ENV.WA_TOKEN && /^\d{6,20}$/.test(String(ENV.WA_NUMERO_ID || '')));
+const waTexto = (t, n) => String(t || '').replace(/[\r\n\t]+/g, ' ').replace(/ {2,}/g, ' ').trim().slice(0, n) || '-';
+async function enviarWA(tel, datos, fetchFn) {
+  const r = await (fetchFn || fetch)('https://graph.facebook.com/' + (ENV.WA_VERSION || 'v23.0') + '/' + ENV.WA_NUMERO_ID + '/messages', {
+    method: 'POST', headers: { authorization: 'Bearer ' + ENV.WA_TOKEN, 'content-type': 'application/json' },
+    body: JSON.stringify({ messaging_product: 'whatsapp', to: '506' + tel, type: 'template', template: { name: ENV.WA_PLANTILLA || 'recordatorio_cita', language: { code: ENV.WA_IDIOMA || 'es' },
+      components: [{ type: 'body', parameters: datos.map((x) => ({ type: 'text', text: x })) }] } }),
+  });
+  if (!r.ok) console.error('whatsapp', r.status, (await r.text().catch(() => '')).slice(0, 300));
+  return r.ok;
+}
 // Se llama cada 10 minutos (cron del Worker). Manda el recordatorio de 24 h y el de 1 h una sola vez por cita.
 export async function recordar(opts) {
   A = opts.almacen; ENV = opts.env || {};
@@ -216,7 +229,9 @@ export async function recordar(opts) {
     else if (falta <= 24 * 36e5 && falta > 70 * 60e3 && !c.r24) tipo = 'r24';
     if (!tipo) continue;
     const cl = db.clientes[c.tel];
-    envios.push({ id: c.id, tipo, tel: c.tel, subs: (cl && cl.push) || [], cuerpo: tipo === 'r24'
+    const hoy = new Date(ahora - 6 * 36e5).toISOString().slice(0, 10) === c.fecha;
+    const wa = cl ? [waTexto(cl.nombre.split(' ')[0], 40), tipo === 'r1' ? 'hoy (en 1 hora)' : hoy ? 'hoy' : 'mañana', horaBonita(c.hora), waTexto(c.lugar, 120), (ENV.SITIO_URL || '') + '/tarjeta.html?t=' + cl.token] : null;
+    envios.push({ id: c.id, tipo, tel: c.tel, wa, subs: (cl && cl.push) || [], cuerpo: tipo === 'r24'
       ? 'Le recordamos su cita de ' + (new Date(ahora - 6 * 36e5).toISOString().slice(0, 10) === c.fecha ? 'hoy' : 'mañana') + ' a las ' + horaBonita(c.hora) + ' en ' + c.lugar + '. Si no puede, cancele desde su tarjeta antes de ' + AJUSTES.horasCancelar + ' horas para evitar la multa de ₡' + AJUSTES.multa.toLocaleString('es-CR') + '.'
       : 'Su cita con Monzú es a las ' + horaBonita(c.hora) + ' (en 1 hora) en ' + c.lugar + '. ¡Ya vamos!' });
   }
@@ -224,7 +239,8 @@ export async function recordar(opts) {
   const vapid = await claveVapid(), contacto = ENV.SITIO_URL || 'https://monzu.example', muertos = [];
   let enviados = 0;
   for (const e of envios) {
-    e.ok = false;
+    e.ok = false; e.wa_ok = false;
+    if (waActivo() && e.wa) { try { e.wa_ok = await enviarWA(e.tel, e.wa, opts.fetch); if (e.wa_ok) enviados++; } catch (err) { console.error('whatsapp', err && err.message); } }
     for (const s of e.subs) {
       try {
         const st = await enviarPush(s, { title: 'Monzú Detallados', body: e.cuerpo, url: '/tarjeta' }, vapid, contacto, opts.fetch);
@@ -235,7 +251,7 @@ export async function recordar(opts) {
   await transaccion((d) => {
     for (const e of envios) {
       const c = d.citas.find((x) => x.id === e.id); if (!c) continue;
-      c[e.tipo] = e.ok ? 'push' : 'sin-notificaciones'; if (e.tipo === 'r1' && !c.r24) c.r24 = 'tarde';
+      c[e.tipo] = e.wa_ok ? (e.ok ? 'whatsapp+push' : 'whatsapp') : e.ok ? 'push' : 'sin-notificaciones'; if (e.tipo === 'r1' && !c.r24) c.r24 = 'tarde';
     }
     if (muertos.length) for (const cl of Object.values(d.clientes)) if (cl.push) cl.push = cl.push.filter((s) => !muertos.includes(s.endpoint));
     return { res: 1, cambio: true };
@@ -461,7 +477,7 @@ export async function manejar(req, opts) {
           .map(({ origen, ...c }) => ({ ...c, sellos: db.clientes[c.tel]?.sellos ?? 0, tarjeta: db.clientes[c.tel]?.token, multaCliente: db.clientes[c.tel]?.multa || 0, conNotificaciones: (db.clientes[c.tel]?.push || []).length > 0, inicio: inicioCita(c) }));
         const clientes = Object.values(db.clientes).map((c) => ({ nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token, tienePin: !!c.pinHash, creado: c.creado || '', multa: c.multa || 0, conNotificaciones: (c.push || []).length > 0 }))
           .sort((a, b) => b.sellos - a.sellos || a.nombre.localeCompare(b.nombre));
-        return json({ ok: true, hoy: hoyCR().fecha, ahora: Date.now(), meta: AJUSTES.meta, premio: AJUSTES.premio, multaMonto: AJUSTES.multa, horasCancelar: AJUSTES.horasCancelar, citas, clientes });
+        return json({ ok: true, hoy: hoyCR().fecha, ahora: Date.now(), waAuto: waActivo(), meta: AJUSTES.meta, premio: AJUSTES.premio, multaMonto: AJUSTES.multa, horasCancelar: AJUSTES.horasCancelar, citas, clientes });
       }
       if (accion === 'respaldo' && req.method === 'GET') {                       // copia de seguridad para el dueño (sin PIN)
         const db = await leerDB();

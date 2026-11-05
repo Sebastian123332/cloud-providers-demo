@@ -90,7 +90,7 @@
       .forEach(function(x){ var e=el('div'); e.appendChild(el('b',null,x[0])); e.appendChild(el('small',null,x[1])); k.appendChild(e) });
   }
   var NOM={pendiente:'Por confirmar',confirmada:'Confirmada',hecha:'Terminada',cancelada:'Cancelada',ausente:'No llegó'};
-  var REC={push:'✓ enviado',"sin-notificaciones":'sin notificaciones',tarde:'no aplicó'};
+  var REC={push:'✓ al celular',whatsapp:'✓ WhatsApp','whatsapp+push':'✓ WhatsApp y celular',"sin-notificaciones":'no se pudo enviar',tarde:'no aplicó'};
   function citas(){
     var L=$('listaCitas'); L.textContent='';
     var lista=datos.citas.filter(function(c){
@@ -147,10 +147,11 @@
     var R=$('recs'); R.textContent='';
     var l=datos.citas.filter(function(c){ return (c.estado==='pendiente'||c.estado==='confirmada') && c.inicio>datos.ahora && c.inicio-datos.ahora<=24*36e5 });
     if(!l.length){ R.hidden=true; return } R.hidden=false;
-    R.appendChild(el('b',null,'🔔 Recordatorios de las próximas 24 horas'));
+    R.appendChild(el('b',null,datos.waAuto?'🔔 Recordatorios automáticos por WhatsApp (no tiene que hacer nada)':'🔔 Recordatorios de las próximas 24 horas'));
     l.forEach(function(c){ var f=el('div','rec'), t=el('div'); t.appendChild(el('span',null,fmtDia(c.fecha)+' '+fmtH(c.hora)+' · '+c.nombre));
-      t.appendChild(el('small',null,c.conNotificaciones?'Le llega solo al celular'+(c.r24==='push'||c.r1==='push'?' · ya se envió ✓':''):'No activó notificaciones: mándelo por WhatsApp')); f.appendChild(t);
-      if(!c.conNotificaciones||c.r24==='sin-notificaciones') f.appendChild(boton('Recordar','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 👋 Le recordamos su cita con Monzú Detallados '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+' en '+c.lugar+'. Si no puede, cancele o cambie la hora desde su tarjeta: '+enlaceTarjeta(c.tarjeta)) },'wa'));
+      var est=c.r1||c.r24, fallo=est==='sin-notificaciones';
+      t.appendChild(el('small',null,est&&!fallo?'Recordatorio enviado '+(REC[est]||''):datos.waAuto?'Se le envía solo por WhatsApp 24 h y 1 h antes':c.conNotificaciones?'Le llega solo al celular':'No activó notificaciones: mándelo por WhatsApp')); f.appendChild(t);
+      if(fallo||(!datos.waAuto&&!c.conNotificaciones)) f.appendChild(boton('Recordar','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 👋 Le recordamos su cita con Monzú Detallados '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+' en '+c.lugar+'. Si no puede, cancele o cambie la hora desde su tarjeta: '+enlaceTarjeta(c.tarjeta)) },'wa'));
       R.appendChild(f) });
   }
   function accion(c,a,despues){
