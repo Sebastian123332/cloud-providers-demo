@@ -154,7 +154,7 @@ function limite(ip, clave, max, ventanaMs) {
 }
 
 /* ---------- sesión del panel (firmada con HMAC, expira) ---------- */
-const claveReal = () => ENV.PANEL_CLAVE || '';
+const claveReal = () => String(ENV.PANEL_CLAVE || '').trim(); // ignora espacios o saltos de línea pegados por error
 const panelListo = () => claveReal().length >= 10;
 const llaveSesion = (v) => createHash('sha256').update('monzu-sesion|' + claveReal() + '|' + (ENV.SESION_SECRETO || '') + '|' + v).digest();
 function firmaSesion(dias, v) {
@@ -169,8 +169,9 @@ function sesionValida(req, v) {
   try { const o = JSON.parse(Buffer.from(d, 'base64url').toString()); return o.exp > Date.now() && o.v === v; } catch { return false; }
 }
 function claveOk(dada) {
-  const a = createHash('sha256').update(String(dada || '')).digest(), b = createHash('sha256').update(claveReal()).digest();
-  return String(dada || '').length > 0 && timingSafeEqual(a, b);
+  const d = String(dada || '').trim();
+  const a = createHash('sha256').update(d).digest(), b = createHash('sha256').update(claveReal()).digest();
+  return d.length > 0 && timingSafeEqual(a, b);
 }
 
 /* ---------- rutas ---------- */

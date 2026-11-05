@@ -36,6 +36,7 @@
 
   /* ---------- entrar / salir ---------- */
   try{ clave=localStorage.getItem(GUARDA)||sessionStorage.getItem(GUARDA)||'' }catch(e){}
+  $('verClave').addEventListener('click',function(){ var i=$('clave'), ver=i.type==='password'; i.type=ver?'text':'password'; this.setAttribute('aria-pressed',String(ver)); this.setAttribute('aria-label',ver?'Ocultar la contraseña':'Mostrar la contraseña'); i.focus() });
   $('login').addEventListener('submit',function(e){
     e.preventDefault(); var c=$('clave').value; if(!c){ $('loginMsg').textContent='Escriba la contraseña.'; $('loginMsg').className='msg mal'; return }
     $('entrar').disabled=true; var rec=$('recordar').checked;

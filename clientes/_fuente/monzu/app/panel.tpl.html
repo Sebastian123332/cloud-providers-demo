@@ -33,6 +33,7 @@ a{color:inherit}
 .campo{display:grid;gap:6px;text-align:left}
 .campo label{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gr)}
 .campo input{width:100%;padding:13px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n3);font-size:1rem}
+.ver-clave{position:relative}.ver-clave input{padding-right:52px}.ver-clave button{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:10px;font-size:18px;opacity:.75}.ver-clave button[aria-pressed="true"]{opacity:1;background:var(--n4)}
 .campo input:focus{outline:2px solid var(--tq);border-color:transparent}
 .casilla{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--gr);text-align:left}
 .casilla input{width:18px;height:18px;accent-color:var(--tq)}
@@ -141,7 +142,7 @@ a{color:inherit}
   <img src="{{LOGO}}" alt="Monzú Detallados">
   <h1 class="t">Panel del <span class="tq">dueño</span></h1>
   <p>Citas, sellos de Monzú Club y clientes. Solo para Monzú Detallados.</p>
-  <div class="campo"><label for="clave">Contraseña</label><input id="clave" type="password" autocomplete="current-password" required></div>
+  <div class="campo"><label for="clave">Contraseña</label><div class="ver-clave"><input id="clave" type="password" autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false" required><button type="button" id="verClave" aria-label="Mostrar la contraseña" aria-pressed="false">👁</button></div></div>
   <label class="casilla"><input type="checkbox" id="recordar"> Mantener la sesión 30 días en este celular (solo si es su celular)</label>
   <button class="btn b-tq" type="submit" id="entrar">Entrar</button>
   <p class="msg" id="loginMsg" role="alert"></p>

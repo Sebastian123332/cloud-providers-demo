@@ -41,7 +41,7 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   X-Robots-Tag: noindex
 /panel.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-mz6ptxGph6fz4cH1qK1IaB2FCn+SeCyR+zbDIdHoF5Q=' 'self'; style-src 'sha256-tsr++qmjXXlb0wrKGxV+BOIaIDawwEAA0qcy6+lqzuk='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-ELfyUWtepP4Ofh1UtuG7CIX4yVP9Az3f10PJENf3ssg=' 'self'; style-src 'sha256-IgHeZgnZBp63Q40a23L8/7KXMa7diCMNvolWsGKszMc='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -53,7 +53,7 @@
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 /panel
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-mz6ptxGph6fz4cH1qK1IaB2FCn+SeCyR+zbDIdHoF5Q=' 'self'; style-src 'sha256-tsr++qmjXXlb0wrKGxV+BOIaIDawwEAA0qcy6+lqzuk='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-ELfyUWtepP4Ofh1UtuG7CIX4yVP9Az3f10PJENf3ssg=' 'self'; style-src 'sha256-IgHeZgnZBp63Q40a23L8/7KXMa7diCMNvolWsGKszMc='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
