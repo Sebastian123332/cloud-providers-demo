@@ -58,3 +58,26 @@ Conectar el repositorio **no publica nada por sí solo**: Cloudflare compila cua
 - D1 con 5 millones de lecturas y 100 000 escrituras por día.
 
 Para Monzú sobra.
+
+---
+
+## Recordatorios, multa y pagos (nuevo)
+- **Recordatorios automáticos:**
+  - El Worker revisa las citas cada 10 minutos (está en `wrangler.toml`, en `[triggers]`).
+  - Al cliente que activó "🔔 Recordatorios" en su tarjeta le llega una notificación 24 horas antes y otra 1 hora antes.
+  - No cuesta nada ni hay que configurar nada.
+  - Los clientes que no los activaron aparecen arriba en el panel, en **Citas**, con un botón **Recordar** por WhatsApp.
+  - En iPhone el cliente primero guarda la tarjeta en la pantalla de inicio y la abre desde el ícono.
+- **Multa de ₡5.000:**
+  - En el panel, el botón **No llegó (multa)** aparece cuando ya pasó la hora de la cita.
+  - La multa sale sola en la siguiente reserva del cliente.
+  - Se puede quitar con **Anular multa** en Clientes.
+- **Pagos:** el cliente escoge entre efectivo, SINPE Móvil o transferencia. En el panel se marca **Pagado**.
+- **Pasar clientes de otro sistema:**
+  - Panel → **Clientes** → **Pasar mis clientes de otro sistema**.
+  - Pegue un cliente por línea: `Nombre, Teléfono, Carro, Sellos`.
+- **Desde la tarjeta, el cliente puede:**
+  - reservar rápido,
+  - cambiar la fecha u hora,
+  - cancelar hasta 2 horas antes,
+  - marcar su ubicación en el mapa. El panel la abre en Google Maps o Waze.

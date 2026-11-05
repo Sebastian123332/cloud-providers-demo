@@ -8,6 +8,7 @@
 // Núcleo compartido: lo usan el adaptador de Netlify (netlify/functions/api.mjs) y el de Cloudflare (functions/api/[[ruta]].js).
 import { randomBytes, timingSafeEqual, createHash, createHmac, scryptSync } from 'node:crypto';
 import { Buffer } from 'node:buffer';
+import { nuevaVapid, enviarPush, endpointValido } from './push.mjs';
 
 let A = null, ENV = {}; // almacén y variables de la solicitud en curso
 
@@ -22,7 +23,11 @@ const AJUSTES = {
   maxReservasDia: 40,                         // tope de reservas nuevas por día (anti abuso)
   maxRegistrosDia: 80,                        // tope de registros nuevos por día (anti abuso)
   diasCitas: 120,                             // las citas se borran a los 4 meses
+  multa: 5000,                                // multa si el cliente no llega (se cobra en la próxima cita)
+  horasCancelar: 2,                           // el cliente puede cancelar gratis hasta 2 horas antes
+  pagos: ['Efectivo', 'SINPE Móvil', 'Transferencia'],
 };
+const inicioCita = (c) => Date.parse(c.fecha + 'T' + c.hora + ':00-06:00'); // Costa Rica: UTC-6 todo el año
 
 /* ---------- precios oficiales: el servidor calcula el total, no confía en el navegador ---------- */
 const CATALOGO = {
@@ -98,7 +103,25 @@ function horasDe(db, f) {
   const occ = db.citas.filter((c) => c.fecha === f && c.estado !== 'cancelada').map((c) => c.hora), ahora = hoyCR();
   return AJUSTES.horas.map((h) => ({ h, libre: !occ.includes(h) && !(f === ahora.fecha && h <= ahora.hora) }));
 }
-const vistaTarjeta = (c) => ({ tienePin: !!c.pinHash, nombre: c.nombre, carro: c.carro || '', sellos: c.sellos, meta: AJUSTES.meta, premio: AJUSTES.premio, premios: c.premios || 0, hist: (c.hist || []).slice(0, 12), codigo: 'MZ-' + c.token.slice(0, 4).toUpperCase() });
+// ubicación del mapa: solo números dentro de Costa Rica, redondeados (~1 m)
+function ubicOk(u) {
+  if (!u || typeof u !== 'object') return null;
+  const lat = Number(u.lat), lng = Number(u.lng);
+  if (!Number.isFinite(lat) || !Number.isFinite(lng) || lat < 8 || lat > 11.3 || lng < -86 || lng > -82.5) return null;
+  return { lat: Math.round(lat * 1e5) / 1e5, lng: Math.round(lng * 1e5) / 1e5 };
+}
+// arma y guarda una cita (la usan la reserva de la página y la reserva rápida de la tarjeta)
+function creaCita(db, c, d, ip) {
+  const q = cotiza(d.veh, d.paq, d.extras);
+  const multa = c.multa > 0 ? c.multa : 0;
+  const lin = multa ? [...q.lineas, ['Multa pendiente por no presentarse', multa]] : q.lineas;
+  const cita = { id: id(), tel: c.tel, nombre: c.nombre, fecha: d.fecha, hora: d.hora, vehiculo: q.vehiculo, carro: d.carro || c.carro || '', lineas: lin, total: q.total + multa, multa, pago: d.pago, desde: q.desde,
+    aroma: d.aroma || '', lugar: d.lugar, ubic: d.ubic || null, nota: d.nota || '', estado: 'pendiente', creada: new Date().toISOString(), origen: huella(ip) };
+  db.citas.push(cita); purga(db);
+  c.pref = { lugar: d.lugar, ubic: d.ubic || null, veh: q.v, pago: d.pago };   // para la próxima reserva rápida
+  return cita;
+}
+const vistaTarjeta = (c) => ({ tel: c.tel, pref: c.pref || null, multa: c.multa || 0, recordatorios: (c.push || []).length > 0, tienePin: !!c.pinHash, nombre: c.nombre, carro: c.carro || '', sellos: c.sellos, meta: AJUSTES.meta, premio: AJUSTES.premio, premios: c.premios || 0, hist: (c.hist || []).slice(0, 12), codigo: 'MZ-' + c.token.slice(0, 4).toUpperCase() });
 const huella = (ip) => createHash('sha256').update('monzu:' + ip).digest('base64url').slice(0, 16); // la IP nunca se guarda tal cual
 function cuota(db, tipo, max) {
   const f = hoyCR().fecha; if (!db.cuotas || db.cuotas.fecha !== f) db.cuotas = { fecha: f };
@@ -174,6 +197,52 @@ function claveOk(dada) {
   return d.length > 0 && timingSafeEqual(a, b);
 }
 
+/* ---------- recordatorios automáticos ---------- */
+async function claveVapid() {
+  const seg = await leerDB('seguridad'); if (seg.vapid) return seg.vapid;
+  const nueva = await nuevaVapid();
+  return transaccion((s) => (s.vapid ? { res: s.vapid, cambio: false } : (s.vapid = nueva, { res: nueva, cambio: true })), 'seguridad');
+}
+const horaBonita = (h) => { const [a, m] = h.split(':').map(Number); return (a > 12 ? a - 12 : a) + ':' + String(m).padStart(2, '0') + (a < 12 ? ' a. m.' : ' p. m.'); };
+// Se llama cada 10 minutos (cron del Worker). Manda el recordatorio de 24 h y el de 1 h una sola vez por cita.
+export async function recordar(opts) {
+  A = opts.almacen; ENV = opts.env || {};
+  const ahora = opts.ahora || Date.now(), db = await leerDB(), envios = [];
+  for (const c of db.citas) {
+    if (c.estado !== 'pendiente' && c.estado !== 'confirmada') continue;
+    const falta = inicioCita(c) - ahora; if (falta <= 0) continue;
+    let tipo = null;
+    if (falta <= 70 * 60e3 && !c.r1) tipo = 'r1';
+    else if (falta <= 24 * 36e5 && falta > 70 * 60e3 && !c.r24) tipo = 'r24';
+    if (!tipo) continue;
+    const cl = db.clientes[c.tel];
+    envios.push({ id: c.id, tipo, tel: c.tel, subs: (cl && cl.push) || [], cuerpo: tipo === 'r24'
+      ? 'Le recordamos su cita de ' + (new Date(ahora - 6 * 36e5).toISOString().slice(0, 10) === c.fecha ? 'hoy' : 'mañana') + ' a las ' + horaBonita(c.hora) + ' en ' + c.lugar + '. Si no puede, cancele desde su tarjeta antes de ' + AJUSTES.horasCancelar + ' horas para evitar la multa de ₡' + AJUSTES.multa.toLocaleString('es-CR') + '.'
+      : 'Su cita con Monzú es a las ' + horaBonita(c.hora) + ' (en 1 hora) en ' + c.lugar + '. ¡Ya vamos!' });
+  }
+  if (!envios.length) return { enviados: 0, citas: 0 };
+  const vapid = await claveVapid(), contacto = ENV.SITIO_URL || 'https://monzu.example', muertos = [];
+  let enviados = 0;
+  for (const e of envios) {
+    e.ok = false;
+    for (const s of e.subs) {
+      try {
+        const st = await enviarPush(s, { title: 'Monzú Detallados', body: e.cuerpo, url: '/tarjeta' }, vapid, contacto, opts.fetch);
+        if (st >= 200 && st < 300) { e.ok = true; enviados++; } else if (st === 404 || st === 410) muertos.push(s.endpoint);
+      } catch (err) { console.error('push', err && err.message); }
+    }
+  }
+  await transaccion((d) => {
+    for (const e of envios) {
+      const c = d.citas.find((x) => x.id === e.id); if (!c) continue;
+      c[e.tipo] = e.ok ? 'push' : 'sin-notificaciones'; if (e.tipo === 'r1' && !c.r24) c.r24 = 'tarde';
+    }
+    if (muertos.length) for (const cl of Object.values(d.clientes)) if (cl.push) cl.push = cl.push.filter((s) => !muertos.includes(s.endpoint));
+    return { res: 1, cambio: true };
+  });
+  return { enviados, citas: envios.length };
+}
+
 /* ---------- rutas ---------- */
 export async function manejar(req, opts) {
   A = opts.almacen; ENV = opts.env || {};
@@ -186,7 +255,7 @@ export async function manejar(req, opts) {
     const origen = req.headers.get('origin');                                 // anti CSRF: solo desde la propia página
     if (origen && new URL(origen).host !== url.host) return error('Origen no permitido.', 403);
     if (!(req.headers.get('content-type') || '').includes('application/json')) return error('Formato no válido.', 415);
-    const txt = await req.text(); if (txt.length > 8000) return error('Solicitud demasiado grande.', 413);
+    const txt = await req.text(); if (txt.length > (ruta === 'panel/importar' ? 60000 : 8000)) return error('Solicitud demasiado grande.', 413);
     try { body = JSON.parse(txt || '{}'); } catch { return error('JSON inválido.'); }
     if (!body || typeof body !== 'object' || Array.isArray(body)) return error('Solicitud inválida.');
   }
@@ -211,8 +280,10 @@ export async function manejar(req, opts) {
       const m = fechaValida(fecha); if (m) return error(m);
       if (!AJUSTES.horas.includes(hora)) return error('Elija una hora de la lista.');
       if (body.consentimiento !== true) return error('Debe aceptar los términos y autorizar el uso de sus datos.');
-      const q = cotiza(body.veh, body.paq, body.extras), lineas = q.lineas, total = q.total;
-      if (!lineas.length) return error('Elija un paquete o un adicional.');
+      const pago = AJUSTES.pagos.includes(body.pago) ? body.pago : null;
+      if (!pago) return error('Elija cómo va a pagar: efectivo, SINPE Móvil o transferencia.');
+      const q = cotiza(body.veh, body.paq, body.extras);
+      if (!q.lineas.length) return error('Elija un paquete o un adicional.');
       return await transaccion((db) => {
         if (!horasDe(db, fecha).find((x) => x.h === hora && x.libre)) return { res: error('Esa hora se acaba de ocupar. Elija otra, por favor.', 409), cambio: false };
         if (db.citas.filter((c) => c.tel === tel && c.estado !== 'cancelada' && c.estado !== 'hecha').length >= 3) return { res: error('Ya tiene 3 citas pendientes. Escríbanos por WhatsApp para cambiarlas.'), cambio: false };
@@ -225,9 +296,9 @@ export async function manejar(req, opts) {
           else if (!body.pin) aviso = 'conpin';
           else { const r = revisaPin(c, String(body.pin)); if (r === 'ok') tk = c.token; else aviso = r === 'bloqueado' ? 'bloqueado' : 'pinmal'; }
         }
-        const cita = { id: id(), tel, nombre, fecha, hora, vehiculo: q.vehiculo, carro, lineas, total, desde: q.desde, aroma: limpia(body.aroma, 30), lugar, nota, estado: 'pendiente', creada: new Date().toISOString(), origen: huella(ip) };
-        db.citas.push(cita); purga(db);
-        return { res: json({ ok: true, cita: { id: cita.id, fecha, hora }, tarjeta: tk, nueva, aviso, tienePin: !!c.pinHash }), cambio: true };
+        const cita = creaCita(db, c, { fecha, hora, veh: body.veh, paq: body.paq, extras: body.extras, pago, aroma: limpia(body.aroma, 30), lugar, ubic: ubicOk(body.ubic), nota, carro }, ip);
+        if (cita.nombre !== nombre) cita.nombreDado = nombre;
+        return { res: json({ ok: true, cita: { id: cita.id, fecha, hora, total: tk ? cita.total : null, multa: tk ? cita.multa : null, pago }, tarjeta: tk, nueva, aviso, tienePin: !!c.pinHash }), cambio: true };
       });
     }
 
@@ -286,13 +357,82 @@ export async function manejar(req, opts) {
       });
     }
 
+    if (ruta === 'cancelar' && req.method === 'POST') {                          // el cliente cancela su cita
+      if (limite(ip, 'can', 10, 900e3)) return error('Demasiados intentos. Espere unos minutos.', 429);
+      const t = String(body.t || ''); if (!/^[\w-]{20,40}$/.test(t)) return error('Tarjeta no encontrada.', 404);
+      return await transaccion((db) => {
+        const tel = db.tokens[t], c = db.citas.find((x) => x.id === body.id && x.tel === tel);
+        if (!tel || !c) return { res: error('Cita no encontrada.', 404), cambio: false };
+        if (c.estado !== 'pendiente' && c.estado !== 'confirmada') return { res: error('Esa cita ya no se puede cancelar.'), cambio: false };
+        if (inicioCita(c) - Date.now() < AJUSTES.horasCancelar * 36e5) return { res: error('Faltan menos de ' + AJUSTES.horasCancelar + ' horas para su cita: escríbanos por WhatsApp.', 409), cambio: false };
+        c.estado = 'cancelada'; c.canceladaPor = 'cliente'; anota(db, 'cliente canceló su cita', c.nombre + ' ' + c.fecha + ' ' + c.hora);
+        return { res: json({ ok: true }), cambio: true };
+      });
+    }
+    if (ruta === 'catalogo' && req.method === 'GET') {                            // servicios y precios para la reserva rápida
+      return json({ ok: true, paq: CATALOGO.paq, ext: CATALOGO.ext, pagos: AJUSTES.pagos, horas: AJUSTES.horas, dias: AJUSTES.dias, diasAdelante: AJUSTES.diasAdelante, multa: AJUSTES.multa, horasCancelar: AJUSTES.horasCancelar });
+    }
+    if (ruta === 'reservar-rapido' && req.method === 'POST') {                    // reserva desde la tarjeta: ya conocemos al cliente
+      if (limite(ip, 'res', 6, 3600e3)) return error('Demasiadas reservas desde esta conexión. Escríbanos por WhatsApp.', 429);
+      const t = String(body.t || ''); if (!/^[\w-]{20,40}$/.test(t)) return error('Tarjeta no encontrada.', 404);
+      const fecha = String(body.fecha || ''), hora = String(body.hora || ''), lugar = limpia(body.lugar, 120), nota = limpia(body.nota, 400);
+      const m = fechaValida(fecha); if (m) return error(m);
+      if (!AJUSTES.horas.includes(hora)) return error('Elija una hora de la lista.');
+      if (lugar.length < 4) return error('Falta la dirección o zona.');
+      const pago = AJUSTES.pagos.includes(body.pago) ? body.pago : null; if (!pago) return error('Elija cómo va a pagar.');
+      if (!cotiza(body.veh, body.paq, body.extras).lineas.length) return error('Elija un paquete o un adicional.');
+      return await transaccion((db) => {
+        const tel = db.tokens[t], c = tel && db.clientes[tel]; if (!c) return { res: error('Tarjeta no encontrada.', 404), cambio: false };
+        if (!horasDe(db, fecha).find((x) => x.h === hora && x.libre)) return { res: error('Esa hora se acaba de ocupar. Elija otra, por favor.', 409), cambio: false };
+        if (db.citas.filter((x) => x.tel === tel && (x.estado === 'pendiente' || x.estado === 'confirmada')).length >= 3) return { res: error('Ya tiene 3 citas pendientes. Escríbanos por WhatsApp para cambiarlas.'), cambio: false };
+        if (cuota(db, 'res', AJUSTES.maxReservasDia)) return { res: error('Hoy ya no se reciben más reservas en línea. Escríbanos por WhatsApp.', 429), cambio: false };
+        const cita = creaCita(db, c, { fecha, hora, veh: body.veh, paq: body.paq, extras: body.extras, pago, lugar, ubic: ubicOk(body.ubic), nota }, ip);
+        return { res: json({ ok: true, cita: { id: cita.id, fecha, hora, total: cita.total, multa: cita.multa, pago } }), cambio: true };
+      });
+    }
+    if (ruta === 'cambiar' && req.method === 'POST') {                            // el cliente cambia la fecha u hora de su cita
+      if (limite(ip, 'cam', 10, 900e3)) return error('Demasiados intentos. Espere unos minutos.', 429);
+      const t = String(body.t || ''); if (!/^[\w-]{20,40}$/.test(t)) return error('Tarjeta no encontrada.', 404);
+      const fecha = String(body.fecha || ''), hora = String(body.hora || '');
+      const m = fechaValida(fecha); if (m) return error(m);
+      if (!AJUSTES.horas.includes(hora)) return error('Elija una hora de la lista.');
+      return await transaccion((db) => {
+        const tel = db.tokens[t], c = db.citas.find((x) => x.id === body.id && x.tel === tel);
+        if (!tel || !c) return { res: error('Cita no encontrada.', 404), cambio: false };
+        if (c.estado !== 'pendiente' && c.estado !== 'confirmada') return { res: error('Esa cita ya no se puede cambiar.'), cambio: false };
+        if (inicioCita(c) - Date.now() < AJUSTES.horasCancelar * 36e5) return { res: error('Faltan menos de ' + AJUSTES.horasCancelar + ' horas para su cita: escríbanos por WhatsApp.', 409), cambio: false };
+        if ((c.cambios || 0) >= 3) return { res: error('Esta cita ya se cambió 3 veces. Escríbanos por WhatsApp.'), cambio: false };
+        if (c.fecha === fecha && c.hora === hora) return { res: json({ ok: true }), cambio: false };
+        if (!horasDe(db, fecha).find((x) => x.h === hora && x.libre)) return { res: error('Esa hora ya está ocupada. Elija otra.', 409), cambio: false };
+        const antes = c.fecha + ' ' + c.hora;
+        c.fecha = fecha; c.hora = hora; c.estado = 'pendiente'; c.cambios = (c.cambios || 0) + 1; c.cambiada = antes; delete c.r24; delete c.r1;
+        anota(db, 'cliente cambió su cita', c.nombre + ' ' + antes + ' → ' + fecha + ' ' + hora);
+        return { res: json({ ok: true }), cambio: true };
+      });
+    }
+    if (ruta === 'push/clave' && req.method === 'GET') {                         // llave pública para activar notificaciones
+      const v = await claveVapid(); return json({ ok: true, clave: v.pub });
+    }
+    if (ruta === 'push' && req.method === 'POST') {                              // guardar la suscripción del celular del cliente
+      if (limite(ip, 'push', 20, 900e3)) return error('Demasiados intentos. Espere unos minutos.', 429);
+      const t = String(body.t || ''), sub = body.sub || {};
+      if (!/^[\w-]{20,40}$/.test(t)) return error('Tarjeta no encontrada.', 404);
+      const quitar = body.quitar === true;
+      if (!quitar && (!endpointValido(sub.endpoint) || !sub.keys || !/^[\w-]{80,100}$/.test(sub.keys.p256dh || '') || !/^[\w-]{20,30}$/.test(sub.keys.auth || ''))) return error('Suscripción no válida.');
+      return await transaccion((db) => {
+        const tel = db.tokens[t], c = tel && db.clientes[tel]; if (!c) return { res: error('Tarjeta no encontrada.', 404), cambio: false };
+        c.push = (c.push || []).filter((x) => x.endpoint !== sub.endpoint);
+        if (!quitar) c.push = [{ endpoint: sub.endpoint, keys: { p256dh: sub.keys.p256dh, auth: sub.keys.auth }, desde: new Date().toISOString() }, ...c.push].slice(0, 3);
+        return { res: json({ ok: true, activos: c.push.length }), cambio: true };
+      });
+    }
     if (ruta === 'tarjeta' && req.method === 'GET') {
       if (limite(ip, 'tj', 60, 60e3)) return error('Demasiadas consultas. Espere un minuto.', 429);
       const t = url.searchParams.get('t') || ''; if (!/^[\w-]{20,40}$/.test(t)) return error('Tarjeta no encontrada.', 404);
       const db = await leerDB(); const tel = db.tokens[t]; const c = tel && db.clientes[tel];
       if (!c) return error('Tarjeta no encontrada.', 404);
       const prox = db.citas.filter((x) => x.tel === tel && (x.estado === 'pendiente' || x.estado === 'confirmada') && x.fecha >= hoyCR().fecha).sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora))[0];
-      return json({ ok: true, tarjeta: vistaTarjeta(c), proxima: prox ? { fecha: prox.fecha, hora: prox.hora, estado: prox.estado } : null });
+      return json({ ok: true, tarjeta: vistaTarjeta(c), horasCancelar: AJUSTES.horasCancelar, multaMonto: AJUSTES.multa, proxima: prox ? { id: prox.id, fecha: prox.fecha, hora: prox.hora, estado: prox.estado, lugar: prox.lugar, total: prox.total, pago: prox.pago, multa: prox.multa || 0, cancelable: inicioCita(prox) - Date.now() >= AJUSTES.horasCancelar * 36e5 } : null });
     }
 
     /* ===== panel del dueño ===== */
@@ -318,14 +458,14 @@ export async function manejar(req, opts) {
       if (accion === 'resumen' && req.method === 'GET') {
         const db = await leerDB(), desde = sumaDias(hoyCR().fecha, -7);
         const citas = db.citas.filter((c) => c.fecha >= desde).sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora))
-          .map(({ origen, ...c }) => ({ ...c, sellos: db.clientes[c.tel]?.sellos ?? 0, tarjeta: db.clientes[c.tel]?.token }));
-        const clientes = Object.values(db.clientes).map((c) => ({ nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token, tienePin: !!c.pinHash, creado: c.creado || '' }))
+          .map(({ origen, ...c }) => ({ ...c, sellos: db.clientes[c.tel]?.sellos ?? 0, tarjeta: db.clientes[c.tel]?.token, multaCliente: db.clientes[c.tel]?.multa || 0, conNotificaciones: (db.clientes[c.tel]?.push || []).length > 0, inicio: inicioCita(c) }));
+        const clientes = Object.values(db.clientes).map((c) => ({ nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token, tienePin: !!c.pinHash, creado: c.creado || '', multa: c.multa || 0, conNotificaciones: (c.push || []).length > 0 }))
           .sort((a, b) => b.sellos - a.sellos || a.nombre.localeCompare(b.nombre));
-        return json({ ok: true, hoy: hoyCR().fecha, meta: AJUSTES.meta, premio: AJUSTES.premio, citas, clientes });
+        return json({ ok: true, hoy: hoyCR().fecha, ahora: Date.now(), meta: AJUSTES.meta, premio: AJUSTES.premio, multaMonto: AJUSTES.multa, horasCancelar: AJUSTES.horasCancelar, citas, clientes });
       }
       if (accion === 'respaldo' && req.method === 'GET') {                       // copia de seguridad para el dueño (sin PIN)
         const db = await leerDB();
-        const clientes = Object.values(db.clientes).map(({ pinHash, pinSal, fallos, bloqueo, token: tk, ...c }) => ({ ...c, tienePin: !!pinHash }));
+        const clientes = Object.values(db.clientes).map(({ pinHash, pinSal, fallos, bloqueo, token: tk, push, ...c }) => ({ ...c, tienePin: !!pinHash, notificaciones: (push || []).length > 0 }));
         const citas = db.citas.map(({ origen, ...c }) => c);
         return new Response(JSON.stringify({ generado: new Date().toISOString(), negocio: 'Monzú Detallados', clientes, citas, bitacora: db.bitacora || [] }, null, 1),
           { status: 200, headers: { ...H, 'content-disposition': 'attachment; filename="monzu-respaldo-' + hoyCR().fecha + '.json"' } });
@@ -338,10 +478,35 @@ export async function manejar(req, opts) {
           const a = body.accion;
           if (a === 'confirmar' && c.estado === 'pendiente') c.estado = 'confirmada';
           else if (a === 'cancelar' && c.estado !== 'hecha') c.estado = 'cancelada';
-          else if (a === 'terminar' && c.estado !== 'hecha' && c.estado !== 'cancelada') { c.estado = 'hecha'; const cl = db.clientes[c.tel]; if (cl) darSello(cl, (c.lineas[0] || ['Lavado'])[0]); }
+          else if (a === 'terminar' && c.estado !== 'hecha' && c.estado !== 'cancelada' && c.estado !== 'ausente') {
+            c.estado = 'hecha'; const cl = db.clientes[c.tel];
+            if (cl) { darSello(cl, (c.lineas[0] || ['Lavado'])[0]); if (c.multa > 0 && cl.multa > 0) { cl.multa = Math.max(0, cl.multa - c.multa); cl.hist.unshift(['Multa pagada en esta cita', hoyCR().fecha]); } }
+          }
+          else if (a === 'ausente' && (c.estado === 'pendiente' || c.estado === 'confirmada')) {
+            c.estado = 'ausente'; const cl = db.clientes[c.tel];
+            if (cl) { cl.multa = (cl.multa || 0) + AJUSTES.multa; cl.hist.unshift(['⚠️ No se presentó: multa de ₡' + AJUSTES.multa.toLocaleString('es-CR'), c.fecha]); }
+          }
+          else if (a === 'pagado' && c.estado !== 'cancelada') c.pagado = !c.pagado;
           else return { res: error('Esa acción no aplica a esta cita.'), cambio: false };
           anota(db, 'cita ' + a, c.nombre + ' ' + c.fecha + ' ' + c.hora);
           return { res: json({ ok: true, estado: c.estado }), cambio: true };
+        });
+      }
+      if (accion === 'importar') {                                                // pasar clientes del sistema anterior
+        const filas = Array.isArray(body.filas) ? body.filas.slice(0, 500) : [];
+        if (!filas.length) return error('No hay clientes para importar.');
+        return await transaccion((db) => {
+          const r = { creados: 0, repetidos: 0, malos: [] };
+          filas.forEach((f, i) => {
+            const nombre = limpia(f && f[0], 80), tel = telCR(f && f[1]), carro = limpia(f && f[2], 60);
+            const sellos = Math.max(0, Math.min(AJUSTES.meta, parseInt(f && f[3], 10) || 0));
+            if (nombre.length < 2 || !tel) { r.malos.push(i + 1); return; }
+            if (db.clientes[tel]) { r.repetidos++; return; }
+            const c = nuevoCliente(db, tel, nombre, carro); c.sellos = sellos; c.hist = [['Cliente migrado del sistema anterior' + (sellos ? ' (' + sellos + ' sellos)' : ''), hoyCR().fecha]];
+            r.creados++;
+          });
+          if (r.creados) anota(db, 'clientes importados', String(r.creados));
+          return { res: json({ ok: true, ...r }), cambio: r.creados > 0 };
         });
       }
       if (accion === 'cliente') {
@@ -361,6 +526,7 @@ export async function manejar(req, opts) {
         if (accion === 'sello') { if (!darSello(c, limpia(body.motivo, 60) || 'Lavado')) return { res: error('Ya completó los sellos: canjee el premio.'), cambio: false }; anota(db, 'sello', c.nombre + ' ' + c.sellos + '/' + AJUSTES.meta); return { res: json({ ok: true, tarjeta: vistaTarjeta(c) }), cambio: true }; }
         if (accion === 'canjear') { if (c.sellos < AJUSTES.meta) return { res: error('Aún no completa los sellos.'), cambio: false }; c.sellos = 0; c.premios = (c.premios || 0) + 1; c.hist.unshift(['🎁 Premio canjeado: ' + AJUSTES.premio, hoyCR().fecha]); anota(db, 'premio canjeado', c.nombre); return { res: json({ ok: true, tarjeta: vistaTarjeta(c) }), cambio: true }; }
         if (accion === 'pin-reset') { delete c.pinHash; delete c.pinSal; c.fallos = 0; c.bloqueo = 0; anota(db, 'PIN restablecido', c.nombre); return { res: json({ ok: true, tarjeta: c.token, tel: c.tel, nombre: c.nombre }), cambio: true }; }
+        if (accion === 'perdonar-multa') { c.multa = 0; c.hist.unshift(['Multa anulada por Monzú', hoyCR().fecha]); anota(db, 'multa anulada', c.nombre); return { res: json({ ok: true }), cambio: true }; }
         if (accion === 'borrar-cliente') { const n = c.nombre; borraCliente(db, tel); anota(db, 'cliente eliminado', n); return { res: json({ ok: true }), cambio: true }; }
         return { res: error('Ruta no encontrada.', 404), cambio: false };
       });

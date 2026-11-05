@@ -53,7 +53,14 @@ a{color:inherit}
 .tarjeta.premio .barra i{background:linear-gradient(90deg,#E0A21B,#FFE7A3)}
 .aviso{padding:13px 15px;border-radius:16px;font-weight:600;font-size:.9rem;text-align:center}
 .aviso.oro{background:rgba(255,201,77,.12);border:1px solid rgba(255,201,77,.5);color:#FFE7A3}
-.aviso.cita{background:rgba(76,195,212,.1);border:1px solid rgba(76,195,212,.4);color:var(--tq2)}
+.aviso.cita{background:rgba(76,195,212,.1);border:1px solid rgba(76,195,212,.4);color:var(--tq2);display:grid;gap:8px}
+.aviso.multa{background:rgba(255,122,107,.12);border:1px solid rgba(255,122,107,.55);color:#FFB4A9}
+.prox-det{font-weight:500;font-size:.82rem;color:var(--gr)}
+.btn-chico{padding:10px;font-size:.85rem}
+.notif p{color:var(--gr);font-size:.86rem;margin-bottom:10px}.notif.on .btn{background:none;border:1px solid var(--linea2);color:var(--gr)}
+.dlg{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:20px}
+.dlg-caja{width:min(100%,400px);background:var(--n3);border:1px solid var(--linea2);border-radius:20px;padding:18px;display:grid;gap:14px}
+.dlg-caja p{font-weight:600}
 .qr-caja{background:#fff;border-radius:20px;padding:14px;display:grid;grid-template-columns:118px 1fr;gap:14px;align-items:center;color:#0B1A22}
 .qr-caja canvas{width:118px;height:118px;display:block;image-rendering:pixelated}
 .qr-caja b{font-family:var(--t);font-style:italic;font-weight:800;font-size:1.1rem;text-transform:uppercase;line-height:1.05}
@@ -92,6 +99,27 @@ a{color:inherit}
 .pie-ov{color:var(--gr)}
 .ov .app{gap:16px}
 [hidden]{display:none!important}
+.hola{display:grid;gap:10px}.hola small{font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--tq2);font-weight:700}
+.hola h1{font-family:var(--t);font-style:italic;font-weight:900;font-size:1.9rem;line-height:1.05}
+.chips{display:flex;flex-wrap:wrap;gap:6px}.chips span{padding:6px 10px;border-radius:999px;background:var(--n3);border:1px solid var(--linea);font-size:.8rem;color:var(--gr)}.chips b{color:var(--bl)}
+.rapida{display:grid;gap:14px;padding:18px 16px;border-radius:22px;background:linear-gradient(180deg,rgba(76,195,212,.13),rgba(76,195,212,.03));border:1px solid rgba(76,195,212,.4)}
+.rapida h2{font-family:var(--t);font-style:italic;font-weight:900;text-transform:uppercase;font-size:1.45rem;line-height:1}
+.rap-sub{font-size:.84rem;color:var(--gr)}
+.paso-r{display:grid;gap:8px}.lbl{font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gr)}
+.chips-s{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:10px 13px;border-radius:12px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font-weight:700;font-size:.88rem;display:grid;justify-items:start;text-align:left}
+.chip small{font-weight:600;font-size:.72rem;color:var(--gr)}
+.chip[aria-pressed="true"]{background:linear-gradient(135deg,var(--tq),var(--az));color:#04141C;border-color:transparent}.chip[aria-pressed="true"] small{color:#06303A}
+.chip:disabled{opacity:.4;text-decoration:line-through}
+.dias{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.dia{flex:none;scroll-snap-align:start;width:62px;padding:9px 0;border-radius:14px;border:1px solid var(--linea2);background:var(--n);display:grid;justify-items:center;gap:1px}
+.dia small{font-size:.66rem;text-transform:uppercase;letter-spacing:.08em;color:var(--gr);font-weight:700}.dia b{font-family:var(--t);font-size:1.35rem;font-style:italic;font-weight:900;line-height:1}.dia em{font-style:normal;font-size:.66rem;color:var(--gr)}
+.dia[aria-pressed="true"]{background:linear-gradient(135deg,var(--tq),var(--az));border-color:transparent;color:#04141C}.dia[aria-pressed="true"] small,.dia[aria-pressed="true"] em{color:#06303A}
+.inp{width:100%;padding:12px 13px;border-radius:12px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:500 1rem var(--s)}
+.inp:focus{outline:2px solid var(--tq);border-color:transparent}
+.mapa-c{margin-top:2px}
+.rap-total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--linea2);padding-top:12px}.rap-total span{color:var(--gr);font-weight:600}.rap-total b{font-family:var(--t);font-style:italic;font-weight:900;font-size:1.8rem}
+.cambio{display:grid;gap:8px;border-top:1px solid rgba(76,195,212,.3);padding-top:10px;text-align:left}
 .acceso{display:grid;gap:14px}
 .tit{font-family:var(--t);font-style:italic;font-weight:900;text-transform:uppercase;font-size:2.2rem;line-height:1}
 .sub{color:var(--gr)}.sub b{color:var(--bl)}
@@ -157,6 +185,8 @@ a{color:inherit}
   </section>
 
   <div id="vista" hidden>
+    <div class="hola"><div><small>Bienvenido de vuelta</small><h1 id="hola"></h1></div><div class="chips" id="datos"></div></div>
+    <p class="aviso multa" id="multaMsg" hidden></p>
     <div class="tarjeta" id="tarjeta">
       <div class="tj-cab"><div><small>Cliente frecuente</small><b id="tjNombre"></b><em id="tjCarro"></em></div><div class="tj-club">MONZÚ<br>CLUB</div></div>
       <div class="sellos" id="sellos"></div>
@@ -171,11 +201,30 @@ a{color:inherit}
       <p class="msg" id="mPin" role="alert"></p>
     </form>
     <p class="aviso oro" id="premioMsg" hidden></p>
-    <p class="aviso cita" id="proxCita" hidden></p>
+    <section class="rapida" id="rapida" aria-labelledby="rapT">
+      <h2 id="rapT">⚡ Reservar rápido</h2>
+      <p class="rap-sub">Elija el servicio, el día y la hora. Sus datos ya los tenemos.</p>
+      <div class="paso-r"><span class="lbl">Servicio</span><div class="chips-s" id="rPaq"></div></div>
+      <div class="paso-r"><span class="lbl">Vehículo</span><div class="chips-s" id="rVeh"></div></div>
+      <div class="paso-r"><span class="lbl">Adicionales (opcional)</span><div class="chips-s" id="rExt"></div></div>
+      <div class="paso-r"><span class="lbl">Día</span><div class="dias" id="rDias"></div></div>
+      <div class="paso-r"><span class="lbl">Hora</span><div class="chips-s" id="rHoras"><p class="rap-sub">Elija primero el día.</p></div></div>
+      <div class="paso-r"><span class="lbl">¿Dónde?</span><input id="rLugar" class="inp" maxlength="120" placeholder="Ej. San Nicolás, 200 m norte de la iglesia" aria-label="Dirección">
+        <div class="chips-s"><button type="button" class="chip" id="rMiUbi">📍 Mi ubicación</button><button type="button" class="chip" id="rVerMapa">🗺️ Mapa</button></div>
+        <div id="rMapa" class="mapa-c" hidden></div><p class="rap-sub" id="rUbiTxt"></p></div>
+      <div class="paso-r"><span class="lbl">Pago</span><div class="chips-s" id="rPago"></div></div>
+      <div class="rap-total"><span>Total</span><b id="rTotal">—</b></div>
+      <p class="rap-sub" id="rMultaNota" hidden></p>
+      <button type="button" class="btn btn-a" id="rReservar">Reservar mi cita</button>
+      <p class="msg" id="rMsg" role="status"></p>
+    </section>
+    <div class="aviso cita" id="proxCita" hidden><p id="proxTxt"></p><p class="prox-det" id="proxDet"></p><div class="dos" id="proxAcc"><button type="button" class="btn btn-b btn-chico" id="btnCambiar">Cambiar fecha u hora</button><button type="button" class="btn btn-b btn-chico" id="btnCancelar">Cancelar</button></div><p class="prox-det" id="proxNoCancela" hidden></p>
+      <div class="cambio" id="cambio" hidden><span class="lbl">Nuevo día</span><div class="dias" id="cDias"></div><span class="lbl">Nueva hora</span><div class="chips-s" id="cHoras"><p class="rap-sub">Elija primero el día.</p></div>
+        <button type="button" class="btn btn-a btn-chico" id="cGuardar">Guardar el cambio</button><p class="msg" id="cMsg" role="status"></p></div></div>
+    <div class="bloque notif" id="notif"><h3>🔔 Recordatorios</h3><p id="notifTxt">Le avisamos en este celular 24 horas y 1 hora antes de su cita.</p><button type="button" class="btn btn-a" id="btnNotif">Activar recordatorios</button></div>
     <div class="qr-caja"><canvas id="qr" width="118" height="118" aria-label="Código QR de su tarjeta"></canvas><div><b>Su código Monzú</b><p>Muéstrelo al terminar el lavado para sumar su sello.</p><code id="tjCodigo"></code></div></div>
     <div class="bloque"><h3>Historial</h3><div class="hist" id="hist"></div></div>
     <button type="button" class="btn btn-a" id="btnInicio"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Tenerla siempre en mi celular</button>
-    <a class="btn btn-b" href="/#agendar">Reservar otra cita</a>
     <p class="usuario" id="usuario"></p>
     <button type="button" class="salir" id="btnSalir">Salir de esta tarjeta</button>
     <button type="button" class="salir" id="btnBorrar">Borrar mi tarjeta y mis datos</button>
@@ -192,7 +241,13 @@ a{color:inherit}
   <ol id="pasosAnd" hidden><li>Abra esta página en <b>Chrome</b>.</li><li>Toque el menú <b>⋮</b> arriba a la derecha.</li><li>Elija <b>"Agregar a pantalla principal"</b> o <b>"Instalar app"</b>.</li></ol>
   <button type="button" class="btn btn-b" id="cerrarOv">Listo, volver a mi tarjeta</button>
 </div></div>
+<div class="dlg" id="dlg" role="alertdialog" aria-modal="true" aria-labelledby="dlgTxt" hidden><div class="dlg-caja">
+  <p id="dlgTxt"></p>
+  <label class="cf" id="dlgPinL" hidden>Su PIN<input id="dlgPin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••"></label>
+  <div class="dos"><button type="button" class="btn btn-b" id="dlgNo">No, volver</button><button type="button" class="btn btn-a" id="dlgSi">Sí</button></div>
+</div></div>
 <script src="/js/qrcode.min.js"></script>
+<script src="/js/mapa.js"></script>
 <script>
 __JS__
 </script>

@@ -130,6 +130,20 @@ a{color:inherit}
 .toast.on{visibility:visible;transform:translate(-50%,0)}
 .toast.mal{background:var(--rojo);color:#2A0703}
 [hidden]{display:none!important}
+.chip.ausente{background:rgba(255,122,107,.18);color:var(--rojo)}
+.chip.pagado{background:rgba(61,220,132,.15);color:var(--ok)}
+.chips-c{display:flex;flex-wrap:wrap;gap:6px}
+.alerta{font-size:.8rem;font-weight:700;color:var(--rojo)}
+.recs{background:var(--n3);border:1px solid rgba(255,201,77,.45);border-radius:16px;padding:12px;display:grid;gap:8px}
+.recs>b{color:var(--oro)}
+.rec{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;font-size:.82rem;border-top:1px solid var(--linea);padding-top:8px}
+.rec small{display:block;color:var(--gr)}
+.rec .btn{padding:8px 10px;font-size:.78rem}
+.dlg{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:20px}
+.dlg-caja{width:min(100%,420px);background:var(--n3);border:1px solid var(--linea2);border-radius:18px;padding:18px;display:grid;gap:14px}
+.dlg-caja p{font-weight:600}
+#impTxt{width:100%;padding:12px;border-radius:12px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:500 .9rem var(--s);resize:vertical}
+.ayuda.izq{text-align:left}
 @media(max-width:560px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -161,6 +175,7 @@ a{color:inherit}
     <div class="kpis" id="kpis"></div>
 
   <section class="sec on" id="sec-citas" aria-label="Citas">
+    <div class="recs" id="recs" hidden></div>
     <div class="filtros" role="group" aria-label="Filtrar citas">
       <button type="button" data-f="hoy" aria-pressed="true">Hoy</button><button type="button" data-f="prox" aria-pressed="false">Próximas</button><button type="button" data-f="pend" aria-pressed="false">Por confirmar</button><button type="button" data-f="pasadas" aria-pressed="false">Pasadas</button>
     </div>
@@ -186,6 +201,15 @@ a{color:inherit}
         <p class="msg" id="mNuevo" role="alert"></p>
       </form>
     </details>
+    <details class="nuevo" id="impCli">
+      <summary>⇪ Pasar mis clientes de otro sistema</summary>
+      <form id="fImportar" novalidate>
+        <p class="ayuda izq">Copie de Excel, de Agendado o de sus contactos y pegue aquí, <b>un cliente por línea</b>: <b>Nombre, Teléfono, Carro, Sellos</b>. El carro y los sellos son opcionales. Los teléfonos que ya existen no se duplican.</p>
+        <textarea id="impTxt" rows="7" placeholder="Juan Pérez, 8888-1234, Toyota RAV4, 3&#10;María Solano, 7012-3456"></textarea>
+        <button class="btn b-tq" type="submit">Importar clientes</button>
+        <p class="msg" id="mImp" role="status"></p>
+      </form>
+    </details>
     <div class="buscar"><label class="sr-only" for="buscar" hidden>Buscar cliente</label><input id="buscar" type="search" placeholder="Buscar por nombre o teléfono" autocomplete="off"></div>
     <div id="listaCli" class="lista"></div>
     <div class="seguridad">
@@ -196,6 +220,7 @@ a{color:inherit}
   </section>
 </main>
 
+<div class="dlg" id="dlg" role="alertdialog" aria-modal="true" aria-labelledby="dlgTxt" hidden><div class="dlg-caja"><p id="dlgTxt"></p><div class="acc"><button type="button" class="btn b-bor" id="dlgNo">No, volver</button><button type="button" class="btn b-rojo" id="dlgSi">Sí</button></div></div></div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Secciones" hidden>
   <button type="button" role="tab" aria-selected="true" data-sec="citas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Citas<span class="badge" id="badge" hidden></span></button>
   <button type="button" role="tab" aria-selected="false" data-sec="escanear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Escanear</button>

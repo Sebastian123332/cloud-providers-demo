@@ -22,12 +22,12 @@ h = lambda x: "'sha256-" + base64.b64encode(hashlib.sha256(x.encode()).digest())
 def rep(t, a, b, n=1):
     c = t.count(a); assert c == n, (c, a[:90]); return t.replace(a, b)
 
-def csp_de(t, extra_script="", connect="'self'", img="'self' data:", tt=True):
+def csp_de(t, extra_script="", connect="'self'", img="'self' data:", tt=True, tt_pol="'none'", worker=False):
     est = re.findall(r'<style>(.*?)</style>', t, re.S); scr = re.findall(r'<script>(.*?)</script>', t, re.S)
     assert len(scr) == 1, len(scr)
     return "; ".join(["default-src 'none'", "script-src " + h(scr[0]) + extra_script, "style-src " + " ".join(h(e) for e in est),
-                      "font-src 'self'", "img-src " + img, "connect-src " + connect, "manifest-src 'self'", "form-action 'none'", "base-uri 'none'",
-                      "object-src 'none'"] + (["require-trusted-types-for 'script'", "trusted-types 'none'"] if tt else []) + ["frame-ancestors 'none'", "upgrade-insecure-requests"])
+                      "font-src 'self'", "img-src " + img, "connect-src " + connect, "manifest-src 'self'"] + (["worker-src 'self'"] if worker else []) + [ "form-action 'none'", "base-uri 'none'",
+                      "object-src 'none'"] + (["require-trusted-types-for 'script'", "trusted-types " + tt_pol] if tt else []) + ["frame-ancestors 'none'", "upgrade-insecure-requests"])
 
 def con_csp(t, csp):
     return t.replace('<meta charset="utf-8">\n', '<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="' + csp.replace("; frame-ancestors 'none'", '') + '">\n<meta name="referrer" content="strict-origin-when-cross-origin">\n', 1)
@@ -56,7 +56,7 @@ def sin_google(t):
 
 # ---------------- librerías ----------------
 LIB = A + 'lib/'
-for f in ('qrcode.min.js', 'jsqr.min.js'): shutil.copy(LIB + f, OUT + '/js/' + f)
+for f in ('qrcode.min.js', 'jsqr.min.js', 'mapa.js'): shutil.copy(LIB + f, OUT + '/js/' + f)
 
 # ---------------- 1) página principal ----------------
 t = open(M + 'monzu.tpl.html', encoding='utf-8').read().replace(' style-x=""', '')
@@ -78,13 +78,30 @@ t = re.sub(r'          <div class="campo"><label for="fHora">Hora</label><select
 assert 'id="horas"' in t
 t = rep(t, '<div class="campo"><label for="fTel">Teléfono / WhatsApp</label><input id="fTel" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="8888-0000"></div>',
         '<div class="campo"><label for="fTel">Teléfono / WhatsApp</label><input id="fTel" type="tel" inputmode="tel" autocomplete="tel" maxlength="16" placeholder="8888-0000"></div>\n          <div class="campo full"><label for="fPin">PIN de Monzú Club (4 números)</label><input id="fPin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••" aria-describedby="fPinAyuda"><small class="ayuda-pin" id="fPinAyuda">¿Es nuevo? Invente un PIN y con su teléfono entra a su tarjeta de sellos. ¿Ya es miembro? Use el suyo.</small></div>')
+# ubicación con mapa (flecha fija, el cliente mueve el mapa o usa su ubicación)
+MAPA_HTML = '''<div class="ubica"><div class="ubica-btns"><button type="button" class="btn-ubi" id="bMiUbi">📍 Usar mi ubicación</button><button type="button" class="btn-ubi" id="bMapa">🗺️ Marcar en el mapa</button></div>
+            <div class="mapa" id="mapa" hidden></div><p class="ubica-txt" id="ubiTxt">Opcional: marque dónde está el carro y llegamos directo.</p></div>'''
+t = rep(t, '<input id="fLugar" maxlength="120" placeholder="Ej. San Nicolás, 200 m norte de la iglesia"></div>',
+        '<input id="fLugar" maxlength="120" placeholder="Ej. San Nicolás, 200 m norte de la iglesia">' + MAPA_HTML + '</div>')
+t = rep(t, '\n<script>\n', '\n<script src="/js/mapa.js"></script>\n<script>\n')
+# método de pago + política de multa
+t = rep(t, '          <div class="campo full"><label for="fNota">Comentario (opcional)</label>',
+        '''          <div class="campo full"><span class="lbl" id="lblPago">¿Cómo va a pagar?</span><div class="pagos" id="pagos" role="radiogroup" aria-labelledby="lblPago">
+            <label class="pago"><input type="radio" name="pago" value="Efectivo"><span>💵 Efectivo</span></label>
+            <label class="pago"><input type="radio" name="pago" value="SINPE Móvil"><span>📱 SINPE Móvil</span></label>
+            <label class="pago"><input type="radio" name="pago" value="Transferencia"><span>🏦 Transferencia</span></label></div>
+            <small class="ayuda-pin">Se paga al terminar el servicio. Los datos para SINPE o transferencia se los damos por WhatsApp.</small></div>
+          <div class="campo full"><label for="fNota">Comentario (opcional)</label>''')
+t = rep(t, '<p class="peq">No incluye el domicilio, que depende de su ubicación. Precio final confirmado por WhatsApp.</p>',
+        '<p class="peq">No incluye el domicilio, que depende de su ubicación. Precio final confirmado por WhatsApp.</p>\n      <p class="peq politica">🔔 Le recordamos su cita 24 horas y 1 hora antes. Si no puede llegar, cancele desde su tarjeta con al menos 2 horas. Si no se presenta sin avisar, se cobra una multa de ₡5.000 en su próximo lavado.</p>')
+t = rep(t, '<li>Si necesita cambiar o cancelar la cita, avise con anticipación por WhatsApp.</li>', '<li>Puede cancelar su cita desde su tarjeta Monzú Club hasta 2 horas antes. Con menos tiempo, avise por WhatsApp.</li><li>Si no se presenta a la cita sin avisar, se cobra una multa de ₡5.000 que se suma al total de su próxima cita. Monzú Detallados puede anularla si hubo un motivo justificado.</li><li>Si activa las notificaciones en su tarjeta, le enviamos un recordatorio 24 horas y 1 hora antes de la cita.</li><li>Formas de pago: efectivo, SINPE Móvil o transferencia, al terminar el servicio.</li>')
 t = rep(t, '<div class="campo"><label for="fFecha">Fecha deseada</label><input id="fFecha" type="date"></div>', '<div class="campo full"><label for="fFecha">Fecha</label><input id="fFecha" type="date"></div>')
 t = re.sub(r'<button class="btn btn-a" type="button" id="enviar">.*?</button>',
            '<button class="btn btn-a" type="button" id="enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Reservar mi cita</button>', t, count=1, flags=re.S)
 t = rep(t, '      <p class="estado" id="estado" role="status"></p>\n',
         '''      <p class="estado" id="estado" role="status"></p>
       <div class="listo" id="listo" hidden>
-        <b>✓ ¡Cita reservada!</b><p id="listoTxt"></p><p class="listo-club" id="listoNueva"></p>
+        <b>✓ ¡Cita reservada!</b><p id="listoTxt"></p><p class="listo-multa" id="listoMulta" hidden></p><p class="listo-club" id="listoNueva"></p>
         <a class="btn btn-a" id="listoTarjeta" href="tarjeta.html">💧 Ver mi tarjeta Monzú Club</a>
         <button type="button" class="btn btn-b" id="listoWA">Avisar también por WhatsApp</button>
       </div>
@@ -134,6 +151,17 @@ CSS = '''
 .ayuda-pin{display:block;margin-top:6px;font-size:.78rem;color:var(--gr)}
 .listo b{font-family:var(--t);font-style:italic;font-weight:800;font-size:1.5rem;color:#8EE0B1}
 .listo p{color:var(--bl);font-size:.92rem;white-space:pre-line}.listo .listo-club{color:var(--tq2)}
+.pagos{display:flex;flex-wrap:wrap;gap:8px}.pagos[aria-invalid="true"]{outline:2px solid #F49A9A;outline-offset:4px;border-radius:12px}
+.pago{position:relative;cursor:pointer}.pago input{position:absolute;opacity:0;width:1px;height:1px}
+.pago span{display:block;padding:11px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:700 .92rem var(--s);transition:.2s}
+.pago input:checked+span{background:linear-gradient(135deg,var(--tq),var(--az));color:#04141C;border-color:transparent}
+.pago input:focus-visible+span{outline:2px solid var(--tq2);outline-offset:2px}
+.politica{margin-top:8px;padding:10px 12px;border-radius:12px;background:rgba(255,201,77,.08);border:1px solid rgba(255,201,77,.35)}
+.listo .listo-multa{color:#FFC94D;font-weight:700}
+.ubica{display:grid;gap:8px;margin-top:8px}.ubica-btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn-ubi{padding:9px 12px;border-radius:10px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:700 .85rem var(--s);cursor:pointer}
+.btn-ubi:hover{border-color:var(--tq)}.ubica-txt{font-size:.8rem;color:var(--gr)}.ubica-txt.ok{color:#8EE0B1}
+.ubica-txt a{color:var(--tq2)}
 #enviar:disabled{opacity:.6;cursor:wait}
 '''
 t = rep(t, '</style>', CSS + '</style>', n=1) if t.count('</style>') == 1 else t.replace('</style>', CSS + '</style>', 1)
@@ -144,8 +172,8 @@ t = rep(t, '<h3>5. Ley aplicable</h3>', '<h3>5. Monzú Club</h3><ul><li>Se da un
 t = rep(t, '<h3>1. Qué datos se piden</h3><p>Nombre, teléfono, fecha y hora deseadas, dirección o zona, el vehículo y su comentario.</p>',
         '<h3>1. Qué datos se piden</h3><p>Nombre, teléfono, fecha y hora de la cita, dirección o zona, el vehículo, los servicios y su comentario. Para Monzú Club se guardan además sus sellos, su historial de lavados y su PIN, que se guarda cifrado: nadie puede leerlo, ni Monzú.</p>')
 t = rep(t, '<li>El formulario no guarda nada en ningún servidor: el mensaje se arma en su navegador y usted decide si lo envía.</li><li>Al enviarlo pasa por WhatsApp (Meta), con su propia política de privacidad.</li>',
-        '<li>Su reserva y su tarjeta se guardan en el servidor del sitio, contratado con Netlify, Inc. (Estados Unidos), con conexión cifrada. Al aceptar, usted autoriza esa transferencia para prestar el servicio.</li><li>Solo Monzú Detallados puede ver los datos, desde un panel con contraseña. Nadie más los recibe, ni se venden.</li><li>Su tarjeta tiene un enlace único y secreto: no comparta ese enlace ni su PIN.</li><li>Las citas se borran solas a los 4 meses. La tarjeta se mantiene mientras usted la use, y puede borrarla cuando quiera con el botón “Borrar mi tarjeta y mis datos”.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>')
-t = rep(t, '<li>Las tipografías se cargan desde Google Fonts, que recibe datos técnicos como su dirección IP.</li>', '<li>Las tipografías y todo el contenido se sirven desde el mismo sitio: no hay rastreadores, publicidad ni análisis de terceros.</li>')
+        '<li>Su reserva y su tarjeta se guardan en el servidor del sitio, contratado con Cloudflare, Inc. (Estados Unidos), con conexión cifrada. Al aceptar, usted autoriza esa transferencia para prestar el servicio.</li><li>Solo Monzú Detallados puede ver los datos, desde un panel con contraseña. Nadie más los recibe, ni se venden.</li><li>Su tarjeta tiene un enlace único y secreto: no comparta ese enlace ni su PIN.</li><li>Las citas se borran solas a los 4 meses. La tarjeta se mantiene mientras usted la use, y puede borrarla cuando quiera con el botón “Borrar mi tarjeta y mis datos”.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>')
+t = rep(t, '<li>Las tipografías se cargan desde Google Fonts, que recibe datos técnicos como su dirección IP.</li>', '<li>Las tipografías y todo el contenido se sirven desde el mismo sitio: no hay rastreadores, publicidad ni análisis de terceros.</li><li>Si usted marca su ubicación, el mapa se carga desde OpenStreetMap y solo se guarda el punto que usted elige, para llegar a su cita. Su ubicación se pide solo si toca “Usar mi ubicación”.</li>')
 t = rep(t, '<h3>5. Sus derechos</h3>', '<h3>5. Responsable</h3><p>El responsable de la base de datos es Monzú Detallados (Isaac Monge), Cartago. Solanotech actúa solo como encargado técnico (desarrollo y mantenimiento del sitio) y no usa los datos para nada más.</p>\n    <h3>6. Sus derechos</h3>')
 t = rep(t, '<h3>Servicios de terceros</h3><p>Google Fonts entrega las tipografías. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>',
         '<h3>Almacenamiento en su navegador</h3><p>Para que no tenga que escribir su PIN cada vez, su navegador guarda el enlace de su tarjeta Monzú Club. Es una función necesaria y no sirve para rastrearle; se borra con “Salir de esta tarjeta”.</p><h3>Servicios de terceros</h3><p>Ninguno al navegar. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>')
@@ -158,7 +186,8 @@ def qr_svg(u):
 t = t.replace('{{QR_RESENA}}', qr_svg('https://www.google.com/maps/search/Monzu+Detallados+Cartago')).replace('{{QR_WEB}}', qr_svg('https://ssolanotech.com'))
 t = t.replace('{{WA}}', 'https://wa.me/50672686906?text=Hola%20Monz%C3%BA%20Detallados%2C%20quiero%20informaci%C3%B3n%20para%20un%20detallado')
 assert not re.search(r'\{\{|__JS__', t) and ' style="' not in t
-csp_index = csp_de(t)
+OSM = ' https://tile.openstreetmap.org'
+csp_index = csp_de(t, extra_script=" 'self'", img="'self' data:" + OSM)
 open(OUT + '/index.html', 'w', encoding='utf-8').write(con_csp(t, csp_index))
 
 # ---------------- 2) tarjeta y 3) panel ----------------
@@ -169,8 +198,12 @@ for pag in ('tarjeta', 'panel'):
     p = sin_google(p.replace('__JS__', open(A + pag + '.js', encoding='utf-8').read()))
     for k, v in comun.items(): p = p.replace(k, v)
     assert not re.search(r'\{\{|__JS__', p) and ' style="' not in p, pag
-    csps[pag] = csp_de(p, extra_script=" 'self'", img="'self' data: blob:" if pag == 'panel' else "'self' data:")
+    csps[pag] = csp_de(p, extra_script=" 'self'", img="'self' data: blob:" if pag == 'panel' else "'self' data:" + OSM,
+                       tt_pol="monzu-sw" if pag == 'tarjeta' else "'none'", worker=pag == 'tarjeta')
     open('%s/%s.html' % (OUT, pag), 'w', encoding='utf-8').write(con_csp(p, csps[pag]))
+
+# service worker de la tarjeta (recordatorios por notificación)
+shutil.copy(A + 'sw.js', OUT + '/sw.js')
 
 # ---------------- demostración con dos celulares (para enseñarle al dueño, sin contraseña) ----------------
 demo = open(A + '../../../monzu-club-demo/index.html', encoding='utf-8').read()
@@ -192,13 +225,14 @@ open(OUT + '/sitemap.xml', 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<
 
 # ---------------- cabeceras y robots ----------------
 base = "  X-Frame-Options: DENY\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  Cross-Origin-Opener-Policy: same-origin\n  Cross-Origin-Resource-Policy: same-origin\n  X-Permitted-Cross-Domain-Policies: none\n"
-sin_cam = "  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()\n"
+sin_cam = "  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()\n"
 hd = ''
 for ruta, csp, extra in [('/', csp_index, sin_cam), ('/index.html', csp_index, sin_cam), ('/demo', csp_demo, sin_cam + "  X-Robots-Tag: noindex\n"), ('/demo.html', csp_demo, sin_cam + "  X-Robots-Tag: noindex\n"),
                          ('/tarjeta.html', csps['tarjeta'], sin_cam + "  X-Robots-Tag: noindex\n"), ('/tarjeta', csps['tarjeta'], sin_cam + "  X-Robots-Tag: noindex\n"),
                          ('/panel.html', csps['panel'], "  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n"),
                          ('/panel', csps['panel'], "  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n")]:
     hd += ruta + "\n  Content-Security-Policy: " + csp + "\n" + base + extra
+hd += "/sw.js\n  Cache-Control: no-cache\n  Content-Security-Policy: default-src 'none'; img-src 'self'\n  X-Content-Type-Options: nosniff\n"
 hd += "/js/*\n  Cache-Control: public, max-age=604800\n  X-Content-Type-Options: nosniff\n/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n"
 open(OUT + '/_headers', 'w').write(hd)
 open(OUT + '/robots.txt', 'w').write('User-agent: *\nAllow: /\nDisallow: /demo\nDisallow: /panel.html\nDisallow: /panel\nDisallow: /tarjeta.html\nDisallow: /api/\nSitemap: %s/sitemap.xml\n' % DOM)

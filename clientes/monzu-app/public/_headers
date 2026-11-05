@@ -1,5 +1,5 @@
 /
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-CD41SoK6+gsLwLA2B0ZK93FcLDe7rtYmeJNq7/L2plc='; style-src 'sha256-UBUVr5wGQ8QbY+VjbPWk1DYjUiTcIN5scTgyk6cBK8U='; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-f8Lkpt0Ycj7OwH+Jfmlywu+A0yNimQOhHx2EYYqnNBU=' 'self'; style-src 'sha256-KpjX8UDQjhl+vr8w0FzGK9TBZybxoaSmCYlQRuCMHYA='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -7,9 +7,9 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
   X-Permitted-Cross-Domain-Policies: none
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
 /index.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-CD41SoK6+gsLwLA2B0ZK93FcLDe7rtYmeJNq7/L2plc='; style-src 'sha256-UBUVr5wGQ8QbY+VjbPWk1DYjUiTcIN5scTgyk6cBK8U='; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-f8Lkpt0Ycj7OwH+Jfmlywu+A0yNimQOhHx2EYYqnNBU=' 'self'; style-src 'sha256-KpjX8UDQjhl+vr8w0FzGK9TBZybxoaSmCYlQRuCMHYA='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -17,7 +17,7 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
   X-Permitted-Cross-Domain-Policies: none
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
 /demo
   Content-Security-Policy: default-src 'none'; script-src 'sha256-w4iw2orI4zIaUksI2Z4do7p5RWPmpslBzZ9CKqcoLRE='; style-src 'sha256-gMFTdRKNdojT5TD58Gdxs4cJq/l0EXXhXP2fp4LzIzM='; font-src 'self'; img-src 'self' data:; connect-src 'none'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
@@ -27,7 +27,7 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
   X-Permitted-Cross-Domain-Policies: none
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
   X-Robots-Tag: noindex
 /demo.html
   Content-Security-Policy: default-src 'none'; script-src 'sha256-w4iw2orI4zIaUksI2Z4do7p5RWPmpslBzZ9CKqcoLRE='; style-src 'sha256-gMFTdRKNdojT5TD58Gdxs4cJq/l0EXXhXP2fp4LzIzM='; font-src 'self'; img-src 'self' data:; connect-src 'none'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; frame-ancestors 'none'; upgrade-insecure-requests
@@ -38,10 +38,10 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
   X-Permitted-Cross-Domain-Policies: none
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
   X-Robots-Tag: noindex
 /tarjeta.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-C5VUMI4q9xikAcB7EXb6Rd0J11nn6sC1+3SOxfu5RMc=' 'self'; style-src 'sha256-9EskfFpZWzW7NuwrxNkpfzAW5bVHAvImMcJIxPfiKZg='; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-VnmufhMY9+SupCPX52gh6hzLjNEeVAKQGOpP5izpigI=' 'self'; style-src 'sha256-W4Uwm2nti8Rgo0zV2bpJlWRNhT2hC+ABXTdAT80iLRE='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self'; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -49,10 +49,10 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
   X-Permitted-Cross-Domain-Policies: none
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
   X-Robots-Tag: noindex
 /tarjeta
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-C5VUMI4q9xikAcB7EXb6Rd0J11nn6sC1+3SOxfu5RMc=' 'self'; style-src 'sha256-9EskfFpZWzW7NuwrxNkpfzAW5bVHAvImMcJIxPfiKZg='; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-VnmufhMY9+SupCPX52gh6hzLjNEeVAKQGOpP5izpigI=' 'self'; style-src 'sha256-W4Uwm2nti8Rgo0zV2bpJlWRNhT2hC+ABXTdAT80iLRE='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self'; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -60,10 +60,10 @@
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: same-origin
   X-Permitted-Cross-Domain-Policies: none
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
   X-Robots-Tag: noindex
 /panel.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-ELfyUWtepP4Ofh1UtuG7CIX4yVP9Az3f10PJENf3ssg=' 'self'; style-src 'sha256-IgHeZgnZBp63Q40a23L8/7KXMa7diCMNvolWsGKszMc='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-3AFj9BJdTzVtYMVhcbsNIt6x7Pdnz4GRDE2jM3Ajh0w=' 'self'; style-src 'sha256-ipYePFv3L68bspd84pK6zPpJKNGQ2eJhN9FFI+pCveU='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -75,7 +75,7 @@
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 /panel
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-ELfyUWtepP4Ofh1UtuG7CIX4yVP9Az3f10PJENf3ssg=' 'self'; style-src 'sha256-IgHeZgnZBp63Q40a23L8/7KXMa7diCMNvolWsGKszMc='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-3AFj9BJdTzVtYMVhcbsNIt6x7Pdnz4GRDE2jM3Ajh0w=' 'self'; style-src 'sha256-ipYePFv3L68bspd84pK6zPpJKNGQ2eJhN9FFI+pCveU='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -86,6 +86,10 @@
   Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
+/sw.js
+  Cache-Control: no-cache
+  Content-Security-Policy: default-src 'none'; img-src 'self'
+  X-Content-Type-Options: nosniff
 /js/*
   Cache-Control: public, max-age=604800
   X-Content-Type-Options: nosniff

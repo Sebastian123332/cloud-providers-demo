@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-CD41SoK6+gsLwLA2B0ZK93FcLDe7rtYmeJNq7/L2plc='; style-src 'sha256-UBUVr5wGQ8QbY+VjbPWk1DYjUiTcIN5scTgyk6cBK8U='; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-f8Lkpt0Ycj7OwH+Jfmlywu+A0yNimQOhHx2EYYqnNBU=' 'self'; style-src 'sha256-KpjX8UDQjhl+vr8w0FzGK9TBZybxoaSmCYlQRuCMHYA='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Monzú Detallados · Detallado profesional a domicilio en Cartago</title>
@@ -365,6 +365,17 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
 .ayuda-pin{display:block;margin-top:6px;font-size:.78rem;color:var(--gr)}
 .listo b{font-family:var(--t);font-style:italic;font-weight:800;font-size:1.5rem;color:#8EE0B1}
 .listo p{color:var(--bl);font-size:.92rem;white-space:pre-line}.listo .listo-club{color:var(--tq2)}
+.pagos{display:flex;flex-wrap:wrap;gap:8px}.pagos[aria-invalid="true"]{outline:2px solid #F49A9A;outline-offset:4px;border-radius:12px}
+.pago{position:relative;cursor:pointer}.pago input{position:absolute;opacity:0;width:1px;height:1px}
+.pago span{display:block;padding:11px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:700 .92rem var(--s);transition:.2s}
+.pago input:checked+span{background:linear-gradient(135deg,var(--tq),var(--az));color:#04141C;border-color:transparent}
+.pago input:focus-visible+span{outline:2px solid var(--tq2);outline-offset:2px}
+.politica{margin-top:8px;padding:10px 12px;border-radius:12px;background:rgba(255,201,77,.08);border:1px solid rgba(255,201,77,.35)}
+.listo .listo-multa{color:#FFC94D;font-weight:700}
+.ubica{display:grid;gap:8px;margin-top:8px}.ubica-btns{display:flex;flex-wrap:wrap;gap:8px}
+.btn-ubi{padding:9px 12px;border-radius:10px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:700 .85rem var(--s);cursor:pointer}
+.btn-ubi:hover{border-color:var(--tq)}.ubica-txt{font-size:.8rem;color:var(--gr)}.ubica-txt.ok{color:#8EE0B1}
+.ubica-txt a{color:var(--tq2)}
 #enviar:disabled{opacity:.6;cursor:wait}
 </style>
 </head>
@@ -540,8 +551,14 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
           <div class="campo full"><label for="fPin">PIN de Monzú Club (4 números)</label><input id="fPin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="••••" aria-describedby="fPinAyuda"><small class="ayuda-pin" id="fPinAyuda">¿Es nuevo? Invente un PIN y con su teléfono entra a su tarjeta de sellos. ¿Ya es miembro? Use el suyo.</small></div>
           <div class="campo full"><label for="fFecha">Fecha</label><input id="fFecha" type="date"></div>
           <div class="campo full"><span class="lbl" id="lblHoras">Hora disponible</span><div class="horas" id="horas" role="group" aria-labelledby="lblHoras"></div></div>
-          <div class="campo full"><label for="fLugar">Dirección o zona en Cartago</label><input id="fLugar" maxlength="120" placeholder="Ej. San Nicolás, 200 m norte de la iglesia"></div>
+          <div class="campo full"><label for="fLugar">Dirección o zona en Cartago</label><input id="fLugar" maxlength="120" placeholder="Ej. San Nicolás, 200 m norte de la iglesia"><div class="ubica"><div class="ubica-btns"><button type="button" class="btn-ubi" id="bMiUbi">📍 Usar mi ubicación</button><button type="button" class="btn-ubi" id="bMapa">🗺️ Marcar en el mapa</button></div>
+            <div class="mapa" id="mapa" hidden></div><p class="ubica-txt" id="ubiTxt">Opcional: marque dónde está el carro y llegamos directo.</p></div></div>
           <div class="campo full"><label for="fVeh">Carro (marca y modelo, opcional)</label><input id="fVeh" maxlength="60" placeholder="Ej. Toyota RAV4 2018"></div>
+          <div class="campo full"><span class="lbl" id="lblPago">¿Cómo va a pagar?</span><div class="pagos" id="pagos" role="radiogroup" aria-labelledby="lblPago">
+            <label class="pago"><input type="radio" name="pago" value="Efectivo"><span>💵 Efectivo</span></label>
+            <label class="pago"><input type="radio" name="pago" value="SINPE Móvil"><span>📱 SINPE Móvil</span></label>
+            <label class="pago"><input type="radio" name="pago" value="Transferencia"><span>🏦 Transferencia</span></label></div>
+            <small class="ayuda-pin">Se paga al terminar el servicio. Los datos para SINPE o transferencia se los damos por WhatsApp.</small></div>
           <div class="campo full"><label for="fNota">Comentario (opcional)</label><textarea id="fNota" maxlength="400" placeholder="Ej. Tiene manchas de café en el asiento del chofer."></textarea></div>
         </div>
         <div class="trampa" aria-hidden="true"><label for="fWeb">No llenar</label><input id="fWeb" tabindex="-1" autocomplete="off"></div>
@@ -556,10 +573,11 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
       <ul class="lineas" id="lineas"></ul>
       <div class="total"><span>Total estimado</span><b id="total">₡16.000</b></div>
       <p class="peq">No incluye el domicilio, que depende de su ubicación. Precio final confirmado por WhatsApp.</p>
+      <p class="peq politica">🔔 Le recordamos su cita 24 horas y 1 hora antes. Si no puede llegar, cancele desde su tarjeta con al menos 2 horas. Si no se presenta sin avisar, se cobra una multa de ₡5.000 en su próximo lavado.</p>
       <button class="btn btn-a" type="button" id="enviar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M9 16l2 2 4-4"/></svg>Reservar mi cita</button>
       <p class="estado" id="estado" role="status"></p>
       <div class="listo" id="listo" hidden>
-        <b>✓ ¡Cita reservada!</b><p id="listoTxt"></p><p class="listo-club" id="listoNueva"></p>
+        <b>✓ ¡Cita reservada!</b><p id="listoTxt"></p><p class="listo-multa" id="listoMulta" hidden></p><p class="listo-club" id="listoNueva"></p>
         <a class="btn btn-a" id="listoTarjeta" href="tarjeta.html">💧 Ver mi tarjeta Monzú Club</a>
         <button type="button" class="btn btn-b" id="listoWA">Avisar también por WhatsApp</button>
       </div>
@@ -604,7 +622,7 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
   <div class="lg-body">
     <p class="fecha">Última actualización: 5 de noviembre de 2026</p>
     <h3>1. Quién ofrece el servicio</h3><p>Monzú Detallados, servicio de detallado de vehículos a domicilio en Cartago, Costa Rica. Encargado: Isaac Monge. Contacto: WhatsApp y teléfono 7268-6906.</p>
-    <h3>2. Citas</h3><ul><li>Al reservar en el sitio, la hora queda apartada y la cita se confirma por WhatsApp con Monzú Detallados.</li><li>Los servicios adicionales se agendan con una semana de anticipación.</li><li>Si necesita cambiar o cancelar la cita, avise con anticipación por WhatsApp.</li></ul>
+    <h3>2. Citas</h3><ul><li>Al reservar en el sitio, la hora queda apartada y la cita se confirma por WhatsApp con Monzú Detallados.</li><li>Los servicios adicionales se agendan con una semana de anticipación.</li><li>Puede cancelar su cita desde su tarjeta Monzú Club hasta 2 horas antes. Con menos tiempo, avise por WhatsApp.</li><li>Si no se presenta a la cita sin avisar, se cobra una multa de ₡5.000 que se suma al total de su próxima cita. Monzú Detallados puede anularla si hubo un motivo justificado.</li><li>Si activa las notificaciones en su tarjeta, le enviamos un recordatorio 24 horas y 1 hora antes de la cita.</li><li>Formas de pago: efectivo, SINPE Móvil o transferencia, al terminar el servicio.</li></ul>
     <h3>3. Precios</h3><ul><li>Los precios del sitio son de referencia y pueden cambiar sin aviso previo.</li><li>Los precios no incluyen el domicilio, que depende de la ubicación del vehículo.</li><li>El precio de la tapicería depende del tamaño y del estado del vehículo, y se confirma antes de empezar.</li></ul>
     <h3>4. El servicio</h3><p>Antes de empezar se revisa el vehículo. Daños previos de pintura, tapicería o piezas no son responsabilidad del servicio. Se recomienda retirar objetos de valor del vehículo.</p>
     <h3>5. Monzú Club</h3><ul><li>Se da un sello por cada servicio terminado. Con 10 sellos, el siguiente Lavado Premium es gratis.</li><li>Los sellos los pone solo Monzú Detallados, son personales y no se cambian por dinero.</li><li>Las condiciones del club pueden cambiar avisando con anticipación; los sellos ya ganados se respetan.</li></ul>
@@ -618,7 +636,7 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
     <p>Sus datos se tratan según la Ley 8968 de Protección de la Persona frente al Tratamiento de sus Datos Personales.</p>
     <h3>1. Qué datos se piden</h3><p>Nombre, teléfono, fecha y hora de la cita, dirección o zona, el vehículo, los servicios y su comentario. Para Monzú Club se guardan además sus sellos, su historial de lavados y su PIN, que se guarda cifrado: nadie puede leerlo, ni Monzú.</p>
     <h3>2. Para qué se usan</h3><p>Solo para coordinar y atender su cita. No se venden ni se usan para publicidad.</p>
-    <h3>3. Dónde viajan</h3><ul><li>Su reserva y su tarjeta se guardan en el servidor del sitio, contratado con Netlify, Inc. (Estados Unidos), con conexión cifrada. Al aceptar, usted autoriza esa transferencia para prestar el servicio.</li><li>Solo Monzú Detallados puede ver los datos, desde un panel con contraseña. Nadie más los recibe, ni se venden.</li><li>Su tarjeta tiene un enlace único y secreto: no comparta ese enlace ni su PIN.</li><li>Las citas se borran solas a los 4 meses. La tarjeta se mantiene mientras usted la use, y puede borrarla cuando quiera con el botón “Borrar mi tarjeta y mis datos”.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li><li>Las tipografías y todo el contenido se sirven desde el mismo sitio: no hay rastreadores, publicidad ni análisis de terceros.</li></ul>
+    <h3>3. Dónde viajan</h3><ul><li>Su reserva y su tarjeta se guardan en el servidor del sitio, contratado con Cloudflare, Inc. (Estados Unidos), con conexión cifrada. Al aceptar, usted autoriza esa transferencia para prestar el servicio.</li><li>Solo Monzú Detallados puede ver los datos, desde un panel con contraseña. Nadie más los recibe, ni se venden.</li><li>Su tarjeta tiene un enlace único y secreto: no comparta ese enlace ni su PIN.</li><li>Las citas se borran solas a los 4 meses. La tarjeta se mantiene mientras usted la use, y puede borrarla cuando quiera con el botón “Borrar mi tarjeta y mis datos”.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li><li>Las tipografías y todo el contenido se sirven desde el mismo sitio: no hay rastreadores, publicidad ni análisis de terceros.</li><li>Si usted marca su ubicación, el mapa se carga desde OpenStreetMap y solo se guarda el punto que usted elige, para llegar a su cita. Su ubicación se pide solo si toca “Usar mi ubicación”.</li></ul>
     <h3>4. Seguridad</h3><ul><li>Conexión cifrada (HTTPS) y una política de seguridad que solo permite el código propio del sitio.</li><li>Lo que usted escribe se limpia y se muestra como texto, nunca como código.</li><li>Nunca le pediremos contraseñas ni datos de tarjeta.</li></ul>
     <h3>5. Responsable</h3><p>El responsable de la base de datos es Monzú Detallados (Isaac Monge), Cartago. Solanotech actúa solo como encargado técnico (desarrollo y mantenimiento del sitio) y no usa los datos para nada más.</p>
     <h3>6. Sus derechos</h3><p>Puede pedir acceso, corrección o eliminación de sus datos al 7268-6906, o acudir a la PRODHAB.</p>
@@ -633,6 +651,7 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
   </div>
 </dialog>
 
+<script src="/js/mapa.js"></script>
 <script>
 (function(){
   'use strict';
@@ -799,10 +818,17 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
   var hoy=new Date(), iso=function(x){ return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0') };
   $('fFecha').min=iso(hoy);
 
-  /* ===== reservas con horario real (Netlify Functions) ===== */
+  /* ===== reservas con horario real (servidor /api) ===== */
   var abierto=Date.now(), ultimo=0, horaSel='', API=true;
   function estado(t,mal){ var s=$('estado'); s.textContent=t; s.className='estado '+(mal?'mal':'bien') }
   var cajaH=$('horas');
+  /* ubicación con mapa */
+  var ubic=null, mapa=null;
+  function ubiTexto(){ var p=$('ubiTxt'); p.textContent=''; if(!ubic){ p.className='ubica-txt'; p.textContent='Opcional: marque dónde está el carro y llegamos directo.'; return }
+    p.className='ubica-txt ok'; p.appendChild(d.createTextNode('✓ Ubicación marcada. ')); var a=d.createElement('a'); a.href='https://www.google.com/maps?q='+ubic.lat+','+ubic.lng; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent='Ver en Google Maps'; p.appendChild(a) }
+  function abreMapa(){ var m=$('mapa'); if(!window.MonzuMapa) return null; m.hidden=false; if(!mapa) mapa=window.MonzuMapa(m,{alCambiar:function(u){ ubic=u; ubiTexto() }}); return mapa }
+  $('bMapa').addEventListener('click',function(){ var m=abreMapa(); if(m&&!ubic){ $('ubiTxt').className='ubica-txt'; $('ubiTxt').textContent='Mueva el mapa hasta que la flecha roja quede donde está el carro.' } });
+  $('bMiUbi').addEventListener('click',function(){ var m=abreMapa(); if(!m) return; $('ubiTxt').className='ubica-txt'; $('ubiTxt').textContent='Buscando su ubicación…'; m.miUbicacion(function(t){ $('ubiTxt').className='ubica-txt'; $('ubiTxt').textContent=t }) });
   function fmtHora(h){ var p=h.split(':'), n=+p[0]; return (n>12?n-12:n)+':'+p[1]+(n<12?' a. m.':' p. m.') }
   function fmtFecha(f){ var x=new Date(f+'T12:00:00'); return x.toLocaleDateString('es-CR',{weekday:'long',day:'numeric',month:'long'}) }
   function aviso(t){ cajaH.textContent=''; var p=d.createElement('p'); p.className='horas-aviso'; p.textContent=t; cajaH.appendChild(p) }
@@ -824,19 +850,21 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
       .then(function(j){ API=true; if(j.cerrado) aviso(j.motivo||'Ese día no hay citas.'); else pintaHoras(j.horas) })
       .catch(function(){ API=false; pintaHoras([{h:'08:00',libre:true},{h:'10:00',libre:true},{h:'13:00',libre:true},{h:'15:00',libre:true}]) });
   }
+  d.querySelectorAll('input[name=pago]').forEach(function(i){ i.addEventListener('change',function(){ $('pagos').removeAttribute('aria-invalid') }) });
   $('fFecha').addEventListener('change',cargarHoras); aviso('Elija primero la fecha para ver las horas libres.');
 
   function mensaje(x,e){
     return 'Hola Monzú Detallados, quiero agendar un detallado.\n\n*Nombre:* '+x.nombre+'\n*Teléfono:* '+x.tel+'\n*Vehículo:* '+x.vehiculo+(x.carro?' ('+x.carro+')':'')+
       '\n*Servicios:*\n'+e.lineas.map(function(l){ return '• '+l[0]+' — '+col(l[1]) }).join('\n')+
       (x.aroma?'\n*Aromatizante:* '+x.aroma:'')+'\n*Total estimado:* '+(e.desde?'desde ':'')+col(e.total)+' (sin domicilio)'+
-      '\n*Fecha:* '+fmtFecha(x.fecha)+'\n*Hora:* '+fmtHora(x.hora)+'\n*Lugar:* '+x.lugar+(x.nota?'\n*Comentario:* '+x.nota:'')+
+      '\n*Pago:* '+x.pago+'\n*Fecha:* '+fmtFecha(x.fecha)+'\n*Hora:* '+fmtHora(x.hora)+'\n*Lugar:* '+x.lugar+(x.ubic?'\n*Ubicación:* https://www.google.com/maps?q='+x.ubic.lat+','+x.ubic.lng:'')+(x.nota?'\n*Comentario:* '+x.nota:'')+
       '\n\nAcepté los términos y autoricé el uso de mis datos para esta cita.';
   }
   function abrirWA(txt){ var url='https://wa.me/'+WA+'?text='+encodeURIComponent(txt); var w=window.open(url,'_blank'); if(w) w.opener=null; else location.assign(url) }
   function listo(j,x){
     var L=$('listo'); L.hidden=false;
-    var ff=fmtFecha(x.fecha); $('listoTxt').textContent=ff.charAt(0).toUpperCase()+ff.slice(1)+' · '+fmtHora(x.hora)+'\nMonzú le confirma la cita por WhatsApp.';
+    var ff=fmtFecha(x.fecha), c=j.cita||{}; $('listoTxt').textContent=ff.charAt(0).toUpperCase()+ff.slice(1)+' · '+fmtHora(x.hora)+'\nPago: '+x.pago+(c.total?' · Total: '+col(c.total):'')+'\nMonzú le confirma la cita por WhatsApp.';
+    var M=$('listoMulta'); M.hidden=!(c.multa>0); if(c.multa>0) M.textContent='⚠️ Tiene una multa pendiente de '+col(c.multa)+' por no presentarse a una cita anterior. Ya se sumó al total de esta cita.';
     var A={conpin:'Ya es miembro de Monzú Club 💧 Entre a su tarjeta con su teléfono y su PIN.',pinmal:'Su cita quedó reservada, pero el PIN no coincide. Entre a su tarjeta con su teléfono y su PIN.',bloqueado:'Su cita quedó reservada. Por seguridad, espere 15 minutos para entrar a su tarjeta.',sinpin:'Ya tiene tarjeta Monzú Club: ábrala con el enlace que le enviamos por WhatsApp y cree su PIN.'};
     if(j.tarjeta){
       $('listoTarjeta').href='tarjeta.html?t='+encodeURIComponent(j.tarjeta); $('listoTarjeta').textContent='💧 Ver mi tarjeta Monzú Club';
@@ -855,7 +883,7 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
     if(Date.now()-ultimo<15000){ estado('Su cita ya se envió. Espere unos segundos para enviar otra.',true); return }
     var e=eleccion(), mal=[];
     var x={nombre:limpiar($('fNombre').value,80), tel:limpiar($('fTel').value,16), lugar:limpiar($('fLugar').value,120), carro:limpiar($('fVeh').value,60), nota:limpiar($('fNota').value,400),
-      fecha:$('fFecha').value, hora:horaSel, pin:$('fPin').value.trim(), vehiculo:e.v==='sedan'?'Sedán':'SUV / Pick up / XL', veh:e.v, paq:e.p, extras:e.xs.map(function(z){ return z.k }), lineas:e.lineas, desde:e.desde, aroma:aroma, consentimiento:true, web:$('fWeb').value};
+      fecha:$('fFecha').value, hora:horaSel, ubic:ubic, pago:(d.querySelector('input[name=pago]:checked')||{}).value||'', pin:$('fPin').value.trim(), vehiculo:e.v==='sedan'?'Sedán':'SUV / Pick up / XL', veh:e.v, paq:e.p, extras:e.xs.map(function(z){ return z.k }), lineas:e.lineas, desde:e.desde, aroma:aroma, consentimiento:true, web:$('fWeb').value};
     var okN=/^[\p{L}\p{M} .'’-]{3,80}$/u.test(x.nombre); $('fNombre').setAttribute('aria-invalid',String(!okN)); if(!okN) mal.push('su nombre');
     var t=x.tel.replace(/[^\d+]/g,'').replace(/^\+?506/,''), okT=/^[2-8]\d{7}$/.test(t); $('fTel').setAttribute('aria-invalid',String(!okT)); if(!okT) mal.push('un teléfono de 8 dígitos');
     var okP=!x.pin||/^\d{4}$/.test(x.pin); $('fPin').setAttribute('aria-invalid',String(!okP)); if(!okP) mal.push('un PIN de 4 números (o déjelo vacío)');
@@ -863,6 +891,7 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
     var okF=/^\d{4}-\d{2}-\d{2}$/.test(x.fecha); $('fFecha').setAttribute('aria-invalid',String(!okF)); if(!okF) mal.push('la fecha');
     if(okF&&!x.hora){ cajaH.setAttribute('aria-invalid','true'); mal.push('la hora') }
     if(!e.lineas.length) mal.push('un paquete o adicional');
+    $('pagos').setAttribute('aria-invalid',String(!x.pago)); if(!x.pago) mal.push('cómo va a pagar');
     if(!$('okTerminos').checked) mal.push('aceptar los términos');
     if(!$('okDatos').checked) mal.push('autorizar el uso de sus datos');
     if(mal.length){ estado('Falta: '+mal.join(', ')+'.',true); return }

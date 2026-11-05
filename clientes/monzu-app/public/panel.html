@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ELfyUWtepP4Ofh1UtuG7CIX4yVP9Az3f10PJENf3ssg=' 'self'; style-src 'sha256-IgHeZgnZBp63Q40a23L8/7KXMa7diCMNvolWsGKszMc='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-3AFj9BJdTzVtYMVhcbsNIt6x7Pdnz4GRDE2jM3Ajh0w=' 'self'; style-src 'sha256-ipYePFv3L68bspd84pK6zPpJKNGQ2eJhN9FFI+pCveU='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Panel · Monzú Admin</title>
@@ -157,6 +157,20 @@ a{color:inherit}
 .toast.on{visibility:visible;transform:translate(-50%,0)}
 .toast.mal{background:var(--rojo);color:#2A0703}
 [hidden]{display:none!important}
+.chip.ausente{background:rgba(255,122,107,.18);color:var(--rojo)}
+.chip.pagado{background:rgba(61,220,132,.15);color:var(--ok)}
+.chips-c{display:flex;flex-wrap:wrap;gap:6px}
+.alerta{font-size:.8rem;font-weight:700;color:var(--rojo)}
+.recs{background:var(--n3);border:1px solid rgba(255,201,77,.45);border-radius:16px;padding:12px;display:grid;gap:8px}
+.recs>b{color:var(--oro)}
+.rec{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;font-size:.82rem;border-top:1px solid var(--linea);padding-top:8px}
+.rec small{display:block;color:var(--gr)}
+.rec .btn{padding:8px 10px;font-size:.78rem}
+.dlg{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.7);display:grid;place-items:center;padding:20px}
+.dlg-caja{width:min(100%,420px);background:var(--n3);border:1px solid var(--linea2);border-radius:18px;padding:18px;display:grid;gap:14px}
+.dlg-caja p{font-weight:600}
+#impTxt{width:100%;padding:12px;border-radius:12px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:500 .9rem var(--s);resize:vertical}
+.ayuda.izq{text-align:left}
 @media(max-width:560px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -188,6 +202,7 @@ a{color:inherit}
     <div class="kpis" id="kpis"></div>
 
   <section class="sec on" id="sec-citas" aria-label="Citas">
+    <div class="recs" id="recs" hidden></div>
     <div class="filtros" role="group" aria-label="Filtrar citas">
       <button type="button" data-f="hoy" aria-pressed="true">Hoy</button><button type="button" data-f="prox" aria-pressed="false">Próximas</button><button type="button" data-f="pend" aria-pressed="false">Por confirmar</button><button type="button" data-f="pasadas" aria-pressed="false">Pasadas</button>
     </div>
@@ -213,6 +228,15 @@ a{color:inherit}
         <p class="msg" id="mNuevo" role="alert"></p>
       </form>
     </details>
+    <details class="nuevo" id="impCli">
+      <summary>⇪ Pasar mis clientes de otro sistema</summary>
+      <form id="fImportar" novalidate>
+        <p class="ayuda izq">Copie de Excel, de Agendado o de sus contactos y pegue aquí, <b>un cliente por línea</b>: <b>Nombre, Teléfono, Carro, Sellos</b>. El carro y los sellos son opcionales. Los teléfonos que ya existen no se duplican.</p>
+        <textarea id="impTxt" rows="7" placeholder="Juan Pérez, 8888-1234, Toyota RAV4, 3&#10;María Solano, 7012-3456"></textarea>
+        <button class="btn b-tq" type="submit">Importar clientes</button>
+        <p class="msg" id="mImp" role="status"></p>
+      </form>
+    </details>
     <div class="buscar"><label class="sr-only" for="buscar" hidden>Buscar cliente</label><input id="buscar" type="search" placeholder="Buscar por nombre o teléfono" autocomplete="off"></div>
     <div id="listaCli" class="lista"></div>
     <div class="seguridad">
@@ -223,6 +247,7 @@ a{color:inherit}
   </section>
 </main>
 
+<div class="dlg" id="dlg" role="alertdialog" aria-modal="true" aria-labelledby="dlgTxt" hidden><div class="dlg-caja"><p id="dlgTxt"></p><div class="acc"><button type="button" class="btn b-bor" id="dlgNo">No, volver</button><button type="button" class="btn b-rojo" id="dlgSi">Sí</button></div></div></div>
 <nav class="tabs" id="tabs" role="tablist" aria-label="Secciones" hidden>
   <button type="button" role="tab" aria-selected="true" data-sec="citas"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>Citas<span class="badge" id="badge" hidden></span></button>
   <button type="button" role="tab" aria-selected="false" data-sec="escanear"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M7 12h10"/></svg>Escanear</button>
@@ -257,6 +282,12 @@ a{color:inherit}
     a.addEventListener('click',function(){ setTimeout(function(){ h.hidden=true },300) });
     var c=boton('Ahora no','b-bor',function(){ h.hidden=true }); h.appendChild(a); h.appendChild(c); h.hidden=false;
   }
+  /* confirmación dentro de la página (confirm() no funciona bien en todos los celulares) */
+  function pregunta(texto,si){
+    return new Promise(function(listo){ var D=$('dlg'); $('dlgTxt').textContent=texto; $('dlgSi').textContent=si||'Sí'; D.hidden=false; $('dlgNo').focus();
+      function fin(v){ D.hidden=true; $('dlgSi').onclick=null; $('dlgNo').onclick=null; listo(v) } $('dlgSi').onclick=function(){ fin(true) }; $('dlgNo').onclick=function(){ fin(false) } });
+  }
+  function siPregunta(texto,si,fn){ return function(){ pregunta(texto,si).then(function(ok){ if(ok) fn() }) } }
   function abrirWA(tel,txt){ var url='https://wa.me/506'+tel+'?text='+encodeURIComponent(txt); var w=window.open(url,'_blank'); if(w) w.opener=null; else location.assign(url) }
 
   /* ---------- API ---------- */
@@ -308,14 +339,15 @@ a{color:inherit}
     if(vistos){ var nuevas=j.citas.filter(function(c){ return vistos.indexOf(c.id)<0 && c.estado==='pendiente' }); if(nuevas.length) avisar(nuevas) }
     vistos=ids; datos=j;
     $('actualizado').textContent='Actualizado '+new Date().toLocaleTimeString('es-CR',{hour:'numeric',minute:'2-digit'});
-    kpis(); citas(); clientes();
+    kpis(); recordatorios(); citas(); clientes();
   }
   function kpis(){
     var k=$('kpis'); k.textContent=''; var h=datos.citas.filter(function(c){ return c.fecha===datos.hoy && c.estado!=='cancelada' });
     [[h.length,'Citas hoy'],[datos.citas.filter(function(c){ return c.estado==='pendiente' && c.fecha>=datos.hoy }).length,'Por confirmar'],[datos.clientes.length,'Clientes en el club'],[datos.clientes.filter(function(c){ return c.sellos>=datos.meta }).length,'Premios listos']]
       .forEach(function(x){ var e=el('div'); e.appendChild(el('b',null,x[0])); e.appendChild(el('small',null,x[1])); k.appendChild(e) });
   }
-  var NOM={pendiente:'Por confirmar',confirmada:'Confirmada',hecha:'Terminada',cancelada:'Cancelada'};
+  var NOM={pendiente:'Por confirmar',confirmada:'Confirmada',hecha:'Terminada',cancelada:'Cancelada',ausente:'No llegó'};
+  var REC={push:'✓ enviado',"sin-notificaciones":'sin notificaciones',tarde:'no aplicó'};
   function citas(){
     var L=$('listaCitas'); L.textContent='';
     var lista=datos.citas.filter(function(c){
@@ -333,7 +365,16 @@ a{color:inherit}
       var top=el('div','c-top'); top.appendChild(el('b',null,fmtH(c.hora))); top.appendChild(el('span','chip '+c.estado,NOM[c.estado])); box.appendChild(top);
       box.appendChild(el('h3',null,c.nombre));
       var p=el('p'); var tel=el('a',null,c.tel.slice(0,4)+'-'+c.tel.slice(4)); tel.href='tel:+506'+c.tel; p.appendChild(tel); p.appendChild(d.createTextNode(' · '+c.vehiculo+(c.carro?' · '+c.carro:''))); box.appendChild(p);
-      var p2=el('p'); var lug=el('a',null,'📍 '+c.lugar); lug.href='https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(c.lugar+', Cartago, Costa Rica'); lug.target='_blank'; lug.rel='noopener noreferrer'; p2.appendChild(lug); box.appendChild(p2);
+      var p2=el('p'), lug=el('a',null,'📍 '+c.lugar); lug.target='_blank'; lug.rel='noopener noreferrer';
+      lug.href=c.ubic?'https://www.google.com/maps/search/?api=1&query='+c.ubic.lat+','+c.ubic.lng:'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(c.lugar+', Cartago, Costa Rica'); p2.appendChild(lug);
+      if(c.ubic){ p2.appendChild(d.createTextNode(' · ')); var wz=el('a',null,'Waze'); wz.href='https://waze.com/ul?ll='+c.ubic.lat+','+c.ubic.lng+'&navigate=yes'; wz.target='_blank'; wz.rel='noopener noreferrer'; p2.appendChild(wz); p2.appendChild(el('span',null,' · ubicación marcada en el mapa ✓')) }
+      box.appendChild(p2);
+      var ch=el('div','chips-c'); if(c.pago) ch.appendChild(el('span','chip '+(c.pagado?'pagado':''),(c.pagado?'✓ Pagado · ':'💳 ')+c.pago));
+      if(c.estado==='pendiente'||c.estado==='confirmada'){ if(c.r24) ch.appendChild(el('span','chip confirmada','🔔 24 h: '+(REC[c.r24]||c.r24))); if(c.r1) ch.appendChild(el('span','chip confirmada','🔔 1 h: '+(REC[c.r1]||c.r1))) }
+      if(ch.childNodes.length) box.appendChild(ch);
+      if(c.cambiada) box.appendChild(el('p',null,'🔁 El cliente la cambió (antes: '+c.cambiada+')'));
+      if(c.multa>0) box.appendChild(el('p','alerta','⚠️ Incluye multa pendiente de '+col(c.multa)+' por no presentarse antes.'));
+      else if(c.multaCliente>0 && c.estado!=='ausente') box.appendChild(el('p','alerta','⚠️ Este cliente debe una multa de '+col(c.multaCliente)+'.'));
       var sv=el('div','servs'); c.lineas.forEach(function(l){ var r=el('div'); r.appendChild(el('span',null,l[0])); r.appendChild(el('span',null,col(l[1]))); sv.appendChild(r) });
       var tt=el('div','tot'); tt.appendChild(el('span',null,'Total estimado')); tt.appendChild(el('span',null,(c.desde?'desde ':'')+col(c.total))); sv.appendChild(tt); box.appendChild(sv);
       if(c.aroma) box.appendChild(el('p',null,'🌸 Aroma: '+c.aroma));
@@ -342,25 +383,40 @@ a{color:inherit}
       var acc=el('div','acc');
       if(c.estado==='pendiente'){
         acc.appendChild(boton('Confirmar','b-tq',function(){ accion(c,'confirmar',function(){ hojaWA('✓ Cita confirmada. Avísele a '+c.nombre.split(' ')[0]+':',c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 👋 Le confirmamos su cita en Monzú Detallados para el '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+' en '+c.lugar+'.\n\nSu tarjeta Monzú Club 💧: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en su celular y junte sellos para su lavado gratis.') }) },'ok'));
-        acc.appendChild(boton('Cancelar','b-rojo',function(){ if(confirm('¿Cancelar la cita de '+c.nombre+'? La hora queda libre otra vez.')) accion(c,'cancelar') },'x'));
+        acc.appendChild(boton('Cancelar','b-rojo',siPregunta('¿Cancelar la cita de '+c.nombre+'? La hora queda libre otra vez.','Sí, cancelar',function(){ accion(c,'cancelar') }),'x'));
       } else if(c.estado==='confirmada'){
         if(c.sellos>=datos.meta) acc.appendChild(boton('Canjear lavado gratis','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
         acc.appendChild(boton('Terminado: dar sello','b-ok',function(){ accion(c,'terminar',function(){ toast('✓ Sello agregado a '+c.nombre.split(' ')[0]+(c.sellos+1>=datos.meta?' · ¡Completó su tarjeta! 🎁':'')) }) },'ok'));
         acc.appendChild(boton('WhatsApp','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! Le escribimos de Monzú Detallados sobre su cita del '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+'.') },'wa'));
-        acc.appendChild(boton('Cancelar','b-rojo',function(){ if(confirm('¿Cancelar la cita de '+c.nombre+'?')) accion(c,'cancelar') },'x'));
-      } else if(c.estado==='hecha' && c.sellos>=datos.meta){
-        acc.appendChild(boton('Canjear lavado gratis','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
+        acc.appendChild(boton(c.pagado?'Quitar pagado':'Marcar pagado','b-bor',function(){ accion(c,'pagado') }));
+        if(c.inicio<=datos.ahora) acc.appendChild(boton('No llegó (multa)','b-rojo',siPregunta('¿'+c.nombre+' no llegó? Se le cobra una multa de '+col(datos.multaMonto)+' en su próxima cita.','Sí, no llegó',function(){ accion(c,'ausente',function(){ toast('Multa registrada. Saldrá en su próxima reserva.') }) })));
+        acc.appendChild(boton('Cancelar','b-rojo',siPregunta('¿Cancelar la cita de '+c.nombre+'?','Sí, cancelar',function(){ accion(c,'cancelar') }),'x'));
+      } else if(c.estado==='hecha'){
+        if(c.sellos>=datos.meta) acc.appendChild(boton('Canjear lavado gratis','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
+        acc.appendChild(boton(c.pagado?'Quitar pagado':'Marcar pagado','b-bor',function(){ accion(c,'pagado') }));
       }
       if(acc.childNodes.length) box.appendChild(acc);
       L.appendChild(box);
     });
   }
+  /* recordatorios de las próximas 24 horas: si el cliente no tiene notificaciones, se le manda por WhatsApp con un toque */
+  function recordatorios(){
+    var R=$('recs'); R.textContent='';
+    var l=datos.citas.filter(function(c){ return (c.estado==='pendiente'||c.estado==='confirmada') && c.inicio>datos.ahora && c.inicio-datos.ahora<=24*36e5 });
+    if(!l.length){ R.hidden=true; return } R.hidden=false;
+    R.appendChild(el('b',null,'🔔 Recordatorios de las próximas 24 horas'));
+    l.forEach(function(c){ var f=el('div','rec'), t=el('div'); t.appendChild(el('span',null,fmtDia(c.fecha)+' '+fmtH(c.hora)+' · '+c.nombre));
+      t.appendChild(el('small',null,c.conNotificaciones?'Le llega solo al celular'+(c.r24==='push'||c.r1==='push'?' · ya se envió ✓':''):'No activó notificaciones: mándelo por WhatsApp')); f.appendChild(t);
+      if(!c.conNotificaciones||c.r24==='sin-notificaciones') f.appendChild(boton('Recordar','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 👋 Le recordamos su cita con Monzú Detallados '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+' en '+c.lugar+'. Si no puede, cancele o cambie la hora desde su tarjeta: '+enlaceTarjeta(c.tarjeta)) },'wa'));
+      R.appendChild(f) });
+  }
   function accion(c,a,despues){
-    api('cita',{id:c.id,accion:a}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } if(a==='cancelar') toast('Cita cancelada.'); if(a==='confirmar') toast('✓ Cita confirmada. Avísele por WhatsApp.'); if(despues) despues(); refrescar() })
+    api('cita',{id:c.id,accion:a}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } if(a==='cancelar') toast('Cita cancelada.'); if(a==='pagado') toast('✓ Pago actualizado.'); if(a==='confirmar') toast('✓ Cita confirmada. Avísele por WhatsApp.'); if(despues) despues(); refrescar() })
       .catch(function(){ toast('Sin conexión. Intente de nuevo.',true) });
   }
   function sello(tk,nombre,fin){ api('sello',{t:tk,motivo:'Lavado'}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('✓ Sello agregado a '+nombre.split(' ')[0]+' ('+j.tarjeta.sellos+'/'+j.tarjeta.meta+')'+(j.tarjeta.sellos>=j.tarjeta.meta?' 🎁':'')); if(fin) fin(j); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }
-  function canjear(tk,nombre,fin){ if(!confirm('¿Canjear el lavado gratis de '+nombre+'? Su tarjeta vuelve a 0 sellos.')) return; api('canjear',{t:tk}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('🎁 Premio canjeado. Tarjeta de '+nombre.split(' ')[0]+' reiniciada.'); if(fin) fin(j); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }
+  function canjear(tk,nombre,fin){ pregunta('¿Canjear el lavado gratis de '+nombre+'? Su tarjeta vuelve a 0 sellos.','Sí, canjear').then(function(ok){ if(ok) canjearYa(tk,nombre,fin) }) }
+  function canjearYa(tk,nombre,fin){ api('canjear',{t:tk}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('🎁 Premio canjeado. Tarjeta de '+nombre.split(' ')[0]+' reiniciada.'); if(fin) fin(j); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }
   d.querySelectorAll('.filtros button').forEach(function(b){ b.addEventListener('click',function(){ filtro=b.dataset.f; d.querySelectorAll('.filtros button').forEach(function(x){ x.setAttribute('aria-pressed',String(x===b)) }); citas() }) });
 
   /* ---------- clientes ---------- */
@@ -375,12 +431,13 @@ a{color:inherit}
       top.appendChild(izq); top.appendChild(em); box.appendChild(top); box.appendChild(mini(c.sellos,datos.meta));
       var acc=el('div','acc');
       if(c.sellos>=datos.meta) acc.appendChild(boton('Canjear premio','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
-      else acc.appendChild(boton('Dar sello','b-ok',function(){ if(confirm('¿Dar un sello a '+c.nombre+'?')) sello(c.tarjeta,c.nombre) },'gota'));
+      else acc.appendChild(boton('Dar sello','b-ok',siPregunta('¿Dar un sello a '+c.nombre+'?','Sí, dar sello',function(){ sello(c.tarjeta,c.nombre) }),'gota'));
+      if(c.multa>0) acc.appendChild(boton('Anular multa','b-bor',siPregunta('¿Anular la multa de '+col(c.multa)+' de '+c.nombre+'?','Sí, anular',function(){ api('perdonar-multa',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Multa anulada.'); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) })));
       acc.appendChild(boton('Enviar tarjeta','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 💧 Esta es su tarjeta Monzú Club, donde ve sus sellos: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en la pantalla de inicio de su celular para tenerla siempre a mano.') },'wa'));
-      if(c.tienePin) acc.appendChild(boton('Restablecer PIN','b-bor',function(){ if(!confirm('¿Restablecer el PIN de '+c.nombre+'? Le enviamos su tarjeta por WhatsApp para que cree uno nuevo.')) return;
-        api('pin-reset',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } hojaWA('🔐 PIN restablecido. Mándele su tarjeta para que cree uno nuevo:',c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 🔐 Le restablecimos el PIN de Monzú Club. Abra su tarjeta aquí y cree uno nuevo: '+enlaceTarjeta(c.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }));
-      acc.appendChild(boton('Eliminar','b-rojo',function(){ if(!confirm('¿Eliminar a '+c.nombre+' y todos sus datos (tarjeta, sellos y citas)? No se puede deshacer.')) return; if(!confirm('Confirme otra vez: se borra '+c.nombre+' para siempre.')) return;
-        api('borrar-cliente',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Cliente eliminado.'); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) },'x'));
+      if(c.tienePin) acc.appendChild(boton('Restablecer PIN','b-bor',siPregunta('¿Restablecer el PIN de '+c.nombre+'? Le enviamos su tarjeta por WhatsApp para que cree uno nuevo.','Sí, restablecer',function(){
+        api('pin-reset',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } hojaWA('🔐 PIN restablecido. Mándele su tarjeta para que cree uno nuevo:',c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 🔐 Le restablecimos el PIN de Monzú Club. Abra su tarjeta aquí y cree uno nuevo: '+enlaceTarjeta(c.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) })));
+      acc.appendChild(boton('Eliminar','b-rojo',siPregunta('¿Eliminar a '+c.nombre+' y todos sus datos (tarjeta, sellos y citas)? No se puede deshacer.','Sí, eliminar',function(){
+        api('borrar-cliente',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Cliente eliminado.'); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }),'x'));
       box.appendChild(acc); L.appendChild(box);
     });
   }
@@ -391,8 +448,8 @@ a{color:inherit}
       .catch(function(){ toast('No se pudo descargar el respaldo.',true) });
   });
   $('btnCerrarTodo').addEventListener('click',function(){
-    if(!confirm('¿Cerrar la sesión del panel en TODOS los celulares y computadoras? Tendrá que entrar otra vez con la contraseña.')) return;
-    api('cerrar-todo',{}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } $('btnSalir').click(); $('loginMsg').textContent='Se cerraron todas las sesiones. Entre otra vez.'; $('loginMsg').className='msg bien' });
+    pregunta('¿Cerrar la sesión del panel en TODOS los celulares y computadoras? Tendrá que entrar otra vez con la contraseña.','Sí, cerrar todo').then(function(ok){ if(!ok) return;
+    api('cerrar-todo',{}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } $('btnSalir').click(); $('loginMsg').textContent='Se cerraron todas las sesiones. Entre otra vez.'; $('loginMsg').className='msg bien' }) });
   });
   $('fNuevo').addEventListener('submit',function(e){
     e.preventDefault(); var m=$('mNuevo'), nombre=$('nNombre').value.trim(), tel=$('nTel').value.trim();
@@ -406,6 +463,19 @@ a{color:inherit}
     }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
   });
   $('buscar').addEventListener('input',function(){ if(datos) clientes() });
+  $('fImportar').addEventListener('submit',function(e){
+    e.preventDefault(); var m=$('mImp');
+    var filas=$('impTxt').value.split(/\r?\n/).map(function(l){ return l.trim() }).filter(Boolean).map(function(l){ return l.split(/\t|;|,/).map(function(x){ return x.trim() }) })
+      .filter(function(f){ return !/^nombre$/i.test(f[0]) });
+    if(!filas.length){ m.textContent='Pegue al menos un cliente.'; m.className='msg mal'; return }
+    if(filas.length>500){ m.textContent='Máximo 500 por vez. Divida la lista.'; m.className='msg mal'; return }
+    m.textContent='Importando '+filas.length+' clientes…'; m.className='msg';
+    api('importar',{filas:filas}).then(function(j){
+      if(!j.ok){ m.textContent=j.error||'No se pudo.'; m.className='msg mal'; return }
+      m.textContent='✓ '+j.creados+' clientes nuevos'+(j.repetidos?' · '+j.repetidos+' ya existían':'')+(j.malos.length?' · revise las líneas '+j.malos.slice(0,15).join(', ')+' (falta nombre o teléfono)':''); m.className=j.malos.length?'msg mal':'msg bien';
+      if(j.creados) $('impTxt').value=''; refrescar();
+    }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
+  });
 
   /* ---------- escáner con la cámara ---------- */
   function paraCam(){ cancelAnimationFrame(rafId); if(stream){ stream.getTracks().forEach(function(t){ t.stop() }); stream=null } $('cam').hidden=true; $('btnCam').hidden=false }
