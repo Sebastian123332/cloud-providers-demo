@@ -12,6 +12,8 @@ A = os.path.dirname(os.path.abspath(__file__)) + '/'
 M = A + '../'
 OUT = sys.argv[1] if len(sys.argv) > 1 else os.path.abspath(A + '../../../monzu-app/public')
 FECHA = '5 de noviembre de 2026'
+# Dominio público: cámbielo aquí cuando se conecte el dominio propio (o use MONZU_DOMINIO=https://... al construir)
+DOM = os.environ.get('MONZU_DOMINIO', 'https://monzu-detallados.netlify.app').rstrip('/')
 os.makedirs(OUT + '/js', exist_ok=True)
 
 def uri(f, m): return 'data:%s;base64,%s' % (m, base64.b64encode(open(M + 'img/' + f, 'rb').read()).decode())
@@ -23,8 +25,8 @@ def rep(t, a, b, n=1):
 def csp_de(t, extra_script="", connect="'self'", img="'self' data:"):
     est = re.findall(r'<style>(.*?)</style>', t, re.S); scr = re.findall(r'<script>(.*?)</script>', t, re.S)
     assert len(scr) == 1, len(scr)
-    return "; ".join(["default-src 'none'", "script-src " + h(scr[0]) + extra_script, "style-src " + " ".join(h(e) for e in est) + " https://fonts.googleapis.com",
-                      "font-src https://fonts.gstatic.com", "img-src " + img, "connect-src " + connect, "manifest-src 'self'", "form-action 'none'", "base-uri 'none'",
+    return "; ".join(["default-src 'none'", "script-src " + h(scr[0]) + extra_script, "style-src " + " ".join(h(e) for e in est),
+                      "font-src 'self'", "img-src " + img, "connect-src " + connect, "manifest-src 'self'", "form-action 'none'", "base-uri 'none'",
                       "object-src 'none'", "require-trusted-types-for 'script'", "trusted-types 'none'", "frame-ancestors 'none'", "upgrade-insecure-requests"])
 
 def con_csp(t, csp):
@@ -41,6 +43,17 @@ for nom, titulo, corto, inicio in [('tarjeta', 'Monzú Club · Mi tarjeta', 'Mon
                'icons': [{'src': '/icono-192.png', 'sizes': '192x192', 'type': 'image/png'}, {'src': '/icono-512.png', 'sizes': '512x512', 'type': 'image/png', 'purpose': 'any maskable'}]},
               open('%s/%s.webmanifest' % (OUT, nom), 'w', encoding='utf-8'), ensure_ascii=False)
 
+# ---------------- fuentes locales (sin Google) ----------------
+os.makedirs(OUT + '/fonts', exist_ok=True)
+for f in os.listdir(A + 'fonts'):
+    if f.endswith('.woff2'): shutil.copy(A + 'fonts/' + f, OUT + '/fonts/' + f)
+FUENTES = open(A + 'fonts/fuentes.css', encoding='utf-8').read()
+def sin_google(t):
+    t = re.sub(r'<link rel="preconnect" href="https://fonts\.(googleapis|gstatic)\.com"[^>]*>\n', '', t)
+    t, n = re.subn(r'<link rel="stylesheet" href="https://fonts\.googleapis\.com/[^"]*">\n', '', t)
+    assert n == 1, 'falta el enlace a Google Fonts'
+    return t.replace('<style>\n', '<style>\n' + FUENTES, 1)
+
 # ---------------- librerías ----------------
 LIB = A + 'lib/'
 for f in ('qrcode.min.js', 'jsqr.min.js'): shutil.copy(LIB + f, OUT + '/js/' + f)
@@ -52,7 +65,12 @@ js = open(M + 'monzu.js', encoding='utf-8').read()
 i = js.index("  var abierto=Date.now(), ultimo=0;"); j = js.index("  /* ===== proceso: la línea avanza al bajar ===== */")
 js = js[:i] + open(A + 'reservas.js', encoding='utf-8').read() + '\n' + js[j:]
 t = t.replace('__JS__', js)
-t = rep(t, 'Demo de ejemplo hecha por Solanotech para Monzú Detallados · precios tomados de sus publicaciones', 'Versión de prueba hecha por Solanotech para Monzú Detallados')
+t = rep(t, '<div class="demobar">Demo de ejemplo hecha por Solanotech para Monzú Detallados · precios tomados de sus publicaciones</div>\n', '')
+t = sin_google(t)
+SEO = '\n'.join(['<link rel="canonical" href="%s/">' % DOM, '<meta property="og:url" content="%s/">' % DOM, '<meta property="og:image" content="%s/og.jpg">' % DOM,
+                 '<meta property="og:image:width" content="1200">', '<meta property="og:image:height" content="630">', '<meta name="twitter:card" content="summary_large_image">',
+                 '<meta name="robots" content="index,follow">', '<link rel="manifest" href="/tarjeta.webmanifest">'])
+t = rep(t, '<meta property="og:type" content="website">', SEO + '\n<meta property="og:type" content="website">')
 t = rep(t, '<li><a href="#agendar">Agendar</a></li>', '<li><a href="#club">Monzú Club</a></li><li><a href="#agendar">Agendar</a></li><li><a href="tarjeta.html">Mi tarjeta</a></li>')
 # hora: botones con las horas libres
 t = re.sub(r'          <div class="campo"><label for="fHora">Hora</label><select id="fHora">.*?</select></div>\n',
@@ -126,7 +144,11 @@ t = rep(t, '<h3>5. Ley aplicable</h3>', '<h3>5. Monzú Club</h3><ul><li>Se da un
 t = rep(t, '<h3>1. Qué datos se piden</h3><p>Nombre, teléfono, fecha y hora deseadas, dirección o zona, el vehículo y su comentario.</p>',
         '<h3>1. Qué datos se piden</h3><p>Nombre, teléfono, fecha y hora de la cita, dirección o zona, el vehículo, los servicios y su comentario. Para Monzú Club se guardan además sus sellos, su historial de lavados y su PIN, que se guarda cifrado: nadie puede leerlo, ni Monzú.</p>')
 t = rep(t, '<li>El formulario no guarda nada en ningún servidor: el mensaje se arma en su navegador y usted decide si lo envía.</li><li>Al enviarlo pasa por WhatsApp (Meta), con su propia política de privacidad.</li>',
-        '<li>Su reserva y su tarjeta se guardan en el servidor del sitio (Netlify), con conexión cifrada. Solo Monzú Detallados puede verlas, desde un panel con contraseña.</li><li>Su tarjeta tiene un enlace único y secreto: no comparta ese enlace.</li><li>Las citas se borran a los 4 meses; la tarjeta se mantiene mientras usted la use, o la borramos cuando lo pida.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>')
+        '<li>Su reserva y su tarjeta se guardan en el servidor del sitio, contratado con Netlify, Inc. (Estados Unidos), con conexión cifrada. Al aceptar, usted autoriza esa transferencia para prestar el servicio.</li><li>Solo Monzú Detallados puede ver los datos, desde un panel con contraseña. Nadie más los recibe, ni se venden.</li><li>Su tarjeta tiene un enlace único y secreto: no comparta ese enlace ni su PIN.</li><li>Las citas se borran solas a los 4 meses. La tarjeta se mantiene mientras usted la use, y puede borrarla cuando quiera con el botón “Borrar mi tarjeta y mis datos”.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>')
+t = rep(t, '<li>Las tipografías se cargan desde Google Fonts, que recibe datos técnicos como su dirección IP.</li>', '<li>Las tipografías y todo el contenido se sirven desde el mismo sitio: no hay rastreadores, publicidad ni análisis de terceros.</li>')
+t = rep(t, '<h3>5. Sus derechos</h3>', '<h3>5. Responsable</h3><p>El responsable de la base de datos es Monzú Detallados (Isaac Monge), Cartago. Solanotech actúa solo como encargado técnico (desarrollo y mantenimiento del sitio) y no usa los datos para nada más.</p>\n    <h3>6. Sus derechos</h3>')
+t = rep(t, '<h3>Servicios de terceros</h3><p>Google Fonts entrega las tipografías. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>',
+        '<h3>Almacenamiento en su navegador</h3><p>Para que no tenga que escribir su PIN cada vez, su navegador guarda el enlace de su tarjeta Monzú Club. Es una función necesaria y no sirve para rastrearle; se borra con “Salir de esta tarjeta”.</p><h3>Servicios de terceros</h3><p>Ninguno al navegar. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>')
 t = t.replace('{{FECHA}}', FECHA)
 imgs = {'logo': uri('logo.webp', 'image/webp'), 'fav64': uri('fav64.png', 'image/png'), 'fav180': uri('fav180.png', 'image/png')}
 for k in ['deluxe', 'motor', 'tapiceria', 'scents1', 'scents2', 'scents3']: imgs[k] = uri(k + '.webp', 'image/webp')
@@ -144,20 +166,27 @@ comun = {'{{LOGO}}': imgs['logo'], '{{FAV}}': imgs['fav180'], '{{FECHA}}': FECHA
 csps = {}
 for pag in ('tarjeta', 'panel'):
     p = open(A + pag + '.tpl.html', encoding='utf-8').read()
-    p = p.replace('__JS__', open(A + pag + '.js', encoding='utf-8').read())
+    p = sin_google(p.replace('__JS__', open(A + pag + '.js', encoding='utf-8').read()))
     for k, v in comun.items(): p = p.replace(k, v)
     assert not re.search(r'\{\{|__JS__', p) and ' style="' not in p, pag
     csps[pag] = csp_de(p, extra_script=" 'self'", img="'self' data: blob:" if pag == 'panel' else "'self' data:")
     open('%s/%s.html' % (OUT, pag), 'w', encoding='utf-8').write(con_csp(p, csps[pag]))
 
-# ---------------- demostración con dos celulares (para enseñar por WhatsApp) ----------------
-demo = open(A + '../../../monzu-club-demo/index.html', encoding='utf-8').read()
-demo = demo.replace('Demostración hecha por Solanotech para Monzú Detallados', 'Demostración de Monzú Club · <a href="/">ver la página de Monzú</a>', 1)
-demo = demo.replace('.demobar{', '.demobar a{color:inherit;text-decoration:underline}\n.demobar{', 1)
-open(OUT + '/demo.html', 'w', encoding='utf-8').write(demo)
+# ---------------- producción: sin página de demostración ----------------
+if os.path.exists(OUT + '/demo.html'): os.remove(OUT + '/demo.html')
+
+# ---------------- imagen para compartir (WhatsApp / Facebook) y sitemap ----------------
+og = Image.open(M + 'img/portada.png').convert('RGB'); w, hh = og.size; esc = max(1200 / w, 630 / hh)
+og = og.resize((int(w * esc), int(hh * esc))); x0 = (og.width - 1200) // 2; y0 = (og.height - 630) // 2; og = og.crop((x0, y0, x0 + 1200, y0 + 630))
+velo = Image.new('RGBA', (1200, 630), (7, 9, 11, 0)); from PIL import ImageDraw
+dv = ImageDraw.Draw(velo)
+for xx in range(1200): dv.line([(xx, 0), (xx, 630)], fill=(7, 9, 11, int(235 * max(0, 1 - xx / 760))))
+og = Image.alpha_composite(og.convert('RGBA'), velo); l = logo.copy(); l.thumbnail((520, 300)); og.paste(l, (70, (630 - l.height) // 2), l)
+og.convert('RGB').save(OUT + '/og.jpg', quality=86)
+open(OUT + '/sitemap.xml', 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>%s/</loc></url></urlset>\n' % DOM)
 
 # ---------------- cabeceras y robots ----------------
-base = "  X-Frame-Options: DENY\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  Cross-Origin-Opener-Policy: same-origin\n"
+base = "  X-Frame-Options: DENY\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  Cross-Origin-Opener-Policy: same-origin\n  Cross-Origin-Resource-Policy: same-origin\n  X-Permitted-Cross-Domain-Policies: none\n"
 sin_cam = "  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()\n"
 hd = ''
 for ruta, csp, extra in [('/', csp_index, sin_cam), ('/index.html', csp_index, sin_cam),
@@ -165,7 +194,7 @@ for ruta, csp, extra in [('/', csp_index, sin_cam), ('/index.html', csp_index, s
                          ('/panel.html', csps['panel'], "  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n"),
                          ('/panel', csps['panel'], "  Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()\n  X-Robots-Tag: noindex, nofollow\n  Cache-Control: no-store\n")]:
     hd += ruta + "\n  Content-Security-Policy: " + csp + "\n" + base + extra
-hd += "/js/*\n  Cache-Control: public, max-age=604800\n"
+hd += "/js/*\n  Cache-Control: public, max-age=604800\n  X-Content-Type-Options: nosniff\n/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n"
 open(OUT + '/_headers', 'w').write(hd)
-open(OUT + '/robots.txt', 'w').write('User-agent: *\nDisallow: /demo.html\nDisallow: /panel.html\nDisallow: /panel\nDisallow: /tarjeta.html\nDisallow: /api/\n')
+open(OUT + '/robots.txt', 'w').write('User-agent: *\nAllow: /\nDisallow: /panel.html\nDisallow: /panel\nDisallow: /tarjeta.html\nDisallow: /api/\nSitemap: %s/sitemap.xml\n' % DOM)
 print('listo ->', OUT, {f: os.path.getsize(OUT + '/' + f) for f in os.listdir(OUT) if f.endswith('.html')})

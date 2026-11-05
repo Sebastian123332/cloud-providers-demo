@@ -46,7 +46,7 @@ function vigila(p, nom, errs) {
   const p = await dctx.newPage(); vigila(p, 'panel', errs);
   await p.goto(B + '/panel.html'); await p.fill('#clave', 'mala'); await p.tap('#entrar'); await sleep(500);
   const malMsg = await p.textContent('#loginMsg');
-  await p.fill('#clave', 'monzu2026'); await p.tap('#entrar'); await p.waitForSelector('#app:not([hidden])');
+  await p.fill('#clave', 'MonzuPrueba2026'); await p.tap('#entrar'); await p.waitForSelector('#app:not([hidden])');
   await p.tap('.filtros button[data-f="prox"]'); await sleep(300);
   await p.screenshot({ path: O + 'd1-citas.png' });
   // confirmar (abre WhatsApp en otra pestaña)

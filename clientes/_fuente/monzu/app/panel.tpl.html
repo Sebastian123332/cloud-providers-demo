@@ -110,6 +110,8 @@ a{color:inherit}
 /* clientes */
 .buscar input{width:100%;padding:12px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n3)}
 .lista{display:grid;gap:10px}
+.seguridad{margin-top:14px;background:var(--n2);border:1px solid var(--linea2);border-radius:14px;padding:14px;display:grid;gap:8px}
+.seguridad p{font-size:.82rem;color:var(--gr)}
 .hoja-wa{position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:21;width:min(94vw,460px);background:var(--n4);border:1px solid var(--linea2);border-radius:18px;padding:14px;display:grid;gap:10px;box-shadow:0 20px 50px rgba(0,0,0,.6)}
 .hoja-wa b{font-size:.95rem}
 .cli.recien{border-color:var(--tq);box-shadow:0 0 0 3px rgba(76,195,212,.18)}
@@ -140,7 +142,7 @@ a{color:inherit}
   <h1 class="t">Panel del <span class="tq">dueño</span></h1>
   <p>Citas, sellos de Monzú Club y clientes. Solo para Monzú Detallados.</p>
   <div class="campo"><label for="clave">Contraseña</label><input id="clave" type="password" autocomplete="current-password" required></div>
-  <label class="casilla"><input type="checkbox" id="recordar" checked> Recordar en este celular</label>
+  <label class="casilla"><input type="checkbox" id="recordar"> Mantener la sesión 30 días en este celular (solo si es su celular)</label>
   <button class="btn b-tq" type="submit" id="entrar">Entrar</button>
   <p class="msg" id="loginMsg" role="alert"></p>
 </form>
@@ -155,8 +157,7 @@ a{color:inherit}
       <button type="button" class="ico" id="btnSalir" aria-label="Salir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
     </div>
   </header>
-  <p class="demo" id="demo" hidden>Modo demostración: la contraseña es la de prueba. Antes de usarlo con clientes, ponga su propia contraseña en Netlify (variable PANEL_CLAVE).</p>
-  <div class="kpis" id="kpis"></div>
+    <div class="kpis" id="kpis"></div>
 
   <section class="sec on" id="sec-citas" aria-label="Citas">
     <div class="filtros" role="group" aria-label="Filtrar citas">
@@ -186,6 +187,11 @@ a{color:inherit}
     </details>
     <div class="buscar"><label class="sr-only" for="buscar" hidden>Buscar cliente</label><input id="buscar" type="search" placeholder="Buscar por nombre o teléfono" autocomplete="off"></div>
     <div id="listaCli" class="lista"></div>
+    <div class="seguridad">
+      <b>🔒 Datos y seguridad</b>
+      <p>Descargue un respaldo de sus clientes y citas cada semana y guárdelo en un lugar seguro. Si perdió un celular con el panel abierto, cierre todas las sesiones.</p>
+      <div class="acc"><button type="button" class="btn b-bor" id="btnRespaldo">Descargar respaldo</button><button type="button" class="btn b-rojo" id="btnCerrarTodo">Cerrar sesión en todos los equipos</button></div>
+    </div>
   </section>
 </main>
 

@@ -1,56 +1,71 @@
 /
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-EMAow38HH1s7yKPVcDuvf9v/6HNZBuiuhvQi/b1z5rA='; style-src 'sha256-eylFJxO90N3Qffa6W8HZhQdDKieLnHoc/37w8TbDS00=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-CD41SoK6+gsLwLA2B0ZK93FcLDe7rtYmeJNq7/L2plc='; style-src 'sha256-UBUVr5wGQ8QbY+VjbPWk1DYjUiTcIN5scTgyk6cBK8U='; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
 /index.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-EMAow38HH1s7yKPVcDuvf9v/6HNZBuiuhvQi/b1z5rA='; style-src 'sha256-eylFJxO90N3Qffa6W8HZhQdDKieLnHoc/37w8TbDS00=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-CD41SoK6+gsLwLA2B0ZK93FcLDe7rtYmeJNq7/L2plc='; style-src 'sha256-UBUVr5wGQ8QbY+VjbPWk1DYjUiTcIN5scTgyk6cBK8U='; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
 /tarjeta.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-DJN6i1mUrJfRf2Af0ZZLnSG+7WwsxaTSlWzYg8g04dM=' 'self'; style-src 'sha256-LNgEQIrK7+5Pgs4GT19OarDQG8At1jJeCJi5Gmyb1Hk=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-C5VUMI4q9xikAcB7EXb6Rd0J11nn6sC1+3SOxfu5RMc=' 'self'; style-src 'sha256-9EskfFpZWzW7NuwrxNkpfzAW5bVHAvImMcJIxPfiKZg='; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   X-Robots-Tag: noindex
 /tarjeta
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-DJN6i1mUrJfRf2Af0ZZLnSG+7WwsxaTSlWzYg8g04dM=' 'self'; style-src 'sha256-LNgEQIrK7+5Pgs4GT19OarDQG8At1jJeCJi5Gmyb1Hk=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-C5VUMI4q9xikAcB7EXb6Rd0J11nn6sC1+3SOxfu5RMc=' 'self'; style-src 'sha256-9EskfFpZWzW7NuwrxNkpfzAW5bVHAvImMcJIxPfiKZg='; font-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=()
   X-Robots-Tag: noindex
 /panel.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-mg50CnTfSAaQPIvz3guB5Sw0N6os04nMnaYlgs/OaqQ=' 'self'; style-src 'sha256-XUiKGLlcGD8wMrd23wK2EOIWeJOUxv9UZKo1jDqicg4=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-mz6ptxGph6fz4cH1qK1IaB2FCn+SeCyR+zbDIdHoF5Q=' 'self'; style-src 'sha256-tsr++qmjXXlb0wrKGxV+BOIaIDawwEAA0qcy6+lqzuk='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
   Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 /panel
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-mg50CnTfSAaQPIvz3guB5Sw0N6os04nMnaYlgs/OaqQ=' 'self'; style-src 'sha256-XUiKGLlcGD8wMrd23wK2EOIWeJOUxv9UZKo1jDqicg4=' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-mz6ptxGph6fz4cH1qK1IaB2FCn+SeCyR+zbDIdHoF5Q=' 'self'; style-src 'sha256-tsr++qmjXXlb0wrKGxV+BOIaIDawwEAA0qcy6+lqzuk='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: same-origin
+  X-Permitted-Cross-Domain-Policies: none
   Permissions-Policy: camera=(self), microphone=(), geolocation=(), payment=(), usb=()
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 /js/*
   Cache-Control: public, max-age=604800
+  X-Content-Type-Options: nosniff
+/fonts/*
+  Cache-Control: public, max-age=31536000, immutable

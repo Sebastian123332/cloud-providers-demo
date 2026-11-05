@@ -54,7 +54,7 @@
     if(Date.now()-ultimo<15000){ estado('Su cita ya se envió. Espere unos segundos para enviar otra.',true); return }
     var e=eleccion(), mal=[];
     var x={nombre:limpiar($('fNombre').value,80), tel:limpiar($('fTel').value,16), lugar:limpiar($('fLugar').value,120), carro:limpiar($('fVeh').value,60), nota:limpiar($('fNota').value,400),
-      fecha:$('fFecha').value, hora:horaSel, pin:$('fPin').value.trim(), vehiculo:e.v==='sedan'?'Sedán':'SUV / Pick up / XL', lineas:e.lineas, desde:e.desde, aroma:aroma, consentimiento:true, web:$('fWeb').value};
+      fecha:$('fFecha').value, hora:horaSel, pin:$('fPin').value.trim(), vehiculo:e.v==='sedan'?'Sedán':'SUV / Pick up / XL', veh:e.v, paq:e.p, extras:e.xs.map(function(z){ return z.k }), lineas:e.lineas, desde:e.desde, aroma:aroma, consentimiento:true, web:$('fWeb').value};
     var okN=/^[\p{L}\p{M} .'’-]{3,80}$/u.test(x.nombre); $('fNombre').setAttribute('aria-invalid',String(!okN)); if(!okN) mal.push('su nombre');
     var t=x.tel.replace(/[^\d+]/g,'').replace(/^\+?506/,''), okT=/^[2-8]\d{7}$/.test(t); $('fTel').setAttribute('aria-invalid',String(!okT)); if(!okT) mal.push('un teléfono de 8 dígitos');
     var okP=!x.pin||/^\d{4}$/.test(x.pin); $('fPin').setAttribute('aria-invalid',String(!okP)); if(!okP) mal.push('un PIN de 4 números (o déjelo vacío)');

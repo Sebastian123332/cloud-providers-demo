@@ -1,6 +1,7 @@
 User-agent: *
-Disallow: /demo.html
+Allow: /
 Disallow: /panel.html
 Disallow: /panel
 Disallow: /tarjeta.html
 Disallow: /api/
+Sitemap: https://monzu-detallados.netlify.app/sitemap.xml

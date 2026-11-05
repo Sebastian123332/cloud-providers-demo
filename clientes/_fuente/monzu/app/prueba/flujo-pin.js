@@ -40,7 +40,7 @@ async function api(p, ruta, datos) { return p.evaluate(async ([r, d]) => (await 
   R.bloqueo = (await api(Bc.p, 'entrar', { tel: '87771122', pin: '4821' })).error;
   // 4) reservar con el teléfono de otra persona SIN su PIN: no debe devolver la tarjeta
   const f = await A.p.evaluate(() => { const d = new Date(Date.now() + 2 * 864e5); if (d.getDay() === 0) d.setDate(d.getDate() + 1); return d.toISOString().slice(0, 10); });
-  const base = { nombre: 'Intruso Prueba', lugar: 'Cartago centro', fecha: f, lineas: [['Detallado Premium', 16000]], consentimiento: true, vehiculo: 'Sedán' };
+  const base = { nombre: 'Intruso Prueba', lugar: 'Cartago centro', fecha: f, paq: 'premium', veh: 'sedan', lineas: [['Detallado Premium', 16000]], consentimiento: true, vehiculo: 'Sedán' };
   const ajeno = await api(A.p, 'reservar', { ...base, tel: '87771122', hora: '10:00' });
   R.reservaAjena = { ok: ajeno.ok, tarjeta: ajeno.tarjeta, aviso: ajeno.aviso };
   // 5) cliente nuevo que reserva SIN PIN -> recibe su tarjeta y la página le pide crear PIN
@@ -52,7 +52,7 @@ async function api(p, ruta, datos) { return p.evaluate(async ([r, d]) => (await 
   R.pinCreado = !(await D.p.isVisible('#crearPin'));
   R.entrarConPinNuevo = (await api(D.p, 'entrar', { tel: '86665544', pin: '7777' })).ok;
   // 6) panel: nuevo cliente y restablecer PIN
-  const P = await nuevoCel(); await P.p.goto(B + '/panel.html'); await P.p.fill('#clave', 'monzu2026'); await P.p.tap('#entrar'); await P.p.waitForSelector('#app:not([hidden])');
+  const P = await nuevoCel(); await P.p.goto(B + '/panel.html'); await P.p.fill('#clave', 'MonzuPrueba2026'); await P.p.tap('#entrar'); await P.p.waitForSelector('#app:not([hidden])');
   await P.p.tap('.tabs button[data-sec="clientes"]'); await P.p.tap('#nuevoCli summary');
   await P.p.fill('#nNombre', 'Luis Quesada'); await P.p.fill('#nTel', '8555-0099');
   await P.p.tap('#fNuevo button'); await P.p.waitForSelector('#hojaWA:not([hidden])'); R.waNuevo = decodeURIComponent(await P.p.getAttribute('#hojaWA a', 'href')).slice(0, 70);

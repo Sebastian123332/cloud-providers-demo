@@ -49,7 +49,7 @@ Esta app tiene un pequeño servidor (las reservas y los sellos se guardan), así
 4. Toque **Deploy** y espere 1 o 2 minutos.
 5. **Site configuration → Change site name** → por ejemplo `monzu-detallados`. Queda `https://monzu-detallados.netlify.app`.
 6. **Contraseña del panel:** en **Site configuration → Environment variables** agregue `PANEL_CLAVE` con la contraseña que quiera el dueño. Después vaya a **Deploys → Trigger deploy**.
-   - Mientras no la ponga, el panel funciona con la **contraseña de prueba `monzu2026`** y muestra un aviso amarillo. Para la reunión sirve así.
+   - **Es obligatoria:** mínimo 10 caracteres. Sin ella el panel no abre. Agregue también `SESION_SECRETO` con un texto largo al azar. Detalles en **SEGURIDAD.md**.
 
 **Revisar que quedó bien:** abra `https://SU-SITIO.netlify.app/api/horarios?fecha=2026-12-01`. Tiene que salir un texto con `"ok":true` y las horas.
 
@@ -60,7 +60,7 @@ Esta app tiene un pequeño servidor (las reservas y los sellos se guardan), así
 - **Su celular hace de cliente.** Abra la página, reserve una cita para mañana y toque **"Ver mi tarjeta Monzú Club"**. Después **guárdela en la pantalla de inicio**:
   - **iPhone:** Safari → Compartir → "Agregar a pantalla de inicio".
   - **Android:** Chrome → ⋮ → "Agregar a pantalla principal".
-- **El panel:** ábralo en la compu o en un segundo celular: `SU-SITIO.netlify.app/panel.html`, contraseña `monzu2026`.
+- **El panel:** ábralo en la compu o en un segundo celular: `SU-SITIO.netlify.app/panel.html`, con la contraseña `PANEL_CLAVE`.
 - **Para enseñar el premio:** en el panel → **Clientes** → a su nombre de prueba **"Dar sello"** hasta dejarlo en **9/10**.
 
 ---
@@ -71,7 +71,7 @@ Esta app tiene un pequeño servidor (las reservas y los sellos se guardan), así
 2. **Él reserva.** Que el dueño reserve una cita desde **su** celular, con su nombre. En el panel, a los pocos segundos, aparece la **cita nueva** (con aviso). Toque **"Confirmar"**: se abre WhatsApp con la confirmación y **el enlace de su tarjeta**.
 3. **Su tarjeta.** El dueño abre el enlace y ve su tarjeta en 0/10. Que la guarde en su pantalla de inicio: queda como app con el logo de Monzú.
 4. **Escanear (lo más importante).**
-   - Entre al panel **en el celular del dueño** (`/panel.html`, `monzu2026`) y ábralo en **Escanear**.
+   - Entre al panel **en el celular del dueño** (`/panel.html`, con la contraseña del panel) y ábralo en **Escanear**.
    - Usted abre su tarjeta en su celular. Él toca **"Escanear tarjeta del cliente"** y apunta la cámara a su código QR.
    - Le sale su nombre y sus sellos. Toca **"Dar sello"**.
    - **En su celular, la tarjeta se actualiza sola en unos segundos**, con aviso de "¡Sello agregado!".
@@ -104,7 +104,7 @@ Esta app tiene un pequeño servidor (las reservas y los sellos se guardan), así
 
 ## 6. Antes de usarlo con clientes de verdad
 
-1. Poner `PANEL_CLAVE` con la contraseña del dueño (paso 1.6).
+1. Poner `PANEL_CLAVE` y `SESION_SECRETO` (paso 1.6) y activar la verificación en dos pasos en Netlify, Cloudflare, GitHub y el correo.
 2. **Borrar los datos de prueba de la reunión:** Netlify → el sitio → **Blobs** → store `monzu` → borrar `db`.
 3. Quitar la barra "Versión de prueba". Me avisa y la quito.
 4. Conectar su dominio, igual que con Grúas Hidalgo.

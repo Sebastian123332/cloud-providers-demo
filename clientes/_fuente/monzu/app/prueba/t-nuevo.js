@@ -2,7 +2,7 @@ const { chromium, devices } = require('playwright');
 const sleep=(ms)=>new Promise(r=>setTimeout(r,ms));
 (async()=>{ const b=await chromium.launch(); const c=await b.newContext({...devices['iPhone 13']}); await c.route(/fonts\./,r=>r.abort());
  const p=await c.newPage(); const errs=[]; p.on('pageerror',e=>errs.push(e.message));
- await p.goto('http://localhost:8790/panel.html'); await p.fill('#clave','monzu2026'); await p.tap('#entrar'); await p.waitForSelector('#app:not([hidden])');
+ await p.goto('http://localhost:8790/panel.html'); await p.fill('#clave','MonzuPrueba2026'); await p.tap('#entrar'); await p.waitForSelector('#app:not([hidden])');
  await p.tap('.tabs button[data-sec="clientes"]'); await p.tap('#nuevoCli summary');
  const crea=async(n,t)=>{ await p.fill('#nNombre',n); await p.fill('#nTel',t); await p.tap('#fNuevo button'); await sleep(1300);
    return {msg:await p.textContent('#mNuevo'), hoja:await p.isVisible('#hojaWA'), enlace:(await p.getAttribute('#hojaWA a','href')||'').slice(0,40), primero:await p.textContent('.cli b')} };

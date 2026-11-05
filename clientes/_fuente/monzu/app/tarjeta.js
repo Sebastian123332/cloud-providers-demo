@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   var d=document, $=function(i){ return d.getElementById(i) };
-  var NS='http://www.w3.org/2000/svg', CLAVE='monzu-tarjeta', ultimo=null, tPoll=null;
+  var tieneP=false, NS='http://www.w3.org/2000/svg', CLAVE='monzu-tarjeta', ultimo=null, tPoll=null;
   function svg(paths,fill){ var s=d.createElementNS(NS,'svg'); s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('aria-hidden','true');
     if(fill){ s.setAttribute('fill','currentColor') } else { s.setAttribute('fill','none'); s.setAttribute('stroke','currentColor'); s.setAttribute('stroke-width','2'); s.setAttribute('stroke-linecap','round'); s.setAttribute('stroke-linejoin','round') }
     paths.forEach(function(p){ var e=d.createElementNS(NS,'path'); e.setAttribute('d',p); s.appendChild(e) }); return s }
@@ -50,7 +50,7 @@
         var nuevo=antes!==null && s>antes;
         if(primera||nuevo||antes===null||s!==antes||JSON.stringify(o.j)!==carga.prev){ pinta(o.j,nuevo); carga.prev=JSON.stringify(o.j) }
         if(primera){ dibujaQR(location.origin+'/tarjeta.html?t='+tk); muestra('vista') }
-        $('crearPin').hidden=!!o.j.tarjeta.tienePin;
+        tieneP=!!o.j.tarjeta.tienePin; $('crearPin').hidden=tieneP;
         $('usuario').textContent=o.j.tarjeta.tienePin?'Para entrar desde otro celular: su teléfono y su PIN.':'';
         if(nuevo){ if(navigator.vibrate) navigator.vibrate([80,60,120]); toast(s>=o.j.tarjeta.meta?'🎁 ¡Lavado gratis desbloqueado!':'💧 ¡Sello agregado! '+s+' de '+o.j.tarjeta.meta,' Gracias por lavar con Monzú.') }
         if(antes!==null && s<antes && s===0) toast('🎁 ¡Disfrute su lavado gratis!',' Su tarjeta empieza de nuevo.');
@@ -99,6 +99,12 @@
   });
   $('btnSalir').addEventListener('click',function(){ if(!confirm('¿Salir de esta tarjeta en este celular? Para volver a entrar necesita su teléfono y su PIN.')) return; olvida(); acceso('entrar') });
 
+  $('btnBorrar').addEventListener('click',function(){
+    if(!confirm('¿Borrar su tarjeta Monzú Club? Se eliminan sus sellos, su historial y sus citas. No se puede deshacer.')) return;
+    var pin=''; if(tieneP){ pin=prompt('Para confirmar, escriba su PIN de 4 números:')||''; if(!/^\d{4}$/.test(pin)){ toast('No se borró nada.',' Debe escribir su PIN.'); return } }
+    post('borrar-tarjeta',{t:tk,pin:pin}).then(function(j){ if(!j.ok){ toast('No se pudo borrar.',' '+(j.error||'')); return } olvida(); acceso('entrar'); msg('mEntrar','Su tarjeta y sus datos fueron borrados. Gracias por haber sido parte de Monzú Club.',false) })
+      .catch(function(){ toast('Sin conexión.',' Intente de nuevo.') });
+  });
   carga(true);
   /* se actualiza sola mientras está abierta */
   function arranca(){ clearInterval(tPoll); tPoll=setInterval(function(){ if(!d.hidden) carga(false) },8000) }

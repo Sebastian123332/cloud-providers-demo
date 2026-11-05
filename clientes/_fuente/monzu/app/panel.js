@@ -1,7 +1,7 @@
 (function(){
   'use strict';
   var d=document, $=function(i){ return d.getElementById(i) };
-  var ultimoTel='', GUARDA='monzu-panel', clave='', datos=null, filtro='hoy', vistos=null, tPoll=null, stream=null, rafId=0;
+  var ultimoTel='', GUARDA='monzu-panel-sesion', clave='', datos=null, filtro='hoy', vistos=null, tPoll=null, stream=null, rafId=0;
   var NS='http://www.w3.org/2000/svg';
   function svg(paths){ var s=d.createElementNS(NS,'svg'); s.setAttribute('viewBox','0 0 24 24'); s.setAttribute('fill','none'); s.setAttribute('stroke','currentColor'); s.setAttribute('stroke-width','2.4'); s.setAttribute('stroke-linecap','round'); s.setAttribute('stroke-linejoin','round'); s.setAttribute('aria-hidden','true');
     paths.forEach(function(p){ var e=d.createElementNS(NS,'path'); e.setAttribute('d',p); s.appendChild(e) }); return s }
@@ -38,13 +38,14 @@
   try{ clave=localStorage.getItem(GUARDA)||sessionStorage.getItem(GUARDA)||'' }catch(e){}
   $('login').addEventListener('submit',function(e){
     e.preventDefault(); var c=$('clave').value; if(!c){ $('loginMsg').textContent='Escriba la contraseña.'; $('loginMsg').className='msg mal'; return }
-    $('entrar').disabled=true; clave=c;
-    api('resumen').then(function(j){
-      $('entrar').disabled=false;
-      if(!j.ok){ $('loginMsg').textContent=j.error||'No se pudo entrar.'; $('loginMsg').className='msg mal'; clave=''; return }
-      try{ ($('recordar').checked?localStorage:sessionStorage).setItem(GUARDA,c) }catch(er){}
-      $('clave').value=''; arrancar(j);
-    }).catch(function(){ $('entrar').disabled=false; $('loginMsg').textContent='Sin conexión. Intente de nuevo.'; $('loginMsg').className='msg mal' });
+    $('entrar').disabled=true; var rec=$('recordar').checked;
+    fetch('/api/panel/login',{method:'POST',headers:{'content-type':'application/json',accept:'application/json'},cache:'no-store',body:JSON.stringify({clave:c,recordar:rec})})
+      .then(function(r){ return r.json() }).then(function(j){
+        $('entrar').disabled=false; $('clave').value='';
+        if(!j.ok){ $('loginMsg').textContent=j.error||'No se pudo entrar.'; $('loginMsg').className='msg mal'; return }
+        clave=j.sesion; try{ (rec?localStorage:sessionStorage).setItem(GUARDA,clave) }catch(er){}
+        api('resumen').then(function(k){ if(k.ok) arrancar(k); else { $('loginMsg').textContent=k.error||'No se pudo entrar.'; $('loginMsg').className='msg mal' } });
+      }).catch(function(){ $('entrar').disabled=false; $('loginMsg').textContent='Sin conexión. Intente de nuevo.'; $('loginMsg').className='msg mal' });
   });
   $('btnSalir').addEventListener('click',function(){ try{ localStorage.removeItem(GUARDA); sessionStorage.removeItem(GUARDA) }catch(e){} clave=''; paraCam(); clearInterval(tPoll); $('app').hidden=true; $('tabs').hidden=true; $('login').hidden=false });
   function arrancar(j){ $('login').hidden=true; $('app').hidden=false; $('tabs').hidden=false; recibe(j); clearInterval(tPoll); tPoll=setInterval(function(){ if(!d.hidden) refrescar() },20000) }
@@ -73,7 +74,6 @@
     var ids=j.citas.map(function(c){ return c.id });
     if(vistos){ var nuevas=j.citas.filter(function(c){ return vistos.indexOf(c.id)<0 && c.estado==='pendiente' }); if(nuevas.length) avisar(nuevas) }
     vistos=ids; datos=j;
-    $('demo').hidden=!j.demo;
     $('actualizado').textContent='Actualizado '+new Date().toLocaleTimeString('es-CR',{hour:'numeric',minute:'2-digit'});
     kpis(); citas(); clientes();
   }
@@ -146,9 +146,21 @@
       acc.appendChild(boton('Enviar tarjeta','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 💧 Esta es su tarjeta Monzú Club, donde ve sus sellos: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en la pantalla de inicio de su celular para tenerla siempre a mano.') },'wa'));
       if(c.tienePin) acc.appendChild(boton('Restablecer PIN','b-bor',function(){ if(!confirm('¿Restablecer el PIN de '+c.nombre+'? Le enviamos su tarjeta por WhatsApp para que cree uno nuevo.')) return;
         api('pin-reset',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } hojaWA('🔐 PIN restablecido. Mándele su tarjeta para que cree uno nuevo:',c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 🔐 Le restablecimos el PIN de Monzú Club. Abra su tarjeta aquí y cree uno nuevo: '+enlaceTarjeta(c.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }));
+      acc.appendChild(boton('Eliminar','b-rojo',function(){ if(!confirm('¿Eliminar a '+c.nombre+' y todos sus datos (tarjeta, sellos y citas)? No se puede deshacer.')) return; if(!confirm('Confirme otra vez: se borra '+c.nombre+' para siempre.')) return;
+        api('borrar-cliente',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Cliente eliminado.'); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) },'x'));
       box.appendChild(acc); L.appendChild(box);
     });
   }
+  /* respaldo y seguridad */
+  $('btnRespaldo').addEventListener('click',function(){
+    fetch('/api/panel/respaldo',{headers:{authorization:'Bearer '+clave},cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error('x'); return r.blob() }).then(function(b){
+      var a=el('a'); a.href=URL.createObjectURL(b); a.download='monzu-respaldo-'+(datos?datos.hoy:'')+'.json'; d.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove() },1000); toast('✓ Respaldo descargado. Guárdelo en un lugar seguro.') })
+      .catch(function(){ toast('No se pudo descargar el respaldo.',true) });
+  });
+  $('btnCerrarTodo').addEventListener('click',function(){
+    if(!confirm('¿Cerrar la sesión del panel en TODOS los celulares y computadoras? Tendrá que entrar otra vez con la contraseña.')) return;
+    api('cerrar-todo',{}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } $('btnSalir').click(); $('loginMsg').textContent='Se cerraron todas las sesiones. Entre otra vez.'; $('loginMsg').className='msg bien' });
+  });
   $('fNuevo').addEventListener('submit',function(e){
     e.preventDefault(); var m=$('mNuevo'), nombre=$('nNombre').value.trim(), tel=$('nTel').value.trim();
     if(nombre.length<3||!/^[2-8]\d{7}$/.test(tel.replace(/\D/g,'').replace(/^506/,''))){ m.textContent='Escriba el nombre y un teléfono de 8 dígitos.'; m.className='msg mal'; return }
@@ -184,7 +196,7 @@
   });
   function buscaTarjeta(tk){
     var H=$('hallado'); H.textContent=''; H.appendChild(el('p','vacio','Buscando tarjeta…'));
-    api('tarjeta?t='+encodeURIComponent(tk)).then(function(j){
+    api('tarjeta',{t:tk}).then(function(j){
       H.textContent=''; if(!j.ok){ H.appendChild(el('p','vacio',j.error||'Tarjeta no encontrada.')); return }
       var t=j.tarjeta, box=el('div','hallado'); box.appendChild(el('p','msg bien','✓ Tarjeta encontrada · '+t.codigo)); box.appendChild(el('b',null,t.nombre));
       if(t.carro) box.appendChild(el('p','cli-car',t.carro)); box.appendChild(mini(t.sellos,t.meta));
