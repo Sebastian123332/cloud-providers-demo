@@ -26,6 +26,8 @@ Se probó con el motor real de Cloudflare (`wrangler dev`):
 
 Desde ahí, **cada cambio que Claude suba a GitHub se publica solo**, sin gastar nada.
 
+Conectar el repositorio **no publica nada por sí solo**: Cloudflare compila cuando llega un cambio nuevo a la rama. Si después de conectar no aparece ninguna compilación, pídale a Claude que suba un cambio, o use **Despliegues → Nuevo despliegue**.
+
 ## Paso 2. Contraseñas del panel (obligatorio)
 1. **demomonzu → Ajustes → Variables y secretos → Agregar**.
 2. Agregue dos, las dos de **Tipo: Secreto**:
