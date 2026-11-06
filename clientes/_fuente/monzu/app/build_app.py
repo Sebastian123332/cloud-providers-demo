@@ -57,6 +57,11 @@ def sin_google(t):
 # ---------------- librerías ----------------
 LIB = A + 'lib/'
 for f in ('qrcode.min.js', 'jsqr.min.js', 'mapa.js'): shutil.copy(LIB + f, OUT + '/js/' + f)
+# el mapa cambia seguido: nombre con huella para que el celular nunca use una copia vieja guardada
+MAPA = 'mapa.' + hashlib.sha256(open(LIB + 'mapa.js', 'rb').read()).hexdigest()[:10] + '.js'
+for viejo in os.listdir(OUT + '/js'):
+    if re.fullmatch(r'mapa\.[0-9a-f]{10}\.js', viejo) and viejo != MAPA: os.remove(OUT + '/js/' + viejo)
+shutil.copy(LIB + 'mapa.js', OUT + '/js/' + MAPA)
 
 # ---------------- 1) página principal ----------------
 t = open(M + 'monzu.tpl.html', encoding='utf-8').read().replace(' style-x=""', '')
@@ -117,7 +122,7 @@ MAPA_HTML = '''<div class="ubica"><div class="ubica-btns"><button type="button" 
             <div class="mapa" id="mapa" hidden></div><p class="ubica-txt" id="ubiTxt">Opcional: marque dónde está el carro y llegamos directo.</p></div>'''
 t = rep(t, '<input id="fLugar" maxlength="120" placeholder="Ej. San Nicolás, 200 m norte de la iglesia"></div>',
         '<input id="fLugar" maxlength="120" placeholder="Ej. San Nicolás, 200 m norte de la iglesia">' + MAPA_HTML + '</div>')
-t = rep(t, '\n<script>\n', '\n<script src="/js/mapa.js"></script>\n<script>\n')
+t = rep(t, '\n<script>\n', '\n<script src="/js/%s"></script>\n<script>\n' % MAPA)
 # permiso para escribirle por WhatsApp (Meta exige que el cliente lo acepte)
 t = rep(t, 'Autorizo a Monzú Detallados a usar mis datos para atender esta cita,', 'Autorizo a Monzú Detallados a usar mis datos para atender esta cita y a enviarme por WhatsApp la confirmación y los recordatorios de mis citas,')
 t = rep(t, '<button type="button" data-legal="cookies">Cookies</button></div>', '<button type="button" data-legal="cookies">Cookies</button><a href="/privacidad">Política de privacidad</a><a href="/terminos">Términos</a><a href="/eliminar-datos">Eliminar mis datos</a></div>')
@@ -194,7 +199,7 @@ CSS = '''
 .listo p{color:var(--bl);font-size:.92rem;white-space:pre-line}.listo .listo-club{color:var(--tq2)}
 .pagos{display:flex;flex-wrap:wrap;gap:8px}.pagos[aria-invalid="true"]{outline:2px solid #F49A9A;outline-offset:4px;border-radius:12px}
 .pago{position:relative;cursor:pointer}.pago input{position:absolute;opacity:0;width:1px;height:1px}
-.pago span{display:block;padding:11px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:700 .92rem var(--s);transition:.2s}
+.pago span{text-transform:none;letter-spacing:normal;display:block;padding:11px 14px;border-radius:12px;border:1px solid var(--linea2);background:var(--n);color:var(--bl);font:700 .92rem var(--s);transition:.2s}
 .pago input:checked+span{background:linear-gradient(135deg,var(--tq),var(--az));color:#04141C;border-color:transparent}
 .pago input:focus-visible+span{outline:2px solid var(--tq2);outline-offset:2px}
 .politica{margin-top:8px;padding:10px 12px;border-radius:12px;background:rgba(255,201,77,.08);border:1px solid rgba(255,201,77,.35)}
@@ -281,7 +286,7 @@ csp_legal['eliminar-datos'] = pagina_legal('Eliminación de datos', BORRAR, 'eli
 
 
 # ---------------- 2) tarjeta y 3) panel ----------------
-comun = {'{{LOGO}}': imgs['logo'], '{{FAV}}': imgs['fav180'], '{{FECHA}}': FECHA}
+comun = {'{{LOGO}}': imgs['logo'], '{{FAV}}': imgs['fav180'], '{{FECHA}}': FECHA, '"/js/mapa.js"': '"/js/%s"' % MAPA}
 csps = {}
 for pag in ('tarjeta', 'panel'):
     p = open(A + pag + '.tpl.html', encoding='utf-8').read()
