@@ -177,7 +177,17 @@ function darSello(c, motivo) {
   c.sellos += 1; c.hist.unshift(['Sello · ' + motivo, hoyCR().fecha]); c.hist = c.hist.slice(0, 40);
   return true;
 }
-function purga(db) { db.citas = db.citas.filter((x) => x.fecha >= sumaDias(hoyCR().fecha, -AJUSTES.diasCitas)).slice(-3000); }
+// una cita suma a las ganancias si se terminó o si se marcó como pagada (nunca dos veces)
+const cuenta = (c) => (c.estado === 'hecha' || c.pagado === true) && c.estado !== 'cancelada';
+// día en que entró la plata: cuando se marcó pagada, o el día que se terminó
+const diaIngreso = (c) => (c.pagado && c.pagadoEl) || c.terminadaEl || c.fecha;
+function sumaMes(M, c) { M.total += c.total; M.citas++; M.porPago[c.pago || 'Sin indicar'] = (M.porPago[c.pago || 'Sin indicar'] || 0) + c.total; }
+function purga(db) {
+  const corte = sumaDias(hoyCR().fecha, -AJUSTES.diasCitas), viejas = db.citas.filter((x) => x.fecha < corte);
+  db.mesesArch = db.mesesArch || {};                                           // antes de borrar citas viejas, se guardan sus totales del mes
+  viejas.filter(cuenta).forEach((c) => { const m = diaIngreso(c).slice(0, 7); sumaMes(db.mesesArch[m] || (db.mesesArch[m] = { total: 0, citas: 0, porPago: {} }), c); });
+  db.citas = db.citas.filter((x) => x.fecha >= corte).slice(-3000);
+}
 
 /* ---------- PIN de clientes (scrypt + bloqueo por teléfono) ---------- */
 const pinOk = (p) => /^\d{4}$/.test(String(p ?? ''));
@@ -547,14 +557,14 @@ export async function manejar(req, opts) {
         const db = await leerDB(), hoy = hoyCR().fecha, lunes = sumaDias(hoy, -((diaSemana(hoy) + 6) % 7)), mes = hoy.slice(0, 8) + '01';
         const mesAnt = sumaDias(mes, -1).slice(0, 8) + '01';
         const suma = (desde, hasta) => {
-          const l = db.citas.filter((c) => c.estado === 'hecha' && c.fecha >= desde && c.fecha <= hasta), porPago = {};
+          const l = db.citas.filter((c) => cuenta(c) && diaIngreso(c) >= desde && diaIngreso(c) <= hasta), porPago = {};
           AJUSTES.pagos.forEach((p) => { porPago[p] = 0; });
           l.forEach((c) => { porPago[c.pago || 'Sin indicar'] = (porPago[c.pago || 'Sin indicar'] || 0) + c.total; });
           return { total: l.reduce((a, c) => a + c.total, 0), citas: l.length, porPago, pagado: l.filter((c) => c.pagado).reduce((a, c) => a + c.total, 0),
             multas: l.reduce((a, c) => a + (c.multa || 0), 0), ausentes: db.citas.filter((c) => c.estado === 'ausente' && c.fecha >= desde && c.fecha <= hasta).length };
         };
         const dias = []; for (let i = 34; i >= 0; i--) { const f = sumaDias(hoy, -i); dias.push({ fecha: f, ...suma(f, f) }); }
-        return json({ ok: true, hoy, periodos: { hoy: suma(hoy, hoy), semana: suma(lunes, hoy), mes: suma(mes, hoy), mesAnterior: suma(mesAnt, sumaDias(mes, -1)) }, dias, meses: db.meses || {}, porCobrar: db.citas.filter((c) => c.estado === 'hecha' && !c.pagado).map((c) => ({ id: c.id, nombre: c.nombre, fecha: c.fecha, total: c.total, pago: c.pago })) });
+        return json({ ok: true, hoy, periodos: { hoy: suma(hoy, hoy), semana: suma(lunes, hoy), mes: suma(mes, hoy), mesAnterior: suma(mesAnt, sumaDias(mes, -1)) }, dias, meses: (() => { const M = JSON.parse(JSON.stringify(db.mesesArch || {})); db.citas.filter(cuenta).forEach((c) => { const m = diaIngreso(c).slice(0, 7); sumaMes(M[m] || (M[m] = { total: 0, citas: 0, porPago: {} }), c); }); return M; })(), porCobrar: db.citas.filter((c) => c.estado === 'hecha' && !c.pagado).map((c) => ({ id: c.id, nombre: c.nombre, fecha: c.fecha, total: c.total, pago: c.pago })) });
       }
       if (req.method !== 'POST') return error('Ruta no encontrada.', 404);
 
@@ -723,9 +733,7 @@ export async function manejar(req, opts) {
           if (a === 'confirmar' && c.estado === 'pendiente') c.estado = 'confirmada';
           else if (a === 'cancelar' && c.estado !== 'hecha') c.estado = 'cancelada';
           else if (a === 'terminar' && c.estado !== 'hecha' && c.estado !== 'cancelada' && c.estado !== 'ausente') {
-            c.estado = 'hecha'; const cl = db.clientes[c.tel];
-            const m = c.fecha.slice(0, 7); db.meses = db.meses || {}; const M = db.meses[m] || (db.meses[m] = { total: 0, citas: 0, porPago: {} });
-            M.total += c.total; M.citas++; M.porPago[c.pago || 'Sin indicar'] = (M.porPago[c.pago || 'Sin indicar'] || 0) + c.total;
+            c.estado = 'hecha'; c.terminadaEl = hoyCR().fecha; const cl = db.clientes[c.tel];
             if (cl) resena = { tel: cl.tel, nombre: cl.nombre, token: cl.token, subs: cl.push || [], id: c.id };
             if (cl) { darSello(cl, (c.lineas[0] || ['Lavado'])[0]); if (c.multa > 0 && cl.multa > 0) { cl.multa = Math.max(0, cl.multa - c.multa); cl.hist.unshift(['Multa pagada en esta cita', hoyCR().fecha]); } }
           }
@@ -733,7 +741,7 @@ export async function manejar(req, opts) {
             c.estado = 'ausente'; const cl = db.clientes[c.tel];
             if (cl) { cl.multa = (cl.multa || 0) + AJUSTES.multa; cl.hist.unshift(['⚠️ No se presentó: multa de ₡' + AJUSTES.multa.toLocaleString('es-CR'), c.fecha]); }
           }
-          else if (a === 'pagado' && c.estado !== 'cancelada') c.pagado = !c.pagado;
+          else if (a === 'pagado' && c.estado !== 'cancelada') { c.pagado = !c.pagado; if (c.pagado) c.pagadoEl = hoyCR().fecha; else delete c.pagadoEl; }
           else return { res: error('Esa acción no aplica a esta cita.'), cambio: false };
           anota(db, 'cita ' + a, c.nombre + ' ' + c.fecha + ' ' + c.hora);
           return { res: json({ ok: true, estado: c.estado }), cambio: true };

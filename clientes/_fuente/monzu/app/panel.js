@@ -435,7 +435,7 @@
       pp.appendChild(lst); pp.appendChild(el('p','ayuda izq','Marcado como pagado: '+col(P.mes.pagado)+' de '+col(P.mes.total)+(P.mes.multas?' · multas cobradas: '+col(P.mes.multas):''))); R.appendChild(pp);
       if(j.porCobrar.length){ var pc=el('div','caja-p'); pc.appendChild(el('b','tit-p','Por cobrar ('+j.porCobrar.length+')')); j.porCobrar.slice(-15).reverse().forEach(function(c){ var r=el('div','fila'), t=el('div'); t.appendChild(el('b',null,c.nombre)); t.appendChild(el('small',null,fmtDia(c.fecha)+' · '+(c.pago||''))); r.appendChild(t); r.appendChild(el('b',null,col(c.total))); pc.appendChild(r) }); R.appendChild(pc) }
       var ms=Object.keys(j.meses).sort().reverse(); if(ms.length){ var hm=el('div','caja-p'); hm.appendChild(el('b','tit-p','Por mes')); ms.slice(0,12).forEach(function(k){ var M=j.meses[k], r=el('div','fila'), t=el('div'), x=new Date(k+'-15T12:00:00Z'); t.appendChild(el('b',null,x.toLocaleDateString('es-CR',{month:'long',year:'numeric'}))); t.appendChild(el('small',null,M.citas+' lavados · '+Object.keys(M.porPago).map(function(p){ return p+' '+col(M.porPago[p]) }).join(' · '))); r.appendChild(t); r.appendChild(el('b',null,col(M.total))); hm.appendChild(r) }); R.appendChild(hm) }
-      R.appendChild(el('p','ayuda','Cuenta los lavados marcados como "Terminado". La tapicería "desde" suma el precio base.'));
+      R.appendChild(el('p','ayuda','Suma las citas marcadas como Pagado o Terminado, el día en que entró la plata. La tapicería "desde" suma el precio base.'));
     }).catch(function(){ R.textContent=''; R.appendChild(el('p','vacio','Sin conexión.')) });
   }
 
