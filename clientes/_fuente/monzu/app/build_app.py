@@ -236,10 +236,79 @@ t = rep(t, '<h3>5. Sus derechos</h3>', '<h3>5. Responsable</h3><p>El responsable
 t = rep(t, '<h3>Servicios de terceros</h3><p>Google Fonts entrega las tipografías. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>',
         '<h3>Almacenamiento en su navegador</h3><p>Para que no tenga que escribir su PIN cada vez, su navegador guarda el enlace de su tarjeta Monzú Club. Es una función necesaria y no sirve para rastrearle; se borra con “Salir de esta tarjeta”.</p><h3>Servicios de terceros</h3><p>Ninguno al navegar. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>')
 t = rep(t, '<li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>', '<li>Con su permiso, le enviamos por WhatsApp la confirmación y los recordatorios de su cita, desde el número oficial de Monzú y con la plataforma oficial de WhatsApp Business (Meta). No le enviamos publicidad. Para no recibirlos, responda “NO” o escríbanos.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>')
+
+# ---------------- SEO: título, datos para Google y preguntas frecuentes ----------------
+t = re.sub(r'<title>.*?</title>', '<title>Lavado y detallado de carros a domicilio en Cartago | Monzú Detallados</title>', t, count=1)
+t = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="Lavado y detallado de carros a domicilio en Cartago, Costa Rica. Detallado Premium y Deluxe con sellado cerámico, limpieza de motor y tapicería. Reserve en línea su hora en 1 minuto.">', t, count=1)
+t = re.sub(r'<meta property="og:title" content="[^"]*">', '<meta property="og:title" content="Monzú Detallados · Lavado y detallado a domicilio en Cartago">', t, count=1)
+t = re.sub(r'<meta property="og:description" content="[^"]*">', '<meta property="og:description" content="Su carro como nuevo, sin salir de casa. Reserve en línea y junte sellos para su lavado gratis.">', t, count=1)
+t = rep(t, '<meta property="og:type" content="website">', '<meta property="og:type" content="website">\n<meta property="og:locale" content="es_CR">\n<meta property="og:site_name" content="Monzú Detallados">\n<meta name="geo.region" content="CR-C">\n<meta name="geo.placename" content="Cartago, Costa Rica">')
+CAT_BASE = {'paq': {'premium': {'n': 'Detallado Premium', 'sedan': 16000, 'suv': 18000, 'incluye': BASE_INC['premium']}, 'deluxe': {'n': 'Detallado Deluxe', 'sedan': 32000, 'suv': 35000, 'incluye': BASE_INC['deluxe']}},
+            'ext': {'motor': {'n': 'Limpieza de motor', 'p': 8000}, 'asientos': {'n': 'Limpieza de asientos', 'p': 25000}, 'techo': {'n': 'Limpieza de techo', 'p': 10000}, 'tapiceria': {'n': 'Tapicería completa', 'p': 30000}, 'colchon': {'n': 'Limpieza de colchón', 'p': 10000}}}
+P = CAT_BASE['paq']; X = CAT_BASE['ext']
+FAQ = [
+ ('¿Llegan hasta mi casa?', 'Sí. Monzú Detallados es un servicio de lavado y detallado a domicilio en Cartago: llegamos a su casa u oficina con todo el equipo y los productos. El domicilio se cobra aparte y depende de la ubicación del vehículo.'),
+ ('¿Cuánto cuesta lavar el carro?', 'El Detallado Premium cuesta ₡%s en sedán y ₡%s en SUV o pick up. El Detallado Deluxe, con sellado cerámico de 10 meses, cuesta ₡%s en sedán y ₡%s en SUV o pick up. Los precios no incluyen el domicilio.' % tuple(format(v, ',').replace(',', '.') for v in (P['premium']['sedan'], P['premium']['suv'], P['deluxe']['sedan'], P['deluxe']['suv']))),
+ ('¿Qué incluye el Detallado Premium?', ' '.join(x.rstrip('.') + '.' for x in P['premium']['incluye'])),
+ ('¿Qué incluye el Detallado Deluxe?', 'Todo el Detallado Premium, más: ' + ', '.join(x.lower() for x in P['deluxe']['incluye'][1:]) + '.'),
+ ('¿Cómo reservo una cita?', 'En esta misma página: elija el paquete, el día y la hora libre, y su cita queda reservada al instante. Además le creamos su tarjeta Monzú Club y le confirmamos por WhatsApp.'),
+ ('¿Cómo puedo pagar?', 'En efectivo, SINPE Móvil o transferencia, al terminar el servicio.'),
+ ('¿Puedo cambiar o cancelar mi cita?', 'Sí, desde su tarjeta Monzú Club hasta 2 horas antes. Si no se presenta sin avisar, se cobra una multa de ₡5.000 en su próximo lavado.'),
+ ('¿Qué es Monzú Club?', 'Es la tarjeta de cliente frecuente: por cada lavado suma un sello y con 10 sellos su Lavado Premium sale gratis. La guarda en el celular sin descargar nada.'),
+]
+FAQ_HTML = '''<section id="preguntas"><div class="wrap">
+  <div class="cab rv"><div><span class="eti">Preguntas frecuentes</span><h2 class="t">Todo lo que<br><span class="tq">quiere saber</span></h2></div>
+    <p>Lavado y detallado de carros a domicilio en Cartago, Costa Rica.</p></div>
+  <div class="faq">%s</div>
+</div></section>
+
+''' % ''.join('<details class="faq-i rv"><summary><h3>%s</h3></summary><p>%s</p></details>' % q for q in FAQ)
+for kx, vx in (('premium-sedan', P['premium']['sedan']), ('premium-suv', P['premium']['suv']), ('deluxe-sedan', P['deluxe']['sedan']), ('deluxe-suv', P['deluxe']['suv'])):
+    FAQ_HTML = FAQ_HTML.replace('₡' + format(vx, ',').replace(',', '.') + ' ', '<b data-inc-precio="%s">₡%s</b> ' % (kx, format(vx, ',').replace(',', '.')), 1)
+t = rep(t, '<section id="contacto">', FAQ_HTML + '<section id="contacto">')
+t = rep(t, '<li><a href="#club">Monzú Club</a></li>', '<li><a href="#preguntas">Preguntas</a></li><li><a href="#club">Monzú Club</a></li>')
+FAQ_CSS = """
+.faq{display:grid;gap:10px;max-width:860px}
+.faq-i{background:var(--n2);border:1px solid var(--linea2);border-radius:18px;padding:4px 18px}
+.faq-i summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0}
+.faq-i summary::-webkit-details-marker{display:none}
+.faq-i summary::after{content:"+";font-size:1.5rem;color:var(--tq);flex:none;transition:transform .3s}
+.faq-i[open] summary::after{transform:rotate(45deg)}
+.faq-i h3{font-size:1.02rem;font-weight:700;font-family:var(--s)}
+.faq-i p{color:var(--gr);padding:0 0 16px;line-height:1.6}
+"""
+t = t.replace('</style>', FAQ_CSS + '</style>', 1)
+# datos estructurados (lo que Google lee del negocio)
+def oferta(n, precio, desc=None):
+    o = {"@type": "Offer", "price": str(precio), "priceCurrency": "CRC", "itemOffered": {"@type": "Service", "name": n}}
+    if desc: o["itemOffered"]["description"] = desc
+    return o
+negocio = {"@type": "AutoWash", "@id": DOM + "/#negocio", "name": "Monzú Detallados", "url": DOM + "/", "logo": DOM + "/icono-512.png", "image": [DOM + "/og.jpg"],
+  "description": "Lavado y detallado profesional de carros a domicilio en Cartago, Costa Rica: Detallado Premium, Deluxe con sellado cerámico, limpieza de motor, asientos, techo y tapicería.",
+  "telephone": "+506-7268-6906", "priceRange": "₡₡", "currenciesAccepted": "CRC", "paymentAccepted": "Efectivo, SINPE Móvil, Transferencia",
+  "address": {"@type": "PostalAddress", "addressLocality": "Cartago", "addressRegion": "Cartago", "addressCountry": "CR"},
+  "areaServed": [{"@type": "City", "name": "Cartago"}, {"@type": "AdministrativeArea", "name": "Provincia de Cartago"}],
+  "founder": {"@type": "Person", "name": "Isaac Monge"},
+  "potentialAction": {"@type": "ReserveAction", "target": DOM + "/#agendar", "name": "Reservar una cita"},
+  "hasOfferCatalog": {"@type": "OfferCatalog", "name": "Servicios de detallado", "itemListElement":
+     [oferta(P[k]['n'] + ' (sedán)', P[k]['sedan'], '. '.join(P[k]['incluye'])) for k in ('premium', 'deluxe')] +
+     [oferta(P[k]['n'] + ' (SUV o pick up)', P[k]['suv']) for k in ('premium', 'deluxe')] +
+     [oferta(x['n'], x['p']) for x in X.values()]}}
+grafo = {"@context": "https://schema.org", "@graph": [negocio,
+  {"@type": "WebSite", "@id": DOM + "/#sitio", "url": DOM + "/", "name": "Monzú Detallados", "inLanguage": "es-CR", "publisher": {"@id": DOM + "/#negocio"}},
+  {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in FAQ]}]}
+t = re.sub(r'<script type="application/ld\+json">.*?</script>', lambda m: '<script type="application/ld+json">' + json.dumps(grafo, ensure_ascii=False) + '</script>', t, count=1, flags=re.S)
 t = t.replace('{{FECHA}}', FECHA)
 imgs = {'logo': uri('logo.webp', 'image/webp'), 'fav64': uri('fav64.png', 'image/png'), 'fav180': uri('fav180.png', 'image/png')}
 for k in ['deluxe', 'motor', 'tapiceria', 'scents1', 'scents2', 'scents3']: imgs[k] = uri(k + '.webp', 'image/webp')
-t = re.sub(r'\{\{IMG:(\w+)\}\}', lambda m: imgs[m.group(1)], t)
+# fotos como archivos aparte (la página carga más rápido y Google puede verlas en Imágenes)
+os.makedirs(OUT + '/img', exist_ok=True)
+for viejo in os.listdir(OUT + '/img'): os.remove(OUT + '/img/' + viejo)
+IMGF = {}
+for k, (f, ext) in {'logo': ('logo.webp', 'webp'), 'fav64': ('fav64.png', 'png'), 'fav180': ('fav180.png', 'png'), **{x: (x + '.webp', 'webp') for x in ['deluxe', 'motor', 'tapiceria', 'scents1', 'scents2', 'scents3']}}.items():
+    b = open(M + 'img/' + f, 'rb').read(); nom = '%s-monzu-detallados.%s.%s' % ({'deluxe': 'detallado-deluxe-cartago', 'motor': 'limpieza-de-motor', 'tapiceria': 'limpieza-de-tapiceria'}.get(k, k), hashlib.sha256(b).hexdigest()[:8], ext)
+    open(OUT + '/img/' + nom, 'wb').write(b); IMGF[k] = '/img/' + nom
+t = re.sub(r'\{\{IMG:(\w+)\}\}', lambda m: IMGF[m.group(1)], t)
 def qr_svg(u):
     b = io.BytesIO(); segno.make(u, error='m').save(b, kind='svg', scale=4, border=1, dark='#07090B', xmldecl=False, svgns=True, omitsize=True); return b.getvalue().decode()
 t = t.replace('{{QR_RESENA}}', qr_svg('https://www.google.com/maps/search/Monzu+Detallados+Cartago')).replace('{{QR_WEB}}', qr_svg('https://ssolanotech.com'))
@@ -316,7 +385,7 @@ dv = ImageDraw.Draw(velo)
 for xx in range(1200): dv.line([(xx, 0), (xx, 630)], fill=(7, 9, 11, int(235 * max(0, 1 - xx / 760))))
 og = Image.alpha_composite(og.convert('RGBA'), velo); l = logo.copy(); l.thumbnail((520, 300)); og.paste(l, (70, (630 - l.height) // 2), l)
 og.convert('RGB').save(OUT + '/og.jpg', quality=86)
-open(OUT + '/sitemap.xml', 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>%s/</loc></url><url><loc>%s/privacidad</loc></url><url><loc>%s/terminos</loc></url><url><loc>%s/eliminar-datos</loc></url></urlset>\n' % (DOM, DOM, DOM, DOM))
+open(OUT + '/sitemap.xml', 'w').write('<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"><url><loc>%s/</loc><lastmod>%s</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url><url><loc>%s/privacidad</loc></url><url><loc>%s/terminos</loc></url><url><loc>%s/eliminar-datos</loc></url></urlset>\n' % (DOM, __import__('datetime').date.today().isoformat(), DOM, DOM, DOM))
 
 # ---------------- cabeceras y robots ----------------
 base = "  X-Frame-Options: DENY\n  X-Content-Type-Options: nosniff\n  Referrer-Policy: strict-origin-when-cross-origin\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  Cross-Origin-Opener-Policy: same-origin\n  Cross-Origin-Resource-Policy: same-origin\n  X-Permitted-Cross-Domain-Policies: none\n"
@@ -330,6 +399,7 @@ for ruta, csp, extra in [('/', csp_index, sin_cam), ('/index.html', csp_index, s
 for k, c in csp_legal.items():
     for ruta in ('/' + k, '/' + k + '.html'): hd += ruta + "\n  Content-Security-Policy: " + c + "\n" + base + sin_cam
 hd += "/sw.js\n  Cache-Control: no-cache\n  Content-Security-Policy: default-src 'none'; img-src 'self'\n  X-Content-Type-Options: nosniff\n"
+hd += "/img/*\n  Cache-Control: public, max-age=31536000, immutable\n  X-Content-Type-Options: nosniff\n"
 hd += "/js/*\n  Cache-Control: public, max-age=604800\n  X-Content-Type-Options: nosniff\n/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n"
 open(OUT + '/_headers', 'w').write(hd)
 open(OUT + '/robots.txt', 'w').write('User-agent: *\nAllow: /\nDisallow: /demo\nDisallow: /panel.html\nDisallow: /panel\nDisallow: /tarjeta.html\nDisallow: /api/\nSitemap: %s/sitemap.xml\n' % DOM)
