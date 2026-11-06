@@ -82,7 +82,7 @@
     if(vistos){ var nuevas=j.citas.filter(function(c){ return vistos.indexOf(c.id)<0 && c.estado==='pendiente' }); if(nuevas.length) avisar(nuevas) }
     vistos=ids; datos=j;
     $('actualizado').textContent='Actualizado '+new Date().toLocaleTimeString('es-CR',{hour:'numeric',minute:'2-digit'});
-    kpis(); cargaRep(); recordatorios(); citas(); clientes(); fijas(); ajustes(); llenaCHora(); calendario(); if($('sec-ganancias').classList.contains('on')) reporte();
+    kpis(); cargaRep(); recordatorios(); citas(); clientes(); fijas(); ajustes(); llenaCHora(); calendario(); espacio(); if($('sec-ganancias').classList.contains('on')) reporte();
   }
   /* ---------- dashboard: tarjetas, gráfico de ventas y meta del mes ---------- */
   var rep=null, rango=30;
@@ -302,6 +302,12 @@
   var DIAS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'], DCORTO=['D','L','K','M','J','V','S'];
   function opcion(sel,v,t){ var o=el('option',null,t); o.value=v; sel.appendChild(o) }
   function llenaSelHoras(sel,conOtra,conVacia){ var a=sel.value; sel.textContent=''; if(conVacia) opcion(sel,'','Todo el día'); datos.config.horas.forEach(function(h){ opcion(sel,h,fmtH(h)) }); if(conOtra) opcion(sel,'otra','Otra hora…'); if(a) sel.value=a }
+  function espacio(){
+    var E=datos.espacio; if(!E||!E.usados){ $('eTxt').textContent='Sin dato todavía.'; return }
+    var pct=Math.max(1,Math.round(E.usados/E.max*100)), por=E.clientes?E.usados/E.clientes:600, caben=Math.max(0,Math.floor((E.max*0.95-E.usados)/Math.max(por,300)));
+    $('eBar').style.width=pct+'%'; $('eBar').classList.toggle('alto',pct>=75);
+    $('eTxt').textContent='Usado: '+pct+'% · '+E.clientes+' clientes. Caben aproximadamente '+caben.toLocaleString('es-CR')+' clientes más.'+(pct>=75?' ⚠️ Avísele a Solanotech para ampliarla.':'');
+  }
   function llenaCHora(){ llenaSelHoras($('cHora'),false,true) }
   /* ---------- calendario del mes ---------- */
   var calMes='', diaSel='', MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','setiembre','octubre','noviembre','diciembre'];

@@ -247,6 +247,7 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
 .fj-f .btn{padding:6px 9px;font-size:.74rem;width:auto}
 .fj-f .mover{grid-column:1/-1}
 .ch-cab .btn.auto{white-space:nowrap;padding:10px 14px;flex:none}
+.barra-e{height:12px;border-radius:8px;background:rgba(148,163,184,.15);overflow:hidden}.barra-e i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,#4ADE80,#3B82F6);transition:width .8s var(--ease)}.barra-e i.alto{background:linear-gradient(90deg,#FBBF24,#F87171)}
 .cal-nav{display:flex;gap:4px}.cal-nav button{min-width:36px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--linea2);font-weight:700;font-size:.85rem}
 .cal-sem,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 .cal-sem span{text-align:center;font-size:.68rem;font-weight:700;color:var(--gr2)}
@@ -338,6 +339,11 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
   </section>
 
   <section class="sec" id="sec-ajustes" aria-label="Ajustes">
+    <div class="caja-p">
+      <b class="tit-p">💾 Espacio de la base de datos</b>
+      <div class="barra-e"><i id="eBar"></i></div>
+      <p class="ayuda izq" id="eTxt">Calculando…</p>
+    </div>
     <div class="caja-p">
       <b class="tit-p">🕒 Horario de citas</b>
       <p class="ayuda izq">Las horas que los clientes pueden escoger y los días que trabaja.</p>

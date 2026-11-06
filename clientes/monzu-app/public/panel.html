@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-dCZFDAIkT6bQuDi/FDc3orGnkrjFIRsbLjMnNRk6Hd0=' 'self'; style-src 'sha256-gG1bkPJRXW1Kcw1+Fjhyzmkj963RWclndYqtDZRuWYw='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-rzigE+aVqrPwK0tHFYUzykVDmb9Vpv2/Pkit4L6NvTA=' 'self'; style-src 'sha256-I6dHKys6kla5jwGzY07tDrOX30iUkJn6PAtb0y953AM='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Panel · Monzú Admin</title>
@@ -274,6 +274,7 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
 .fj-f .btn{padding:6px 9px;font-size:.74rem;width:auto}
 .fj-f .mover{grid-column:1/-1}
 .ch-cab .btn.auto{white-space:nowrap;padding:10px 14px;flex:none}
+.barra-e{height:12px;border-radius:8px;background:rgba(148,163,184,.15);overflow:hidden}.barra-e i{display:block;height:100%;width:0;border-radius:8px;background:linear-gradient(90deg,#4ADE80,#3B82F6);transition:width .8s var(--ease)}.barra-e i.alto{background:linear-gradient(90deg,#FBBF24,#F87171)}
 .cal-nav{display:flex;gap:4px}.cal-nav button{min-width:36px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--linea2);font-weight:700;font-size:.85rem}
 .cal-sem,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 .cal-sem span{text-align:center;font-size:.68rem;font-weight:700;color:var(--gr2)}
@@ -365,6 +366,11 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
   </section>
 
   <section class="sec" id="sec-ajustes" aria-label="Ajustes">
+    <div class="caja-p">
+      <b class="tit-p">💾 Espacio de la base de datos</b>
+      <div class="barra-e"><i id="eBar"></i></div>
+      <p class="ayuda izq" id="eTxt">Calculando…</p>
+    </div>
     <div class="caja-p">
       <b class="tit-p">🕒 Horario de citas</b>
       <p class="ayuda izq">Las horas que los clientes pueden escoger y los días que trabaja.</p>
@@ -534,7 +540,7 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
     if(vistos){ var nuevas=j.citas.filter(function(c){ return vistos.indexOf(c.id)<0 && c.estado==='pendiente' }); if(nuevas.length) avisar(nuevas) }
     vistos=ids; datos=j;
     $('actualizado').textContent='Actualizado '+new Date().toLocaleTimeString('es-CR',{hour:'numeric',minute:'2-digit'});
-    kpis(); cargaRep(); recordatorios(); citas(); clientes(); fijas(); ajustes(); llenaCHora(); calendario(); if($('sec-ganancias').classList.contains('on')) reporte();
+    kpis(); cargaRep(); recordatorios(); citas(); clientes(); fijas(); ajustes(); llenaCHora(); calendario(); espacio(); if($('sec-ganancias').classList.contains('on')) reporte();
   }
   /* ---------- dashboard: tarjetas, gráfico de ventas y meta del mes ---------- */
   var rep=null, rango=30;
@@ -754,6 +760,12 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
   var DIAS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'], DCORTO=['D','L','K','M','J','V','S'];
   function opcion(sel,v,t){ var o=el('option',null,t); o.value=v; sel.appendChild(o) }
   function llenaSelHoras(sel,conOtra,conVacia){ var a=sel.value; sel.textContent=''; if(conVacia) opcion(sel,'','Todo el día'); datos.config.horas.forEach(function(h){ opcion(sel,h,fmtH(h)) }); if(conOtra) opcion(sel,'otra','Otra hora…'); if(a) sel.value=a }
+  function espacio(){
+    var E=datos.espacio; if(!E||!E.usados){ $('eTxt').textContent='Sin dato todavía.'; return }
+    var pct=Math.max(1,Math.round(E.usados/E.max*100)), por=E.clientes?E.usados/E.clientes:600, caben=Math.max(0,Math.floor((E.max*0.95-E.usados)/Math.max(por,300)));
+    $('eBar').style.width=pct+'%'; $('eBar').classList.toggle('alto',pct>=75);
+    $('eTxt').textContent='Usado: '+pct+'% · '+E.clientes+' clientes. Caben aproximadamente '+caben.toLocaleString('es-CR')+' clientes más.'+(pct>=75?' ⚠️ Avísele a Solanotech para ampliarla.':'');
+  }
   function llenaCHora(){ llenaSelHoras($('cHora'),false,true) }
   /* ---------- calendario del mes ---------- */
   var calMes='', diaSel='', MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','setiembre','octubre','noviembre','diciembre'];

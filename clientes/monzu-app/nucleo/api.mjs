@@ -58,7 +58,8 @@ function cotiza(veh, paq, extras) {
 /* ---------- almacenamiento con escritura atómica (el adaptador entrega leer/escribir con etag) ---------- */
 const espera = (ms) => new Promise((r) => setTimeout(r, ms));
 const vacia = () => ({ v: 2, clientes: {}, tokens: {}, citas: [], cuotas: {}, bitacora: [] });
-async function leerDB(k = 'db') { const a = A; const r = await a.leer(k); return (r && r.data) || (k === 'db' ? vacia() : {}); }
+let BYTES = 0; // tamaño guardado de la base (para el medidor de espacio del panel)
+async function leerDB(k = 'db') { const a = A; const r = await a.leer(k); if (k === 'db' && r && r.bytes) BYTES = r.bytes; return (r && r.data) || (k === 'db' ? vacia() : {}); }
 // fn(db) devuelve { res, cambio }. Si otro escribió en medio, se repite con los datos nuevos.
 async function transaccion(fn, k = 'db') {
   const a = A;
@@ -174,7 +175,7 @@ function borraCliente(db, tel) {
 }
 function darSello(c, motivo) {
   if (c.sellos >= AJUSTES.meta) return false;
-  c.sellos += 1; c.hist.unshift(['Sello · ' + motivo, hoyCR().fecha]); c.hist = c.hist.slice(0, 40);
+  c.sellos += 1; c.hist.unshift(['Sello · ' + motivo, hoyCR().fecha]); c.hist = c.hist.slice(0, 15);
   return true;
 }
 // una cita suma a las ganancias si se terminó o si se marcó como pagada (nunca dos veces)
@@ -187,6 +188,7 @@ function purga(db) {
   db.mesesArch = db.mesesArch || {};                                           // antes de borrar citas viejas, se guardan sus totales del mes
   viejas.filter(cuenta).forEach((c) => { const m = diaIngreso(c).slice(0, 7); sumaMes(db.mesesArch[m] || (db.mesesArch[m] = { total: 0, citas: 0, porPago: {} }), c); });
   db.citas = db.citas.filter((x) => x.fecha >= corte).slice(-3000);
+  for (const c of Object.values(db.clientes)) if (c.hist && c.hist.length > 15) c.hist = c.hist.slice(0, 15);
 }
 
 /* ---------- PIN de clientes (scrypt + bloqueo por teléfono) ---------- */
@@ -544,7 +546,7 @@ export async function manejar(req, opts) {
         const clientes = Object.values(db.clientes).map((c) => ({ nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token, tienePin: !!c.pinHash, creado: c.creado || '', multa: c.multa || 0, conNotificaciones: (c.push || []).length > 0 }))
           .sort((a, b) => b.sellos - a.sellos || a.nombre.localeCompare(b.nombre));
         const fijas = (db.fijas || []).map((f) => ({ ...f, nombre: db.clientes[f.tel]?.nombre || '(cliente borrado)' }));
-        return json({ ok: true, config: { horas: CFG.horas, dias: CFG.dias, cerrados: CFG.cerrados, cat: CFG.cat, resena: CFG.resena, metaMes: CFG.metaMes || 0 }, fijas, pagos: AJUSTES.pagos, hoy: hoyCR().fecha, ahora: Date.now(), waAuto: waActivo(), meta: AJUSTES.meta, premio: AJUSTES.premio, multaMonto: AJUSTES.multa, horasCancelar: AJUSTES.horasCancelar, citas, clientes });
+        return json({ ok: true, espacio: { usados: BYTES, max: 1900000, clientes: Object.keys(db.clientes).length }, config: { horas: CFG.horas, dias: CFG.dias, cerrados: CFG.cerrados, cat: CFG.cat, resena: CFG.resena, metaMes: CFG.metaMes || 0 }, fijas, pagos: AJUSTES.pagos, hoy: hoyCR().fecha, ahora: Date.now(), waAuto: waActivo(), meta: AJUSTES.meta, premio: AJUSTES.premio, multaMonto: AJUSTES.multa, horasCancelar: AJUSTES.horasCancelar, citas, clientes });
       }
       if (accion === 'respaldo' && req.method === 'GET') {                       // copia de seguridad para el dueño (sin PIN)
         const db = await leerDB();
