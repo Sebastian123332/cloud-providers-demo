@@ -176,7 +176,7 @@
         acc.appendChild(boton(c.pagado?'Quitar pagado':'Marcar pagado','b-bor',function(){ accion(c,'pagado') }));
       }
       if(c.estado==='pendiente'||c.estado==='confirmada') acc.appendChild(boton('Mover','b-bor',function(){ formMover(c,box) }));
-      if((c.estado==='pendiente'||c.estado==='confirmada')&&!c.fija){ var dsm=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][new Date(c.fecha+'T12:00:00Z').getUTCDay()];
+      if((c.estado==='pendiente'||c.estado==='confirmada')&&!c.fija){ var dsm=['domingos','lunes','martes','miércoles','jueves','viernes','sábados'][new Date(c.fecha+'T12:00:00Z').getUTCDay()];
         acc.appendChild(boton('🔁 Repetir cada semana','b-bor',siPregunta('¿Dejar a '+c.nombre+' con cita fija todos los '+dsm+' a las '+fmtH(c.hora)+'? Se le apartan solas las próximas semanas.','Sí, dejar fija',function(){
           api('fijar',{id:c.id}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } var nom=c.nombre.split(' ')[0];
             if(j.choques.length) toast('⚠️ '+j.choques.length+' semana(s) ya tenían otra cita a esa hora.',true); else toast('✓ Cita fija: '+(j.creadas+1)+' citas apartadas.');
@@ -324,13 +324,86 @@
   }
   function mueveMes(n){ var y=+calMes.slice(0,4), m=+calMes.slice(5,7)-1+n; y+=Math.floor(m/12); m=((m%12)+12)%12; calMes=y+'-'+String(m+1).padStart(2,'0'); calendario() }
   $('calAnt').addEventListener('click',function(){ mueveMes(-1) }); $('calSig').addEventListener('click',function(){ mueveMes(1) }); $('calHoy').addEventListener('click',function(){ calMes=datos.hoy.slice(0,7); calendario() });
+  function losDias(n){ return 'los '+DIAS[n]+(n===0||n===6?'s':'') }
+  function elDia(f){ var t=fmtDia(f); return /^(Hoy|Mañana|Ayer)$/.test(t)?t.toLowerCase():'el '+t.toLowerCase() }
   function fijas(){
     var L=$('listaFijas'); L.textContent=''; $('nFijas').textContent=datos.fijas.length?'('+datos.fijas.length+')':'';
-    if(!datos.fijas.length){ L.appendChild(el('p','ayuda izq','No hay citas fijas. Al agendar una cita, marque "Cita fija" para repetirla cada semana.')); return }
-    datos.fijas.forEach(function(f){ var r=el('div','fila'), t=el('div'); t.appendChild(el('b',null,f.nombre)); t.appendChild(el('small',null,'Todos los '+DIAS[f.dia]+' · '+fmtH(f.hora)+' · '+f.lugar)); r.appendChild(t);
-      r.appendChild(boton('Quitar','b-rojo',siPregunta('¿Quitar la cita fija de '+f.nombre+'? Se cancelan también las próximas citas que ya estaban apartadas.','Sí, quitar',function(){ api('quitar-fija',{id:f.id}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Cita fija quitada · '+j.canceladas+' citas canceladas.'); refrescar() }) })));
-      L.appendChild(r) });
+    if(!datos.fijas.length){ L.appendChild(el('p','ayuda izq','Todavía no hay citas fijas. Toque "＋ Nueva" para apartarle a un cliente el mismo día y hora cada semana.')); return }
+    var C=datos.config.cat;
+    datos.fijas.forEach(function(f){
+      var box=el('div','fj'), top=el('div','fj-top'), t=el('div'); t.appendChild(el('b',null,f.nombre));
+      var dur=f.hasta?(f.hasta<datos.hoy?'terminó '+elDia(f.hasta):'hasta '+elDia(f.hasta)+(f.semanas?' ('+f.semanas+' semanas)':'')):'sin fecha de fin';
+      t.appendChild(el('small',null,'Todos '+losDias(f.dia)+' · '+fmtH(f.hora)+' · '+dur));
+      var serv=[C.paq[f.paq]?C.paq[f.paq].n:'Solo adicionales'].concat((f.extras||[]).map(function(k){ return C.ext[k]?C.ext[k].n:k })).join(' + ');
+      t.appendChild(el('small',null,serv+' · '+(f.veh==='suv'?'SUV':'Sedán')+' · '+f.pago+' · 📍 '+f.lugar)); top.appendChild(t); box.appendChild(top);
+      var prox=datos.citas.filter(function(c){ return c.fija===f.id && c.fecha>=datos.hoy }).sort(function(a,b){ return (a.fecha+a.hora).localeCompare(b.fecha+b.hora) });
+      var fe=el('div','fj-fechas');
+      if(!prox.length) fe.appendChild(el('p','ayuda izq','No hay próximas fechas.'));
+      prox.slice(0,10).forEach(function(c){ var salta=c.estado==='cancelada', r=el('div','fj-f'+(salta?' salta':''));
+        r.appendChild(el('span',null,fmtDia(c.fecha)+' · '+fmtH(c.hora)+(c.cambiada?' (movida)':'')+(salta?' · saltada':'')));
+        if(salta){ r.appendChild(el('span')); r.appendChild(boton('Reponer','b-bor',function(){ api('fija-reponer',{id:c.id}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('✓ Fecha repuesta.'); refrescar() }) })) }
+        else if(c.estado==='pendiente'||c.estado==='confirmada'){
+          r.appendChild(boton('Mover','b-bor',function(){ formMover(c,r) }));
+          r.appendChild(boton('Saltar','b-rojo',siPregunta('¿Saltar la cita de '+f.nombre+' de '+elDia(c.fecha)+'? Esa semana no viene; las demás siguen igual.','Sí, saltar',function(){ api('cita',{id:c.id,accion:'cancelar'}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Semana saltada.'); refrescar() }) })))
+        } else { r.appendChild(el('span','chip '+c.estado,NOM[c.estado])); r.appendChild(el('span')) }
+        fe.appendChild(r) });
+      box.appendChild(fe);
+      var acc=el('div','acc');
+      acc.appendChild(boton('Editar','b-bor',function(){ abreFija(f) }));
+      acc.appendChild(boton('Quitar','b-rojo',siPregunta('¿Quitar la cita fija de '+f.nombre+'? Se cancelan también las próximas fechas.','Sí, quitar',function(){ api('quitar-fija',{id:f.id}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Cita fija quitada · '+j.canceladas+' fechas canceladas.'); refrescar() }) })));
+      box.appendChild(acc); L.appendChild(box);
+    });
   }
+  /* formulario de cita fija (nueva o editar) */
+  var fjId='', fjTel='';
+  function proxDia(dia,desde){ var f=desde||datos.hoy; while(new Date(f+'T12:00:00Z').getUTCDay()!==+dia) f=sumaDias(f,1); return f }
+  function llenaFija(){
+    var C=datos.config.cat;
+    var sd=$('fjDia'); if(!sd.options.length) [1,2,3,4,5,6,0].forEach(function(n){ opcion(sd,n,DIAS[n].charAt(0).toUpperCase()+DIAS[n].slice(1)) });
+    llenaSelHoras($('fjHora'),false);
+    var ps=$('fjPaq'), primera=!ps.options.length, a=ps.value; ps.textContent=''; Object.keys(C.paq).forEach(function(k){ opcion(ps,k,C.paq[k].n) }); opcion(ps,'','Solo adicionales'); if(primera) ps.selectedIndex=0; else ps.value=a;
+    var pg=$('fjPago'), b=pg.value; pg.textContent=''; datos.pagos.forEach(function(p){ opcion(pg,p,p) }); if(b) pg.value=b;
+    var ex=$('fjExt'), marc=[].map.call(ex.querySelectorAll('input:checked'),function(i){ return i.value }); ex.textContent='';
+    Object.keys(C.ext).forEach(function(k){ var x=C.ext[k]; if(x.oculto) return; var l=el('label','chk'), i=el('input'); i.type='checkbox'; i.value=k; i.checked=marc.indexOf(k)>=0; l.appendChild(i); l.appendChild(d.createTextNode(x.n)); ex.appendChild(l) });
+    var dl=$('dlCli'); dl.textContent=''; datos.clientes.forEach(function(c){ var o=el('option'); o.value=c.nombre+' · '+c.tel.slice(0,4)+'-'+c.tel.slice(4); dl.appendChild(o) });
+  }
+  function totalFija(){
+    var C=datos.config.cat, v=$('fjVeh').value, P=C.paq[$('fjPaq').value], t=P?P[v]:0, desde=false;
+    [].forEach.call($('fjExt').querySelectorAll('input:checked'),function(i){ var x=C.ext[i.value]; if(!x) return; if(x.desde) desde=true; t+=(x.conPaq!=null&&P)?x.conPaq:x.p });
+    $('fjTotal').textContent=t?(desde?'desde ':'')+col(t):'—';
+    var ini=proxDia($('fjDia').value,$('fjDesde').value||datos.hoy), n=+$('fjSemanas').value;
+    $('fjResumen').textContent='Se apartan '+(n?n+' citas':'citas cada semana, sin fin')+': todos los '+DIAS[+$('fjDia').value]+' a las '+fmtH($('fjHora').value||'08:00')+', desde '+elDia(ini)+(n?' hasta '+elDia(sumaDias(ini,(n-1)*7)):'')+'.';
+  }
+  ['fjDia','fjHora','fjDesde','fjSemanas','fjPaq','fjVeh'].forEach(function(i){ $(i).addEventListener('change',totalFija) }); $('fjExt').addEventListener('change',totalFija);
+  $('fjBuscar').addEventListener('input',function(){
+    var v=$('fjBuscar').value.trim(), dig=v.replace(/\D/g,'').slice(-8), q=v.toLowerCase(), c=null;
+    if(dig.length===8) c=datos.clientes.filter(function(x){ return x.tel===dig })[0];
+    if(!c&&q.length>=3){ var m=datos.clientes.filter(function(x){ return x.nombre.toLowerCase()===q }); if(m.length===1) c=m[0] }
+    fjTel=c?c.tel:''; $('fjCliTxt').textContent=c?'✓ '+c.nombre+' · '+c.tel.slice(0,4)+'-'+c.tel.slice(4)+(c.carro?' · '+c.carro:''):'Busque al cliente. Si no está, agréguelo primero en Clientes.';
+  });
+  function abreFija(f){
+    llenaFija(); var F=$('fFija'); F.hidden=false; $('mFija').textContent=''; fjId=f?f.id:''; fjTel=f?f.tel:'';
+    $('fjTit').textContent=f?'Editar cita fija de '+f.nombre:'Nueva cita fija'; $('fjCliC').hidden=!!f; $('fjCliTxt').hidden=!!f; $('fjGuardar').textContent=f?'Guardar cambios':'Guardar cita fija';
+    if(f){ $('fjDia').value=f.dia; $('fjHora').value=f.hora; if($('fjHora').value!==f.hora){ opcion($('fjHora'),f.hora,fmtH(f.hora)); $('fjHora').value=f.hora } $('fjDesde').value=f.desde<datos.hoy?datos.hoy:f.desde; $('fjSemanas').value=String(f.semanas||0);
+      $('fjPaq').value=f.paq||''; $('fjVeh').value=f.veh; $('fjPago').value=f.pago; $('fjLugar').value=f.lugar; [].forEach.call($('fjExt').querySelectorAll('input'),function(i){ i.checked=(f.extras||[]).indexOf(i.value)>=0 }) }
+    else { $('fjBuscar').value=''; $('fjLugar').value=''; $('fjDesde').value=datos.hoy; $('fjSemanas').value='7'; $('fjCliTxt').textContent='Busque al cliente. Si no está, agréguelo primero en Clientes.'; [].forEach.call($('fjExt').querySelectorAll('input'),function(i){ i.checked=false }) }
+    $('fjDesde').min=datos.hoy; totalFija(); F.scrollIntoView({behavior:'smooth',block:'start'}); if(!f) $('fjBuscar').focus();
+  }
+  $('fjNueva').addEventListener('click',function(){ abreFija(null) });
+  $('fjCerrar').addEventListener('click',function(){ $('fFija').hidden=true });
+  $('fFija').addEventListener('submit',function(e){
+    e.preventDefault(); var m=$('mFija');
+    if(!fjId&&!fjTel){ m.textContent='Busque y elija un cliente de la lista.'; m.className='msg mal'; return }
+    var x={id:fjId||undefined,tel:fjTel,dia:+$('fjDia').value,hora:$('fjHora').value,desde:$('fjDesde').value,semanas:+$('fjSemanas').value,paq:$('fjPaq').value,veh:$('fjVeh').value,extras:[].map.call($('fjExt').querySelectorAll('input:checked'),function(i){ return i.value }),pago:$('fjPago').value,lugar:$('fjLugar').value.trim()};
+    m.textContent='Guardando…'; m.className='msg';
+    api('fija-guardar',x).then(function(j){
+      if(!j.ok){ m.textContent=j.error||'No se pudo.'; m.className='msg mal'; return }
+      $('fFija').hidden=true; var nom=j.nombre.split(' ')[0], n=+$('fjSemanas').value;
+      if(j.choques.length) toast('⚠️ '+j.choques.length+' fecha(s) ya tenían otra cita a esa hora: '+j.choques.map(function(c){ return fmtDia(c.fecha) }).join(', '),true); else toast('✓ '+(fjId?'Cita fija actualizada':'Cita fija guardada')+' · '+j.creadas+' fechas apartadas.');
+      hojaWA('Avísele a '+nom+':',j.tel,'¡Hola '+nom+'! 👋 '+(fjId?'Le actualizamos':'Le dejamos')+' su cita fija en Monzú Detallados: todos los '+DIAS[x.dia]+' a las '+fmtH(x.hora)+(n?' por '+n+' semanas':'')+'. Le llegan recordatorios antes de cada una y las ve en su tarjeta: '+enlaceTarjeta(j.tarjeta));
+      refrescar();
+    }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
+  });
   /* mover una cita */
   function formMover(c,box){
     if(box.querySelector('.mover')){ box.querySelector('.mover').remove(); return }

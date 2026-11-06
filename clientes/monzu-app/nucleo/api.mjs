@@ -124,7 +124,7 @@ function generaFijas(db) {
     const cl = db.clientes[fj.tel]; if (!cl) continue;
     let f = fj.desde > hoy ? fj.desde : hoy;
     while (diaSemana(f) !== fj.dia) f = sumaDias(f, 1);
-    for (; f <= hasta; f = sumaDias(f, 7)) {
+    for (; f <= hasta && (!fj.hasta || f <= fj.hasta); f = sumaDias(f, 7)) {
       if (db.citas.some((c) => c.fija === fj.id && (c.fijaFecha || c.fecha) === f)) continue;            // ya existe (o se canceló esa semana)
       if (f === hoy && fj.hora <= hoyCR().hora) continue;
       if (cerradoDia(f) || CFG.cerrados.some((x) => x.hora === fj.hora && x.desde === f)) continue;
@@ -655,6 +655,41 @@ export async function manejar(req, opts) {
           db.fijas = [...(db.fijas || []), fj].slice(-200); c.fija = fj.id; c.fijaFecha = c.fecha;
           const gen = generaFijas(db); anota(db, 'cita fija creada', c.nombre + ' cada ' + c.hora);
           return { res: json({ ok: true, creadas: gen.creadas, choques: gen.choques, tarjeta: db.clientes[c.tel]?.token }), cambio: true };
+        });
+      }
+      if (accion === 'fija-guardar') {                                            // crear o editar una cita fija desde el panel
+        const dia = Number(body.dia), hora = String(body.hora || ''), semanas = Math.round(Number(body.semanas) || 0), hoy = hoyCR().fecha;
+        if (!Number.isInteger(dia) || dia < 0 || dia > 6) return error('Elija el día de la semana.');
+        if (!horaOk(hora)) return error('Elija la hora.');
+        if (semanas < 0 || semanas > 104) return error('Elija cuántas semanas.');
+        let desde = String(body.desde || hoy); if (!fechaOk(desde) || desde < hoy) desde = hoy;
+        while (diaSemana(desde) !== dia) desde = sumaDias(desde, 1);
+        if (!cotiza(body.veh, body.paq, body.extras).lineas.length) return error('Elija un paquete o un adicional.');
+        const pago = AJUSTES.pagos.includes(body.pago) ? body.pago : AJUSTES.pagos[0];
+        return await transaccion((db) => {
+          let fj = body.id ? (db.fijas || []).find((x) => x.id === body.id) : null;
+          if (body.id && !fj) return { res: error('Cita fija no encontrada.', 404), cambio: false };
+          const tel = fj ? fj.tel : telCR(body.tel), c = tel && db.clientes[tel];
+          if (!c) return { res: error('Busque y elija un cliente de la lista.'), cambio: false };
+          const lugar = limpia(body.lugar, 120) || (fj && fj.lugar) || (c.pref && c.pref.lugar) || '';
+          if (lugar.length < 3) return { res: error('Escriba la dirección (el cliente todavía no tiene una guardada).'), cambio: false };
+          const datos = { dia, hora, veh: body.veh === 'suv' ? 'suv' : 'sedan', paq: CFG.cat.paq[body.paq] ? body.paq : '', extras: (Array.isArray(body.extras) ? body.extras.map(String) : []).filter((k) => CFG.cat.ext[k]).slice(0, 8),
+            pago, lugar, ubic: lugar === (c.pref && c.pref.lugar) ? (c.pref.ubic || null) : (fj && fj.lugar === lugar ? fj.ubic : null), nota: limpia(body.nota, 400), desde, hasta: semanas ? sumaDias(desde, (semanas - 1) * 7) : null, semanas };
+          if (fj) {                                                               // editar: se rehacen las próximas citas con los datos nuevos
+            Object.assign(fj, datos);
+            db.citas = db.citas.filter((x) => !(x.fija === fj.id && inicioCita(x) > Date.now() && (x.estado === 'pendiente' || x.estado === 'confirmada' || x.estado === 'cancelada')));
+          } else { fj = { id: id(), tel, ...datos, creada: new Date().toISOString() }; db.fijas = [...(db.fijas || []), fj].slice(-200); }
+          const gen = generaFijas(db);
+          anota(db, body.id ? 'cita fija editada' : 'cita fija creada', c.nombre + ' · día ' + dia + ' ' + hora);
+          return { res: json({ ok: true, id: fj.id, creadas: gen.creadas, choques: gen.choques.filter((x) => x.fija === fj.id), nombre: c.nombre, tel, tarjeta: c.token }), cambio: true };
+        });
+      }
+      if (accion === 'fija-reponer') {                                            // volver a poner una semana que se había saltado
+        return await transaccion((db) => {
+          const c = db.citas.find((x) => x.id === body.id && x.fija && x.estado === 'cancelada');
+          if (!c || inicioCita(c) <= Date.now()) return { res: error('Esa fecha ya no se puede reponer.'), cambio: false };
+          db.citas = db.citas.filter((x) => x !== c); const g = generaFijas(db);
+          return { res: g.creadas ? json({ ok: true }) : error('Esa hora ya está ocupada ese día.', 409), cambio: g.creadas > 0 };
         });
       }
       if (accion === 'quitar-fija') {

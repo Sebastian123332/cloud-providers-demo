@@ -238,6 +238,15 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
   .cab{border-radius:18px;padding:10px 14px;border:1px solid var(--linea);top:12px}
   .hoja-wa,.toast{left:calc(50% + 125px)}
 }
+.campo .chk{text-transform:none;letter-spacing:normal;font-size:.82rem;color:var(--bl)}.chk input{width:auto;padding:0}
+.fj{display:grid;gap:8px;background:rgba(7,11,20,.5);border:1px solid var(--linea);border-radius:16px;padding:12px}
+.fj-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}.fj-top b{display:block}.fj-top small{display:block;color:var(--gr);font-size:.78rem}
+.fj-fechas{display:grid;gap:6px}
+.fj-f{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:6px;align-items:center;font-size:.82rem;padding:6px 8px;border-radius:10px;background:rgba(255,255,255,.03)}
+.fj-f.salta span:first-child{text-decoration:line-through;color:var(--gr2)}
+.fj-f .btn{padding:6px 9px;font-size:.74rem;width:auto}
+.fj-f .mover{grid-column:1/-1}
+.ch-cab .btn.auto{white-space:nowrap;padding:10px 14px;flex:none}
 .cal-nav{display:flex;gap:4px}.cal-nav button{min-width:36px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--linea2);font-weight:700;font-size:.85rem}
 .cal-sem,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 .cal-sem span{text-align:center;font-size:.68rem;font-weight:700;color:var(--gr2)}
@@ -304,7 +313,24 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
       <button type="button" data-f="hoy" aria-pressed="true">Hoy</button><button type="button" data-f="prox" aria-pressed="false">Próximas</button><button type="button" data-f="pend" aria-pressed="false">Por confirmar</button><button type="button" data-f="pasadas" aria-pressed="false">Pasadas</button>
     </div>
     <div id="listaCitas"></div>
-    <details class="nuevo" id="fijasBox"><summary>🔁 Citas fijas <span id="nFijas"></span></summary><div class="lista" id="listaFijas"></div></details>
+    <div class="card-g" id="fijasBox">
+      <div class="ch-cab"><div><b>🔁 Citas fijas <span id="nFijas"></span></b><small>Clientes que vienen siempre el mismo día y hora</small></div><button type="button" class="btn b-tq auto" id="fjNueva">＋ Nueva</button></div>
+      <form class="caja-p" id="fFija" novalidate hidden>
+        <b class="tit-p" id="fjTit">Nueva cita fija</b>
+        <div class="campo" id="fjCliC"><label for="fjBuscar">Cliente</label><input id="fjBuscar" list="dlCli" autocomplete="off" placeholder="Escriba el nombre o el teléfono"><datalist id="dlCli"></datalist></div>
+        <p class="ayuda izq" id="fjCliTxt">Busque al cliente. Si no está, agréguelo primero en Clientes.</p>
+        <div class="dos-p"><div class="campo"><label for="fjDia">Todos los</label><select id="fjDia"></select></div><div class="campo"><label for="fjHora">A las</label><select id="fjHora"></select></div></div>
+        <div class="dos-p"><div class="campo"><label for="fjDesde">Empieza</label><input id="fjDesde" type="date"></div><div class="campo"><label for="fjSemanas">Por cuántas semanas</label><select id="fjSemanas"><option value="4">4 semanas</option><option value="7" selected>7 semanas</option><option value="8">8 semanas</option><option value="12">12 semanas (3 meses)</option><option value="26">26 semanas (6 meses)</option><option value="52">52 semanas (1 año)</option><option value="0">Sin fin</option></select></div></div>
+        <div class="dos-p"><div class="campo"><label for="fjPaq">Servicio</label><select id="fjPaq"></select></div><div class="campo"><label for="fjVeh">Vehículo</label><select id="fjVeh"><option value="sedan">Sedán</option><option value="suv">SUV · Pick up</option></select></div></div>
+        <div class="campo"><span class="lbl-p">Adicionales</span><div class="chks" id="fjExt"></div></div>
+        <div class="dos-p"><div class="campo"><label for="fjPago">Pago</label><select id="fjPago"></select></div><div class="campo"><label for="fjLugar">Dirección</label><input id="fjLugar" maxlength="120" placeholder="La última del cliente"></div></div>
+        <p class="ayuda izq" id="fjResumen"></p>
+        <div class="tot-p"><span>Total cada semana</span><b id="fjTotal">—</b></div>
+        <div class="acc"><button type="button" class="btn b-bor" id="fjCerrar">Cerrar</button><button type="submit" class="btn b-tq" id="fjGuardar">Guardar cita fija</button></div>
+        <p class="msg" id="mFija" role="status"></p>
+      </form>
+      <div class="lista" id="listaFijas"></div>
+    </div>
   </section>
 
   <section class="sec" id="sec-ganancias" aria-label="Ganancias">
