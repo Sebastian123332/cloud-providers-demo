@@ -153,6 +153,7 @@
       if(c.estado==='pendiente'||c.estado==='confirmada'){ if(c.r24) ch.appendChild(el('span','chip confirmada','🔔 24 h: '+(REC[c.r24]||c.r24))); if(c.r1) ch.appendChild(el('span','chip confirmada','🔔 1 h: '+(REC[c.r1]||c.r1))) }
       if(ch.childNodes.length) box.appendChild(ch);
       if(c.cambiada) box.appendChild(el('p',null,'🔁 El cliente la cambió (antes: '+c.cambiada+')'));
+      if(c.encuesta){ var en=c.encuesta; box.appendChild(el('p','opi','★★★★★'.slice(0,en.general)+'☆☆☆☆☆'.slice(0,5-en.general)+' Opinión del cliente'+(en.comentario?': “'+en.comentario+'”':''))) }
       if(c.multa>0) box.appendChild(el('p','alerta','⚠️ Incluye multa pendiente de '+col(c.multa)+' por no presentarse antes.'));
       else if(c.multaCliente>0 && c.estado!=='ausente') box.appendChild(el('p','alerta','⚠️ Este cliente debe una multa de '+col(c.multaCliente)+'.'));
       var sv=el('div','servs'); c.lineas.forEach(function(l){ var r=el('div'); r.appendChild(el('span',null,l[0])); r.appendChild(el('span',null,col(l[1]))); sv.appendChild(r) });
@@ -423,8 +424,8 @@
   /* pedir reseña al terminar */
   function trasTerminar(c,j){
     var nom=c.nombre.split(' ')[0];
-    if(j.resena) toast('✓ Sello agregado · reseña pedida '+(/whatsapp/.test(j.resena)?'por WhatsApp':'al celular')+' ⭐');
-    else if(j.resenaUrl) hojaWA('✓ Sello agregado. Pídale la reseña a '+nom+' ⭐',c.tel,'¡Gracias por lavar con Monzú, '+nom+'! 💧 ¿Cómo le quedó su carro? Nos ayuda muchísimo si nos califica en Google, toma 1 minuto: '+j.resenaUrl);
+    if(j.resena) toast('✓ Sello agregado · encuesta enviada '+(/whatsapp/.test(j.resena)?'por WhatsApp':'al celular')+' ⭐');
+    else if(j.tarjeta) hojaWA('✓ Sello agregado. Mándele la encuesta a '+nom+' ⭐',c.tel,'¡Gracias por lavar con Monzú, '+nom+'! 💧 ¿Cómo le fue? Cuéntenos en 1 minuto qué le pareció el trabajo: '+enlaceTarjeta(j.tarjeta)+'#encuesta');
   }
 
   /* ---------- ganancias ---------- */
@@ -441,6 +442,15 @@
       pp.appendChild(lst); pp.appendChild(el('p','ayuda izq','Marcado como pagado: '+col(P.mes.pagado)+' de '+col(P.mes.total)+(P.mes.multas?' · multas cobradas: '+col(P.mes.multas):''))); R.appendChild(pp);
       if(j.porCobrar.length){ var pc=el('div','caja-p'); pc.appendChild(el('b','tit-p','Por cobrar ('+j.porCobrar.length+')')); j.porCobrar.slice(-15).reverse().forEach(function(c){ var r=el('div','fila'), t=el('div'); t.appendChild(el('b',null,c.nombre)); t.appendChild(el('small',null,fmtDia(c.fecha)+' · '+(c.pago||''))); r.appendChild(t); r.appendChild(el('b',null,col(c.total))); pc.appendChild(r) }); R.appendChild(pc) }
       var ms=Object.keys(j.meses).sort().reverse(); if(ms.length){ var hm=el('div','caja-p'); hm.appendChild(el('b','tit-p','Por mes')); ms.slice(0,12).forEach(function(k){ var M=j.meses[k], r=el('div','fila'), t=el('div'), x=new Date(k+'-15T12:00:00Z'); t.appendChild(el('b',null,x.toLocaleDateString('es-CR',{month:'long',year:'numeric'}))); t.appendChild(el('small',null,M.citas+' lavados · '+Object.keys(M.porPago).map(function(p){ return p+' '+col(M.porPago[p]) }).join(' · '))); r.appendChild(t); r.appendChild(el('b',null,col(M.total))); hm.appendChild(r) }); R.appendChild(hm) }
+      var O=j.opiniones; if(O){ var oc=el('div','caja-p'); oc.appendChild(el('b','tit-p','⭐ Opiniones de los clientes'));
+        if(!O.total) oc.appendChild(el('p','ayuda izq','Todavía no hay encuestas. Al marcar un lavado como Terminado, al cliente le llega la encuesta.'));
+        else { var top=el('div','opi-top'), big=el('div','opi-big'); big.appendChild(el('b',null,String(O.general).replace('.',','))); big.appendChild(el('span','opi-est','★★★★★'.slice(0,Math.round(O.general))+'☆☆☆☆☆'.slice(0,5-Math.round(O.general)))); big.appendChild(el('small',null,O.total+(O.total===1?' opinión':' opiniones')+(O.terminadas?' · respondió el '+Math.round(O.total/O.terminadas*100)+'%':''))); top.appendChild(big);
+          var asp=el('div','pp'); [['Puntualidad',O.puntualidad],['Calidad',O.calidad],['Trato',O.trato]].forEach(function(x){ if(x[1]==null) return; var rr=el('div'), w=el('span'), ba=el('i'); ba.style.width=(x[1]/5*100)+'%'; w.appendChild(ba); rr.appendChild(el('span',null,x[0])); rr.appendChild(w); rr.appendChild(el('b',null,String(x[1]).replace('.',',')+' ★')); asp.appendChild(rr) }); top.appendChild(asp); oc.appendChild(top);
+          if(O.recomiendan!=null) oc.appendChild(el('p','ayuda izq','👍 El '+O.recomiendan+'% lo recomendaría con sus amigos.'));
+          O.ultimas.forEach(function(x){ var f=el('div','fila'+(x.general<=3?' opi-mal':'')), t=el('div'); t.appendChild(el('b',null,'★★★★★'.slice(0,x.general)+'☆☆☆☆☆'.slice(0,5-x.general)+'  '+x.nombre)); t.appendChild(el('small',null,fmtDia(x.fecha)+' · '+x.servicio.split(' · ')[0]+(x.recomienda===false?' · no lo recomendaría':''))); if(x.comentario) t.appendChild(el('small',null,'“'+x.comentario+'”')); f.appendChild(t);
+            if(x.general<=3) f.appendChild(boton('Escribirle','b-wa',function(){ abrirWA(x.tel,'¡Hola '+x.nombre.split(' ')[0]+'! Le escribimos de Monzú Detallados. Vimos su opinión del lavado y nos importa mucho: ¿nos cuenta qué pasó para arreglarlo?') },'wa'));
+            oc.appendChild(f) }) }
+        R.appendChild(oc) }
       R.appendChild(el('p','ayuda','Suma las citas marcadas como Pagado o Terminado, el día en que entró la plata. La tapicería "desde" suma el precio base.'));
     }).catch(function(){ R.textContent=''; R.appendChild(el('p','vacio','Sin conexión.')) });
   }

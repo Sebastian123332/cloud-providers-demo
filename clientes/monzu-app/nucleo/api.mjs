@@ -267,12 +267,12 @@ async function enviarWA(tel, datos, fetchFn, plantilla) {
 async function pideResena(c, fetchFn) {
   let via = null;
   if (waActivo()) {
-    try { if (await enviarWA(c.tel, [waTexto(c.nombre.split(' ')[0], 40), CFG.resena], fetchFn, ENV.WA_PLANTILLA_RESENA || 'pedir_resena')) via = 'whatsapp'; } catch (e) { console.error('resena', e && e.message); }
+    try { if (await enviarWA(c.tel, [waTexto(c.nombre.split(' ')[0], 40), (ENV.SITIO_URL || '') + '/tarjeta.html?t=' + c.token + '#encuesta'], fetchFn, ENV.WA_PLANTILLA_RESENA || 'pedir_resena')) via = 'whatsapp'; } catch (e) { console.error('resena', e && e.message); }
   }
   if (c.subs.length) {
     try {
       const vapid = await claveVapid();
-      for (const s of c.subs) { const st = await enviarPush(s, { title: '¡Gracias por lavar con Monzú! ⭐', body: '¿Cómo le quedó su carro? Toque aquí y califíquenos en Google: nos ayuda muchísimo.' }, vapid, ENV.SITIO_URL || 'https://monzu.example', fetchFn); if (st >= 200 && st < 300) via = via ? via + '+push' : 'push'; }
+      for (const s of c.subs) { const st = await enviarPush(s, { title: '¿Cómo le fue con su lavado? ⭐', body: 'Gracias por lavar con Monzú. Toque aquí y cuéntenos en 1 minuto cómo le pareció el trabajo.' }, vapid, ENV.SITIO_URL || 'https://monzu.example', fetchFn); if (st >= 200 && st < 300) via = via ? via + '+push' : 'push'; }
     } catch (e) { console.error('resena push', e && e.message); }
   }
   return via;
@@ -493,6 +493,20 @@ export async function manejar(req, opts) {
         return { res: json({ ok: true }), cambio: true };
       });
     }
+    if (ruta === 'encuesta' && req.method === 'POST') {                          // encuesta de satisfacción después del lavado
+      if (limite(ip, 'enc', 10, 900e3)) return error('Demasiados intentos. Espere unos minutos.', 429);
+      const t = String(body.t || ''); if (!/^[\w-]{20,40}$/.test(t)) return error('Tarjeta no encontrada.', 404);
+      const nota = (k) => { const n = Number(body[k]); return Number.isInteger(n) && n >= 1 && n <= 5 ? n : null; };
+      const e = { general: nota('general'), puntualidad: nota('puntualidad'), calidad: nota('calidad'), trato: nota('trato'), recomienda: body.recomienda === true ? true : body.recomienda === false ? false : null, comentario: limpia(body.comentario, 500), f: new Date().toISOString() };
+      if (!e.general) return error('Toque las estrellas para calificar el servicio.');
+      return await transaccion((db) => {
+        const tel = db.tokens[t], c = db.citas.find((x) => x.id === body.id && x.tel === tel);
+        if (!tel || !c || c.estado !== 'hecha') return { res: error('No encontramos ese lavado.', 404), cambio: false };
+        if (c.encuesta) return { res: json({ ok: true, ya: true, resena: CFG.resena }), cambio: false };
+        c.encuesta = e; anota(db, 'encuesta recibida', c.nombre + ' · ' + e.general + '★');
+        return { res: json({ ok: true, resena: CFG.resena }), cambio: true };
+      });
+    }
     if (ruta === 'push/clave' && req.method === 'GET') {                         // llave pública para activar notificaciones
       const v = await claveVapid(); return json({ ok: true, clave: v.pub });
     }
@@ -516,7 +530,8 @@ export async function manejar(req, opts) {
       if (!c) return error('Tarjeta no encontrada.', 404);
       const prox = db.citas.filter((x) => x.tel === tel && (x.estado === 'pendiente' || x.estado === 'confirmada') && x.fecha >= hoyCR().fecha).sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora))[0];
       const reciente = db.citas.some((x) => x.tel === tel && x.estado === 'hecha' && x.fecha >= sumaDias(hoyCR().fecha, -5));
-      return json({ ok: true, tarjeta: vistaTarjeta(c), resena: reciente ? CFG.resena : null, horasCancelar: AJUSTES.horasCancelar, multaMonto: AJUSTES.multa, proxima: prox ? { id: prox.id, fecha: prox.fecha, hora: prox.hora, estado: prox.estado, lugar: prox.lugar, total: prox.total, pago: prox.pago, multa: prox.multa || 0, cancelable: inicioCita(prox) - Date.now() >= AJUSTES.horasCancelar * 36e5 } : null });
+      const pend = db.citas.filter((x) => x.tel === tel && x.estado === 'hecha' && !x.encuesta && (x.terminadaEl || x.fecha) >= sumaDias(hoyCR().fecha, -10)).sort((a, b) => (b.terminadaEl || b.fecha).localeCompare(a.terminadaEl || a.fecha))[0];
+      return json({ ok: true, tarjeta: vistaTarjeta(c), resena: reciente ? CFG.resena : null, encuesta: pend ? { id: pend.id, fecha: pend.fecha, servicio: (pend.lineas[0] || [''])[0] } : null, horasCancelar: AJUSTES.horasCancelar, multaMonto: AJUSTES.multa, proxima: prox ? { id: prox.id, fecha: prox.fecha, hora: prox.hora, estado: prox.estado, lugar: prox.lugar, total: prox.total, pago: prox.pago, multa: prox.multa || 0, cancelable: inicioCita(prox) - Date.now() >= AJUSTES.horasCancelar * 36e5 } : null });
     }
 
     /* ===== panel del dueño ===== */
@@ -566,7 +581,11 @@ export async function manejar(req, opts) {
             multas: l.reduce((a, c) => a + (c.multa || 0), 0), ausentes: db.citas.filter((c) => c.estado === 'ausente' && c.fecha >= desde && c.fecha <= hasta).length };
         };
         const dias = []; for (let i = 34; i >= 0; i--) { const f = sumaDias(hoy, -i); dias.push({ fecha: f, ...suma(f, f) }); }
-        return json({ ok: true, hoy, periodos: { hoy: suma(hoy, hoy), semana: suma(lunes, hoy), mes: suma(mes, hoy), mesAnterior: suma(mesAnt, sumaDias(mes, -1)) }, dias, meses: (() => { const M = JSON.parse(JSON.stringify(db.mesesArch || {})); db.citas.filter(cuenta).forEach((c) => { const m = diaIngreso(c).slice(0, 7); sumaMes(M[m] || (M[m] = { total: 0, citas: 0, porPago: {} }), c); }); return M; })(), porCobrar: db.citas.filter((c) => c.estado === 'hecha' && !c.pagado).map((c) => ({ id: c.id, nombre: c.nombre, fecha: c.fecha, total: c.total, pago: c.pago })) });
+        const enc = db.citas.filter((c) => c.encuesta).sort((a, b) => b.encuesta.f.localeCompare(a.encuesta.f)), prom = (k) => { const v = enc.map((c) => c.encuesta[k]).filter(Boolean); return v.length ? Math.round(v.reduce((a, x) => a + x, 0) / v.length * 10) / 10 : null; };
+        const rec = enc.filter((c) => c.encuesta.recomienda !== null);
+        const opiniones = { total: enc.length, general: prom('general'), puntualidad: prom('puntualidad'), calidad: prom('calidad'), trato: prom('trato'), recomiendan: rec.length ? Math.round(rec.filter((c) => c.encuesta.recomienda).length / rec.length * 100) : null,
+          terminadas: db.citas.filter((c) => c.estado === 'hecha').length, ultimas: enc.slice(0, 30).map((c) => ({ nombre: c.nombre, tel: c.tel, fecha: c.fecha, servicio: (c.lineas[0] || [''])[0], ...c.encuesta })) };
+        return json({ ok: true, opiniones, hoy, periodos: { hoy: suma(hoy, hoy), semana: suma(lunes, hoy), mes: suma(mes, hoy), mesAnterior: suma(mesAnt, sumaDias(mes, -1)) }, dias, meses: (() => { const M = JSON.parse(JSON.stringify(db.mesesArch || {})); db.citas.filter(cuenta).forEach((c) => { const m = diaIngreso(c).slice(0, 7); sumaMes(M[m] || (M[m] = { total: 0, citas: 0, porPago: {} }), c); }); return M; })(), porCobrar: db.citas.filter((c) => c.estado === 'hecha' && !c.pagado).map((c) => ({ id: c.id, nombre: c.nombre, fecha: c.fecha, total: c.total, pago: c.pago })) });
       }
       if (req.method !== 'POST') return error('Ruta no encontrada.', 404);
 
@@ -751,7 +770,7 @@ export async function manejar(req, opts) {
         if (!resena) return resp;
         const via = await pideResena(resena);
         if (via) await transaccion((db) => { const c = db.citas.find((x) => x.id === resena.id); if (c) c.resena = via; return { res: 1, cambio: !!c }; });
-        return json({ ok: true, estado: 'hecha', resena: via, resenaUrl: CFG.resena });
+        return json({ ok: true, estado: 'hecha', resena: via, resenaUrl: CFG.resena, tarjeta: resena.token });
       }
       if (accion === 'importar') {                                                // pasar clientes del sistema anterior
         const filas = Array.isArray(body.filas) ? body.filas.slice(0, 500) : [];

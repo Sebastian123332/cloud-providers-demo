@@ -122,6 +122,12 @@ a{color:inherit}
 .ver-inc{justify-self:start;font-weight:700;font-size:.86rem;color:var(--tq2);text-decoration:underline;text-underline-offset:3px}
 .inc-l{list-style:none;display:grid;gap:6px;background:var(--n);border:1px solid var(--linea);border-radius:14px;padding:12px;font-size:.84rem;color:var(--gr)}
 .inc-l li{padding-left:22px;position:relative}.inc-l li::before{content:"✓";position:absolute;left:0;color:var(--tq2);font-weight:800}.inc-l li.tit{padding-left:0;color:var(--bl);font-weight:700}.inc-l li.tit::before{content:none}
+.encuesta{display:grid;gap:12px;padding:18px 16px;border-radius:22px;background:linear-gradient(180deg,rgba(251,191,36,.14),rgba(20,28,45,.72));border:1px solid rgba(251,191,36,.45)}
+.encuesta h2{font-family:var(--t);font-style:italic;font-weight:900;text-transform:uppercase;font-size:1.35rem;line-height:1}
+.enc-q{display:grid;gap:6px}
+.estrellas{display:flex;gap:6px}
+.estrellas button{font-size:1.9rem;line-height:1;color:rgba(148,163,184,.35);padding:2px;transition:transform .15s}
+.estrellas button.on{color:#FBBF24}.estrellas button:active{transform:scale(1.2)}
 .cambio{display:grid;gap:8px;border-top:1px solid rgba(76,195,212,.3);padding-top:10px;text-align:left}
 .acceso{display:grid;gap:14px}
 .tit{font-family:var(--t);font-style:italic;font-weight:900;text-transform:uppercase;font-size:2.2rem;line-height:1}
@@ -208,6 +214,23 @@ body{background:radial-gradient(460px 380px at 100% -8%,rgba(245,166,35,.28),tra
 
   <div id="vista" hidden>
     <div class="hola"><div><small>Bienvenido de vuelta</small><h1 id="hola"></h1></div><div class="chips" id="datos"></div></div>
+    <section class="encuesta" id="encuesta" hidden aria-labelledby="encT">
+      <h2 id="encT">⭐ ¿Cómo le fue?</h2>
+      <p class="rap-sub" id="encSub">Cuéntenos en 1 minuto qué le pareció el trabajo. Su opinión la lee el dueño.</p>
+      <div class="enc-q"><span class="lbl">Calificación general</span><div class="estrellas" data-k="general" role="radiogroup" aria-label="Calificación general"></div></div>
+      <div class="enc-q"><span class="lbl">¿Llegamos a tiempo?</span><div class="estrellas" data-k="puntualidad" role="radiogroup" aria-label="Puntualidad"></div></div>
+      <div class="enc-q"><span class="lbl">Calidad del trabajo</span><div class="estrellas" data-k="calidad" role="radiogroup" aria-label="Calidad del trabajo"></div></div>
+      <div class="enc-q"><span class="lbl">Trato del personal</span><div class="estrellas" data-k="trato" role="radiogroup" aria-label="Trato del personal"></div></div>
+      <div class="enc-q"><span class="lbl">¿Nos recomendaría con sus amigos?</span><div class="chips-s" id="encRec"><button type="button" class="chip" data-r="si" aria-pressed="false">👍 Sí</button><button type="button" class="chip" data-r="no" aria-pressed="false">👎 No</button></div></div>
+      <textarea id="encCom" class="inp" rows="3" maxlength="500" placeholder="¿Algo que le gustó o que podemos mejorar? (opcional)" aria-label="Comentario"></textarea>
+      <button type="button" class="btn btn-a" id="encEnviar">Enviar mi opinión</button>
+      <p class="msg" id="encMsg" role="status"></p>
+    </section>
+    <section class="encuesta gracias" id="encGracias" hidden>
+      <h2>¡Gracias por su opinión! 💧</h2>
+      <p class="rap-sub">Nos ayuda a mejorar cada lavado. ¿Nos regala también una reseña en Google? Toma 1 minuto y nos ayuda muchísimo.</p>
+      <a class="btn btn-a" id="encGoogle" href="#" target="_blank" rel="noopener noreferrer">⭐ Dejar reseña en Google</a>
+    </section>
     <p class="aviso multa" id="multaMsg" hidden></p>
     <div class="tarjeta" id="tarjeta">
       <div class="tj-cab"><div><small>Cliente frecuente</small><b id="tjNombre"></b><em id="tjCarro"></em></div><div class="tj-club">MONZÚ<br>CLUB</div></div>

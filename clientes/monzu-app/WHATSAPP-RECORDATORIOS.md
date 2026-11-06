@@ -46,20 +46,26 @@ El dueño no toca ningún botón. Se usa la API oficial de WhatsApp de Meta, as�
 4. Ejemplos que pide Meta: `Andrea` · `mañana` · `10:00 a. m.` · `Tres Ríos, casa 25` · `https://demomonzu.sebas43br.workers.dev/tarjeta.html`.
 5. Envíela a revisión. Normalmente la aprueban en minutos o en pocas horas.
 
-## Paso 4b. Segunda plantilla: pedir la reseña de Google
-Esta plantilla se manda sola cuando el dueño marca un lavado como **Terminado**. Se crea igual que la anterior:
+## Paso 4b. Segunda plantilla: la encuesta después del lavado
+Esta plantilla se manda sola cuando el dueño marca un lavado como **Terminado**. Lleva al cliente a una encuesta corta: estrellas, si nos recomendaría y un comentario. Al final se le invita a dejar la reseña en Google.
+
+Se crea igual que la anterior:
 - **Categoría:** Utilidad.
 - **Nombre:** `pedir_resena`.
 - **Idioma:** Español.
 - **Cuerpo:**
 
   ```
-  ¡Gracias por lavar con Monzú Detallados, {{1}}! ¿Cómo le quedó su carro? Nos ayuda muchísimo si nos califica en Google: {{2}} ¡Que tenga un excelente día!
+  ¡Gracias por lavar con Monzú Detallados, {{1}}! ¿Cómo le fue? Cuéntenos en 1 minuto qué le pareció el trabajo: {{2}} ¡Que tenga un excelente día!
   ```
 
-- **Ejemplos:** `Andrea` · `https://g.page/r/xxxx/review`.
+- **Ejemplos:** `Andrea` · `https://demomonzu.sebas43br.workers.dev/tarjeta.html#encuesta`.
 
-El enlace de reseñas se pega en **Panel → Ajustes → Reseñas de Google**. Mientras esta plantilla no esté aprobada, el panel abre el mensaje de WhatsApp listo para enviar con un toque.
+Mientras esta plantilla no esté aprobada, la encuesta llega de dos formas:
+- como notificación, si el cliente activó los recordatorios;
+- con el WhatsApp listo que el panel abre con un toque.
+
+Las respuestas se ven en **Panel → Ganancias → Opiniones de los clientes**.
 
 ## Paso 5. Llave permanente (token)
 1. Vaya a **business.facebook.com → Configuración del negocio → Usuarios → Usuarios del sistema → Agregar**.

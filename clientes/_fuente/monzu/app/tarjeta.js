@@ -43,6 +43,7 @@
     $('hola').textContent='Hola, '+t.nombre.split(' ')[0]+' 👋'; var dt=$('datos'); dt.textContent='';
     [['📱',t.tel?t.tel.slice(0,4)+'-'+t.tel.slice(4):''],['🚗',t.carro],['💧',t.sellos+' sellos'],['🎁',t.premios?t.premios+(t.premios===1?' premio ganado':' premios ganados'):''],['🔔',t.recordatorios?'Recordatorios activos':'']].forEach(function(x){ if(!x[1]) return; var sp=d.createElement('span'); sp.textContent=x[0]+' '; var b=d.createElement('b'); b.textContent=x[1]; sp.appendChild(b); dt.appendChild(sp) });
     if(!rapidaLista) prepRapida(t);
+    pintaEncuesta(j);
     multaAct=t.multa||0; pintaTotal(); var mm=$('multaMsg'); mm.hidden=!(t.multa>0); if(t.multa>0) mm.textContent='⚠️ Tiene una multa pendiente de '+col(t.multa)+' por no presentarse a una cita. Se suma al total de su próxima cita.';
     var h=$('hist'); h.textContent='';
     t.hist.forEach(function(x){ var r=d.createElement('div'), b=d.createElement('b'), sp=d.createElement('span'); b.textContent=x[0]; sp.textContent=fmtF(x[1]); r.appendChild(b); r.appendChild(sp); h.appendChild(r) });
@@ -130,6 +131,27 @@
     post('borrar-tarjeta',{t:tk,pin:pin}).then(function(j){ if(!j.ok){ toast('No se pudo borrar.',' '+(j.error||'')); return } olvida(); acceso('entrar'); msg('mEntrar','Su tarjeta y sus datos fueron borrados. Gracias por haber sido parte de Monzú Club.',false) })
       .catch(function(){ toast('Sin conexión.',' Intente de nuevo.') });
     });
+  });
+
+  /* ---------- encuesta después del lavado ---------- */
+  var ENC={general:0,puntualidad:0,calidad:0,trato:0}, encRec=null, encId='', encListo=false, RESENA='';
+  d.querySelectorAll('.estrellas').forEach(function(g){ var k=g.dataset.k;
+    for(var i=1;i<=5;i++){ (function(n){ var b=d.createElement('button'); b.type='button'; b.textContent='★'; b.setAttribute('role','radio'); b.setAttribute('aria-checked','false'); b.setAttribute('aria-label',n+(n===1?' estrella':' estrellas'));
+      b.addEventListener('click',function(){ ENC[k]=n; [].forEach.call(g.children,function(x,j){ x.classList.toggle('on',j<n); x.setAttribute('aria-checked',String(j===n-1)) }); if(navigator.vibrate) navigator.vibrate(15) }); g.appendChild(b) })(i) } });
+  d.querySelectorAll('#encRec .chip').forEach(function(b){ b.addEventListener('click',function(){ encRec=b.dataset.r==='si'; d.querySelectorAll('#encRec .chip').forEach(function(x){ x.setAttribute('aria-pressed',String(x===b)) }) }) });
+  function pintaEncuesta(j){
+    if(j.resena) RESENA=j.resena;
+    if(encListo) return; var E=j.encuesta; $('encuesta').hidden=!E; if(!E) return;
+    if(encId!==E.id){ encId=E.id; $('encSub').textContent='Su '+E.servicio.split(' · ')[0]+' del '+fmtFL(E.fecha)+'. Cuéntenos en 1 minuto qué le pareció: su opinión la lee el dueño.'; if(location.hash==='#encuesta') setTimeout(function(){ $('encuesta').scrollIntoView({behavior:'smooth',block:'start'}) },300) }
+  }
+  $('encEnviar').addEventListener('click',function(){
+    if(!ENC.general){ msg('encMsg','Toque las estrellas de la calificación general.',true); return }
+    var b=$('encEnviar'); b.disabled=true; msg('encMsg','Enviando…',false);
+    post('encuesta',{t:tk,id:encId,general:ENC.general,puntualidad:ENC.puntualidad||null,calidad:ENC.calidad||null,trato:ENC.trato||null,recomienda:encRec,comentario:$('encCom').value.trim()}).then(function(r){
+      b.disabled=false; if(!r.ok){ msg('encMsg',r.error||'No se pudo enviar.',true); return }
+      encListo=true; $('encuesta').hidden=true; var G=$('encGracias'); G.hidden=false; var url=r.resena||RESENA; $('encGoogle').hidden=!url; if(url) $('encGoogle').href=url;
+      G.scrollIntoView({behavior:'smooth',block:'center'}); toast('💧 ¡Gracias!',' Su opinión ya le llegó a Monzú.');
+    }).catch(function(){ b.disabled=false; msg('encMsg','Sin conexión. Intente de nuevo.',true) });
   });
 
   /* ---------- selector de día y hora (reserva rápida y cambio de cita) ---------- */
