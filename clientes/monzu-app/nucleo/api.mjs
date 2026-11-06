@@ -150,7 +150,7 @@ function creaCita(db, c, d, ip) {
   const multa = c.multa > 0 && !yaLleva ? c.multa : 0;
   const lin = multa ? [...q.lineas, ['Multa pendiente por no presentarse', multa]] : q.lineas;
   const cita = { id: id(), tel: c.tel, nombre: c.nombre, fecha: d.fecha, hora: d.hora, vehiculo: q.vehiculo, carro: d.carro || c.carro || '', lineas: lin, total: q.total + multa, multa, pago: d.pago, desde: q.desde,
-    aroma: d.aroma || '', lugar: d.lugar, ubic: d.ubic || null, nota: d.nota || '', estado: 'pendiente', creada: new Date().toISOString(), origen: huella(ip) };
+    aroma: d.aroma || '', sel: { paq: CFG.cat.paq[d.paq] ? d.paq : '', veh: q.v, extras: (Array.isArray(d.extras) ? d.extras.map(String) : []).filter((k) => CFG.cat.ext[k]).slice(0, 8) }, lugar: d.lugar, ubic: d.ubic || null, nota: d.nota || '', estado: 'pendiente', creada: new Date().toISOString(), origen: huella(ip) };
   db.citas.push(cita); purga(db);
   c.pref = { lugar: d.lugar, ubic: d.ubic || null, veh: q.v, pago: d.pago };   // para la próxima reserva rápida
   return cita;
@@ -528,7 +528,7 @@ export async function manejar(req, opts) {
         return json({ ok: true });
       }
       if (accion === 'resumen' && req.method === 'GET') {
-        const db = await leerDB(), desde = sumaDias(hoyCR().fecha, -7);
+        const db = await leerDB(), desde = sumaDias(hoyCR().fecha, -45);
         const citas = db.citas.filter((c) => c.fecha >= desde).sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora))
           .map(({ origen, ...c }) => ({ ...c, sellos: db.clientes[c.tel]?.sellos ?? 0, tarjeta: db.clientes[c.tel]?.token, multaCliente: db.clientes[c.tel]?.multa || 0, conNotificaciones: (db.clientes[c.tel]?.push || []).length > 0, inicio: inicioCita(c) }));
         const clientes = Object.values(db.clientes).map((c) => ({ nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token, tienePin: !!c.pinHash, creado: c.creado || '', multa: c.multa || 0, conNotificaciones: (c.push || []).length > 0 }))
@@ -639,6 +639,23 @@ export async function manejar(req, opts) {
         });
         if (out instanceof Response) return out;
         return json({ ok: true, id: out.cita.id, nombre: out.nombre, tel, tarjeta: out.tarjeta, nuevo: out.nuevo, total: out.cita.total, fijas: out.gen ? out.gen.creadas + 1 : 0, choques: out.gen ? out.gen.choques : [] });
+      }
+      if (accion === 'fijar') {                                                   // repetir una cita todas las semanas (cita fija)
+        return await transaccion((db) => {
+          const c = db.citas.find((x) => x.id === body.id); if (!c) return { res: error('Cita no encontrada.', 404), cambio: false };
+          if (c.fija) return { res: error('Esa cita ya es fija.'), cambio: false };
+          if (c.estado !== 'pendiente' && c.estado !== 'confirmada') return { res: error('Solo se pueden repetir citas pendientes o confirmadas.'), cambio: false };
+          let sel = c.sel;
+          if (!sel) {                                                             // citas viejas: se deduce el paquete por el nombre
+            const pk = Object.keys(CFG.cat.paq).find((k) => (c.lineas[0] || [''])[0].startsWith(CFG.cat.paq[k].n)) || '';
+            const ex = Object.keys(CFG.cat.ext).filter((k) => c.lineas.some((l) => l[0].startsWith(CFG.cat.ext[k].n)));
+            sel = { paq: pk, veh: /SUV/.test(c.vehiculo) ? 'suv' : 'sedan', extras: ex };
+          }
+          const fj = { id: id(), tel: c.tel, dia: diaSemana(c.fecha), hora: c.hora, veh: sel.veh, paq: sel.paq, extras: sel.extras, pago: c.pago || AJUSTES.pagos[0], lugar: c.lugar, ubic: c.ubic || null, nota: c.nota || '', desde: c.fecha, creada: new Date().toISOString() };
+          db.fijas = [...(db.fijas || []), fj].slice(-200); c.fija = fj.id; c.fijaFecha = c.fecha;
+          const gen = generaFijas(db); anota(db, 'cita fija creada', c.nombre + ' cada ' + c.hora);
+          return { res: json({ ok: true, creadas: gen.creadas, choques: gen.choques, tarjeta: db.clientes[c.tel]?.token }), cambio: true };
+        });
       }
       if (accion === 'quitar-fija') {
         return await transaccion((db) => {

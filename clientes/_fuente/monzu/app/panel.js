@@ -82,7 +82,7 @@
     if(vistos){ var nuevas=j.citas.filter(function(c){ return vistos.indexOf(c.id)<0 && c.estado==='pendiente' }); if(nuevas.length) avisar(nuevas) }
     vistos=ids; datos=j;
     $('actualizado').textContent='Actualizado '+new Date().toLocaleTimeString('es-CR',{hour:'numeric',minute:'2-digit'});
-    kpis(); cargaRep(); recordatorios(); citas(); clientes(); fijas(); ajustes(); if(!$('fAgendar').hidden) preparaAgenda(); if($('sec-ganancias').classList.contains('on')) reporte();
+    kpis(); cargaRep(); recordatorios(); citas(); clientes(); fijas(); ajustes(); llenaCHora(); calendario(); if($('sec-ganancias').classList.contains('on')) reporte();
   }
   /* ---------- dashboard: tarjetas, gráfico de ventas y meta del mes ---------- */
   var rep=null, rango=30;
@@ -124,19 +124,20 @@
     if(!$('mMonto').value && datos.config.metaMes) $('mMonto').value=datos.config.metaMes;
   }
   $('mGuardar').addEventListener('click',function(){ var m=$('mMeta'); api('meta',{monto:$('mMonto').value}).then(function(j){ m.textContent=j.ok?'✓ Meta guardada.':(j.error||'No se pudo.'); m.className=j.ok?'msg bien':'msg mal'; if(j.ok) refrescar() }) });
-  $('btnCrear').addEventListener('click',function(){ var t=d.querySelector('.tabs button[data-sec=citas]'); if(t.getAttribute('aria-selected')!=='true') t.click(); if($('fAgendar').hidden) $('btnAgendar').click(); $('fAgendar').scrollIntoView({behavior:'smooth',block:'start'}) });
   var NOM={pendiente:'Por confirmar',confirmada:'Confirmada',hecha:'Terminada',cancelada:'Cancelada',ausente:'No llegó'};
   var REC={push:'✓ al celular',whatsapp:'✓ WhatsApp','whatsapp+push':'✓ WhatsApp y celular',"sin-notificaciones":'no se pudo enviar',tarde:'no aplicó'};
   function citas(){
     var L=$('listaCitas'); L.textContent='';
     var lista=datos.citas.filter(function(c){
+      if(filtro==='dia') return c.fecha===diaSel && c.estado!=='cancelada';
       if(filtro==='hoy') return c.fecha===datos.hoy;
       if(filtro==='prox') return c.fecha>=datos.hoy && c.estado!=='cancelada' && c.estado!=='hecha';
       if(filtro==='pend') return c.estado==='pendiente' && c.fecha>=datos.hoy;
       return c.fecha<datos.hoy || c.estado==='hecha';
     });
     if(filtro==='pasadas') lista.reverse();
-    if(!lista.length){ L.appendChild(el('p','vacio',filtro==='hoy'?'No hay citas para hoy.':'No hay citas en esta lista.')); return }
+    if(filtro==='dia'){ var dt=el('div','dia-tit'), tl=fmtDia(diaSel); dt.appendChild(el('span',null,(tl==='Hoy'||tl==='Mañana'||tl==='Ayer'?tl:tl)+' · '+lista.length+(lista.length===1?' cita':' citas'))); dt.appendChild(boton('Ver próximas','',function(){ d.querySelector('.filtros button[data-f=prox]').click() })); L.appendChild(dt) }
+    if(!lista.length){ L.appendChild(el('p','vacio',filtro==='dia'?'No hay citas ese día.':filtro==='hoy'?'No hay citas para hoy.':'No hay citas en esta lista.')); return }
     var dia='';
     lista.forEach(function(c){
       if(c.fecha!==dia){ dia=c.fecha; L.appendChild(el('p','dia',fmtDia(dia))) }
@@ -175,6 +176,11 @@
         acc.appendChild(boton(c.pagado?'Quitar pagado':'Marcar pagado','b-bor',function(){ accion(c,'pagado') }));
       }
       if(c.estado==='pendiente'||c.estado==='confirmada') acc.appendChild(boton('Mover','b-bor',function(){ formMover(c,box) }));
+      if((c.estado==='pendiente'||c.estado==='confirmada')&&!c.fija){ var dsm=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'][new Date(c.fecha+'T12:00:00Z').getUTCDay()];
+        acc.appendChild(boton('🔁 Repetir cada semana','b-bor',siPregunta('¿Dejar a '+c.nombre+' con cita fija todos los '+dsm+' a las '+fmtH(c.hora)+'? Se le apartan solas las próximas semanas.','Sí, dejar fija',function(){
+          api('fijar',{id:c.id}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } var nom=c.nombre.split(' ')[0];
+            if(j.choques.length) toast('⚠️ '+j.choques.length+' semana(s) ya tenían otra cita a esa hora.',true); else toast('✓ Cita fija: '+(j.creadas+1)+' citas apartadas.');
+            hojaWA('Avísele a '+nom+':',c.tel,'¡Hola '+nom+'! 👋 Le dejamos su cita fija en Monzú Detallados todos los '+dsm+' a las '+fmtH(c.hora)+'. Le llegan recordatorios antes de cada una y las puede ver o cambiar en su tarjeta: '+enlaceTarjeta(j.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }))) }
       if(acc.childNodes.length) box.appendChild(acc);
       L.appendChild(box);
     });
@@ -198,7 +204,7 @@
   function sello(tk,nombre,fin){ api('sello',{t:tk,motivo:'Lavado'}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('✓ Sello agregado a '+nombre.split(' ')[0]+' ('+j.tarjeta.sellos+'/'+j.tarjeta.meta+')'+(j.tarjeta.sellos>=j.tarjeta.meta?' 🎁':'')); if(fin) fin(j); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }
   function canjear(tk,nombre,fin){ pregunta('¿Canjear el lavado gratis de '+nombre+'? Su tarjeta vuelve a 0 sellos.','Sí, canjear').then(function(ok){ if(ok) canjearYa(tk,nombre,fin) }) }
   function canjearYa(tk,nombre,fin){ api('canjear',{t:tk}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('🎁 Premio canjeado. Tarjeta de '+nombre.split(' ')[0]+' reiniciada.'); if(fin) fin(j); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }
-  d.querySelectorAll('.filtros button').forEach(function(b){ b.addEventListener('click',function(){ filtro=b.dataset.f; d.querySelectorAll('.filtros button').forEach(function(x){ x.setAttribute('aria-pressed',String(x===b)) }); citas() }) });
+  d.querySelectorAll('.filtros button').forEach(function(b){ b.addEventListener('click',function(){ filtro=b.dataset.f; diaSel=''; calendario(); d.querySelectorAll('.filtros button').forEach(function(x){ x.setAttribute('aria-pressed',String(x===b)) }); citas() }) });
 
   /* ---------- clientes ---------- */
   function clientes(){
@@ -296,46 +302,28 @@
   var DIAS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'], DCORTO=['D','L','K','M','J','V','S'];
   function opcion(sel,v,t){ var o=el('option',null,t); o.value=v; sel.appendChild(o) }
   function llenaSelHoras(sel,conOtra,conVacia){ var a=sel.value; sel.textContent=''; if(conVacia) opcion(sel,'','Todo el día'); datos.config.horas.forEach(function(h){ opcion(sel,h,fmtH(h)) }); if(conOtra) opcion(sel,'otra','Otra hora…'); if(a) sel.value=a }
-  function preparaAgenda(){
-    var C=datos.config.cat;
-    llenaSelHoras($('aHora'),true); llenaSelHoras($('cHora'),false,true);
-    var ps=$('aPaq'), a=ps.value; ps.textContent=''; Object.keys(C.paq).forEach(function(k){ opcion(ps,k,C.paq[k].n) }); opcion(ps,'','Solo adicionales'); if(a!==undefined&&a!=='') ps.value=a;
-    var ex=$('aExt'), marcados=[].map.call(ex.querySelectorAll('input:checked'),function(i){ return i.value }); ex.textContent='';
-    Object.keys(C.ext).forEach(function(k){ var x=C.ext[k]; if(x.oculto) return; var l=el('label','chk'), i=el('input'); i.type='checkbox'; i.value=k; i.checked=marcados.indexOf(k)>=0; l.appendChild(i); l.appendChild(d.createTextNode(x.n)); ex.appendChild(l) });
-    var pg=$('aPago'), b=pg.value; pg.textContent=''; datos.pagos.forEach(function(p){ opcion(pg,p,p) }); if(b) pg.value=b;
-    var dl=$('dlClientes'); dl.textContent=''; datos.clientes.slice(0,600).forEach(function(c){ var o=el('option'); o.value=c.tel.slice(0,4)+'-'+c.tel.slice(4); o.label=c.nombre; dl.appendChild(o) });
-    totalAgenda();
+  function llenaCHora(){ llenaSelHoras($('cHora'),false,true) }
+  /* ---------- calendario del mes ---------- */
+  var calMes='', diaSel='', MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','setiembre','octubre','noviembre','diciembre'];
+  function calendario(){
+    if(!datos) return; if(!calMes) calMes=datos.hoy.slice(0,7);
+    var y=+calMes.slice(0,4), m=+calMes.slice(5,7), primero=calMes+'-01', dow=(new Date(primero+'T12:00:00Z').getUTCDay()+6)%7, ult=new Date(Date.UTC(y,m,0)).getUTCDate(), C=datos.config;
+    $('calMes').textContent=MESES[m-1].charAt(0).toUpperCase()+MESES[m-1].slice(1)+' '+y;
+    var por={}, enMes=0; datos.citas.forEach(function(c){ if(c.estado==='cancelada') return; (por[c.fecha]=por[c.fecha]||[]).push(c.estado); if(c.fecha.slice(0,7)===calMes) enMes++ });
+    $('calSub').textContent=enMes+(enMes===1?' cita':' citas')+' este mes · toque un día';
+    var G=$('calGrid'); G.textContent=''; var total=Math.ceil((dow+ult)/7)*7, f=sumaDias(primero,-dow);
+    for(var i=0;i<total;i++,f=sumaDias(f,1)){ (function(f){
+      var b=el('button','cal-d'), l=por[f]||[], dw=new Date(f+'T12:00:00Z').getUTCDay(), cerr=C.cerrados.some(function(x){ return !x.hora&&f>=x.desde&&f<=x.hasta });
+      b.type='button'; if(f.slice(0,7)!==calMes) b.classList.add('otro'); if(f===datos.hoy) b.classList.add('hoy'); if(f===diaSel) b.classList.add('sel');
+      if(cerr||C.dias.indexOf(dw)<0) b.classList.add('cerrado'); if(l.length>=C.horas.length) b.classList.add('lleno'); if(!l.length) b.classList.add('vacio');
+      b.appendChild(el('span','n',String(+f.slice(8)))); b.appendChild(el('span','c',l.length?String(l.length):'·'));
+      var p=el('span','pts'); l.slice(0,5).forEach(function(e){ p.appendChild(el('i',e)) }); b.appendChild(p);
+      b.setAttribute('aria-label',fmtDia(f)+': '+(l.length?l.length+(l.length===1?' cita':' citas'):'sin citas')+(cerr?' (cerrado)':''));
+      b.addEventListener('click',function(){ diaSel=f; filtro='dia'; d.querySelectorAll('.filtros button').forEach(function(x){ x.setAttribute('aria-pressed','false') }); if(f.slice(0,7)!==calMes) calMes=f.slice(0,7); calendario(); citas(); $('listaCitas').scrollIntoView({behavior:'smooth',block:'start'}) });
+      G.appendChild(b) })(f) }
   }
-  function totalAgenda(){
-    var C=datos.config.cat, v=$('aVeh').value, P=C.paq[$('aPaq').value], t=P?P[v]:0, desde=false;
-    [].forEach.call($('aExt').querySelectorAll('input:checked'),function(i){ var x=C.ext[i.value]; if(!x) return; if(x.desde) desde=true; t+=(x.conPaq!=null&&P)?x.conPaq:x.p });
-    $('aTotal').textContent=t?(desde?'desde ':'')+col(t):'—';
-    var f=$('aFecha').value; $('aDiaTxt').textContent=f?'todos los '+DIAS[new Date(f+'T12:00:00Z').getUTCDay()]:'todas las semanas';
-    $('aHoraOtraC').hidden=$('aHora').value!=='otra';
-  }
-  ['aVeh','aPaq','aFecha','aHora'].forEach(function(i){ $(i).addEventListener('change',totalAgenda) }); $('aExt').addEventListener('change',totalAgenda);
-  $('aTel').addEventListener('input',function(){
-    var t=$('aTel').value.replace(/\D/g,'').replace(/^506/,''), c=t.length===8&&datos.clientes.filter(function(x){ return x.tel===t })[0];
-    $('aCliTxt').textContent=c?'✓ Cliente: '+c.nombre+(c.carro?' · '+c.carro:'')+'. Si deja la dirección vacía se usa la última que dio.':'Escriba el teléfono: si ya es cliente, se llenan sus datos solos.';
-    if(c){ $('aNombre').value=c.nombre }
-  });
-  $('btnAgendar').addEventListener('click',function(){ var f=$('fAgendar'); f.hidden=!f.hidden; if(!f.hidden){ if(!$('aFecha').value) $('aFecha').value=datos.hoy; $('aFecha').min=datos.hoy; preparaAgenda(); $('aTel').focus() } });
-  $('aCancelar').addEventListener('click',function(){ $('fAgendar').hidden=true });
-  $('fAgendar').addEventListener('submit',function(e){
-    e.preventDefault(); var m=$('mAgendar'), hora=$('aHora').value==='otra'?$('aHoraOtra').value:$('aHora').value;
-    var x={tel:$('aTel').value, nombre:$('aNombre').value.trim(), fecha:$('aFecha').value, hora:hora, paq:$('aPaq').value, veh:$('aVeh').value, extras:[].map.call($('aExt').querySelectorAll('input:checked'),function(i){ return i.value }), pago:$('aPago').value, lugar:$('aLugar').value.trim(), nota:$('aNota').value.trim(), repetir:$('aRepetir').checked};
-    if(!x.fecha||!x.hora){ m.textContent='Elija el día y la hora.'; m.className='msg mal'; return }
-    m.textContent='Guardando…'; m.className='msg';
-    api('agendar',x).then(function(j){
-      if(!j.ok){ m.textContent=j.error||'No se pudo.'; m.className='msg mal'; return }
-      m.textContent=''; $('fAgendar').reset(); $('fAgendar').hidden=true; totalAgenda();
-      var nom=j.nombre.split(' ')[0], cuando=fmtDia(x.fecha).toLowerCase()+' a las '+fmtH(x.hora);
-      if(j.choques&&j.choques.length) toast('⚠️ '+j.choques.length+' semana(s) ya tenían otra cita a esa hora: revíselas.',true);
-      else toast(x.repetir?'✓ Cita fija guardada: '+j.fijas+' citas apartadas.':'✓ Cita guardada.');
-      hojaWA('Avísele a '+nom+':',j.tel,'¡Hola '+nom+'! 👋 Le apartamos su cita en Monzú Detallados '+(x.repetir?'todos los '+DIAS[new Date(x.fecha+'T12:00:00Z').getUTCDay()]+' a las '+fmtH(x.hora)+', empezando el '+cuando:'para el '+cuando)+'.\n\nEn su tarjeta Monzú Club ve sus citas, las puede cambiar o cancelar y junta sellos: '+enlaceTarjeta(j.tarjeta));
-      refrescar();
-    }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
-  });
+  function mueveMes(n){ var y=+calMes.slice(0,4), m=+calMes.slice(5,7)-1+n; y+=Math.floor(m/12); m=((m%12)+12)%12; calMes=y+'-'+String(m+1).padStart(2,'0'); calendario() }
+  $('calAnt').addEventListener('click',function(){ mueveMes(-1) }); $('calSig').addEventListener('click',function(){ mueveMes(1) }); $('calHoy').addEventListener('click',function(){ calMes=datos.hoy.slice(0,7); calendario() });
   function fijas(){
     var L=$('listaFijas'); L.textContent=''; $('nFijas').textContent=datos.fijas.length?'('+datos.fijas.length+')':'';
     if(!datos.fijas.length){ L.appendChild(el('p','ayuda izq','No hay citas fijas. Al agendar una cita, marque "Cita fija" para repetirla cada semana.')); return }

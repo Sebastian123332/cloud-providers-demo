@@ -225,7 +225,6 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
 .barras div{background:linear-gradient(180deg,#93C5FD,#2563EB)}
 .pp i{background:#3B82F6}
 .kpis>div>div{background:none;border:0;padding:0;border-radius:0;display:flex;flex-wrap:wrap;gap:4px;align-items:center}
-#btnAgendar{display:none}
 @media(max-width:600px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.ch-caja{height:140px}.kpis b{font-size:1.3rem}.anillo-f{width:130px;height:130px}}
 @media(min-width:720px){.dash{grid-template-columns:minmax(0,1.9fr) minmax(0,1fr)}}
 /* computadora: menú a la izquierda como un dashboard */
@@ -239,6 +238,22 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
   .cab{border-radius:18px;padding:10px 14px;border:1px solid var(--linea);top:12px}
   .hoja-wa,.toast{left:calc(50% + 125px)}
 }
+.cal-nav{display:flex;gap:4px}.cal-nav button{min-width:36px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--linea2);font-weight:700;font-size:.85rem}
+.cal-sem,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.cal-sem span{text-align:center;font-size:.68rem;font-weight:700;color:var(--gr2)}
+.cal-d{position:relative;aspect-ratio:1/1.05;border-radius:12px;border:1px solid var(--linea);background:rgba(7,11,20,.45);display:grid;grid-template-rows:auto 1fr auto;padding:5px 4px;text-align:left;min-width:0}
+.cal-d .n{font-size:.78rem;font-weight:700;color:var(--gr)}
+.cal-d .c{align-self:center;justify-self:center;font-size:1.05rem;font-weight:800;color:#fff}
+.cal-d .pts{display:flex;gap:2px;justify-content:center;flex-wrap:wrap}.cal-d .pts i{width:6px;height:6px;border-radius:50%}
+.cal-d.otro{opacity:.35}.cal-d.vacio .c{color:transparent}
+.cal-d.hoy{border-color:#3B82F6;box-shadow:inset 0 0 0 1px #3B82F6}.cal-d.hoy .n{color:#93C5FD}
+.cal-d.sel{background:linear-gradient(135deg,#3B82F6,#2563EB);border-color:transparent}.cal-d.sel .n{color:#DBEAFE}
+.cal-d.cerrado{background:repeating-linear-gradient(-45deg,rgba(248,113,113,.08) 0 6px,transparent 6px 12px);border-color:rgba(248,113,113,.3)}
+.cal-d.lleno .c{color:#FBBF24}
+.l-pen,.pts .pendiente{background:#FBBF24}.l-con,.pts .confirmada{background:#60A5FA}.l-hec,.pts .hecha{background:#4ADE80}.pts .ausente{background:#F87171}.l-cer{background:rgba(248,113,113,.5)}
+.cal-ley{display:flex;flex-wrap:wrap;gap:10px;font-size:.68rem;color:var(--gr)}.cal-ley span{display:inline-flex;align-items:center;gap:5px}.cal-ley i{width:8px;height:8px;border-radius:50%;display:inline-block}
+.dia-tit{display:flex;justify-content:space-between;align-items:center;gap:8px;font-weight:700}.dia-tit button{font-size:.78rem;color:#93C5FD;text-decoration:underline}
+@media(min-width:960px){.cal-d{aspect-ratio:1.6/1}.cal-d .c{font-size:1.25rem}}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -266,7 +281,7 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
       <button type="button" class="ico" id="btnSalir" aria-label="Salir"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></svg></button>
     </div>
   </header>
-    <div class="hola-p"><div><h1 id="saludo">Hola</h1><small id="fechaHoy"></small></div><button type="button" class="btn b-tq crear" id="btnCrear">＋ Agendar</button></div>
+    <div class="hola-p"><div><h1 id="saludo">Hola</h1><small id="fechaHoy"></small></div></div>
     <div class="kpis" id="kpis"></div>
 
   <section class="sec on" id="sec-citas" aria-label="Citas">
@@ -277,35 +292,13 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
         <div class="anillo-f"><svg viewBox="0 0 120 120" class="anillo" aria-hidden="true"><circle cx="60" cy="60" r="50" class="a-fondo"/><circle cx="60" cy="60" r="50" class="a-val" id="anillo"/></svg><div class="anillo-t"><b id="metaPct">0%</b><small id="metaDe"></small></div></div>
         <div class="meta-l" id="metaL"></div></div>
     </div>
-    <button type="button" class="btn b-tq" id="btnAgendar">＋ Agendar una cita</button>
-    <form class="caja-p" id="fAgendar" novalidate hidden>
-      <b class="tit-p">Nueva cita</b>
-      <div class="dos-p">
-        <div class="campo"><label for="aTel">Teléfono</label><input id="aTel" type="tel" inputmode="tel" maxlength="16" placeholder="8888-0000" list="dlClientes" autocomplete="off"></div>
-        <div class="campo"><label for="aNombre">Nombre</label><input id="aNombre" maxlength="80" autocomplete="off"></div>
-      </div>
-      <datalist id="dlClientes"></datalist>
-      <p class="ayuda izq" id="aCliTxt">Escriba el teléfono: si ya es cliente, se llenan sus datos solos.</p>
-      <div class="dos-p">
-        <div class="campo"><label for="aFecha">Día</label><input id="aFecha" type="date"></div>
-        <div class="campo"><label for="aHora">Hora</label><select id="aHora"></select></div>
-      </div>
-      <div class="campo" id="aHoraOtraC" hidden><label for="aHoraOtra">Otra hora</label><input id="aHoraOtra" type="time"></div>
-      <div class="dos-p">
-        <div class="campo"><label for="aPaq">Servicio</label><select id="aPaq"></select></div>
-        <div class="campo"><label for="aVeh">Vehículo</label><select id="aVeh"><option value="sedan">Sedán</option><option value="suv">SUV · Pick up</option></select></div>
-      </div>
-      <div class="campo"><span class="lbl-p">Adicionales</span><div class="chks" id="aExt"></div></div>
-      <div class="dos-p">
-        <div class="campo"><label for="aPago">Pago</label><select id="aPago"></select></div>
-        <div class="campo"><label for="aLugar">Dirección</label><input id="aLugar" maxlength="120" placeholder="Si ya es cliente, se usa la última"></div>
-      </div>
-      <div class="campo"><label for="aNota">Nota (opcional)</label><input id="aNota" maxlength="400"></div>
-      <label class="casilla fija-chk"><input type="checkbox" id="aRepetir"> <span>🔁 <b>Cita fija:</b> repetir <b id="aDiaTxt">todas las semanas</b> a esta hora. Se apartan solas.</span></label>
-      <div class="tot-p"><span>Total</span><b id="aTotal">—</b></div>
-      <div class="acc"><button type="button" class="btn b-bor" id="aCancelar">Cerrar</button><button type="submit" class="btn b-tq">Guardar cita</button></div>
-      <p class="msg" id="mAgendar" role="status"></p>
-    </form>
+    <div class="card-g cal">
+      <div class="ch-cab"><div><b id="calMes">Calendario</b><small id="calSub">Toque un día para ver sus citas</small></div>
+        <div class="cal-nav"><button type="button" id="calAnt" aria-label="Mes anterior">‹</button><button type="button" id="calHoy">Hoy</button><button type="button" id="calSig" aria-label="Mes siguiente">›</button></div></div>
+      <div class="cal-sem"><span>L</span><span>K</span><span>M</span><span>J</span><span>V</span><span>S</span><span>D</span></div>
+      <div class="cal-grid" id="calGrid" role="grid" aria-label="Calendario de citas"></div>
+      <div class="cal-ley"><span><i class="l-pen"></i>Por confirmar</span><span><i class="l-con"></i>Confirmada</span><span><i class="l-hec"></i>Terminada</span><span><i class="l-cer"></i>Cerrado</span></div>
+    </div>
     <div class="recs" id="recs" hidden></div>
     <div class="filtros" role="group" aria-label="Filtrar citas">
       <button type="button" data-f="hoy" aria-pressed="true">Hoy</button><button type="button" data-f="prox" aria-pressed="false">Próximas</button><button type="button" data-f="pend" aria-pressed="false">Por confirmar</button><button type="button" data-f="pasadas" aria-pressed="false">Pasadas</button>
