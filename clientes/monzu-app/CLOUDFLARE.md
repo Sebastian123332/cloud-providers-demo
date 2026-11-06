@@ -81,3 +81,23 @@ Para Monzú sobra.
   - cambiar la fecha u hora,
   - cancelar hasta 2 horas antes,
   - marcar su ubicación en el mapa. El panel la abre en Google Maps o Waze.
+
+---
+
+## Cuando compre monzudetallados.com
+1. Compre el dominio en **Cloudflare → Registro de dominios**. Cuesta unos $10 al año.
+2. Vaya a **demomonzu → Ajustes → Dominios y rutas → Agregar → Dominio personalizado** y agregue estos 4:
+
+   | Dirección | Qué abre | Quién la usa |
+   |---|---|---|
+   | `monzudetallados.com` | La página web pública | Todo el mundo, la publicidad y Google |
+   | `www.monzudetallados.com` | La misma página | Todo el mundo |
+   | `club.monzudetallados.com` | La tarjeta Monzú Club | Clientes frecuentes (teléfono + PIN) |
+   | `admin.monzudetallados.com` | El panel del dueño | Solo el dueño (contraseña) |
+
+3. Pásele el dominio a Claude para que actualice:
+   - los enlaces de WhatsApp para que lleven al club,
+   - el link de "Ver mi tarjeta",
+   - Google (sitemap) y Meta (verificación del dominio).
+
+Google solo muestra la página pública: el club y el panel están marcados para no aparecer en búsquedas.

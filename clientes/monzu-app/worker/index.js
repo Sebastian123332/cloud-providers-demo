@@ -11,6 +11,7 @@ export default {
     }
     // club.sudominio.com abre directo la app del cliente (Monzú Club); el dominio principal es la página para clientes nuevos
     if (url.hostname.startsWith('club.') && url.pathname === '/') return env.ASSETS.fetch(new Request(url.origin + '/tarjeta', request));
+    if (url.hostname.startsWith('admin.') && url.pathname === '/') return env.ASSETS.fetch(new Request(url.origin + '/panel', request));
     return env.ASSETS.fetch(request);
   },
   // Cada 10 minutos: renueva las citas fijas y manda los recordatorios de 24 h y 1 h antes.
