@@ -372,7 +372,7 @@
     [].forEach.call($('fjExt').querySelectorAll('input:checked'),function(i){ var x=C.ext[i.value]; if(!x) return; if(x.desde) desde=true; t+=(x.conPaq!=null&&P)?x.conPaq:x.p });
     $('fjTotal').textContent=t?(desde?'desde ':'')+col(t):'—';
     var ini=proxDia($('fjDia').value,$('fjDesde').value||datos.hoy), n=+$('fjSemanas').value;
-    $('fjResumen').textContent='Se apartan '+(n?n+' citas':'citas cada semana, sin fin')+': todos los '+DIAS[+$('fjDia').value]+' a las '+fmtH($('fjHora').value||'08:00')+', desde '+elDia(ini)+(n?' hasta '+elDia(sumaDias(ini,(n-1)*7)):'')+'.';
+    $('fjResumen').textContent='Se apartan '+(n?n+' citas':'citas cada semana, sin fin')+': todos '+losDias(+$('fjDia').value)+' a las '+fmtH($('fjHora').value||'08:00')+', desde '+elDia(ini)+(n?' hasta '+elDia(sumaDias(ini,(n-1)*7)):'')+'.';
   }
   ['fjDia','fjHora','fjDesde','fjSemanas','fjPaq','fjVeh'].forEach(function(i){ $(i).addEventListener('change',totalFija) }); $('fjExt').addEventListener('change',totalFija);
   $('fjBuscar').addEventListener('input',function(){
@@ -400,7 +400,7 @@
       if(!j.ok){ m.textContent=j.error||'No se pudo.'; m.className='msg mal'; return }
       $('fFija').hidden=true; var nom=j.nombre.split(' ')[0], n=+$('fjSemanas').value;
       if(j.choques.length) toast('⚠️ '+j.choques.length+' fecha(s) ya tenían otra cita a esa hora: '+j.choques.map(function(c){ return fmtDia(c.fecha) }).join(', '),true); else toast('✓ '+(fjId?'Cita fija actualizada':'Cita fija guardada')+' · '+j.creadas+' fechas apartadas.');
-      hojaWA('Avísele a '+nom+':',j.tel,'¡Hola '+nom+'! 👋 '+(fjId?'Le actualizamos':'Le dejamos')+' su cita fija en Monzú Detallados: todos los '+DIAS[x.dia]+' a las '+fmtH(x.hora)+(n?' por '+n+' semanas':'')+'. Le llegan recordatorios antes de cada una y las ve en su tarjeta: '+enlaceTarjeta(j.tarjeta));
+      hojaWA('Avísele a '+nom+':',j.tel,'¡Hola '+nom+'! 👋 '+(fjId?'Le actualizamos':'Le dejamos')+' su cita fija en Monzú Detallados: todos '+losDias(x.dia)+' a las '+fmtH(x.hora)+(n?' por '+n+' semanas':'')+'. Le llegan recordatorios antes de cada una y las ve en su tarjeta: '+enlaceTarjeta(j.tarjeta));
       refrescar();
     }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
   });
