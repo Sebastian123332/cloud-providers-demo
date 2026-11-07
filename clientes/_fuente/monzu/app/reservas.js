@@ -135,7 +135,7 @@
   $('form').addEventListener('change',pintaDinamicos);
 
   /* ===== videos de trabajos: se reproducen solos (sin sonido) solo cuando se ven ===== */
-  (function(){ var vs=d.querySelectorAll('.clip video'); if(!vs.length) return;
+  (function(){ var vs=d.querySelectorAll('.clip video, .paq-vid'); if(!vs.length) return;
     if(!('IntersectionObserver' in window)){ vs.forEach(function(v){ v.preload='metadata' }); return }
-    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ var v=e.target; if(e.isIntersecting&&!QUIETO){ v.preload='auto'; var p=v.play(); if(p&&p.catch) p.catch(function(){}) } else v.pause() }) },{threshold:.45});
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ var v=e.target; if(e.isIntersecting&&!QUIETO){ v.preload='auto'; var p=v.play(); if(p&&p.catch) p.catch(function(){}) } else v.pause() }) },{threshold:.3});
     vs.forEach(function(v){ io.observe(v) }) })();

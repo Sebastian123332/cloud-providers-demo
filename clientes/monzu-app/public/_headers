@@ -1,5 +1,5 @@
 /
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-vsKai535/Ty7wUWCE4cqFHO81oA31i65ofeEYjnF8is=' 'self'; style-src 'sha256-yVvQKHP8lGoE9wWmEiHbw80uyRHBwI2HM3YODl6gZlA='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; media-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-+y7tfQn48tvRqj1QqP5YD1pO3Yzkl0ZZZQHVWb8Sqog=' 'self'; style-src 'sha256-UBUtqiWNbh4FJge5MOF87S7XO9p3z3lmY1Tptpf65wU='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; media-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -9,7 +9,7 @@
   X-Permitted-Cross-Domain-Policies: none
   Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
 /index.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-vsKai535/Ty7wUWCE4cqFHO81oA31i65ofeEYjnF8is=' 'self'; style-src 'sha256-yVvQKHP8lGoE9wWmEiHbw80uyRHBwI2HM3YODl6gZlA='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; media-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-+y7tfQn48tvRqj1QqP5YD1pO3Yzkl0ZZZQHVWb8Sqog=' 'self'; style-src 'sha256-UBUtqiWNbh4FJge5MOF87S7XO9p3z3lmY1Tptpf65wU='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; media-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

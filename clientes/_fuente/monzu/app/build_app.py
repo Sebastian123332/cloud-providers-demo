@@ -273,13 +273,11 @@ t = t.replace('</style>', ARMAR_CSS + '</style>', 1)
 TRAB = [  # (archivo, título, subtítulo, alt)
  ('tacoma-negra', 'Brillo espejo', 'Detallado exterior', 'Pick up negra recién detallada, con la pintura brillante como espejo'),
  ('carro-negro-antes-ahora', 'Antes y ahora', 'Lavado y encerado', 'Carro negro antes y después del detallado de Monzú'),
- ('vid:pulido', 'Pulido de pintura', 'Video', 'Video del pulido de la pintura con máquina'),
+ ('vid:pulido', 'Pulido de parabrisas', 'Video', 'Video del pulido del parabrisas con máquina'),
  ('durango-mate', 'Pintura mate', 'Cuidado especial', 'Camioneta con pintura negro mate después del lavado'),
  ('asiento-antes-ahora', 'Tapicería', 'Antes y ahora', 'Asiento de tela con manchas antes y limpio después'),
- ('vid:llantin-hidrofobico', 'Llantas', 'Video', 'Video de la aplicación de llantín hidrofóbico en la llanta'),
  ('motor-fiat', 'Motor', 'Cero grasa', 'Motor limpio y con los plásticos restaurados'),
  ('everest-blanca', 'Blanco impecable', 'Detallado completo', 'Camioneta blanca recién lavada y detallada'),
- ('vid:lavado-espuma', 'Lavado con espuma', 'Video', 'Video del lavado a mano con espuma'),
  ('interior-durango', 'Interior', 'Cuero y plásticos', 'Interior con asientos de cuero y plásticos limpios'),
  ('l200-gris', 'Acabado brillante', 'Detallado exterior', 'Pick up gris con la pintura brillante'),
  ('interior-desarmado', 'Limpieza profunda', 'Interior a fondo', 'Técnico de Monzú desarmando la consola para limpiar a fondo el interior'),
@@ -299,6 +297,11 @@ for i, (f, tit, sub, alt) in enumerate(TRAB):
         src = archivo(M + 'img/trabajos/' + f + '.webp', 'img', f, 'webp')
         celdas.append('<button type="button" class="obra rv" data-titulo="%s"><img src="%s" alt="%s" loading="lazy" decoding="async"><span class="cap"><small>%s</small><b>%s</b></span></button>' % (tit, src, alt, sub, tit))
 t, nn = re.subn(r'<div class="trabajos">.*?</div>\n  <p class="aviso-fotos">[^<]*</p>', lambda m: '<div class="trabajos">\n    ' + '\n    '.join(celdas) + '\n  </div>\n  <p class="aviso-fotos desliza">Deslice para ver más trabajos →</p>', t, count=1, flags=re.S); assert nn == 1
+# videos de fondo en las tarjetas de los paquetes (oscurecidos para que se lea el texto)
+for kp, nv in (('premium', 'lavado-espuma'), ('deluxe', 'llantin-hidrofobico')):
+    mp4 = archivo(M + 'vid/' + nv + '.mp4', 'vid', nv, 'mp4'); webm = archivo(M + 'vid/' + nv + '.webm', 'vid', nv, 'webm'); pos = archivo(M + 'vid/' + nv + '.jpg', 'vid', nv, 'jpg')
+    t, nn = re.subn(r'(<article class="paq[^"]*" data-paq="%s">)' % kp, lambda m: m.group(1) + '\n      <video class="paq-vid" poster="%s" muted loop playsinline preload="none" aria-hidden="true"><source src="%s" type="video/mp4"><source src="%s" type="video/webm"></video><div class="paq-velo" aria-hidden="true"></div>' % (pos, mp4, webm), t, count=1); assert nn == 1, kp
+t = t.replace('</style>', '.paq-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-3;opacity:.55}\n.paq-velo{position:absolute;inset:0;z-index:-2;background:linear-gradient(180deg,rgba(7,9,11,.55),rgba(7,9,11,.88) 55%,rgba(7,9,11,.96))}\n.paq.deluxe .paq-velo{background:linear-gradient(180deg,rgba(7,9,11,.5),rgba(10,30,40,.86) 55%,rgba(7,9,11,.95))}\n</style>', 1)
 t = rep(t, '<p>Toque una foto para verla en grande.</p></div>', '<p>Trabajos reales de Monzú en Cartago. Toque una foto para verla en grande.</p></div>')
 # portada del juego "limpie el carro": la Tacoma recién detallada
 t = rep(t, '<img src="{{IMG:deluxe}}" alt="Técnico de Monzú Detallados puliendo un carro negro" width="704" height="609" fetchpriority="high">',
