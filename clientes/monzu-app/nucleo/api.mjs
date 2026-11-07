@@ -683,7 +683,8 @@ export async function manejar(req, opts) {
             const ex = Object.keys(CFG.cat.ext).filter((k) => c.lineas.some((l) => l[0].startsWith(CFG.cat.ext[k].n)));
             sel = { paq: pk, veh: /SUV/.test(c.vehiculo) ? 'suv' : 'sedan', extras: ex };
           }
-          const fj = { id: id(), tel: c.tel, dia: diaSemana(c.fecha), hora: c.hora, veh: sel.veh, paq: sel.paq, extras: sel.extras, pago: c.pago || AJUSTES.pagos[0], lugar: c.lugar, ubic: c.ubic || null, nota: c.nota || '', desde: c.fecha, creada: new Date().toISOString() };
+          const semanas = Math.max(0, Math.min(104, Math.round(Number(body.semanas) || 0)));
+          const fj = { id: id(), tel: c.tel, dia: diaSemana(c.fecha), hora: c.hora, veh: sel.veh, paq: sel.paq, extras: sel.extras, pago: c.pago || AJUSTES.pagos[0], lugar: c.lugar, ubic: c.ubic || null, nota: c.nota || '', desde: c.fecha, hasta: semanas ? sumaDias(c.fecha, (semanas - 1) * 7) : null, semanas, creada: new Date().toISOString() };
           db.fijas = [...(db.fijas || []), fj].slice(-200); c.fija = fj.id; c.fijaFecha = c.fecha;
           const gen = generaFijas(db); anota(db, 'cita fija creada', c.nombre + ' cada ' + c.hora);
           return { res: json({ ok: true, creadas: gen.creadas, choques: gen.choques, tarjeta: db.clientes[c.tel]?.token }), cambio: true };
@@ -733,6 +734,13 @@ export async function manejar(req, opts) {
           anota(db, 'cita fija quitada', (db.clientes[fj.tel]?.nombre || '') + ' · ' + n + ' citas canceladas');
           return { res: json({ ok: true, canceladas: n }), cambio: true };
         });
+      }
+      if (accion === 'historial') {                                               // todas las citas de un cliente (con sus encuestas)
+        const db = await leerDB(), tel = db.tokens[String(body.t || '')], c = tel && db.clientes[tel];
+        if (!c) return error('Cliente no encontrado.', 404);
+        const citas = db.citas.filter((x) => x.tel === tel).sort((a, b) => (b.fecha + b.hora).localeCompare(a.fecha + a.hora)).map(({ origen, ...x }) => ({ ...x, tarjeta: c.token, sellos: c.sellos, inicio: inicioCita(x) }));
+        const gastado = citas.filter(cuenta).reduce((a, x) => a + x.total, 0);
+        return json({ ok: true, cliente: { nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, multa: c.multa || 0, creado: c.creado || '', hist: c.hist || [], pref: c.pref || null }, citas, gastado, fijas: (db.fijas || []).filter((f) => f.tel === tel) });
       }
       if (accion === 'editar-cita') {                                             // el dueño corrige pago, servicio, dirección o nota de una cita
         return await transaccion((db) => {

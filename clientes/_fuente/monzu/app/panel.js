@@ -82,7 +82,7 @@
     if(vistos){ var nuevas=j.citas.filter(function(c){ return vistos.indexOf(c.id)<0 && c.estado==='pendiente' }); if(nuevas.length) avisar(nuevas) }
     vistos=ids; datos=j;
     $('actualizado').textContent='Actualizado '+new Date().toLocaleTimeString('es-CR',{hour:'numeric',minute:'2-digit'});
-    var editando=function(id){ return !!d.querySelector('#'+id+' .editar, #'+id+' .mover') };   // no se borra un formulario abierto
+    var editando=function(id){ return !!d.querySelector('#'+id+' .editar, #'+id+' .mover, #'+id+' .hist-c') };   // no se borra un formulario abierto
     kpis(); cargaRep(); recordatorios(); if(!editando('listaCitas')) citas(); if(!editando('listaCli')) clientes(); if(!editando('listaFijas')) fijas(); ajustes(); llenaCHora(); calendario(); espacio(); if($('sec-ganancias').classList.contains('on')) reporte();
   }
   /* ---------- dashboard: tarjetas, gráfico de ventas y meta del mes ---------- */
@@ -219,10 +219,13 @@
       var nb=el('b',null,c.nombre); if(!c.tienePin) nb.appendChild(el('span','sinpin','Sin PIN')); izq.appendChild(nb); izq.appendChild(el('small',null,c.tel.slice(0,4)+'-'+c.tel.slice(4)+(c.carro?' · '+c.carro:'')+(c.premios?' · '+c.premios+' premio(s) canjeado(s)':'')));
       var em=el('em',null,c.sellos>=datos.meta?'🎁 Premio':c.sellos+'/'+datos.meta); if(c.sellos>=datos.meta) em.className='oro';
       top.appendChild(izq); top.appendChild(em); box.appendChild(top); box.appendChild(mini(c.sellos,datos.meta));
+      var px=datos.citas.filter(function(x){ return x.tel===c.tel && x.fecha>=datos.hoy && (x.estado==='pendiente'||x.estado==='confirmada') }).sort(function(a,b){ return (a.fecha+a.hora).localeCompare(b.fecha+b.hora) });
+      box.appendChild(el('p','hist-agen '+(px.length?'si':'no'),px.length?'📅 Agendado: '+fmtDia(px[0].fecha)+' '+fmtH(px[0].hora)+(px.length>1?' (+'+(px.length-1)+' más)':''):'Sin cita agendada'));
       var acc=el('div','acc');
       if(c.sellos>=datos.meta) acc.appendChild(boton('Canjear premio','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
       else acc.appendChild(boton('Dar sello','b-ok',siPregunta('¿Dar un sello a '+c.nombre+'?','Sí, dar sello',function(){ sello(c.tarjeta,c.nombre) }),'gota'));
       if(c.multa>0) acc.appendChild(boton('Anular multa','b-bor',siPregunta('¿Anular la multa de '+col(c.multa)+' de '+c.nombre+'?','Sí, anular',function(){ api('perdonar-multa',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Multa anulada.'); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) })));
+      acc.appendChild(boton('📋 Historial','b-tq',function(){ historial(c,box) }));
       acc.appendChild(boton('✏️ Editar','b-bor',function(){ formCliente(c,box) }));
       acc.appendChild(boton('Enviar tarjeta','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 💧 Esta es su tarjeta Monzú Club, donde ve sus sellos: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en la pantalla de inicio de su celular para tenerla siempre a mano.') },'wa'));
       if(c.tienePin) acc.appendChild(boton('Restablecer PIN','b-bor',siPregunta('¿Restablecer el PIN de '+c.nombre+'? Le enviamos su tarjeta por WhatsApp para que cree uno nuevo.','Sí, restablecer',function(){
@@ -254,6 +257,7 @@
     }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
   });
   $('buscar').addEventListener('input',function(){ if(datos) clientes() });
+  $('btnOpiniones').addEventListener('click',function(){ d.querySelector('.tabs button[data-sec=ganancias]').click(); var t=setInterval(function(){ var o=[].filter.call(d.querySelectorAll('#rep .caja-p'),function(x){ return /Opiniones/.test(x.textContent) })[0]; if(o){ clearInterval(t); o.scrollIntoView({behavior:'smooth',block:'start'}) } },200); setTimeout(function(){ clearInterval(t) },5000) });
   $('fImportar').addEventListener('submit',function(e){
     e.preventDefault(); var m=$('mImp');
     var filas=$('impTxt').value.split(/\r?\n/).map(function(l){ return l.trim() }).filter(Boolean).map(function(l){ return l.split(/\t|;|,/).map(function(x){ return x.trim() }) })
@@ -438,11 +442,36 @@
       refrescar();
     }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
   });
+  /* ---------- historial de un cliente: todas sus citas, para ver y editar ---------- */
+  function historial(c,box){
+    var ya=box.querySelector('.hist-c'); if(ya){ ya.remove(); return }
+    var H=el('div','hist-c caja-p'); H.appendChild(el('p','ayuda izq','Cargando historial…')); box.appendChild(H);
+    function carga(){ api('historial',{t:c.tarjeta}).then(function(j){ H.textContent=''; if(!j.ok){ H.appendChild(el('p','msg mal',j.error||'No se pudo cargar.')); return }
+      var K=j.cliente, hecho=j.citas.filter(function(x){ return x.estado==='hecha' }).length, cab=el('div','hist-cab');
+      cab.appendChild(el('b','tit-p','📋 Historial de '+K.nombre.split(' ')[0]));
+      cab.appendChild(boton('Cerrar','b-bor',function(){ H.remove() })); H.appendChild(cab);
+      var res=el('div','hist-res'); [[hecho,'lavados'],[col(j.gastado),'gastado'],[K.sellos+'/'+datos.meta,'sellos'],[K.premios,'premios']].forEach(function(x){ var d1=el('div'); d1.appendChild(el('b',null,String(x[0]))); d1.appendChild(el('small',null,x[1])); res.appendChild(d1) }); H.appendChild(res);
+      if(K.multa) H.appendChild(el('p','alerta','⚠️ Debe una multa de '+col(K.multa)));
+      j.fijas.forEach(function(f){ H.appendChild(el('p','ayuda izq','🔁 Cita fija: todos '+losDias(f.dia)+' a las '+fmtH(f.hora)+(f.hasta?' hasta '+elDia(f.hasta):' sin fin'))) });
+      var prox=j.citas.filter(function(x){ return x.fecha>=datos.hoy&&(x.estado==='pendiente'||x.estado==='confirmada') });
+      H.appendChild(el('p','hist-agen '+(prox.length?'si':'no'),prox.length?'📅 Agendado: '+prox.length+(prox.length===1?' cita próxima':' citas próximas'):'Sin citas agendadas'));
+      if(!j.citas.length) H.appendChild(el('p','ayuda izq','Todavía no tiene citas.'));
+      j.citas.forEach(function(x){ var r=el('div','hist-i'), t=el('div','hist-t'), izq=el('div');
+        izq.appendChild(el('b',null,fmtDia(x.fecha)+' · '+fmtH(x.hora))); izq.appendChild(el('small',null,x.lineas.map(function(l){ return l[0].split(' · ')[0] }).join(' + ')+' · '+(x.pago||'')+(x.pagado?' · pagado ✓':'')));
+        t.appendChild(izq); var der=el('div','hist-d'); der.appendChild(el('span','chip '+x.estado,(x.fija?'🔁 ':'')+NOM[x.estado])); der.appendChild(el('b',null,col(x.total))); t.appendChild(der); r.appendChild(t);
+        if(x.encuesta){ var e=x.encuesta, o=el('div','hist-enc'); o.appendChild(el('span','opi','★★★★★'.slice(0,e.general)+'☆☆☆☆☆'.slice(0,5-e.general)+' Encuesta'));
+          o.appendChild(el('small',null,[e.puntualidad?'Puntualidad '+e.puntualidad+'★':'',e.calidad?'Calidad '+e.calidad+'★':'',e.trato?'Trato '+e.trato+'★':'',e.recomienda===true?'Lo recomendaría 👍':e.recomienda===false?'No lo recomendaría 👎':''].filter(Boolean).join(' · ')));
+          if(e.comentario) o.appendChild(el('small',null,'“'+e.comentario+'”')); r.appendChild(o) }
+        if(x.estado!=='cancelada'){ var a=el('div','acc'); a.appendChild(boton('✏️ Editar','b-bor',function(){ formEditar(x,r,carga) })); if(x.estado==='pendiente'||x.estado==='confirmada') a.appendChild(boton('Mover','b-bor',function(){ formMover(x,r,carga) })); r.appendChild(a) }
+        H.appendChild(r) });
+    }).catch(function(){ H.textContent=''; H.appendChild(el('p','msg mal','Sin conexión.')) }) }
+    carga();
+  }
   /* ---------- editar una cita (pago, servicio, dirección, nota y datos del cliente) ---------- */
   function campoP(lbl,elem){ var c=el('div','campo'), l=el('label',null,lbl); c.appendChild(l); c.appendChild(elem); return c }
   function inpP(v,ph,tipo){ var i=el('input'); i.value=v||''; i.placeholder=ph||''; if(tipo){ i.type=tipo; i.inputMode=tipo==='tel'?'tel':'text' } return i }
   function selP(ops,v){ var s=el('select'); ops.forEach(function(o){ opcion(s,o[0],o[1]) }); s.value=v; return s }
-  function formEditar(c,box){
+  function formEditar(c,box,alGuardar){
     var ya=box.querySelector('.editar'); if(ya){ ya.remove(); return }
     var C=datos.config.cat, sel=c.sel||{}, f=el('div','editar caja-p');
     if(!c.sel){ sel.paq=Object.keys(C.paq).filter(function(k){ return (c.lineas[0]||[''])[0].indexOf(C.paq[k].n)===0 })[0]||''; sel.veh=/SUV/.test(c.vehiculo)?'suv':'sedan'; sel.extras=Object.keys(C.ext).filter(function(k){ return c.lineas.some(function(l){ return l[0].indexOf(C.ext[k].n)===0 }) }) }
@@ -455,6 +484,8 @@
     var ex=el('div','chks'); Object.keys(C.ext).forEach(function(k){ var x=C.ext[k]; if(x.oculto&&(sel.extras||[]).indexOf(k)<0) return; var l=el('label','chk'), i=el('input'); i.type='checkbox'; i.value=k; i.checked=(sel.extras||[]).indexOf(k)>=0; l.appendChild(i); l.appendChild(d.createTextNode(x.n)); ex.appendChild(l) });
     var ce=el('div','campo'); ce.appendChild(el('span','lbl-p','Adicionales')); ce.appendChild(ex); f.appendChild(ce);
     var lu=inpP(c.lugar,'Dirección'), no=inpP(c.nota,'Nota (opcional)'); f.appendChild(campoP('Dirección',lu)); f.appendChild(campoP('Nota',no));
+    var rep=null; if(c.fija) f.appendChild(el('p','ayuda izq','🔁 Esta cita es fija. Para cambiar las semanas, use Editar en “Citas fijas”.'));
+    else if(c.estado==='pendiente'||c.estado==='confirmada'){ rep=selP([['','No repetir'],['4','Repetir 4 semanas'],['7','Repetir 7 semanas'],['8','Repetir 8 semanas'],['12','Repetir 12 semanas'],['26','Repetir 26 semanas'],['52','Repetir 52 semanas'],['0','Repetir cada semana, sin fin']],''); f.appendChild(campoP('🔁 ¿Repetir todos '+losDias(new Date(c.fecha+'T12:00:00Z').getUTCDay())+' a las '+fmtH(c.hora)+'?',rep)) }
     var tot=el('div','tot-p'); tot.appendChild(el('span',null,'Nuevo total')); var tb=el('b',null,''); tot.appendChild(tb); f.appendChild(tot);
     function calc(){ var P=C.paq[pq.value], t=P?P[vh.value]:0, desde=false; [].forEach.call(ex.querySelectorAll('input:checked'),function(i){ var x=C.ext[i.value]; if(!x) return; if(x.desde) desde=true; t+=(x.conPaq!=null&&P)?x.conPaq:x.p }); t+=(c.multa||0); tb.textContent=(desde?'desde ':'')+col(t) }
     [pq,vh,ex].forEach(function(e){ e.addEventListener('change',calc) }); calc();
@@ -462,11 +493,16 @@
     acc.appendChild(boton('Cerrar','b-bor',function(){ f.remove() }));
     acc.appendChild(boton('Guardar cambios','b-tq',function(){
       m.textContent='Guardando…'; m.className='msg';
-      var cambiaCli=nom.value.trim()!==c.nombre||tel.value.replace(/\D/g,'').replace(/^506/,'')!==c.tel;
+      var nom0=nom.value.trim().split(' ')[0], cambiaCli=nom.value.trim()!==c.nombre||tel.value.replace(/\D/g,'').replace(/^506/,'')!==c.tel;
       var p1=cambiaCli?api('editar-cliente',{t:c.tarjeta,nombre:nom.value.trim(),tel:tel.value}):Promise.resolve({ok:true});
       p1.then(function(j){ if(!j.ok) throw new Error(j.error||'No se pudo cambiar el cliente.');
         return api('editar-cita',{id:c.id,pago:pg.value,paq:pq.value,veh:vh.value,extras:[].map.call(ex.querySelectorAll('input:checked'),function(i){ return i.value }),lugar:lu.value.trim(),nota:no.value.trim(),carro:car.value.trim()}) })
-       .then(function(j){ if(!j.ok) throw new Error(j.error||'No se pudo guardar.'); f.remove(); toast('✓ Cita actualizada · total '+col(j.total)); refrescar() })
+       .then(function(j){ if(!j.ok) throw new Error(j.error||'No se pudo guardar.'); var tot=j.total;
+         if(!rep||rep.value==='') return { tot:tot };
+         return api('fijar',{id:c.id,semanas:+rep.value}).then(function(k){ if(!k.ok) throw new Error(k.error||'No se pudo repetir.'); return { tot:tot, fija:k } }) })
+       .then(function(o){ f.remove(); toast('✓ Cita actualizada · total '+col(o.tot)+(o.fija?' · 🔁 '+(o.fija.creadas+1)+' citas apartadas':''));
+         if(o.fija){ var nom=nom0, n=+rep.value; hojaWA('Avísele a '+nom+':',c.tel,'¡Hola '+nom+'! 👋 Le dejamos su cita fija en Monzú Detallados todos '+losDias(new Date(c.fecha+'T12:00:00Z').getUTCDay())+' a las '+fmtH(c.hora)+(n?' por '+n+' semanas':'')+'. Le llegan recordatorios antes de cada una: '+enlaceTarjeta(o.fija.tarjeta||c.tarjeta)) }
+         if(alGuardar) alGuardar(); refrescar() })
        .catch(function(e){ m.textContent=e.message||'Sin conexión.'; m.className='msg mal' });
     }));
     f.appendChild(acc); f.appendChild(m); box.appendChild(f); nom.focus();
@@ -482,12 +518,12 @@
   }
 
   /* mover una cita */
-  function formMover(c,box){
+  function formMover(c,box,alGuardar){
     if(box.querySelector('.mover')){ box.querySelector('.mover').remove(); return }
     var f=el('div','mover'), dd=el('div','dos-p'), c1=el('div','campo'), c2=el('div','campo'), fe=el('input'), ho=el('select');
     fe.type='date'; fe.value=c.fecha; fe.min=datos.hoy; fe.setAttribute('aria-label','Nuevo día'); llenaSelHoras(ho,false); if(datos.config.horas.indexOf(c.hora)<0) opcion(ho,c.hora,fmtH(c.hora)); ho.value=c.hora; ho.setAttribute('aria-label','Nueva hora');
     c1.appendChild(fe); c2.appendChild(ho); dd.appendChild(c1); dd.appendChild(c2); f.appendChild(dd);
-    f.appendChild(boton('Guardar el cambio','b-tq',function(){ api('mover',{id:c.id,fecha:fe.value,hora:ho.value}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } f.remove();
+    f.appendChild(boton('Guardar el cambio','b-tq',function(){ api('mover',{id:c.id,fecha:fe.value,hora:ho.value}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } f.remove(); if(alGuardar) alGuardar();
       var nom=c.nombre.split(' ')[0]; hojaWA('✓ Cita movida. Avísele a '+nom+':',c.tel,'¡Hola '+nom+'! Le cambiamos su cita de Monzú Detallados para el '+fmtDia(fe.value).toLowerCase()+' a las '+fmtH(ho.value)+'. Cualquier cosa nos escribe. Su tarjeta: '+enlaceTarjeta(j.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }));
     box.appendChild(f);
   }

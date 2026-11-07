@@ -258,6 +258,14 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
 .editar{margin-top:4px}
 .cal-nav .cal-ag{background:linear-gradient(135deg,#3B82F6,#2563EB);border-color:transparent;color:#fff}
 .dia-ag{width:100%}
+.hist-c{margin-top:6px;gap:10px}
+.hist-cab{display:flex;justify-content:space-between;align-items:center;gap:8px}.hist-cab .btn{width:auto;padding:8px 12px}
+.hist-res{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.hist-res div{background:rgba(7,11,20,.5);border:1px solid var(--linea);border-radius:12px;padding:8px;text-align:center}.hist-res b{display:block;font-size:1rem}.hist-res small{font-size:.66rem;color:var(--gr)}
+.hist-agen{font-size:.8rem;font-weight:700}.hist-agen.si{color:#4ADE80}.hist-agen.no{color:var(--gr2)}
+.hist-i{display:grid;gap:6px;background:rgba(7,11,20,.5);border:1px solid var(--linea);border-radius:14px;padding:10px}
+.hist-t{display:flex;justify-content:space-between;gap:8px}.hist-t small{display:block;color:var(--gr);font-size:.75rem}.hist-d{display:grid;justify-items:end;gap:4px}
+.hist-enc{display:grid;gap:2px;border-top:1px dashed var(--linea2);padding-top:6px}.hist-enc small{color:var(--gr);font-size:.75rem}
+.hist-i .acc .btn{padding:8px;font-size:.8rem}
 .cal-nav{display:flex;gap:4px}.cal-nav button{min-width:36px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--linea2);font-weight:700;font-size:.85rem}
 .cal-sem,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 .cal-sem span{text-align:center;font-size:.68rem;font-weight:700;color:var(--gr2)}
@@ -417,6 +425,7 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
         <p class="msg" id="mNuevo" role="alert"></p>
       </form>
     </details>
+    <button type="button" class="btn b-bor" id="btnOpiniones">⭐ Ver opiniones de los clientes</button>
     <details class="nuevo" id="impCli">
       <summary>⇪ Pasar mis clientes de otro sistema</summary>
       <form id="fImportar" novalidate>
