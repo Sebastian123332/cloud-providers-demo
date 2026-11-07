@@ -69,6 +69,12 @@ js = open(M + 'monzu.js', encoding='utf-8').read()
 # reservas reales en lugar del envío directo por WhatsApp
 i = js.index("  var abierto=Date.now(), ultimo=0;"); j = js.index("  /* ===== proceso: la línea avanza al bajar ===== */")
 js = js[:i] + open(A + 'reservas.js', encoding='utf-8').read() + '\n' + js[j:]
+# "Arme su paquete": el precio del formulario suma las opciones escogidas
+js = rep(js, "  var EXTRAS=[", "  var ARMAR={n:'Arme su detallado',items:{}}; function ARMAR_SEL(){ return [].map.call(d.querySelectorAll('#armarItems input:checked'),function(i){ return i.value }) }\n  var EXTRAS=[")
+js = rep(js, "    if(p!=='ninguno'){ var pr=PAQ[p][v]; lineas.push([PAQ[p].n+(v==='sedan'?' · sedán':' · SUV/pick up'),pr]); total+=pr }",
+         "    var conP=false; if(p==='armar'){ ARMAR_SEL().forEach(function(k){ var it=ARMAR.items[k]; if(!it) return; lineas.push([ARMAR.n+': '+it.n,it[v]]); total+=it[v]; conP=true }) } else if(p!=='ninguno'&&PAQ[p]){ var pr=PAQ[p][v]; lineas.push([PAQ[p].n+(v==='sedan'?' · sedán':' · SUV/pick up'),pr]); total+=pr; conP=true }")
+js = rep(js, "var pr=(x.conPaq&&p!=='ninguno')?x.conPaq:x.p;", "var pr=(x.conPaq&&conP)?x.conPaq:x.p;")
+js = rep(js, "    d.querySelectorAll('[data-precio]').forEach(function(b){ b.textContent=col(PAQ[b.dataset.precio][veh]) });", "    d.querySelectorAll('[data-precio]').forEach(function(b){ if(PAQ[b.dataset.precio]) b.textContent=col(PAQ[b.dataset.precio][veh]) }); if(typeof pintaDinamicos==='function') pintaDinamicos();")
 t = t.replace('__JS__', js)
 t = rep(t, '<div class="demobar">Demo de ejemplo hecha por Solanotech para Monzú Detallados · precios tomados de sus publicaciones</div>\n', '')
 t = sin_google(t)
@@ -237,6 +243,32 @@ t = rep(t, '<h3>Servicios de terceros</h3><p>Google Fonts entrega las tipografí
         '<h3>Almacenamiento en su navegador</h3><p>Para que no tenga que escribir su PIN cada vez, su navegador guarda el enlace de su tarjeta Monzú Club. Es una función necesaria y no sirve para rastrearle; se borra con “Salir de esta tarjeta”.</p><h3>Servicios de terceros</h3><p>Ninguno al navegar. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>')
 t = rep(t, '<li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>', '<li>Con su permiso, le enviamos por WhatsApp la confirmación y los recordatorios de su cita, desde el número oficial de Monzú y con la plataforma oficial de WhatsApp Business (Meta). No le enviamos publicidad. Para no recibirlos, responda “NO” o escríbanos.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>')
 
+# ---------------- "Arme su paquete" y paquetes nuevos del dueño (se llenan en vivo desde /api/catalogo) ----------------
+t = rep(t, '<label class="op"><input type="radio" name="paq" value="ninguno">', '<label class="op" id="opArmarL" hidden><input type="radio" name="paq" value="armar"><span><b id="opArmarN">Arme su paquete</b><small>A su gusto</small></span></label>\n          <label class="op" id="opNinguno"><input type="radio" name="paq" value="ninguno">')
+t = rep(t, '''      <fieldset class="bloque"><legend>3 · Adicionales</legend>''', '''      <div class="armar-f" id="armarF" hidden><span class="lbl">Escoja lo que quiere en su paquete</span><div class="opciones" id="armarItems"></div></div>
+      <fieldset class="bloque"><legend>3 · Adicionales</legend>''')
+t = rep(t, '  <p class="nota">Los precios no incluyen el domicilio: el costo depende de la ubicación de su vehículo.</p>', '''  <div class="armar-card rv" id="armarCard" hidden>
+    <div class="ac-cab"><div><span class="eti">Paquete personalizado</span><h3 class="t" id="armarTit">Arme su detallado</h3><p id="armarDesc">Escoja solo lo que su carro necesita.</p></div>
+      <div class="ac-tot"><small>Su paquete</small><b id="armarTotal">₡0</b><span data-tipo>sedán</span></div></div>
+    <div class="ac-lista" id="armarLista"></div>
+    <button type="button" class="btn btn-a" id="armarReservar">Reservar mi paquete</button>
+  </div>
+  <p class="nota">Los precios no incluyen el domicilio: el costo depende de la ubicación de su vehículo.</p>''')
+ARMAR_CSS = """
+.armar-card{margin-top:18px;border-radius:26px;padding:clamp(22px,3vw,34px);background:linear-gradient(160deg,rgba(76,195,212,.12),var(--n2) 55%);border:1px solid rgba(76,195,212,.4);display:grid;gap:18px}
+.ac-cab{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
+.ac-cab h3{font-size:clamp(2rem,4vw,2.8rem);margin-top:6px}.ac-cab p{color:var(--gr);margin-top:6px}
+.ac-tot{text-align:right}.ac-tot small{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gr);font-weight:700}.ac-tot b{font-family:var(--t);font-style:italic;font-weight:900;font-size:2.4rem;line-height:1}.ac-tot span{display:block;font-size:.8rem;color:var(--gr)}
+.ac-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.ac-op{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;border:1px solid var(--linea2);background:var(--n);cursor:pointer;transition:.2s}
+.ac-op input{accent-color:var(--tq);width:20px;height:20px;flex:none}
+.ac-op span{display:grid;font-weight:600;font-size:.92rem}.ac-op small{color:var(--tq2);font-weight:700}
+.ac-op:has(input:checked){border-color:var(--tq);background:rgba(76,195,212,.08)}
+.armar-f{display:grid;gap:8px;margin:-6px 0 14px}
+.op span b{font-weight:600}
+@media(max-width:600px){.ac-tot{text-align:left}.ac-cab{flex-direction:column}}
+"""
+t = t.replace('</style>', ARMAR_CSS + '</style>', 1)
 # ---------------- trabajos reales: fotos y videos ----------------
 TRAB = [  # (archivo, título, subtítulo, alt)
  ('tacoma-negra', 'Brillo espejo', 'Detallado exterior', 'Pick up negra recién detallada, con la pintura brillante como espejo'),

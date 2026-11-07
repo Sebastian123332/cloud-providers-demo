@@ -67,14 +67,15 @@
     if(Date.now()-ultimo<15000){ estado('Su cita ya se envió. Espere unos segundos para enviar otra.',true); return }
     var e=eleccion(), mal=[];
     var x={nombre:limpiar($('fNombre').value,80), tel:limpiar($('fTel').value,16), lugar:limpiar($('fLugar').value,120), carro:limpiar($('fVeh').value,60), nota:limpiar($('fNota').value,400),
-      fecha:$('fFecha').value, hora:horaSel, ubic:ubic, pago:(d.querySelector('input[name=pago]:checked')||{}).value||'', pin:$('fPin').value.trim(), vehiculo:e.v==='sedan'?'Sedán':'SUV / Pick up / XL', veh:e.v, paq:e.p, extras:e.xs.map(function(z){ return z.k }), lineas:e.lineas, desde:e.desde, aroma:aroma, consentimiento:true, web:$('fWeb').value};
+      fecha:$('fFecha').value, hora:horaSel, ubic:ubic, pago:(d.querySelector('input[name=pago]:checked')||{}).value||'', pin:$('fPin').value.trim(), vehiculo:e.v==='sedan'?'Sedán':'SUV / Pick up / XL', veh:e.v, paq:e.p, armar:e.p==='armar'?ARMAR_SEL():[], extras:e.xs.map(function(z){ return z.k }), lineas:e.lineas, desde:e.desde, aroma:aroma, consentimiento:true, web:$('fWeb').value};
     var okN=/^[\p{L}\p{M} .'’-]{3,80}$/u.test(x.nombre); $('fNombre').setAttribute('aria-invalid',String(!okN)); if(!okN) mal.push('su nombre');
     var t=x.tel.replace(/[^\d+]/g,'').replace(/^\+?506/,''), okT=/^[2-8]\d{7}$/.test(t); $('fTel').setAttribute('aria-invalid',String(!okT)); if(!okT) mal.push('un teléfono de 8 dígitos');
     var okP=!x.pin||/^\d{4}$/.test(x.pin); $('fPin').setAttribute('aria-invalid',String(!okP)); if(!okP) mal.push('un PIN de 4 números (o déjelo vacío)');
     var okL=x.lugar.length>=4||!!x.ubic; $('fLugar').setAttribute('aria-invalid',String(!okL)); if(!okL) mal.push('la dirección o su ubicación en el mapa');
     var okF=/^\d{4}-\d{2}-\d{2}$/.test(x.fecha); $('fFecha').setAttribute('aria-invalid',String(!okF)); if(!okF) mal.push('la fecha');
     if(okF&&!x.hora){ cajaH.setAttribute('aria-invalid','true'); mal.push('la hora') }
-    if(!e.lineas.length) mal.push('un paquete o adicional');
+    if(e.p==='armar'&&!ARMAR_SEL().length) mal.push('las opciones de su paquete');
+    else if(!e.lineas.length) mal.push('un paquete o adicional');
     $('pagos').setAttribute('aria-invalid',String(!x.pago)); if(!x.pago) mal.push('cómo va a pagar');
     if(!$('okTerminos').checked) mal.push('aceptar los términos');
     if(!$('okDatos').checked) mal.push('autorizar el uso de sus datos');
@@ -105,8 +106,33 @@
     cajaEx.textContent=''; EXTRAS.forEach(function(x){ var l=d.createElement('label'); l.className='op'; var i=d.createElement('input'); i.type='checkbox'; i.value=x.k; i.checked=marcados.indexOf(x.k)>=0; var sp=d.createElement('span'); sp.textContent=x.n; var sm=d.createElement('small'); sm.textContent=x.d||col(x.p); sp.appendChild(sm); l.appendChild(i); l.appendChild(sp); cajaEx.appendChild(l) });
     d.querySelectorAll('[data-x]').forEach(function(b){ var x=C.ext[b.dataset.x], art=b.closest('article'); if(!x){ if(art) art.hidden=true; return }
       b.textContent=(x.desde?'Desde ':'')+col(x.p); if(x.conPaq!=null){ var sm=d.createElement('small'); sm.textContent=' · '+col(x.conPaq)+' si lo suma a un detallado'; b.appendChild(sm) } });
+    /* paquetes nuevos que agregó el dueño */
+    var antesNinguno=$('opNinguno'), caja=d.querySelector('.paquetes');
+    Object.keys(C.paq).forEach(function(k){ if(k==='premium'||k==='deluxe'||PAQ[k]) return; var P=C.paq[k]; PAQ[k]={sedan:P.sedan,suv:P.suv,n:P.n};
+      var l=d.createElement('label'); l.className='op'; var i=d.createElement('input'); i.type='radio'; i.name='paq'; i.value=k; var sp=d.createElement('span'); sp.textContent=P.n.replace(/^Detallado /,''); var sm=d.createElement('small'); sm.setAttribute('data-precio',k); sp.appendChild(sm); l.appendChild(i); l.appendChild(sp); antesNinguno.parentNode.insertBefore(l,antesNinguno);
+      if(caja){ var a=d.createElement('article'); a.className='paq in'; var h=d.createElement('h3'); h.className='t'; var hs=d.createElement('small'); hs.textContent='Paquete'; h.appendChild(hs); h.appendChild(d.createTextNode(P.n.replace(/^Detallado /,''))); a.appendChild(h);
+        var pr=d.createElement('div'); pr.className='precio'; var pb=d.createElement('b'); pb.setAttribute('data-precio',k); var ps=d.createElement('span'); ps.setAttribute('data-tipo',''); pr.appendChild(pb); pr.appendChild(ps); a.appendChild(pr);
+        var ul=d.createElement('ul'); (P.incluye||[]).forEach(function(x){ var li=d.createElement('li'); li.textContent=x; ul.appendChild(li) }); a.appendChild(ul);
+        var bt=d.createElement('a'); bt.className='btn btn-b'; bt.href='#agendar'; bt.textContent='Quiero el '+P.n.replace(/^Detallado /,''); bt.addEventListener('click',function(){ i.checked=true; cotiza() }); a.appendChild(bt); caja.appendChild(a) } });
+    /* "Arme su paquete" */
+    if(C.armar&&C.armar.items&&Object.keys(C.armar.items).length){ ARMAR=C.armar;
+      $('opArmarL').hidden=false; $('opArmarN').textContent=C.armar.n; $('armarCard').hidden=false; $('armarTit').textContent=C.armar.n; if(C.armar.desc) $('armarDesc').textContent=C.armar.desc;
+      [['armarLista','ac-op','tarjetaArmar'],['armarItems','op','formArmar']].forEach(function(z){ var cont=$(z[0]); cont.textContent='';
+        Object.keys(C.armar.items).forEach(function(k){ var it=C.armar.items[k], l=d.createElement('label'); l.className=z[1]; var i=d.createElement('input'); i.type='checkbox'; i.value=k; var sp=d.createElement('span'); sp.appendChild(d.createTextNode(it.n)); var sm=d.createElement('small'); sm.setAttribute('data-armar',k); sp.appendChild(sm); l.appendChild(i); l.appendChild(sp); cont.appendChild(l) }) });
+      $('armarLista').addEventListener('change',pintaDinamicos);
+      $('armarReservar').addEventListener('click',function(){ var sel=[].map.call($('armarLista').querySelectorAll('input:checked'),function(i){ return i.value });
+        if(!sel.length){ $('armarTotal').textContent='Escoja algo'; return }
+        [].forEach.call($('armarItems').querySelectorAll('input'),function(i){ i.checked=sel.indexOf(i.value)>=0 }); d.querySelector('input[name=paq][value=armar]').checked=true; $('armarF').hidden=false; cotiza(); $('agendar').scrollIntoView({behavior:QUIETO?'auto':'smooth'}) });
+    }
     pintaPaquetes();
   }).catch(function(){});
+  /* precios que dependen del vehículo en lo que se llenó en vivo */
+  function pintaDinamicos(){
+    d.querySelectorAll('[data-armar]').forEach(function(s){ var it=ARMAR.items[s.dataset.armar]; if(it) s.textContent=col(it[veh]) });
+    var t=0; [].forEach.call(d.querySelectorAll('#armarLista input:checked'),function(i){ var it=ARMAR.items[i.value]; if(it) t+=it[veh] }); if($('armarTotal')) $('armarTotal').textContent=col(t);
+    var arm=d.querySelector('input[name=paq][value=armar]'); if($('armarF')) $('armarF').hidden=!(arm&&arm.checked);
+  }
+  $('form').addEventListener('change',pintaDinamicos);
 
   /* ===== videos de trabajos: se reproducen solos (sin sonido) solo cuando se ven ===== */
   (function(){ var vs=d.querySelectorAll('.clip video'); if(!vs.length) return;

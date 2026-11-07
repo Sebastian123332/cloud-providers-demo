@@ -31,6 +31,10 @@ const inicioCita = (c) => Date.parse(c.fecha + 'T' + c.hora + ':00-06:00'); // C
 
 /* ---------- precios oficiales: el servidor calcula el total, no confía en el navegador ---------- */
 const RESENA_BASE = 'https://www.google.com/maps/search/?api=1&query=Monz%C3%BA+Detallados+Cartago';
+// "Arme su paquete": opciones sueltas que el cliente combina. Viene apagado y sin precios: el dueño los pone en el panel.
+const ARMAR_BASE = () => ({ activo: false, n: 'Arme su detallado', desc: 'Escoja solo lo que su carro necesita.', items: {
+  partes: { n: 'Restauración de partes negras', sedan: 0, suv: 0 }, cera: { n: 'Cera', sedan: 0, suv: 0 }, llantin: { n: 'Llantín hidrofóbico', sedan: 0, suv: 0 },
+  descont: { n: 'Descontaminación de pintura', sedan: 0, suv: 0 }, sellador: { n: 'Sellador cerámico', sedan: 0, suv: 0 } } });
 const CATALOGO = {
   paq: {
     premium: { n: 'Detallado Premium', sedan: 16000, suv: 18000, incluye: ['Aspirado profundo y limpieza de plásticos internos, con restaurador e hidratante para plásticos y cuero', 'Pre-lavado para quitar la suciedad sin rayar, y lavado con shampoo pH neutro que cuida los cerámicos', 'Limpieza y detallado de llantas, aros y guardabarros, con hidrofobia (repelencia)', 'Detallado de vidrios con repelencia', 'Cera cerámica'] },
@@ -42,12 +46,20 @@ const CATALOGO = {
   },
 };
 // Ajustes que el dueño cambia desde el panel (horario, días cerrados, servicios y precios, enlace de reseñas).
-const configBase = () => ({ horas: [...AJUSTES.horas], dias: [...AJUSTES.dias], cerrados: [], cat: JSON.parse(JSON.stringify(CATALOGO)), resena: RESENA_BASE });
-async function cargaConfig() { const r = await A.leer('config'); CFG = { ...configBase(), ...((r && r.data) || {}) }; return CFG; }
-const catPublico = () => ({ paq: CFG.cat.paq, ext: Object.fromEntries(Object.entries(CFG.cat.ext).filter(([, x]) => !x.oculto)) });
-function cotiza(veh, paq, extras) {
+const configBase = () => ({ horas: [...AJUSTES.horas], dias: [...AJUSTES.dias], cerrados: [], cat: { ...JSON.parse(JSON.stringify(CATALOGO)), armar: ARMAR_BASE() }, resena: RESENA_BASE });
+async function cargaConfig() { const r = await A.leer('config'); CFG = { ...configBase(), ...((r && r.data) || {}) }; if (!CFG.cat.armar) CFG.cat = { ...CFG.cat, armar: ARMAR_BASE() }; return CFG; }
+const armarActivo = () => { const A = CFG.cat.armar; return A && A.activo ? A : null; };
+const itemsArmar = () => { const A = armarActivo(); return A ? Object.fromEntries(Object.entries(A.items).filter(([, x]) => x.sedan > 0 || x.suv > 0)) : {}; };
+const catPublico = () => { const it = itemsArmar(); return { paq: CFG.cat.paq, ext: Object.fromEntries(Object.entries(CFG.cat.ext).filter(([, x]) => !x.oculto)), armar: Object.keys(it).length ? { n: CFG.cat.armar.n, desc: CFG.cat.armar.desc || '', items: it } : null }; };
+const paqValido = (k) => !!CFG.cat.paq[k] || (k === 'armar' && Object.keys(itemsArmar()).length > 0);
+const listaArmar = (a) => [...new Set(Array.isArray(a) ? a.map(String) : [])].filter((k) => itemsArmar()[k]).slice(0, 12);
+function cotiza(veh, paq, extras, armar) {
   const v = veh === 'suv' ? 'suv' : 'sedan', lineas = []; let desde = false;
-  const P = CFG.cat.paq[paq]; if (P) lineas.push([P.n + (v === 'sedan' ? ' · sedán' : ' · SUV/pick up'), P[v]]);
+  let P = CFG.cat.paq[paq]; if (P) lineas.push([P.n + (v === 'sedan' ? ' · sedán' : ' · SUV/pick up'), P[v]]);
+  if (paq === 'armar') {                                                         // paquete armado por el cliente: cada opción con su precio
+    const it = itemsArmar(), A = CFG.cat.armar; listaArmar(armar).forEach((k) => lineas.push([A.n + ': ' + it[k].n + (v === 'sedan' ? ' · sedán' : ' · SUV/pick up'), it[k][v]]));
+    if (lineas.length) P = A;
+  }
   [...new Set(Array.isArray(extras) ? extras.map(String) : [])].slice(0, 8).forEach((k) => {
     const x = CFG.cat.ext[k]; if (!x || x.oculto) return; if (x.desde) desde = true;
     lineas.push([x.n + (x.desde ? ' (desde)' : ''), x.conPaq && P ? x.conPaq : x.p]);
@@ -147,12 +159,12 @@ function ubicOk(u) {
 }
 // arma y guarda una cita (la usan la reserva de la página y la reserva rápida de la tarjeta)
 function creaCita(db, c, d, ip) {
-  const q = cotiza(d.veh, d.paq, d.extras);
+  const q = cotiza(d.veh, d.paq, d.extras, d.armar);
   const yaLleva = db.citas.some((x) => x.tel === c.tel && x.multa > 0 && (x.estado === 'pendiente' || x.estado === 'confirmada'));
   const multa = c.multa > 0 && !yaLleva ? c.multa : 0;
   const lin = multa ? [...q.lineas, ['Multa pendiente por no presentarse', multa]] : q.lineas;
   const cita = { id: id(), tel: c.tel, nombre: c.nombre, fecha: d.fecha, hora: d.hora, vehiculo: q.vehiculo, carro: d.carro || c.carro || '', lineas: lin, total: q.total + multa, multa, pago: d.pago, desde: q.desde,
-    aroma: d.aroma || '', sel: { paq: CFG.cat.paq[d.paq] ? d.paq : '', veh: q.v, extras: (Array.isArray(d.extras) ? d.extras.map(String) : []).filter((k) => CFG.cat.ext[k]).slice(0, 8) }, lugar: d.lugar, ubic: d.ubic || null, nota: d.nota || '', estado: 'pendiente', creada: new Date().toISOString(), origen: huella(ip) };
+    aroma: d.aroma || '', sel: { paq: paqValido(d.paq) ? d.paq : '', armar: d.paq === 'armar' ? listaArmar(d.armar) : [], veh: q.v, extras: (Array.isArray(d.extras) ? d.extras.map(String) : []).filter((k) => CFG.cat.ext[k]).slice(0, 8) }, lugar: d.lugar, ubic: d.ubic || null, nota: d.nota || '', estado: 'pendiente', creada: new Date().toISOString(), origen: huella(ip) };
   db.citas.push(cita); purga(db);
   c.pref = { lugar: d.lugar, ubic: d.ubic || null, veh: q.v, pago: d.pago };   // para la próxima reserva rápida
   return cita;
@@ -366,7 +378,7 @@ export async function manejar(req, opts) {
       if (body.consentimiento !== true) return error('Debe aceptar los términos y autorizar el uso de sus datos.');
       const pago = AJUSTES.pagos.includes(body.pago) ? body.pago : null;
       if (!pago) return error('Elija cómo va a pagar: efectivo, SINPE Móvil o transferencia.');
-      const q = cotiza(body.veh, body.paq, body.extras);
+      const q = cotiza(body.veh, body.paq, body.extras, body.armar);
       if (!q.lineas.length) return error('Elija un paquete o un adicional.');
       return await transaccion((db) => {
         if (!horasDe(db, fecha).find((x) => x.h === hora && x.libre)) return { res: error('Esa hora se acaba de ocupar. Elija otra, por favor.', 409), cambio: false };
@@ -380,7 +392,7 @@ export async function manejar(req, opts) {
           else if (!body.pin) aviso = 'conpin';
           else { const r = revisaPin(c, String(body.pin)); if (r === 'ok') tk = c.token; else aviso = r === 'bloqueado' ? 'bloqueado' : 'pinmal'; }
         }
-        const cita = creaCita(db, c, { fecha, hora, veh: body.veh, paq: body.paq, extras: body.extras, pago, aroma: limpia(body.aroma, 30), lugar, ubic: ubicOk(body.ubic), nota, carro }, ip);
+        const cita = creaCita(db, c, { fecha, hora, veh: body.veh, paq: body.paq, extras: body.extras, armar: body.armar, pago, aroma: limpia(body.aroma, 30), lugar, ubic: ubicOk(body.ubic), nota, carro }, ip);
         if (cita.nombre !== nombre) cita.nombreDado = nombre;
         return { res: json({ ok: true, cita: { id: cita.id, fecha, hora, total: tk ? cita.total : null, multa: tk ? cita.multa : null, pago }, tarjeta: tk, nueva, aviso, tienePin: !!c.pinHash }), cambio: true };
       });
@@ -464,13 +476,13 @@ export async function manejar(req, opts) {
       if (!CFG.horas.includes(hora)) return error('Elija una hora de la lista.');
       const lugar = lugarDe(body); if (!lugar) return error('Escriba la dirección o marque su ubicación en el mapa.');
       const pago = AJUSTES.pagos.includes(body.pago) ? body.pago : null; if (!pago) return error('Elija cómo va a pagar.');
-      if (!cotiza(body.veh, body.paq, body.extras).lineas.length) return error('Elija un paquete o un adicional.');
+      if (!cotiza(body.veh, body.paq, body.extras, body.armar).lineas.length) return error('Elija un paquete o un adicional.');
       return await transaccion((db) => {
         const tel = db.tokens[t], c = tel && db.clientes[tel]; if (!c) return { res: error('Tarjeta no encontrada.', 404), cambio: false };
         if (!horasDe(db, fecha).find((x) => x.h === hora && x.libre)) return { res: error('Esa hora se acaba de ocupar. Elija otra, por favor.', 409), cambio: false };
         if (db.citas.filter((x) => x.tel === tel && (x.estado === 'pendiente' || x.estado === 'confirmada')).length >= 3) return { res: error('Ya tiene 3 citas pendientes. Escríbanos por WhatsApp para cambiarlas.'), cambio: false };
         if (cuota(db, 'res', AJUSTES.maxReservasDia)) return { res: error('Hoy ya no se reciben más reservas en línea. Escríbanos por WhatsApp.', 429), cambio: false };
-        const cita = creaCita(db, c, { fecha, hora, veh: body.veh, paq: body.paq, extras: body.extras, pago, lugar, ubic: ubicOk(body.ubic), nota }, ip);
+        const cita = creaCita(db, c, { fecha, hora, veh: body.veh, paq: body.paq, extras: body.extras, armar: body.armar, pago, lugar, ubic: ubicOk(body.ubic), nota }, ip);
         return { res: json({ ok: true, cita: { id: cita.id, fecha, hora, total: cita.total, multa: cita.multa, pago } }), cambio: true };
       });
     }
@@ -630,11 +642,23 @@ export async function manejar(req, opts) {
       if (accion === 'servicios') {                                               // precios y servicios
         const ent = (v, max) => { const n = Math.round(Number(v)); return Number.isFinite(n) && n >= 0 && n <= max ? n : null; };
         const cat = body.cat || {}, nuevo = { paq: {}, ext: {} };
-        for (const k of ['premium', 'deluxe']) {
-          const P = (cat.paq || {})[k] || {}, n = limpia(P.n, 40), se = ent(P.sedan, 1e6), su = ent(P.suv, 1e6);
-          if (n.length < 3 || se === null || su === null) return error('Revise el nombre y los precios del paquete ' + k + '.');
+        const paqs = Object.entries(cat.paq || {}).slice(0, 10);
+        if (!cat.paq || !cat.paq.premium || !cat.paq.deluxe) return error('Los paquetes Premium y Deluxe no se pueden quitar (están en la página).');
+        for (const [k, P0] of paqs) {                                             // paquetes: Premium, Deluxe y los que agregue el dueño
+          if (!/^[a-z0-9]{2,20}$/.test(k) || k === 'armar') return error('Paquete inválido.');
+          const P = P0 || {}, n = limpia(P.n, 40), se = ent(P.sedan, 1e6), su = ent(P.suv, 1e6);
+          if (n.length < 3 || se === null || su === null) return error('Revise el nombre y los precios del paquete "' + (n || k) + '".');
           nuevo.paq[k] = { n, sedan: se, suv: su, incluye: (Array.isArray(P.incluye) ? P.incluye : []).map((x) => limpia(x, 160)).filter(Boolean).slice(0, 12) };
         }
+        const AR = cat.armar || {}, items = {};                                   // "Arme su paquete"
+        for (const [k, x] of Object.entries(AR.items || {}).slice(0, 16)) {
+          if (!/^[a-z0-9]{2,20}$/.test(k)) return error('Opción inválida.');
+          const n = limpia(x && x.n, 50), se = ent(x && x.sedan, 1e6), su = ent(x && x.suv, 1e6);
+          if (n.length < 2 || se === null || su === null) return error('Revise el nombre y los precios de "' + (n || k) + '".');
+          items[k] = { n, sedan: se, suv: su };
+        }
+        nuevo.armar = { activo: AR.activo === true, n: limpia(AR.n, 40) || 'Arme su detallado', desc: limpia(AR.desc, 120), items };
+        if (nuevo.armar.activo && !Object.values(items).some((x) => x.sedan > 0 || x.suv > 0)) return error('Para activar “Arme su paquete” ponga el precio de al menos una opción.');
         const ext = Object.entries(cat.ext || {}).slice(0, 20);
         for (const [k, x] of ext) {
           if (!/^[a-z0-9]{2,20}$/.test(k)) return error('Servicio adicional inválido.');
@@ -652,7 +676,7 @@ export async function manejar(req, opts) {
         if (!fechaOk(fecha) || fecha < hoyCR().fecha) return error('Revise la fecha.');
         if (!horaOk(hora)) return error('Revise la hora.');
         const pago = AJUSTES.pagos.includes(body.pago) ? body.pago : AJUSTES.pagos[0];
-        if (!cotiza(body.veh, body.paq, body.extras).lineas.length) return error('Elija un paquete o un adicional.');
+        if (!cotiza(body.veh, body.paq, body.extras, body.armar).lineas.length) return error('Elija un paquete o un adicional.');
         const repetir = body.repetir === true;
         const out = await transaccion((db) => {
           let c = db.clientes[tel], nuevo = false;
@@ -660,11 +684,11 @@ export async function manejar(req, opts) {
           const sitio = lugar || (c.pref && c.pref.lugar) || '';
           if (sitio.length < 3) return { res: error('Escriba la dirección o zona.'), cambio: false };
           if (ocupada(db, fecha, hora)) return { res: error('Esa hora ya tiene una cita ese día.', 409), cambio: false };
-          const datos = { fecha, hora, veh: body.veh, paq: body.paq, extras: body.extras, pago, lugar: sitio, ubic: (lugar ? null : c.pref && c.pref.ubic) || null, nota: limpia(body.nota, 400), carro: limpia(body.carro, 60) };
+          const datos = { fecha, hora, veh: body.veh, paq: body.paq, extras: body.extras, armar: body.armar, pago, lugar: sitio, ubic: (lugar ? null : c.pref && c.pref.ubic) || null, nota: limpia(body.nota, 400), carro: limpia(body.carro, 60) };
           const cita = creaCita(db, c, datos, 'panel'); cita.estado = 'confirmada'; cita.porDueno = true;
           let gen = null;
           if (repetir) {
-            const fj = { id: id(), tel, dia: diaSemana(fecha), hora, veh: body.veh === 'suv' ? 'suv' : 'sedan', paq: String(body.paq || ''), extras: Array.isArray(body.extras) ? body.extras.map(String).slice(0, 8) : [], pago, lugar: sitio, ubic: datos.ubic, nota: datos.nota, desde: fecha, creada: new Date().toISOString() };
+            const fj = { id: id(), tel, dia: diaSemana(fecha), hora, veh: body.veh === 'suv' ? 'suv' : 'sedan', paq: String(body.paq || ''), armar: body.paq === 'armar' ? listaArmar(body.armar) : [], extras: Array.isArray(body.extras) ? body.extras.map(String).slice(0, 8) : [], pago, lugar: sitio, ubic: datos.ubic, nota: datos.nota, desde: fecha, creada: new Date().toISOString() };
             db.fijas = [...(db.fijas || []), fj].slice(-200); cita.fija = fj.id; cita.fijaFecha = fecha; gen = generaFijas(db);
           }
           anota(db, repetir ? 'cita fija creada' : 'cita agendada por el dueño', c.nombre + ' ' + fecha + ' ' + hora);
@@ -685,7 +709,7 @@ export async function manejar(req, opts) {
             sel = { paq: pk, veh: /SUV/.test(c.vehiculo) ? 'suv' : 'sedan', extras: ex };
           }
           const semanas = Math.max(0, Math.min(104, Math.round(Number(body.semanas) || 0)));
-          const fj = { id: id(), tel: c.tel, dia: diaSemana(c.fecha), hora: c.hora, veh: sel.veh, paq: sel.paq, extras: sel.extras, pago: c.pago || AJUSTES.pagos[0], lugar: c.lugar, ubic: c.ubic || null, nota: c.nota || '', desde: c.fecha, hasta: semanas ? sumaDias(c.fecha, (semanas - 1) * 7) : null, semanas, creada: new Date().toISOString() };
+          const fj = { id: id(), tel: c.tel, dia: diaSemana(c.fecha), hora: c.hora, veh: sel.veh, paq: sel.paq, armar: sel.armar || [], extras: sel.extras, pago: c.pago || AJUSTES.pagos[0], lugar: c.lugar, ubic: c.ubic || null, nota: c.nota || '', desde: c.fecha, hasta: semanas ? sumaDias(c.fecha, (semanas - 1) * 7) : null, semanas, creada: new Date().toISOString() };
           db.fijas = [...(db.fijas || []), fj].slice(-200); c.fija = fj.id; c.fijaFecha = c.fecha;
           const gen = generaFijas(db); anota(db, 'cita fija creada', c.nombre + ' cada ' + c.hora);
           return { res: json({ ok: true, creadas: gen.creadas, choques: gen.choques, tarjeta: db.clientes[c.tel]?.token }), cambio: true };
@@ -699,7 +723,7 @@ export async function manejar(req, opts) {
         let desde = String(body.desde || hoy); if (!fechaOk(desde) || desde < hoy) desde = hoy;
         while (diaSemana(desde) !== dia) desde = sumaDias(desde, 1);
         if (desde === hoy && hora <= hoyCR().hora) desde = sumaDias(desde, 7);   // si hoy ya pasó esa hora, empieza la otra semana
-        if (!cotiza(body.veh, body.paq, body.extras).lineas.length) return error('Elija un paquete o un adicional.');
+        if (!cotiza(body.veh, body.paq, body.extras, body.armar).lineas.length) return error('Elija un paquete o un adicional.');
         const pago = AJUSTES.pagos.includes(body.pago) ? body.pago : AJUSTES.pagos[0];
         return await transaccion((db) => {
           let fj = body.id ? (db.fijas || []).find((x) => x.id === body.id) : null;
@@ -708,7 +732,7 @@ export async function manejar(req, opts) {
           if (!c) return { res: error('Busque y elija un cliente de la lista.'), cambio: false };
           const lugar = limpia(body.lugar, 120) || (fj && fj.lugar) || (c.pref && c.pref.lugar) || '';
           if (lugar.length < 3) return { res: error('Escriba la dirección (el cliente todavía no tiene una guardada).'), cambio: false };
-          const datos = { dia, hora, veh: body.veh === 'suv' ? 'suv' : 'sedan', paq: CFG.cat.paq[body.paq] ? body.paq : '', extras: (Array.isArray(body.extras) ? body.extras.map(String) : []).filter((k) => CFG.cat.ext[k]).slice(0, 8),
+          const datos = { dia, hora, veh: body.veh === 'suv' ? 'suv' : 'sedan', paq: paqValido(body.paq) ? body.paq : '', armar: body.paq === 'armar' ? listaArmar(body.armar) : [], extras: (Array.isArray(body.extras) ? body.extras.map(String) : []).filter((k) => CFG.cat.ext[k]).slice(0, 8),
             pago, lugar, ubic: lugar === (c.pref && c.pref.lugar) ? (c.pref.ubic || null) : (fj && fj.lugar === lugar ? fj.ubic : null), nota: limpia(body.nota, 400), desde, hasta: semanas ? sumaDias(desde, (semanas - 1) * 7) : null, semanas };
           if (fj) {                                                               // editar: se rehacen las próximas citas con los datos nuevos
             Object.assign(fj, datos);
@@ -752,9 +776,9 @@ export async function manejar(req, opts) {
           if (body.nota !== undefined) c.nota = limpia(body.nota, 400);
           if (body.carro !== undefined) c.carro = limpia(body.carro, 60);
           if (body.paq !== undefined) {                                           // cambiar el servicio: se recalcula el total (la multa se respeta)
-            const q = cotiza(body.veh, body.paq, body.extras); if (!q.lineas.length) return { res: error('Elija un paquete o un adicional.'), cambio: false };
+            const q = cotiza(body.veh, body.paq, body.extras, body.armar); if (!q.lineas.length) return { res: error('Elija un paquete o un adicional.'), cambio: false };
             c.lineas = c.multa ? [...q.lineas, ['Multa pendiente por no presentarse', c.multa]] : q.lineas; c.total = q.total + (c.multa || 0); c.desde = q.desde; c.vehiculo = q.vehiculo;
-            c.sel = { paq: CFG.cat.paq[body.paq] ? body.paq : '', veh: q.v, extras: (Array.isArray(body.extras) ? body.extras.map(String) : []).filter((k) => CFG.cat.ext[k]).slice(0, 8) };
+            c.sel = { paq: paqValido(body.paq) ? body.paq : '', armar: body.paq === 'armar' ? listaArmar(body.armar) : [], veh: q.v, extras: (Array.isArray(body.extras) ? body.extras.map(String) : []).filter((k) => CFG.cat.ext[k]).slice(0, 8) };
           }
           anota(db, 'cita editada', c.nombre + ' ' + c.fecha + ' ' + c.hora);
           return { res: json({ ok: true, total: c.total }), cambio: true };

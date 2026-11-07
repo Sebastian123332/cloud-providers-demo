@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-aHHf43kLXbDlL4RRaI5+kqf5K/4EfwgvKR1rgWEhDuI=' 'self'; style-src 'sha256-WoV6mKKwXZDScAs531WyqBCEbHosu1An1QXA+yLIE1M='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-krdRJdFnT2tzxfbabewNtQSJFo5YWFpaZCKqt7wN1do=' 'self'; style-src 'sha256-WoV6mKKwXZDScAs531WyqBCEbHosu1An1QXA+yLIE1M='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mi tarjeta · Monzú Club</title>
@@ -277,6 +277,7 @@ body{background:radial-gradient(460px 380px at 100% -8%,rgba(245,166,35,.28),tra
       <h2 id="rapT">⚡ Reservar rápido</h2>
       <p class="rap-sub">Elija el servicio, el día y la hora. Sus datos ya los tenemos.</p>
       <div class="paso-r"><span class="lbl">Servicio</span><div class="chips-s" id="rPaq"></div><button type="button" class="ver-inc" id="rIncBtn" aria-expanded="false">¿Qué incluye el Premium? ↓</button><ul class="inc-l" id="rInc" hidden></ul></div>
+      <div class="paso-r" id="rArmC" hidden><span class="lbl">Escoja lo que quiere</span><div class="chips-s" id="rArm"></div></div>
       <div class="paso-r"><span class="lbl">Vehículo</span><div class="chips-s" id="rVeh"></div></div>
       <div class="paso-r"><span class="lbl">Adicionales (opcional)</span><div class="chips-s" id="rExt"></div></div>
       <div class="paso-r"><span class="lbl">Día</span><div class="dias" id="rDias"></div></div>
@@ -513,14 +514,16 @@ body{background:radial-gradient(460px 380px at 100% -8%,rgba(245,166,35,.28),tra
   }
   /* ---------- reserva rápida ---------- */
   var R={}, rUbic=null, rMapa=null;
-  function cotizaL(){ if(!CAT) return null; var v=R.veh.get()||'sedan', P=CAT.paq[R.paq.get()], tot=0, desde=false;
-    if(P) tot+=P[v]; R.ext.get().forEach(function(k){ var x=CAT.ext[k]; if(!x) return; if(x.desde) desde=true; tot+=(x.conPaq&&P)?x.conPaq:x.p }); return {tot:tot,desde:desde,algo:!!P||R.ext.get().length>0} }
+  function cotizaL(){ if(!CAT) return null; var v=R.veh.get()||'sedan', esA=R.paq.get()==='armar', P=CAT.paq[R.paq.get()], tot=0, desde=false;
+    if(esA&&R.arm){ R.arm.get().forEach(function(k){ var it=CAT.armar.items[k]; if(it) tot+=it[v] }); if(R.arm.get().length) P={} }
+    if(P&&!esA) tot+=P[v]; R.ext.get().forEach(function(k){ var x=CAT.ext[k]; if(!x) return; if(x.desde) desde=true; tot+=(x.conPaq&&P)?x.conPaq:x.p }); return {tot:tot,desde:desde,algo:!!P||R.ext.get().length>0} }
   function pintaInc(){ var P=CAT&&CAT.paq[R.paq.get()], b=$('rIncBtn'), L=$('rInc'); b.hidden=!(P&&P.incluye); if(!P||!P.incluye){ L.hidden=true; return }
     var nom=P.n.replace('Detallado ',''), abierto=!L.hidden; b.textContent='¿Qué incluye el '+nom+'? '+(abierto?'↑':'↓'); b.setAttribute('aria-expanded',String(abierto));
     L.textContent=''; P.incluye.forEach(function(x){ var li=d.createElement('li'); li.textContent=x; if(/:$/.test(x)) li.className='tit'; L.appendChild(li) }) }
   $('rIncBtn').addEventListener('click',function(){ $('rInc').hidden=!$('rInc').hidden; pintaInc() });
   function pintaTotal(){ if(!R.paq) return; var q=cotizaL(); if(!q) return; pintaInc();
     R.veh&&R.paq.pintaPrecios(function(k){ var P=CAT.paq[k]; return P?col(P[R.veh.get()||'sedan']):'' });
+    if(R.arm){ $('rArmC').hidden=R.paq.get()!=='armar'; R.arm.pintaPrecios(function(k){ var it=CAT.armar.items[k]; return it?col(it[R.veh.get()||'sedan']):'' }) }
     $('rTotal').textContent=q.algo?(q.desde?'desde ':'')+col(q.tot+multaAct):'—';
     var mn=$('rMultaNota'); mn.hidden=!(multaAct>0); if(multaAct>0) mn.textContent='Incluye la multa pendiente de '+col(multaAct)+'.' }
   function ubiTxt(t){ var p=$('rUbiTxt'); p.textContent=''; if(t){ p.textContent=t; return } if(!rUbic) return; p.appendChild(d.createTextNode('📍 Ubicación guardada · ')); var a=d.createElement('a'); a.href='https://www.google.com/maps?q='+rUbic.lat+','+rUbic.lng; a.target='_blank'; a.rel='noopener noreferrer'; a.textContent='ver en Google Maps'; a.className='tq2'; p.appendChild(a) }
@@ -533,7 +536,8 @@ body{background:radial-gradient(460px 380px at 100% -8%,rgba(245,166,35,.28),tra
     rapidaLista=true; var pf=t.pref||{};
     if(pf.lugar) $('rLugar').value=pf.lugar; if(pf.ubic){ rUbic=pf.ubic; ubiTxt() }
     catalogo().then(function(C){
-      R.paq=grupo($('rPaq'),Object.keys(C.paq).map(function(k){ return {v:k,n:C.paq[k].n.replace('Detallado ',''),p:' '} }).concat([{v:'',n:'Solo adicionales'}]),false,pintaTotal,'premium');
+      R.paq=grupo($('rPaq'),Object.keys(C.paq).map(function(k){ return {v:k,n:C.paq[k].n.replace('Detallado ',''),p:' '} }).concat(C.armar?[{v:'armar',n:'🧩 '+C.armar.n,p:'a su gusto'}]:[]).concat([{v:'',n:'Solo adicionales'}]),false,pintaTotal,'premium');
+      if(C.armar) R.arm=grupo($('rArm'),Object.keys(C.armar.items).map(function(k){ return {v:k,n:C.armar.items[k].n,p:' '} }),true,pintaTotal);
       R.veh=grupo($('rVeh'),[{v:'sedan',n:'Sedán'},{v:'suv',n:'SUV / Pick up'}],false,pintaTotal,pf.veh||'sedan');
       R.ext=grupo($('rExt'),Object.keys(C.ext).map(function(k){ var x=C.ext[k]; return {v:k,n:(function(t){ return t.charAt(0).toUpperCase()+t.slice(1) })(x.n.replace('Limpieza de ','')),p:(x.desde?'desde ':'')+col(x.p)} }),true,pintaTotal);
       R.pago=grupo($('rPago'),C.pagos.map(function(p){ return {v:p,n:({'Efectivo':'💵 ','SINPE Móvil':'📱 ','Transferencia':'🏦 '}[p]||'')+p} }),false,function(){},pf.pago||'');
@@ -547,7 +551,7 @@ body{background:radial-gradient(460px 380px at 100% -8%,rgba(245,166,35,.28),tra
     var lugar=$('rLugar').value.trim(); if(lugar.length<4&&!rUbic) mal.push('la dirección o su ubicación en el mapa'); if(!R.pago.get()) mal.push('cómo va a pagar');
     if(mal.length){ msg('rMsg','Falta: '+mal.join(', ')+'.',true); return }
     var b=$('rReservar'); b.disabled=true; msg('rMsg','Reservando…',false);
-    post('reservar-rapido',{t:tk,fecha:w.fecha,hora:w.hora,paq:R.paq.get(),veh:R.veh.get(),extras:R.ext.get(),pago:R.pago.get(),lugar:lugar,ubic:rUbic}).then(function(j){
+    post('reservar-rapido',{t:tk,fecha:w.fecha,hora:w.hora,paq:R.paq.get(),armar:R.arm&&R.paq.get()==='armar'?R.arm.get():[],veh:R.veh.get(),extras:R.ext.get(),pago:R.pago.get(),lugar:lugar,ubic:rUbic}).then(function(j){
       b.disabled=false; if(!j.ok){ msg('rMsg',j.error||'No se pudo reservar.',true); w.recarga(); return }
       msg('rMsg','✓ ¡Listo! Cita el '+fmtFL(j.cita.fecha)+' a las '+fmtH(j.cita.hora)+' · Total '+col(j.cita.total)+'. Monzú se la confirma por WhatsApp.',false);
       if(navigator.vibrate) navigator.vibrate(80); toast('✓ Cita reservada',' '+fmtFL(j.cita.fecha)+', '+fmtH(j.cita.hora)); w.recarga(); carga(false);

@@ -409,10 +409,17 @@
   /* formulario de cita fija (nueva o editar) */
   var fjId='', fjTel='';
   function proxDia(dia,desde){ var f=desde||datos.hoy; while(new Date(f+'T12:00:00Z').getUTCDay()!==+dia) f=sumaDias(f,1); return f }
+  /* "Arme su paquete": opciones con precio */
+  function armarItems(){ var A=datos.config.cat.armar, o={}; if(!A||!A.activo) return o; Object.keys(A.items||{}).forEach(function(k){ var x=A.items[k]; if(x.sedan>0||x.suv>0) o[k]=x }); return o }
+  function hayArmar(){ return Object.keys(armarItems()).length>0 }
+  function chksArmar(cont,marcados){ cont.textContent=''; var it=armarItems(); Object.keys(it).forEach(function(k){ var l=el('label','chk'), i=el('input'); i.type='checkbox'; i.value=k; i.checked=(marcados||[]).indexOf(k)>=0; l.appendChild(i); l.appendChild(d.createTextNode(it[k].n)); cont.appendChild(l) }) }
+  function precioArmar(cont,v){ var it=armarItems(), t=0; [].forEach.call(cont.querySelectorAll('input:checked'),function(i){ if(it[i.value]) t+=it[i.value][v] }); return t }
+  function marcados(cont){ return [].map.call(cont.querySelectorAll('input:checked'),function(i){ return i.value }) }
   function llenaFija(){
     var C=datos.config.cat;
     llenaSelHoras($('fjHora'),false);
-    var ps=$('fjPaq'), primera=!ps.options.length, a=ps.value; ps.textContent=''; Object.keys(C.paq).forEach(function(k){ opcion(ps,k,C.paq[k].n) }); opcion(ps,'','Solo adicionales'); if(primera) ps.selectedIndex=0; else ps.value=a;
+    var ps=$('fjPaq'), primera=!ps.options.length, a=ps.value; ps.textContent=''; Object.keys(C.paq).forEach(function(k){ opcion(ps,k,C.paq[k].n) }); if(hayArmar()) opcion(ps,'armar','🧩 '+(C.armar.n||'Arme su paquete')); opcion(ps,'','Solo adicionales'); if(primera) ps.selectedIndex=0; else ps.value=a; if(ps.selectedIndex<0) ps.selectedIndex=0;
+    chksArmar($('fjArmar'),marcados($('fjArmar')));
     var pg=$('fjPago'), b=pg.value; pg.textContent=''; datos.pagos.forEach(function(p){ opcion(pg,p,p) }); if(b) pg.value=b;
     var ex=$('fjExt'), marc=[].map.call(ex.querySelectorAll('input:checked'),function(i){ return i.value }); ex.textContent='';
     Object.keys(C.ext).forEach(function(k){ var x=C.ext[k]; if(x.oculto) return; var l=el('label','chk'), i=el('input'); i.type='checkbox'; i.value=k; i.checked=marc.indexOf(k)>=0; l.appendChild(i); l.appendChild(d.createTextNode(x.n)); ex.appendChild(l) });
@@ -421,7 +428,7 @@
   function frec(){ var r=d.querySelector('input[name=fjFrec]:checked'); return r?r.value:'una' }
   function diaDe(f){ return new Date((f||datos.hoy)+'T12:00:00Z').getUTCDay() }
   function totalFija(){
-    var C=datos.config.cat, v=$('fjVeh').value, P=C.paq[$('fjPaq').value], t=P?P[v]:0, desde=false, sem=frec()==='semanal';
+    var C=datos.config.cat, v=$('fjVeh').value, esA=$('fjPaq').value==='armar', P=C.paq[$('fjPaq').value]||(esA&&marcados($('fjArmar')).length?{}:null), t=esA?precioArmar($('fjArmar'),v):(P?P[v]:0), desde=false, sem=frec()==='semanal'; $('fjArmarC').hidden=!esA;
     [].forEach.call($('fjExt').querySelectorAll('input:checked'),function(i){ var x=C.ext[i.value]; if(!x) return; if(x.desde) desde=true; t+=(x.conPaq!=null&&P)?x.conPaq:x.p });
     $('fjTotal').textContent=t?(desde?'desde ':'')+col(t):'—'; $('fjTotLbl').textContent=sem?'Total cada semana':'Total';
     $('fjSemC').hidden=!sem; $('fjDiaLbl').textContent=sem?'Empieza el':'Día';
@@ -433,7 +440,7 @@
       :'Una sola cita: '+elDia(f)+', '+fmtH(h);
   }
   var fjCita='';
-  ['fjHora','fjDesde','fjSemanas','fjPaq','fjVeh'].forEach(function(i){ $(i).addEventListener('change',totalFija) }); $('fjExt').addEventListener('change',totalFija); $('fjFrec').addEventListener('change',totalFija);
+  ['fjHora','fjDesde','fjSemanas','fjPaq','fjVeh','fjArmar'].forEach(function(i){ $(i).addEventListener('change',totalFija) }); $('fjExt').addEventListener('change',totalFija); $('fjFrec').addEventListener('change',totalFija);
   $('fjBuscar').addEventListener('input',function(){
     var v=$('fjBuscar').value.trim(), dig=v.replace(/\D/g,'').slice(-8), q=v.toLowerCase(), c=null;
     if(dig.length===8) c=datos.clientes.filter(function(x){ return x.tel===dig })[0];
@@ -446,7 +453,7 @@
     $('fjTit').textContent=f?'Editar cita fija de '+f.nombre:'Agendar cita'; $('fjCliC').hidden=!!f; $('fjCliTxt').hidden=!!f; $('fjNuevoCli').hidden=!!f; $('fjNC').hidden=true; $('fjGuardar').textContent=f?'Guardar cambios':'Guardar cita';
     var fr=f?'semanal':(op.frec||'una'); d.querySelectorAll('input[name=fjFrec]').forEach(function(r){ r.checked=r.value===fr; r.disabled=!!f });
     if(f){ var ini=f.desde<datos.hoy?datos.hoy:f.desde; while(diaDe(ini)!==f.dia) ini=sumaDias(ini,1); $('fjDesde').value=ini; $('fjHora').value=f.hora; if($('fjHora').value!==f.hora){ opcion($('fjHora'),f.hora,fmtH(f.hora)); $('fjHora').value=f.hora } $('fjSemanas').value=String(f.semanas||0);
-      $('fjPaq').value=f.paq||''; $('fjVeh').value=f.veh; $('fjPago').value=f.pago; $('fjLugar').value=f.lugar; [].forEach.call($('fjExt').querySelectorAll('input'),function(i){ i.checked=(f.extras||[]).indexOf(i.value)>=0 }) }
+      $('fjPaq').value=f.paq||''; chksArmar($('fjArmar'),f.armar||[]); $('fjVeh').value=f.veh; $('fjPago').value=f.pago; $('fjLugar').value=f.lugar; [].forEach.call($('fjExt').querySelectorAll('input'),function(i){ i.checked=(f.extras||[]).indexOf(i.value)>=0 }) }
     else { $('fjBuscar').value=''; $('fjLugar').value=''; $('fjDesde').value=op.fecha&&op.fecha>=datos.hoy?op.fecha:datos.hoy; $('fjSemanas').value='7'; $('fjCliTxt').textContent='Busque al cliente. ¿Es nuevo? Toque “Nuevo contacto”.'; [].forEach.call($('fjExt').querySelectorAll('input'),function(i){ i.checked=false });
       var libre=[].filter.call($('fjHora').options,function(o){ return !datos.citas.some(function(c){ return c.fecha===$('fjDesde').value&&c.hora===o.value&&c.estado!=='cancelada' }) })[0]; if(libre) $('fjHora').value=libre.value }
     $('fjDesde').min=datos.hoy; totalFija(); F.scrollIntoView({behavior:'smooth',block:'start'}); if(!f) setTimeout(function(){ $('fjBuscar').focus() },350);
@@ -464,7 +471,7 @@
   $('fFija').addEventListener('submit',function(e){
     e.preventDefault(); var m=$('mFija'), sem=frec()==='semanal';
     if(!fjId&&!fjTel){ m.textContent='Busque y elija un cliente, o toque “Nuevo contacto”.'; m.className='msg mal'; return }
-    var fecha=$('fjDesde').value||datos.hoy, base={tel:fjTel,hora:$('fjHora').value,paq:$('fjPaq').value,veh:$('fjVeh').value,extras:[].map.call($('fjExt').querySelectorAll('input:checked'),function(i){ return i.value }),pago:$('fjPago').value,lugar:$('fjLugar').value.trim()};
+    var fecha=$('fjDesde').value||datos.hoy, base={tel:fjTel,hora:$('fjHora').value,paq:$('fjPaq').value,armar:marcados($('fjArmar')),veh:$('fjVeh').value,extras:[].map.call($('fjExt').querySelectorAll('input:checked'),function(i){ return i.value }),pago:$('fjPago').value,lugar:$('fjLugar').value.trim()};
     m.textContent='Guardando…'; m.className='msg';
     var p=sem?api('fija-guardar',Object.assign({id:fjId||undefined,dia:diaDe(fecha),desde:fecha,semanas:+$('fjSemanas').value},base)):api('agendar',Object.assign({fecha:fecha},base));
     p.then(function(j){
@@ -517,16 +524,17 @@
     var nom=inpP(c.nombre,'Nombre'), tel=inpP(c.tel.slice(0,4)+'-'+c.tel.slice(4),'8888-0000','tel'), car=inpP(c.carro,'Carro (opcional)');
     var d1=el('div','dos-p'); d1.appendChild(campoP('Nombre',nom)); d1.appendChild(campoP('Teléfono',tel)); f.appendChild(d1); f.appendChild(campoP('Carro',car));
     var pg=selP(datos.pagos.map(function(p){ return [p,p] }),c.pago||datos.pagos[0]);
-    var pq=selP(Object.keys(C.paq).map(function(k){ return [k,C.paq[k].n] }).concat([['','Solo adicionales']]),sel.paq||''), vh=selP([['sedan','Sedán'],['suv','SUV · Pick up']],sel.veh||'sedan');
+    var pq=selP(Object.keys(C.paq).map(function(k){ return [k,C.paq[k].n] }).concat(hayArmar()||sel.paq==='armar'?[['armar','🧩 '+((C.armar&&C.armar.n)||'Arme su paquete')]]:[]).concat([['','Solo adicionales']]),sel.paq||''), vh=selP([['sedan','Sedán'],['suv','SUV · Pick up']],sel.veh||'sedan');
     var d2=el('div','dos-p'); d2.appendChild(campoP('Pago',pg)); d2.appendChild(campoP('Vehículo',vh)); f.appendChild(d2); f.appendChild(campoP('Servicio',pq));
     var ex=el('div','chks'); Object.keys(C.ext).forEach(function(k){ var x=C.ext[k]; if(x.oculto&&(sel.extras||[]).indexOf(k)<0) return; var l=el('label','chk'), i=el('input'); i.type='checkbox'; i.value=k; i.checked=(sel.extras||[]).indexOf(k)>=0; l.appendChild(i); l.appendChild(d.createTextNode(x.n)); ex.appendChild(l) });
+    var arm=el('div','chks'), ca=el('div','campo'); chksArmar(arm,sel.armar||[]); ca.appendChild(el('span','lbl-p','Escoja las opciones')); ca.appendChild(arm); f.appendChild(ca);
     var ce=el('div','campo'); ce.appendChild(el('span','lbl-p','Adicionales')); ce.appendChild(ex); f.appendChild(ce);
     var lu=inpP(c.lugar,'Dirección'), no=inpP(c.nota,'Nota (opcional)'); f.appendChild(campoP('Dirección',lu)); f.appendChild(campoP('Nota',no));
     var rep=null; if(c.fija) f.appendChild(el('p','ayuda izq','🔁 Esta cita es fija. Para cambiar las semanas, use Editar en “Citas fijas”.'));
     else if(c.estado==='pendiente'||c.estado==='confirmada'){ rep=selP([['','No repetir'],['4','Repetir 4 semanas'],['7','Repetir 7 semanas'],['8','Repetir 8 semanas'],['12','Repetir 12 semanas'],['26','Repetir 26 semanas'],['52','Repetir 52 semanas'],['0','Repetir cada semana, sin fin']],''); f.appendChild(campoP('🔁 ¿Repetir todos '+losDias(new Date(c.fecha+'T12:00:00Z').getUTCDay())+' a las '+fmtH(c.hora)+'?',rep)) }
     var tot=el('div','tot-p'); tot.appendChild(el('span',null,'Nuevo total')); var tb=el('b',null,''); tot.appendChild(tb); f.appendChild(tot);
-    function calc(){ var P=C.paq[pq.value], t=P?P[vh.value]:0, desde=false; [].forEach.call(ex.querySelectorAll('input:checked'),function(i){ var x=C.ext[i.value]; if(!x) return; if(x.desde) desde=true; t+=(x.conPaq!=null&&P)?x.conPaq:x.p }); t+=(c.multa||0); tb.textContent=(desde?'desde ':'')+col(t) }
-    [pq,vh,ex].forEach(function(e){ e.addEventListener('change',calc) }); calc();
+    function calc(){ var esA=pq.value==='armar'; ca.hidden=!esA; var P=C.paq[pq.value]||(esA&&marcados(arm).length?{}:null), t=esA?precioArmar(arm,vh.value):(P?P[vh.value]:0), desde=false; [].forEach.call(ex.querySelectorAll('input:checked'),function(i){ var x=C.ext[i.value]; if(!x) return; if(x.desde) desde=true; t+=(x.conPaq!=null&&P)?x.conPaq:x.p }); t+=(c.multa||0); tb.textContent=(desde?'desde ':'')+col(t) }
+    [pq,vh,ex,arm].forEach(function(e){ e.addEventListener('change',calc) }); calc();
     var m=el('p','msg'), acc=el('div','acc');
     acc.appendChild(boton('Cerrar','b-bor',function(){ f.remove() }));
     acc.appendChild(boton('Guardar cambios','b-tq',function(){
@@ -534,7 +542,7 @@
       var nom0=nom.value.trim().split(' ')[0], cambiaCli=nom.value.trim()!==c.nombre||tel.value.replace(/\D/g,'').replace(/^506/,'')!==c.tel;
       var p1=cambiaCli?api('editar-cliente',{t:c.tarjeta,nombre:nom.value.trim(),tel:tel.value}):Promise.resolve({ok:true});
       p1.then(function(j){ if(!j.ok) throw new Error(j.error||'No se pudo cambiar el cliente.');
-        return api('editar-cita',{id:c.id,pago:pg.value,paq:pq.value,veh:vh.value,extras:[].map.call(ex.querySelectorAll('input:checked'),function(i){ return i.value }),lugar:lu.value.trim(),nota:no.value.trim(),carro:car.value.trim()}) })
+        return api('editar-cita',{id:c.id,pago:pg.value,paq:pq.value,armar:marcados(arm),veh:vh.value,extras:[].map.call(ex.querySelectorAll('input:checked'),function(i){ return i.value }),lugar:lu.value.trim(),nota:no.value.trim(),carro:car.value.trim()}) })
        .then(function(j){ if(!j.ok) throw new Error(j.error||'No se pudo guardar.'); var tot=j.total;
          if(!rep||rep.value==='') return { tot:tot };
          return api('fijar',{id:c.id,semanas:+rep.value}).then(function(k){ if(!k.ok) throw new Error(k.error||'No se pudo repetir.'); return { tot:tot, fija:k } }) })
@@ -626,15 +634,29 @@
     Object.keys(cat.paq).forEach(function(k){ var P=cat.paq[k], f=el('div','paq-f'); f.dataset.k=k;
       var n=inp(P.n,'Nombre'); n.dataset.c='n'; f.appendChild(n); var t=el('div','dos-p'), a=inp(P.sedan,'Precio sedán','number'), b=inp(P.suv,'Precio SUV / Pick up','number'); a.dataset.c='sedan'; b.dataset.c='suv';
       var ca=el('div','campo'), cb=el('div','campo'), la=el('label',null,'Sedán ₡'), lb=el('label',null,'SUV ₡'); ca.appendChild(la); ca.appendChild(a); cb.appendChild(lb); cb.appendChild(b); t.appendChild(ca); t.appendChild(cb); f.appendChild(t);
-      var ci=el('div','campo'), li=el('label',null,'Qué incluye (uno por línea)'), ta=el('textarea'); ta.rows=5; ta.value=(P.incluye||[]).join('\n'); ta.dataset.c='incluye'; ci.appendChild(li); ci.appendChild(ta); f.appendChild(ci); sp.appendChild(f) });
+      var ci=el('div','campo'), li=el('label',null,'Qué incluye (uno por línea)'), ta=el('textarea'); ta.rows=5; ta.value=(P.incluye||[]).join('\n'); ta.dataset.c='incluye'; ci.appendChild(li); ci.appendChild(ta); f.appendChild(ci);
+      if(k!=='premium'&&k!=='deluxe'){ var q=el('button','chk quitar','🗑 Quitar paquete'); q.type='button'; q.addEventListener('click',function(){ f.remove() }); f.appendChild(q) }
+      sp.appendChild(f) });
+    var A=cat.armar||{items:{}}; $('arActivo').checked=!!A.activo; $('arNombre').value=A.n||'Arme su detallado'; $('arDesc').value=A.desc||''; var ai=$('arItems'); ai.textContent='';
+    Object.keys(A.items||{}).forEach(function(k){ ai.appendChild(filaArmar(k,A.items[k])) });
     var se=$('sExt'); se.textContent=''; Object.keys(cat.ext).forEach(function(k){ se.appendChild(filaExt(k,cat.ext[k])) });
   }
+  function filaArmar(k,x){ var f=el('div','ar-f'); f.dataset.k=k; var n=inp(x.n,'Opción'), a=inp(x.sedan||'','Sedán ₡','number'), b=inp(x.suv||'','SUV ₡','number'); n.dataset.c='n'; a.dataset.c='sedan'; b.dataset.c='suv';
+    f.appendChild(n); f.appendChild(a); f.appendChild(b); var q=el('button','chk','🗑'); q.type='button'; q.setAttribute('aria-label','Quitar opción'); q.addEventListener('click',function(){ f.remove() }); f.appendChild(q); return f }
+  $('arAgregar').addEventListener('click',function(){ $('arItems').appendChild(filaArmar('a'+Date.now().toString(36).slice(-6),{n:''})); $('arItems').lastChild.querySelector('input').focus() });
+  $('sPaqNuevo').addEventListener('click',function(){ var k='p'+Date.now().toString(36).slice(-6), host=$('sPaq');
+    var f=el('div','paq-f'); f.dataset.k=k; var n=inp('','Nombre del paquete (ej. Lavado Express)'); n.dataset.c='n'; f.appendChild(n); var t=el('div','dos-p'), a=inp('','Precio sedán','number'), b=inp('','Precio SUV / Pick up','number'); a.dataset.c='sedan'; b.dataset.c='suv';
+    var ca=el('div','campo'), cb=el('div','campo'); ca.appendChild(el('label',null,'Sedán ₡')); ca.appendChild(a); cb.appendChild(el('label',null,'SUV ₡')); cb.appendChild(b); t.appendChild(ca); t.appendChild(cb); f.appendChild(t);
+    var ci=el('div','campo'), ta=el('textarea'); ta.rows=4; ta.dataset.c='incluye'; ci.appendChild(el('label',null,'Qué incluye (uno por línea)')); ci.appendChild(ta); f.appendChild(ci);
+    var q=el('button','chk quitar','🗑 Quitar paquete'); q.type='button'; q.addEventListener('click',function(){ f.remove() }); f.appendChild(q); host.appendChild(f); n.focus() });
   function filaExt(k,x){ var f=el('div','ext-f'); f.dataset.k=k; var t=el('div','tres'), n=inp(x.n,'Nombre'), p=inp(x.p,'Precio ₡','number'), c=inp(x.conPaq,'Con paquete ₡','number'); n.dataset.c='n'; p.dataset.c='p'; c.dataset.c='conPaq'; t.appendChild(n); t.appendChild(p); t.appendChild(c); f.appendChild(t);
     var o=el('div','chks'); [['desde','Precio "desde"'],['oculto','Ocultar (no se ofrece)']].forEach(function(z){ var l=el('label','chk'), i=el('input'); i.type='checkbox'; i.dataset.c=z[0]; i.checked=!!x[z[0]]; l.appendChild(i); l.appendChild(d.createTextNode(z[1])); o.appendChild(l) });
     var q=el('button','chk','🗑 Quitar'); q.type='button'; q.addEventListener('click',function(){ f.remove() }); o.appendChild(q); f.appendChild(o); return f }
   $('sAgregar').addEventListener('click',function(){ var k='s'+Date.now().toString(36).slice(-6); $('sExt').appendChild(filaExt(k,{n:'',p:''})); $('sExt').lastChild.querySelector('input').focus() });
   $('sGuardar').addEventListener('click',function(){ var m=$('mServ'), cat={paq:{},ext:{}};
     [].forEach.call($('sPaq').querySelectorAll('.paq-f'),function(f){ var g=function(c){ return f.querySelector('[data-c='+c+']').value }; cat.paq[f.dataset.k]={n:g('n'),sedan:g('sedan'),suv:g('suv'),incluye:g('incluye').split('\n').map(function(s){ return s.trim() }).filter(Boolean)} });
+    cat.armar={activo:$('arActivo').checked,n:$('arNombre').value.trim(),desc:$('arDesc').value.trim(),items:{}};
+    [].forEach.call($('arItems').querySelectorAll('.ar-f'),function(f){ var g=function(c){ return f.querySelector('[data-c='+c+']').value }; if(!g('n').trim()) return; cat.armar.items[f.dataset.k]={n:g('n'),sedan:g('sedan')||0,suv:g('suv')||0} });
     [].forEach.call($('sExt').querySelectorAll('.ext-f'),function(f){ var g=function(c){ return f.querySelector('[data-c='+c+']') }; if(!g('n').value.trim()&&!g('p').value) return; cat.ext[f.dataset.k]={n:g('n').value,p:g('p').value,conPaq:g('conPaq').value,desde:g('desde').checked,oculto:g('oculto').checked} });
     api('servicios',{cat:cat}).then(function(j){ if(!j.ok){ m.textContent=j.error||'No se pudo.'; m.className='msg mal'; return } m.textContent='✓ Precios guardados. Ya se ven en la página.'; m.className='msg bien'; refrescar().then(function(){ servicios(datos.config.cat) }) }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' }) });
   $('rGuardar').addEventListener('click',function(){ var m=$('mRes'); api('resena',{url:$('rUrl').value.trim()}).then(function(j){ m.textContent=j.ok?'✓ Enlace guardado.':(j.error||'No se pudo.'); m.className=j.ok?'msg bien':'msg mal'; if(j.ok) refrescar() }) });

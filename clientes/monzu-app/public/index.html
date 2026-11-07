@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ACUuvHpnhg1GgJXfgFv2J3uYPJn5Zo2hiftpaqI2NMM=' 'self'; style-src 'sha256-Dmzn9M2mzuAoD9zYHojlX5cQ9t2CJOo5s9yVy19RPkw='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; media-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-vsKai535/Ty7wUWCE4cqFHO81oA31i65ofeEYjnF8is=' 'self'; style-src 'sha256-yVvQKHP8lGoE9wWmEiHbw80uyRHBwI2HM3YODl6gZlA='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; media-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lavado y detallado de carros a domicilio en Cartago | Monzú Detallados</title>
@@ -392,6 +392,19 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
 .ubica-txt a{color:var(--tq2)}
 #enviar:disabled{opacity:.6;cursor:wait}
 
+.armar-card{margin-top:18px;border-radius:26px;padding:clamp(22px,3vw,34px);background:linear-gradient(160deg,rgba(76,195,212,.12),var(--n2) 55%);border:1px solid rgba(76,195,212,.4);display:grid;gap:18px}
+.ac-cab{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;flex-wrap:wrap}
+.ac-cab h3{font-size:clamp(2rem,4vw,2.8rem);margin-top:6px}.ac-cab p{color:var(--gr);margin-top:6px}
+.ac-tot{text-align:right}.ac-tot small{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gr);font-weight:700}.ac-tot b{font-family:var(--t);font-style:italic;font-weight:900;font-size:2.4rem;line-height:1}.ac-tot span{display:block;font-size:.8rem;color:var(--gr)}
+.ac-lista{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.ac-op{display:flex;align-items:center;gap:12px;padding:14px;border-radius:14px;border:1px solid var(--linea2);background:var(--n);cursor:pointer;transition:.2s}
+.ac-op input{accent-color:var(--tq);width:20px;height:20px;flex:none}
+.ac-op span{display:grid;font-weight:600;font-size:.92rem}.ac-op small{color:var(--tq2);font-weight:700}
+.ac-op:has(input:checked){border-color:var(--tq);background:rgba(76,195,212,.08)}
+.armar-f{display:grid;gap:8px;margin:-6px 0 14px}
+.op span b{font-weight:600}
+@media(max-width:600px){.ac-tot{text-align:left}.ac-cab{flex-direction:column}}
+
 .trabajos{grid-template-columns:repeat(4,minmax(0,1fr))}
 .trabajos .obra:first-child{grid-column:auto;aspect-ratio:4/5}
 .clip{position:relative;margin:0;border-radius:22px;overflow:hidden;background:var(--n3);aspect-ratio:4/5}
@@ -501,6 +514,12 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
       <a class="btn btn-a" href="#agendar" data-elige="deluxe">Quiero el Deluxe</a>
     </article>
   </div>
+  <div class="armar-card rv" id="armarCard" hidden>
+    <div class="ac-cab"><div><span class="eti">Paquete personalizado</span><h3 class="t" id="armarTit">Arme su detallado</h3><p id="armarDesc">Escoja solo lo que su carro necesita.</p></div>
+      <div class="ac-tot"><small>Su paquete</small><b id="armarTotal">₡0</b><span data-tipo>sedán</span></div></div>
+    <div class="ac-lista" id="armarLista"></div>
+    <button type="button" class="btn btn-a" id="armarReservar">Reservar mi paquete</button>
+  </div>
   <p class="nota">Los precios no incluyen el domicilio: el costo depende de la ubicación de su vehículo.</p>
 </div></section>
 
@@ -590,9 +609,11 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
         <div class="opciones">
           <label class="op"><input type="radio" name="paq" value="premium" checked><span>Premium<small id="opPremium">₡16.000</small></span></label>
           <label class="op"><input type="radio" name="paq" value="deluxe"><span>Deluxe<small id="opDeluxe">₡32.000</small></span></label>
-          <label class="op"><input type="radio" name="paq" value="ninguno"><span>Solo adicionales<small>Sin paquete</small></span></label>
+          <label class="op" id="opArmarL" hidden><input type="radio" name="paq" value="armar"><span><b id="opArmarN">Arme su paquete</b><small>A su gusto</small></span></label>
+          <label class="op" id="opNinguno"><input type="radio" name="paq" value="ninguno"><span>Solo adicionales<small>Sin paquete</small></span></label>
         </div>
       </fieldset>
+      <div class="armar-f" id="armarF" hidden><span class="lbl">Escoja lo que quiere en su paquete</span><div class="opciones" id="armarItems"></div></div>
       <fieldset class="bloque"><legend>3 · Adicionales</legend>
         <div class="opciones" id="extras"></div>
       </fieldset>
@@ -816,6 +837,7 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
 
   /* ===== precios ===== */
   var PAQ={premium:{sedan:16000,suv:18000,n:'Detallado Premium'},deluxe:{sedan:32000,suv:35000,n:'Detallado Deluxe'}};
+  var ARMAR={n:'Arme su detallado',items:{}}; function ARMAR_SEL(){ return [].map.call(d.querySelectorAll('#armarItems input:checked'),function(i){ return i.value }) }
   var EXTRAS=[
     {k:'motor',n:'Limpieza de motor',p:8000,conPaq:5000,d:'₡5.000 con detallado'},
     {k:'asientos',n:'Limpieza de asientos',p:25000},
@@ -827,7 +849,7 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
   var veh='sedan', aroma='';
 
   function pintaPaquetes(){
-    d.querySelectorAll('[data-precio]').forEach(function(b){ b.textContent=col(PAQ[b.dataset.precio][veh]) });
+    d.querySelectorAll('[data-precio]').forEach(function(b){ if(PAQ[b.dataset.precio]) b.textContent=col(PAQ[b.dataset.precio][veh]) }); if(typeof pintaDinamicos==='function') pintaDinamicos();
     d.querySelectorAll('[data-tipo]').forEach(function(s){ s.textContent=veh==='sedan'?'sedán':'SUV · pick up · XL' });
     d.querySelectorAll('.selector button').forEach(function(b){ b.setAttribute('aria-pressed',String(b.dataset.v===veh)) });
     $('opPremium').textContent=col(PAQ.premium[veh]); $('opDeluxe').textContent=col(PAQ.deluxe[veh]);
@@ -872,8 +894,8 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
     var p=(d.querySelector('input[name="paq"]:checked')||{}).value||'premium';
     var xs=Array.prototype.map.call(cajaEx.querySelectorAll('input:checked'),function(i){ return EXTRAS.filter(function(x){return x.k===i.value})[0] });
     var lineas=[], total=0, desde=false;
-    if(p!=='ninguno'){ var pr=PAQ[p][v]; lineas.push([PAQ[p].n+(v==='sedan'?' · sedán':' · SUV/pick up'),pr]); total+=pr }
-    xs.forEach(function(x){ var pr=(x.conPaq&&p!=='ninguno')?x.conPaq:x.p; if(x.desde) desde=true; lineas.push([x.n+(x.desde?' (desde)':''),pr]); total+=pr });
+    var conP=false; if(p==='armar'){ ARMAR_SEL().forEach(function(k){ var it=ARMAR.items[k]; if(!it) return; lineas.push([ARMAR.n+': '+it.n,it[v]]); total+=it[v]; conP=true }) } else if(p!=='ninguno'&&PAQ[p]){ var pr=PAQ[p][v]; lineas.push([PAQ[p].n+(v==='sedan'?' · sedán':' · SUV/pick up'),pr]); total+=pr; conP=true }
+    xs.forEach(function(x){ var pr=(x.conPaq&&conP)?x.conPaq:x.p; if(x.desde) desde=true; lineas.push([x.n+(x.desde?' (desde)':''),pr]); total+=pr });
     return {v:v,p:p,xs:xs,lineas:lineas,total:total,desde:desde};
   }
   function cotiza(){
@@ -959,14 +981,15 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
     if(Date.now()-ultimo<15000){ estado('Su cita ya se envió. Espere unos segundos para enviar otra.',true); return }
     var e=eleccion(), mal=[];
     var x={nombre:limpiar($('fNombre').value,80), tel:limpiar($('fTel').value,16), lugar:limpiar($('fLugar').value,120), carro:limpiar($('fVeh').value,60), nota:limpiar($('fNota').value,400),
-      fecha:$('fFecha').value, hora:horaSel, ubic:ubic, pago:(d.querySelector('input[name=pago]:checked')||{}).value||'', pin:$('fPin').value.trim(), vehiculo:e.v==='sedan'?'Sedán':'SUV / Pick up / XL', veh:e.v, paq:e.p, extras:e.xs.map(function(z){ return z.k }), lineas:e.lineas, desde:e.desde, aroma:aroma, consentimiento:true, web:$('fWeb').value};
+      fecha:$('fFecha').value, hora:horaSel, ubic:ubic, pago:(d.querySelector('input[name=pago]:checked')||{}).value||'', pin:$('fPin').value.trim(), vehiculo:e.v==='sedan'?'Sedán':'SUV / Pick up / XL', veh:e.v, paq:e.p, armar:e.p==='armar'?ARMAR_SEL():[], extras:e.xs.map(function(z){ return z.k }), lineas:e.lineas, desde:e.desde, aroma:aroma, consentimiento:true, web:$('fWeb').value};
     var okN=/^[\p{L}\p{M} .'’-]{3,80}$/u.test(x.nombre); $('fNombre').setAttribute('aria-invalid',String(!okN)); if(!okN) mal.push('su nombre');
     var t=x.tel.replace(/[^\d+]/g,'').replace(/^\+?506/,''), okT=/^[2-8]\d{7}$/.test(t); $('fTel').setAttribute('aria-invalid',String(!okT)); if(!okT) mal.push('un teléfono de 8 dígitos');
     var okP=!x.pin||/^\d{4}$/.test(x.pin); $('fPin').setAttribute('aria-invalid',String(!okP)); if(!okP) mal.push('un PIN de 4 números (o déjelo vacío)');
     var okL=x.lugar.length>=4||!!x.ubic; $('fLugar').setAttribute('aria-invalid',String(!okL)); if(!okL) mal.push('la dirección o su ubicación en el mapa');
     var okF=/^\d{4}-\d{2}-\d{2}$/.test(x.fecha); $('fFecha').setAttribute('aria-invalid',String(!okF)); if(!okF) mal.push('la fecha');
     if(okF&&!x.hora){ cajaH.setAttribute('aria-invalid','true'); mal.push('la hora') }
-    if(!e.lineas.length) mal.push('un paquete o adicional');
+    if(e.p==='armar'&&!ARMAR_SEL().length) mal.push('las opciones de su paquete');
+    else if(!e.lineas.length) mal.push('un paquete o adicional');
     $('pagos').setAttribute('aria-invalid',String(!x.pago)); if(!x.pago) mal.push('cómo va a pagar');
     if(!$('okTerminos').checked) mal.push('aceptar los términos');
     if(!$('okDatos').checked) mal.push('autorizar el uso de sus datos');
@@ -997,8 +1020,33 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
     cajaEx.textContent=''; EXTRAS.forEach(function(x){ var l=d.createElement('label'); l.className='op'; var i=d.createElement('input'); i.type='checkbox'; i.value=x.k; i.checked=marcados.indexOf(x.k)>=0; var sp=d.createElement('span'); sp.textContent=x.n; var sm=d.createElement('small'); sm.textContent=x.d||col(x.p); sp.appendChild(sm); l.appendChild(i); l.appendChild(sp); cajaEx.appendChild(l) });
     d.querySelectorAll('[data-x]').forEach(function(b){ var x=C.ext[b.dataset.x], art=b.closest('article'); if(!x){ if(art) art.hidden=true; return }
       b.textContent=(x.desde?'Desde ':'')+col(x.p); if(x.conPaq!=null){ var sm=d.createElement('small'); sm.textContent=' · '+col(x.conPaq)+' si lo suma a un detallado'; b.appendChild(sm) } });
+    /* paquetes nuevos que agregó el dueño */
+    var antesNinguno=$('opNinguno'), caja=d.querySelector('.paquetes');
+    Object.keys(C.paq).forEach(function(k){ if(k==='premium'||k==='deluxe'||PAQ[k]) return; var P=C.paq[k]; PAQ[k]={sedan:P.sedan,suv:P.suv,n:P.n};
+      var l=d.createElement('label'); l.className='op'; var i=d.createElement('input'); i.type='radio'; i.name='paq'; i.value=k; var sp=d.createElement('span'); sp.textContent=P.n.replace(/^Detallado /,''); var sm=d.createElement('small'); sm.setAttribute('data-precio',k); sp.appendChild(sm); l.appendChild(i); l.appendChild(sp); antesNinguno.parentNode.insertBefore(l,antesNinguno);
+      if(caja){ var a=d.createElement('article'); a.className='paq in'; var h=d.createElement('h3'); h.className='t'; var hs=d.createElement('small'); hs.textContent='Paquete'; h.appendChild(hs); h.appendChild(d.createTextNode(P.n.replace(/^Detallado /,''))); a.appendChild(h);
+        var pr=d.createElement('div'); pr.className='precio'; var pb=d.createElement('b'); pb.setAttribute('data-precio',k); var ps=d.createElement('span'); ps.setAttribute('data-tipo',''); pr.appendChild(pb); pr.appendChild(ps); a.appendChild(pr);
+        var ul=d.createElement('ul'); (P.incluye||[]).forEach(function(x){ var li=d.createElement('li'); li.textContent=x; ul.appendChild(li) }); a.appendChild(ul);
+        var bt=d.createElement('a'); bt.className='btn btn-b'; bt.href='#agendar'; bt.textContent='Quiero el '+P.n.replace(/^Detallado /,''); bt.addEventListener('click',function(){ i.checked=true; cotiza() }); a.appendChild(bt); caja.appendChild(a) } });
+    /* "Arme su paquete" */
+    if(C.armar&&C.armar.items&&Object.keys(C.armar.items).length){ ARMAR=C.armar;
+      $('opArmarL').hidden=false; $('opArmarN').textContent=C.armar.n; $('armarCard').hidden=false; $('armarTit').textContent=C.armar.n; if(C.armar.desc) $('armarDesc').textContent=C.armar.desc;
+      [['armarLista','ac-op','tarjetaArmar'],['armarItems','op','formArmar']].forEach(function(z){ var cont=$(z[0]); cont.textContent='';
+        Object.keys(C.armar.items).forEach(function(k){ var it=C.armar.items[k], l=d.createElement('label'); l.className=z[1]; var i=d.createElement('input'); i.type='checkbox'; i.value=k; var sp=d.createElement('span'); sp.appendChild(d.createTextNode(it.n)); var sm=d.createElement('small'); sm.setAttribute('data-armar',k); sp.appendChild(sm); l.appendChild(i); l.appendChild(sp); cont.appendChild(l) }) });
+      $('armarLista').addEventListener('change',pintaDinamicos);
+      $('armarReservar').addEventListener('click',function(){ var sel=[].map.call($('armarLista').querySelectorAll('input:checked'),function(i){ return i.value });
+        if(!sel.length){ $('armarTotal').textContent='Escoja algo'; return }
+        [].forEach.call($('armarItems').querySelectorAll('input'),function(i){ i.checked=sel.indexOf(i.value)>=0 }); d.querySelector('input[name=paq][value=armar]').checked=true; $('armarF').hidden=false; cotiza(); $('agendar').scrollIntoView({behavior:QUIETO?'auto':'smooth'}) });
+    }
     pintaPaquetes();
   }).catch(function(){});
+  /* precios que dependen del vehículo en lo que se llenó en vivo */
+  function pintaDinamicos(){
+    d.querySelectorAll('[data-armar]').forEach(function(s){ var it=ARMAR.items[s.dataset.armar]; if(it) s.textContent=col(it[veh]) });
+    var t=0; [].forEach.call(d.querySelectorAll('#armarLista input:checked'),function(i){ var it=ARMAR.items[i.value]; if(it) t+=it[veh] }); if($('armarTotal')) $('armarTotal').textContent=col(t);
+    var arm=d.querySelector('input[name=paq][value=armar]'); if($('armarF')) $('armarF').hidden=!(arm&&arm.checked);
+  }
+  $('form').addEventListener('change',pintaDinamicos);
 
   /* ===== videos de trabajos: se reproducen solos (sin sonido) solo cuando se ven ===== */
   (function(){ var vs=d.querySelectorAll('.clip video'); if(!vs.length) return;

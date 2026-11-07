@@ -298,6 +298,10 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
 .cli-fila .der{text-align:right;display:grid;gap:2px}.cli-fila .der b{font-size:.9rem}
 .prox{font-weight:800;color:var(--gr2);font-size:.95rem}.prox.si{color:#4ADE80}
 .cli-barra{height:6px;border-radius:6px;background:rgba(148,163,184,.15);overflow:hidden}.cli-barra i{display:block;height:100%;background:linear-gradient(90deg,#60A5FA,#2563EB);border-radius:6px}
+.armar-ed{display:grid;gap:10px;border-top:1px solid var(--linea);padding-top:12px}
+.ar-f{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) auto;gap:6px;align-items:center;background:rgba(7,11,20,.5);border:1px solid var(--linea);border-radius:12px;padding:8px}.ar-f input{width:100%;padding:10px;font-size:.9rem;border-radius:10px;border:1px solid var(--linea2);background:var(--n);color:var(--bl)}
+@media(max-width:560px){.ar-f{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto}.ar-f input[data-c=n]{grid-column:1/-1}}.ar-f .chk{padding:8px 10px}
+.paq-f .quitar{justify-self:start}
 .cal-nav{display:flex;gap:4px}.cal-nav button{min-width:36px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--linea2);font-weight:700;font-size:.85rem}
 .cal-sem,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 .cal-sem span{text-align:center;font-size:.68rem;font-weight:700;color:var(--gr2)}
@@ -373,6 +377,7 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
         <div class="dos-p"><div class="campo"><label for="fjDesde" id="fjDiaLbl">Día</label><input id="fjDesde" type="date"></div><div class="campo"><label for="fjHora">Hora</label><select id="fjHora"></select></div></div>
         <div class="campo" id="fjSemC" hidden><label for="fjSemanas">Por cuántas semanas</label><select id="fjSemanas"><option value="4">4 semanas</option><option value="7" selected>7 semanas</option><option value="8">8 semanas</option><option value="12">12 semanas (3 meses)</option><option value="26">26 semanas (6 meses)</option><option value="52">52 semanas (1 año)</option><option value="0">Sin fin</option></select></div>
         <div class="dos-p"><div class="campo"><label for="fjPaq">Servicio</label><select id="fjPaq"></select></div><div class="campo"><label for="fjVeh">Vehículo</label><select id="fjVeh"><option value="sedan">Sedán</option><option value="suv">SUV · Pick up</option></select></div></div>
+        <div class="campo" id="fjArmarC" hidden><span class="lbl-p">Escoja las opciones</span><div class="chks" id="fjArmar"></div></div>
         <div class="campo"><span class="lbl-p">Adicionales</span><div class="chks" id="fjExt"></div></div>
         <div class="dos-p"><div class="campo"><label for="fjPago">Pago</label><select id="fjPago"></select></div><div class="campo"><label for="fjLugar">Dirección</label><input id="fjLugar" maxlength="120" placeholder="La última del cliente"></div></div>
         <p class="ayuda izq" id="fjResumen"></p>
@@ -420,7 +425,17 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
     <div class="caja-p">
       <b class="tit-p">💲 Servicios y precios</b>
       <p class="ayuda izq">Los cambios se ven al instante en la página, en la tarjeta del cliente y en el total de las citas nuevas.</p>
+      <span class="lbl-p">Paquetes</span>
       <div id="sPaq"></div>
+      <button type="button" class="btn b-bor" id="sPaqNuevo">＋ Agregar paquete</button>
+      <div class="armar-ed">
+        <b class="tit-p">🧩 Arme su paquete</b>
+        <p class="ayuda izq">Opciones sueltas que el cliente combina a su gusto (por ejemplo: partes negras sin cera, o cera y llantín sin partes negras). Solo se muestran las que tengan precio.</p>
+        <label class="chk"><input type="checkbox" id="arActivo"> Mostrar “Arme su paquete” en la página y en la tarjeta</label>
+        <div class="dos-p"><div class="campo"><label for="arNombre">Nombre</label><input id="arNombre" maxlength="40"></div><div class="campo"><label for="arDesc">Frase corta</label><input id="arDesc" maxlength="120"></div></div>
+        <div class="lista" id="arItems"></div>
+        <button type="button" class="btn b-bor" id="arAgregar">＋ Agregar opción</button>
+      </div>
       <span class="lbl-p">Servicios adicionales</span><div class="lista" id="sExt"></div>
       <button type="button" class="btn b-bor" id="sAgregar">＋ Agregar servicio</button>
       <button type="button" class="btn b-tq" id="sGuardar">Guardar precios</button><p class="msg" id="mServ" role="status"></p>
