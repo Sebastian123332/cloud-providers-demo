@@ -125,7 +125,8 @@ function generaFijas(db) {
     const cl = db.clientes[fj.tel]; if (!cl) continue;
     let f = fj.desde > hoy ? fj.desde : hoy;
     while (diaSemana(f) !== fj.dia) f = sumaDias(f, 1);
-    for (; f <= hasta && (!fj.hasta || f <= fj.hasta); f = sumaDias(f, 7)) {
+    const tope = fj.hasta ? (fj.hasta < sumaDias(hoy, 182) ? fj.hasta : sumaDias(hoy, 182)) : hasta;   // con semanas fijas se apartan todas (hasta 6 meses)
+    for (; f <= tope; f = sumaDias(f, 7)) {
       if (db.citas.some((c) => c.fija === fj.id && (c.fijaFecha || c.fecha) === f)) continue;            // ya existe (o se canceló esa semana)
       if (f === hoy && fj.hora <= hoyCR().hora) continue;
       if (cerradoDia(f) || CFG.cerrados.some((x) => x.hora === fj.hora && x.desde === f)) continue;
@@ -695,6 +696,7 @@ export async function manejar(req, opts) {
         if (semanas < 0 || semanas > 104) return error('Elija cuántas semanas.');
         let desde = String(body.desde || hoy); if (!fechaOk(desde) || desde < hoy) desde = hoy;
         while (diaSemana(desde) !== dia) desde = sumaDias(desde, 1);
+        if (desde === hoy && hora <= hoyCR().hora) desde = sumaDias(desde, 7);   // si hoy ya pasó esa hora, empieza la otra semana
         if (!cotiza(body.veh, body.paq, body.extras).lineas.length) return error('Elija un paquete o un adicional.');
         const pago = AJUSTES.pagos.includes(body.pago) ? body.pago : AJUSTES.pagos[0];
         return await transaccion((db) => {
@@ -730,6 +732,40 @@ export async function manejar(req, opts) {
           if (body.borrarCitas !== false) db.citas.forEach((c) => { if (c.fija === fj.id && (c.estado === 'pendiente' || c.estado === 'confirmada') && inicioCita(c) > Date.now()) { c.estado = 'cancelada'; c.canceladaPor = 'dueño'; n++; } });
           anota(db, 'cita fija quitada', (db.clientes[fj.tel]?.nombre || '') + ' · ' + n + ' citas canceladas');
           return { res: json({ ok: true, canceladas: n }), cambio: true };
+        });
+      }
+      if (accion === 'editar-cita') {                                             // el dueño corrige pago, servicio, dirección o nota de una cita
+        return await transaccion((db) => {
+          const c = db.citas.find((x) => x.id === body.id); if (!c) return { res: error('Cita no encontrada.', 404), cambio: false };
+          if (c.estado === 'cancelada') return { res: error('Esa cita está cancelada.'), cambio: false };
+          if (body.pago !== undefined) { if (!AJUSTES.pagos.includes(body.pago)) return { res: error('Elija la forma de pago.'), cambio: false }; c.pago = body.pago; }
+          if (body.lugar !== undefined) { const l = limpia(body.lugar, 120); if (l.length < 3) return { res: error('Escriba la dirección.'), cambio: false }; if (l !== c.lugar) { c.lugar = l; c.ubic = null; } }
+          if (body.nota !== undefined) c.nota = limpia(body.nota, 400);
+          if (body.carro !== undefined) c.carro = limpia(body.carro, 60);
+          if (body.paq !== undefined) {                                           // cambiar el servicio: se recalcula el total (la multa se respeta)
+            const q = cotiza(body.veh, body.paq, body.extras); if (!q.lineas.length) return { res: error('Elija un paquete o un adicional.'), cambio: false };
+            c.lineas = c.multa ? [...q.lineas, ['Multa pendiente por no presentarse', c.multa]] : q.lineas; c.total = q.total + (c.multa || 0); c.desde = q.desde; c.vehiculo = q.vehiculo;
+            c.sel = { paq: CFG.cat.paq[body.paq] ? body.paq : '', veh: q.v, extras: (Array.isArray(body.extras) ? body.extras.map(String) : []).filter((k) => CFG.cat.ext[k]).slice(0, 8) };
+          }
+          anota(db, 'cita editada', c.nombre + ' ' + c.fecha + ' ' + c.hora);
+          return { res: json({ ok: true, total: c.total }), cambio: true };
+        });
+      }
+      if (accion === 'editar-cliente') {                                          // corregir nombre, teléfono o carro de un cliente
+        const nombre = limpia(body.nombre, 80), nuevo = telCR(body.tel), carro = body.carro !== undefined ? limpia(body.carro, 60) : undefined;
+        if (!nombreOk(nombre)) return error('Revise el nombre.');
+        if (!nuevo) return error('Revise el teléfono (8 dígitos).');
+        return await transaccion((db) => {
+          const viejo = db.tokens[String(body.t || '')], c = viejo && db.clientes[viejo]; if (!c) return { res: error('Cliente no encontrado.', 404), cambio: false };
+          if (nuevo !== viejo) {
+            if (db.clientes[nuevo]) return { res: error('Ese teléfono ya es de otro cliente (' + db.clientes[nuevo].nombre + ').', 409), cambio: false };
+            delete db.clientes[viejo]; c.tel = nuevo; db.clientes[nuevo] = c; db.tokens[c.token] = nuevo; delete c.push;   // el celular viejo deja de recibir avisos
+            db.citas.forEach((x) => { if (x.tel === viejo) x.tel = nuevo; }); (db.fijas || []).forEach((x) => { if (x.tel === viejo) x.tel = nuevo; });
+          }
+          c.nombre = nombre; if (carro !== undefined) c.carro = carro;
+          db.citas.forEach((x) => { if (x.tel === nuevo && (x.estado === 'pendiente' || x.estado === 'confirmada')) x.nombre = nombre; });
+          anota(db, 'cliente editado', nombre + (nuevo !== viejo ? ' · teléfono cambiado' : ''));
+          return { res: json({ ok: true, tel: nuevo, nombre }), cambio: true };
         });
       }
       if (accion === 'mover') {                                                   // el dueño cambia la fecha u hora de una cita

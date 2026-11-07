@@ -255,6 +255,7 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
 .opi-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
 .opi-big{display:grid;justify-items:center;gap:2px;padding:6px 10px}.opi-big b{font-size:2.6rem;font-weight:800;line-height:1}.opi-est{color:#FBBF24;letter-spacing:2px}.opi-big small{font-size:.68rem;color:var(--gr);text-align:center}
 .fila.opi-mal{border-color:rgba(248,113,113,.45)}
+.editar{margin-top:4px}
 .cal-nav{display:flex;gap:4px}.cal-nav button{min-width:36px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--linea2);font-weight:700;font-size:.85rem}
 .cal-sem,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 .cal-sem span{text-align:center;font-size:.68rem;font-weight:700;color:var(--gr2)}
@@ -326,7 +327,13 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
       <form class="caja-p" id="fFija" novalidate hidden>
         <b class="tit-p" id="fjTit">Nueva cita fija</b>
         <div class="campo" id="fjCliC"><label for="fjBuscar">Cliente</label><input id="fjBuscar" list="dlCli" autocomplete="off" placeholder="Escriba el nombre o el teléfono"><datalist id="dlCli"></datalist></div>
-        <p class="ayuda izq" id="fjCliTxt">Busque al cliente. Si no está, agréguelo primero en Clientes.</p>
+        <p class="ayuda izq" id="fjCliTxt">Busque al cliente. ¿Es nuevo? Toque “Nuevo contacto”.</p>
+        <button type="button" class="btn b-bor" id="fjNuevoCli">＋ Nuevo contacto</button>
+        <div class="caja-p" id="fjNC" hidden>
+          <div class="dos-p"><div class="campo"><label for="ncNombre">Nombre</label><input id="ncNombre" maxlength="80" autocomplete="off"></div><div class="campo"><label for="ncTel">Teléfono</label><input id="ncTel" type="tel" inputmode="tel" maxlength="16" placeholder="8888-0000" autocomplete="off"></div></div>
+          <div class="campo"><label for="ncCarro">Carro (opcional)</label><input id="ncCarro" maxlength="60" autocomplete="off"></div>
+          <button type="button" class="btn b-tq" id="ncCrear">Crear contacto y usarlo</button><p class="msg" id="mNC" role="status"></p>
+        </div>
         <div class="dos-p"><div class="campo"><label for="fjDia">Todos los</label><select id="fjDia"></select></div><div class="campo"><label for="fjHora">A las</label><select id="fjHora"></select></div></div>
         <div class="dos-p"><div class="campo"><label for="fjDesde">Empieza</label><input id="fjDesde" type="date"></div><div class="campo"><label for="fjSemanas">Por cuántas semanas</label><select id="fjSemanas"><option value="4">4 semanas</option><option value="7" selected>7 semanas</option><option value="8">8 semanas</option><option value="12">12 semanas (3 meses)</option><option value="26">26 semanas (6 meses)</option><option value="52">52 semanas (1 año)</option><option value="0">Sin fin</option></select></div></div>
         <div class="dos-p"><div class="campo"><label for="fjPaq">Servicio</label><select id="fjPaq"></select></div><div class="campo"><label for="fjVeh">Vehículo</label><select id="fjVeh"><option value="sedan">Sedán</option><option value="suv">SUV · Pick up</option></select></div></div>

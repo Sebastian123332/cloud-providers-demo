@@ -82,7 +82,8 @@
     if(vistos){ var nuevas=j.citas.filter(function(c){ return vistos.indexOf(c.id)<0 && c.estado==='pendiente' }); if(nuevas.length) avisar(nuevas) }
     vistos=ids; datos=j;
     $('actualizado').textContent='Actualizado '+new Date().toLocaleTimeString('es-CR',{hour:'numeric',minute:'2-digit'});
-    kpis(); cargaRep(); recordatorios(); citas(); clientes(); fijas(); ajustes(); llenaCHora(); calendario(); espacio(); if($('sec-ganancias').classList.contains('on')) reporte();
+    var editando=function(id){ return !!d.querySelector('#'+id+' .editar, #'+id+' .mover') };   // no se borra un formulario abierto
+    kpis(); cargaRep(); recordatorios(); if(!editando('listaCitas')) citas(); if(!editando('listaCli')) clientes(); if(!editando('listaFijas')) fijas(); ajustes(); llenaCHora(); calendario(); espacio(); if($('sec-ganancias').classList.contains('on')) reporte();
   }
   /* ---------- dashboard: tarjetas, gráfico de ventas y meta del mes ---------- */
   var rep=null, rango=30;
@@ -177,6 +178,7 @@
         acc.appendChild(boton(c.pagado?'Quitar pagado':'Marcar pagado','b-bor',function(){ accion(c,'pagado') }));
       }
       if(c.estado==='pendiente'||c.estado==='confirmada') acc.appendChild(boton('Mover','b-bor',function(){ formMover(c,box) }));
+      if(c.estado!=='cancelada') acc.appendChild(boton('✏️ Editar','b-bor',function(){ formEditar(c,box) }));
       if((c.estado==='pendiente'||c.estado==='confirmada')&&!c.fija){ var dsm=['domingos','lunes','martes','miércoles','jueves','viernes','sábados'][new Date(c.fecha+'T12:00:00Z').getUTCDay()];
         acc.appendChild(boton('🔁 Repetir cada semana','b-bor',siPregunta('¿Dejar a '+c.nombre+' con cita fija todos los '+dsm+' a las '+fmtH(c.hora)+'? Se le apartan solas las próximas semanas.','Sí, dejar fija',function(){
           api('fijar',{id:c.id}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } var nom=c.nombre.split(' ')[0];
@@ -221,6 +223,7 @@
       if(c.sellos>=datos.meta) acc.appendChild(boton('Canjear premio','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
       else acc.appendChild(boton('Dar sello','b-ok',siPregunta('¿Dar un sello a '+c.nombre+'?','Sí, dar sello',function(){ sello(c.tarjeta,c.nombre) }),'gota'));
       if(c.multa>0) acc.appendChild(boton('Anular multa','b-bor',siPregunta('¿Anular la multa de '+col(c.multa)+' de '+c.nombre+'?','Sí, anular',function(){ api('perdonar-multa',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Multa anulada.'); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) })));
+      acc.appendChild(boton('✏️ Editar','b-bor',function(){ formCliente(c,box) }));
       acc.appendChild(boton('Enviar tarjeta','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 💧 Esta es su tarjeta Monzú Club, donde ve sus sellos: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en la pantalla de inicio de su celular para tenerla siempre a mano.') },'wa'));
       if(c.tienePin) acc.appendChild(boton('Restablecer PIN','b-bor',siPregunta('¿Restablecer el PIN de '+c.nombre+'? Le enviamos su tarjeta por WhatsApp para que cree uno nuevo.','Sí, restablecer',function(){
         api('pin-reset',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } hojaWA('🔐 PIN restablecido. Mándele su tarjeta para que cree uno nuevo:',c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 🔐 Le restablecimos el PIN de Monzú Club. Abra su tarjeta aquí y cree uno nuevo: '+enlaceTarjeta(c.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) })));
@@ -386,17 +389,24 @@
     var v=$('fjBuscar').value.trim(), dig=v.replace(/\D/g,'').slice(-8), q=v.toLowerCase(), c=null;
     if(dig.length===8) c=datos.clientes.filter(function(x){ return x.tel===dig })[0];
     if(!c&&q.length>=3){ var m=datos.clientes.filter(function(x){ return x.nombre.toLowerCase()===q }); if(m.length===1) c=m[0] }
-    fjTel=c?c.tel:''; $('fjCliTxt').textContent=c?'✓ '+c.nombre+' · '+c.tel.slice(0,4)+'-'+c.tel.slice(4)+(c.carro?' · '+c.carro:''):'Busque al cliente. Si no está, agréguelo primero en Clientes.';
+    fjTel=c?c.tel:''; $('fjCliTxt').textContent=c?'✓ '+c.nombre+' · '+c.tel.slice(0,4)+'-'+c.tel.slice(4)+(c.carro?' · '+c.carro:''):'Busque al cliente. ¿Es nuevo? Toque “Nuevo contacto”.';
   });
   function abreFija(f){
     llenaFija(); var F=$('fFija'); F.hidden=false; $('mFija').textContent=''; fjId=f?f.id:''; fjTel=f?f.tel:'';
-    $('fjTit').textContent=f?'Editar cita fija de '+f.nombre:'Nueva cita fija'; $('fjCliC').hidden=!!f; $('fjCliTxt').hidden=!!f; $('fjGuardar').textContent=f?'Guardar cambios':'Guardar cita fija';
+    $('fjTit').textContent=f?'Editar cita fija de '+f.nombre:'Nueva cita fija'; $('fjCliC').hidden=!!f; $('fjCliTxt').hidden=!!f; $('fjNuevoCli').hidden=!!f; $('fjNC').hidden=true; $('fjGuardar').textContent=f?'Guardar cambios':'Guardar cita fija';
     if(f){ $('fjDia').value=f.dia; $('fjHora').value=f.hora; if($('fjHora').value!==f.hora){ opcion($('fjHora'),f.hora,fmtH(f.hora)); $('fjHora').value=f.hora } $('fjDesde').value=f.desde<datos.hoy?datos.hoy:f.desde; $('fjSemanas').value=String(f.semanas||0);
       $('fjPaq').value=f.paq||''; $('fjVeh').value=f.veh; $('fjPago').value=f.pago; $('fjLugar').value=f.lugar; [].forEach.call($('fjExt').querySelectorAll('input'),function(i){ i.checked=(f.extras||[]).indexOf(i.value)>=0 }) }
-    else { $('fjBuscar').value=''; $('fjLugar').value=''; $('fjDesde').value=datos.hoy; $('fjSemanas').value='7'; $('fjCliTxt').textContent='Busque al cliente. Si no está, agréguelo primero en Clientes.'; [].forEach.call($('fjExt').querySelectorAll('input'),function(i){ i.checked=false }) }
+    else { $('fjBuscar').value=''; $('fjLugar').value=''; $('fjDesde').value=datos.hoy; $('fjSemanas').value='7'; $('fjCliTxt').textContent='Busque al cliente. ¿Es nuevo? Toque “Nuevo contacto”.'; [].forEach.call($('fjExt').querySelectorAll('input'),function(i){ i.checked=false }) }
     $('fjDesde').min=datos.hoy; totalFija(); F.scrollIntoView({behavior:'smooth',block:'start'}); if(!f) $('fjBuscar').focus();
   }
   $('fjNueva').addEventListener('click',function(){ abreFija(null) });
+  $('fjNuevoCli').addEventListener('click',function(){ var b=$('fjNC'); b.hidden=!b.hidden; if(!b.hidden){ var v=$('fjBuscar').value.trim(); if(/\d{4}/.test(v)) $('ncTel').value=v; else if(v) $('ncNombre').value=v; $('ncNombre').focus() } });
+  $('ncCrear').addEventListener('click',function(){ var m=$('mNC');
+    api('cliente',{nombre:$('ncNombre').value.trim(),tel:$('ncTel').value,carro:$('ncCarro').value.trim()}).then(function(j){
+      if(!j.ok){ m.textContent=j.error||'No se pudo.'; m.className='msg mal'; return }
+      fjTel=j.tel; $('fjBuscar').value=j.nombre+' · '+j.tel.slice(0,4)+'-'+j.tel.slice(4); $('fjCliTxt').textContent=(j.existia?'✓ Ese teléfono ya era de ':'✓ Contacto creado: ')+j.nombre+' · '+j.tel.slice(0,4)+'-'+j.tel.slice(4);
+      $('fjNC').hidden=true; $('ncNombre').value=''; $('ncTel').value=''; $('ncCarro').value=''; m.textContent=''; refrescar();
+    }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' }) });
   $('fjCerrar').addEventListener('click',function(){ $('fFija').hidden=true });
   $('fFija').addEventListener('submit',function(e){
     e.preventDefault(); var m=$('mFija');
@@ -411,13 +421,56 @@
       refrescar();
     }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
   });
+  /* ---------- editar una cita (pago, servicio, dirección, nota y datos del cliente) ---------- */
+  function campoP(lbl,elem){ var c=el('div','campo'), l=el('label',null,lbl); c.appendChild(l); c.appendChild(elem); return c }
+  function inpP(v,ph,tipo){ var i=el('input'); i.value=v||''; i.placeholder=ph||''; if(tipo){ i.type=tipo; i.inputMode=tipo==='tel'?'tel':'text' } return i }
+  function selP(ops,v){ var s=el('select'); ops.forEach(function(o){ opcion(s,o[0],o[1]) }); s.value=v; return s }
+  function formEditar(c,box){
+    var ya=box.querySelector('.editar'); if(ya){ ya.remove(); return }
+    var C=datos.config.cat, sel=c.sel||{}, f=el('div','editar caja-p');
+    if(!c.sel){ sel.paq=Object.keys(C.paq).filter(function(k){ return (c.lineas[0]||[''])[0].indexOf(C.paq[k].n)===0 })[0]||''; sel.veh=/SUV/.test(c.vehiculo)?'suv':'sedan'; sel.extras=Object.keys(C.ext).filter(function(k){ return c.lineas.some(function(l){ return l[0].indexOf(C.ext[k].n)===0 }) }) }
+    f.appendChild(el('b','tit-p','✏️ Editar cita'));
+    var nom=inpP(c.nombre,'Nombre'), tel=inpP(c.tel.slice(0,4)+'-'+c.tel.slice(4),'8888-0000','tel'), car=inpP(c.carro,'Carro (opcional)');
+    var d1=el('div','dos-p'); d1.appendChild(campoP('Nombre',nom)); d1.appendChild(campoP('Teléfono',tel)); f.appendChild(d1); f.appendChild(campoP('Carro',car));
+    var pg=selP(datos.pagos.map(function(p){ return [p,p] }),c.pago||datos.pagos[0]);
+    var pq=selP(Object.keys(C.paq).map(function(k){ return [k,C.paq[k].n] }).concat([['','Solo adicionales']]),sel.paq||''), vh=selP([['sedan','Sedán'],['suv','SUV · Pick up']],sel.veh||'sedan');
+    var d2=el('div','dos-p'); d2.appendChild(campoP('Pago',pg)); d2.appendChild(campoP('Vehículo',vh)); f.appendChild(d2); f.appendChild(campoP('Servicio',pq));
+    var ex=el('div','chks'); Object.keys(C.ext).forEach(function(k){ var x=C.ext[k]; if(x.oculto&&(sel.extras||[]).indexOf(k)<0) return; var l=el('label','chk'), i=el('input'); i.type='checkbox'; i.value=k; i.checked=(sel.extras||[]).indexOf(k)>=0; l.appendChild(i); l.appendChild(d.createTextNode(x.n)); ex.appendChild(l) });
+    var ce=el('div','campo'); ce.appendChild(el('span','lbl-p','Adicionales')); ce.appendChild(ex); f.appendChild(ce);
+    var lu=inpP(c.lugar,'Dirección'), no=inpP(c.nota,'Nota (opcional)'); f.appendChild(campoP('Dirección',lu)); f.appendChild(campoP('Nota',no));
+    var tot=el('div','tot-p'); tot.appendChild(el('span',null,'Nuevo total')); var tb=el('b',null,''); tot.appendChild(tb); f.appendChild(tot);
+    function calc(){ var P=C.paq[pq.value], t=P?P[vh.value]:0, desde=false; [].forEach.call(ex.querySelectorAll('input:checked'),function(i){ var x=C.ext[i.value]; if(!x) return; if(x.desde) desde=true; t+=(x.conPaq!=null&&P)?x.conPaq:x.p }); t+=(c.multa||0); tb.textContent=(desde?'desde ':'')+col(t) }
+    [pq,vh,ex].forEach(function(e){ e.addEventListener('change',calc) }); calc();
+    var m=el('p','msg'), acc=el('div','acc');
+    acc.appendChild(boton('Cerrar','b-bor',function(){ f.remove() }));
+    acc.appendChild(boton('Guardar cambios','b-tq',function(){
+      m.textContent='Guardando…'; m.className='msg';
+      var cambiaCli=nom.value.trim()!==c.nombre||tel.value.replace(/\D/g,'').replace(/^506/,'')!==c.tel;
+      var p1=cambiaCli?api('editar-cliente',{t:c.tarjeta,nombre:nom.value.trim(),tel:tel.value}):Promise.resolve({ok:true});
+      p1.then(function(j){ if(!j.ok) throw new Error(j.error||'No se pudo cambiar el cliente.');
+        return api('editar-cita',{id:c.id,pago:pg.value,paq:pq.value,veh:vh.value,extras:[].map.call(ex.querySelectorAll('input:checked'),function(i){ return i.value }),lugar:lu.value.trim(),nota:no.value.trim(),carro:car.value.trim()}) })
+       .then(function(j){ if(!j.ok) throw new Error(j.error||'No se pudo guardar.'); f.remove(); toast('✓ Cita actualizada · total '+col(j.total)); refrescar() })
+       .catch(function(e){ m.textContent=e.message||'Sin conexión.'; m.className='msg mal' });
+    }));
+    f.appendChild(acc); f.appendChild(m); box.appendChild(f); nom.focus();
+  }
+  /* editar un cliente desde la lista de Clientes */
+  function formCliente(c,box){
+    var ya=box.querySelector('.editar'); if(ya){ ya.remove(); return }
+    var f=el('div','editar caja-p'), nom=inpP(c.nombre,'Nombre'), tel=inpP(c.tel.slice(0,4)+'-'+c.tel.slice(4),'8888-0000','tel'), car=inpP(c.carro,'Carro (opcional)'), m=el('p','msg');
+    f.appendChild(el('b','tit-p','✏️ Editar cliente')); var d1=el('div','dos-p'); d1.appendChild(campoP('Nombre',nom)); d1.appendChild(campoP('Teléfono',tel)); f.appendChild(d1); f.appendChild(campoP('Carro',car));
+    var acc=el('div','acc'); acc.appendChild(boton('Cerrar','b-bor',function(){ f.remove() }));
+    acc.appendChild(boton('Guardar','b-tq',function(){ api('editar-cliente',{t:c.tarjeta,nombre:nom.value.trim(),tel:tel.value,carro:car.value.trim()}).then(function(j){ if(!j.ok){ m.textContent=j.error||'No se pudo.'; m.className='msg mal'; return } f.remove(); toast('✓ Cliente actualizado.'); refrescar() }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' }) }));
+    f.appendChild(acc); f.appendChild(m); box.appendChild(f); nom.focus();
+  }
+
   /* mover una cita */
   function formMover(c,box){
     if(box.querySelector('.mover')){ box.querySelector('.mover').remove(); return }
     var f=el('div','mover'), dd=el('div','dos-p'), c1=el('div','campo'), c2=el('div','campo'), fe=el('input'), ho=el('select');
     fe.type='date'; fe.value=c.fecha; fe.min=datos.hoy; fe.setAttribute('aria-label','Nuevo día'); llenaSelHoras(ho,false); if(datos.config.horas.indexOf(c.hora)<0) opcion(ho,c.hora,fmtH(c.hora)); ho.value=c.hora; ho.setAttribute('aria-label','Nueva hora');
     c1.appendChild(fe); c2.appendChild(ho); dd.appendChild(c1); dd.appendChild(c2); f.appendChild(dd);
-    f.appendChild(boton('Guardar el cambio','b-tq',function(){ api('mover',{id:c.id,fecha:fe.value,hora:ho.value}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return }
+    f.appendChild(boton('Guardar el cambio','b-tq',function(){ api('mover',{id:c.id,fecha:fe.value,hora:ho.value}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } f.remove();
       var nom=c.nombre.split(' ')[0]; hojaWA('✓ Cita movida. Avísele a '+nom+':',c.tel,'¡Hola '+nom+'! Le cambiamos su cita de Monzú Detallados para el '+fmtDia(fe.value).toLowerCase()+' a las '+fmtH(ho.value)+'. Cualquier cosa nos escribe. Su tarjeta: '+enlaceTarjeta(j.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }));
     box.appendChild(f);
   }
