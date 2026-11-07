@@ -237,6 +237,60 @@ t = rep(t, '<h3>Servicios de terceros</h3><p>Google Fonts entrega las tipografí
         '<h3>Almacenamiento en su navegador</h3><p>Para que no tenga que escribir su PIN cada vez, su navegador guarda el enlace de su tarjeta Monzú Club. Es una función necesaria y no sirve para rastrearle; se borra con “Salir de esta tarjeta”.</p><h3>Servicios de terceros</h3><p>Ninguno al navegar. WhatsApp y Facebook solo se abren si usted toca un enlace.</p>')
 t = rep(t, '<li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>', '<li>Con su permiso, le enviamos por WhatsApp la confirmación y los recordatorios de su cita, desde el número oficial de Monzú y con la plataforma oficial de WhatsApp Business (Meta). No le enviamos publicidad. Para no recibirlos, responda “NO” o escríbanos.</li><li>Si usa WhatsApp para escribirnos, aplica la política de privacidad de Meta.</li>')
 
+# ---------------- trabajos reales: fotos y videos ----------------
+TRAB = [  # (archivo, título, subtítulo, alt)
+ ('tacoma-negra', 'Brillo espejo', 'Detallado exterior', 'Pick up negra recién detallada, con la pintura brillante como espejo'),
+ ('carro-negro-antes-ahora', 'Antes y ahora', 'Lavado y encerado', 'Carro negro antes y después del detallado de Monzú'),
+ ('vid:pulido', 'Pulido de pintura', 'Video', 'Video del pulido de la pintura con máquina'),
+ ('durango-mate', 'Pintura mate', 'Cuidado especial', 'Camioneta con pintura negro mate después del lavado'),
+ ('asiento-antes-ahora', 'Tapicería', 'Antes y ahora', 'Asiento de tela con manchas antes y limpio después'),
+ ('vid:llantin-hidrofobico', 'Llantas', 'Video', 'Video de la aplicación de llantín hidrofóbico en la llanta'),
+ ('motor-fiat', 'Motor', 'Cero grasa', 'Motor limpio y con los plásticos restaurados'),
+ ('everest-blanca', 'Blanco impecable', 'Detallado completo', 'Camioneta blanca recién lavada y detallada'),
+ ('vid:lavado-espuma', 'Lavado con espuma', 'Video', 'Video del lavado a mano con espuma'),
+ ('interior-durango', 'Interior', 'Cuero y plásticos', 'Interior con asientos de cuero y plásticos limpios'),
+ ('l200-gris', 'Acabado brillante', 'Detallado exterior', 'Pick up gris con la pintura brillante'),
+ ('interior-desarmado', 'Limpieza profunda', 'Interior a fondo', 'Técnico de Monzú desarmando la consola para limpiar a fondo el interior'),
+]
+os.makedirs(OUT + '/vid', exist_ok=True); os.makedirs(OUT + '/img', exist_ok=True)
+for viejo in os.listdir(OUT + '/img'): os.remove(OUT + '/img/' + viejo)
+for viejo in os.listdir(OUT + '/vid'): os.remove(OUT + '/vid/' + viejo)
+def archivo(src, dst_dir, nombre, ext):
+    b = open(src, 'rb').read(); nom = '%s-monzu-detallados.%s.%s' % (nombre, hashlib.sha256(b).hexdigest()[:8], ext)
+    open(OUT + '/' + dst_dir + '/' + nom, 'wb').write(b); return '/' + dst_dir + '/' + nom
+celdas = []
+for i, (f, tit, sub, alt) in enumerate(TRAB):
+    if f.startswith('vid:'):
+        n = f[4:]; mp4 = archivo(M + 'vid/' + n + '.mp4', 'vid', n, 'mp4'); webm = archivo(M + 'vid/' + n + '.webm', 'vid', n, 'webm'); pos = archivo(M + 'vid/' + n + '.jpg', 'vid', n, 'jpg')
+        celdas.append('<figure class="clip rv"><video poster="%s" muted loop playsinline preload="none" aria-label="%s"><source src="%s" type="video/mp4"><source src="%s" type="video/webm"></video><span class="tag-vid">▶ Video</span><figcaption class="cap"><small>%s</small><b>%s</b></figcaption></figure>' % (pos, alt, mp4, webm, sub, tit))
+    else:
+        src = archivo(M + 'img/trabajos/' + f + '.webp', 'img', f, 'webp')
+        celdas.append('<button type="button" class="obra rv" data-titulo="%s"><img src="%s" alt="%s" loading="lazy" decoding="async"><span class="cap"><small>%s</small><b>%s</b></span></button>' % (tit, src, alt, sub, tit))
+t, nn = re.subn(r'<div class="trabajos">.*?</div>\n  <p class="aviso-fotos">[^<]*</p>', lambda m: '<div class="trabajos">\n    ' + '\n    '.join(celdas) + '\n  </div>\n  <p class="aviso-fotos desliza">Deslice para ver más trabajos →</p>', t, count=1, flags=re.S); assert nn == 1
+t = rep(t, '<p>Toque una foto para verla en grande.</p></div>', '<p>Trabajos reales de Monzú en Cartago. Toque una foto para verla en grande.</p></div>')
+# portada del juego "limpie el carro": la Tacoma recién detallada
+t = rep(t, '<img src="{{IMG:deluxe}}" alt="Técnico de Monzú Detallados puliendo un carro negro" width="704" height="609" fetchpriority="high">',
+        '<img src="%s" alt="Pick up negra recién detallada por Monzú, con la pintura brillante" width="704" height="609" fetchpriority="high">' % archivo(M + 'img/limpia-tacoma.webp', 'img', 'pick-up-negra-detallada', 'webp'))
+GAL_CSS = """
+.trabajos{grid-template-columns:repeat(4,minmax(0,1fr))}
+.trabajos .obra:first-child{grid-column:auto;aspect-ratio:4/5}
+.clip{position:relative;margin:0;border-radius:22px;overflow:hidden;background:var(--n3);aspect-ratio:4/5}
+.clip video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.clip .cap{position:absolute;left:20px;right:20px;bottom:18px;z-index:2}
+.clip::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(7,9,11,.92));pointer-events:none}
+.clip small{display:block;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--tq)}
+.clip b{font-family:var(--t);font-weight:800;font-style:italic;font-size:1.7rem;text-transform:uppercase;line-height:1;color:var(--bl)}
+.tag-vid{position:absolute;top:12px;left:12px;z-index:2;font-size:.7rem;font-weight:800;letter-spacing:.06em;padding:5px 10px;border-radius:999px;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);color:#fff}
+.desliza{display:none}
+@media(max-width:820px){
+  .trabajos{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:72%;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none}
+  .trabajos::-webkit-scrollbar{display:none}
+  .trabajos > *{scroll-snap-align:start}
+  .trabajos .obra:first-child{grid-column:auto;aspect-ratio:4/5}
+  .desliza{display:block}
+}
+"""
+t = t.replace('</style>', GAL_CSS + '</style>', 1)
 # ---------------- SEO: título, datos para Google y preguntas frecuentes ----------------
 t = re.sub(r'<title>.*?</title>', '<title>Lavado y detallado de carros a domicilio en Cartago | Monzú Detallados</title>', t, count=1)
 t = re.sub(r'<meta name="description" content="[^"]*">', '<meta name="description" content="Lavado y detallado de carros a domicilio en Cartago, Costa Rica. Detallado Premium y Deluxe con sellado cerámico, limpieza de motor y tapicería. Reserve en línea su hora en 1 minuto.">', t, count=1)
@@ -303,7 +357,6 @@ imgs = {'logo': uri('logo.webp', 'image/webp'), 'fav64': uri('fav64.png', 'image
 for k in ['deluxe', 'motor', 'tapiceria', 'scents1', 'scents2', 'scents3']: imgs[k] = uri(k + '.webp', 'image/webp')
 # fotos como archivos aparte (la página carga más rápido y Google puede verlas en Imágenes)
 os.makedirs(OUT + '/img', exist_ok=True)
-for viejo in os.listdir(OUT + '/img'): os.remove(OUT + '/img/' + viejo)
 IMGF = {}
 for k, (f, ext) in {'logo': ('logo.webp', 'webp'), 'fav64': ('fav64.png', 'png'), 'fav180': ('fav180.png', 'png'), **{x: (x + '.webp', 'webp') for x in ['deluxe', 'motor', 'tapiceria', 'scents1', 'scents2', 'scents3']}}.items():
     b = open(M + 'img/' + f, 'rb').read(); nom = '%s-monzu-detallados.%s.%s' % ({'deluxe': 'detallado-deluxe-cartago', 'motor': 'limpieza-de-motor', 'tapiceria': 'limpieza-de-tapiceria'}.get(k, k), hashlib.sha256(b).hexdigest()[:8], ext)
@@ -316,7 +369,7 @@ t = t.replace('{{WA}}', 'https://wa.me/50672686906?text=Hola%20Monz%C3%BA%20Deta
 assert not re.search(r'\{\{|__JS__', t) and ' style="' not in t
 OSM = ' https://tile.openstreetmap.org'
 NOMI = " https://nominatim.openstreetmap.org"
-csp_index = csp_de(t, extra_script=" 'self'", img="'self' data:" + OSM, connect="'self'" + NOMI)
+csp_index = csp_de(t, extra_script=" 'self'", img="'self' data:" + OSM, connect="'self'" + NOMI).replace("manifest-src 'self'", "manifest-src 'self'; media-src 'self'")
 open(OUT + '/index.html', 'w', encoding='utf-8').write(con_csp(t, csp_index))
 # ---------------- páginas legales sueltas (Meta las pide para aprobar la cuenta de WhatsApp) ----------------
 NEGOCIO = '<p class="neg"><b>Monzú Detallados</b> · Responsable: Isaac Monge · Detallado de vehículos a domicilio · Cartago, Costa Rica · WhatsApp y teléfono <a href="tel:+50672686906">7268-6906</a> · <a href="%s/">%s</a></p>' % (DOM, DOM.replace('https://', ''))
@@ -399,6 +452,7 @@ for ruta, csp, extra in [('/', csp_index, sin_cam), ('/index.html', csp_index, s
 for k, c in csp_legal.items():
     for ruta in ('/' + k, '/' + k + '.html'): hd += ruta + "\n  Content-Security-Policy: " + c + "\n" + base + sin_cam
 hd += "/sw.js\n  Cache-Control: no-cache\n  Content-Security-Policy: default-src 'none'; img-src 'self'\n  X-Content-Type-Options: nosniff\n"
+hd += "/vid/*\n  Cache-Control: public, max-age=31536000, immutable\n  X-Content-Type-Options: nosniff\n"
 hd += "/img/*\n  Cache-Control: public, max-age=31536000, immutable\n  X-Content-Type-Options: nosniff\n"
 hd += "/js/*\n  Cache-Control: public, max-age=604800\n  X-Content-Type-Options: nosniff\n/fonts/*\n  Cache-Control: public, max-age=31536000, immutable\n"
 open(OUT + '/_headers', 'w').write(hd)

@@ -107,3 +107,9 @@
       b.textContent=(x.desde?'Desde ':'')+col(x.p); if(x.conPaq!=null){ var sm=d.createElement('small'); sm.textContent=' · '+col(x.conPaq)+' si lo suma a un detallado'; b.appendChild(sm) } });
     pintaPaquetes();
   }).catch(function(){});
+
+  /* ===== videos de trabajos: se reproducen solos (sin sonido) solo cuando se ven ===== */
+  (function(){ var vs=d.querySelectorAll('.clip video'); if(!vs.length) return;
+    if(!('IntersectionObserver' in window)){ vs.forEach(function(v){ v.preload='metadata' }); return }
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ var v=e.target; if(e.isIntersecting&&!QUIETO){ v.preload='auto'; var p=v.play(); if(p&&p.catch) p.catch(function(){}) } else v.pause() }) },{threshold:.45});
+    vs.forEach(function(v){ io.observe(v) }) })();

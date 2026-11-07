@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-XScWVzZlI3Um0WDsjJozEVaAhRWRh8lSiL1sxYiNmr0=' 'self'; style-src 'sha256-awKzzcdJJzzIueUpvVbAbtwTnUUszWOtIZCcTyE0mBE='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-ACUuvHpnhg1GgJXfgFv2J3uYPJn5Zo2hiftpaqI2NMM=' 'self'; style-src 'sha256-Dmzn9M2mzuAoD9zYHojlX5cQ9t2CJOo5s9yVy19RPkw='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; media-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lavado y detallado de carros a domicilio en Cartago | Monzú Detallados</title>
@@ -392,6 +392,24 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
 .ubica-txt a{color:var(--tq2)}
 #enviar:disabled{opacity:.6;cursor:wait}
 
+.trabajos{grid-template-columns:repeat(4,minmax(0,1fr))}
+.trabajos .obra:first-child{grid-column:auto;aspect-ratio:4/5}
+.clip{position:relative;margin:0;border-radius:22px;overflow:hidden;background:var(--n3);aspect-ratio:4/5}
+.clip video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.clip .cap{position:absolute;left:20px;right:20px;bottom:18px;z-index:2}
+.clip::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 50%,rgba(7,9,11,.92));pointer-events:none}
+.clip small{display:block;font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;font-weight:700;color:var(--tq)}
+.clip b{font-family:var(--t);font-weight:800;font-style:italic;font-size:1.7rem;text-transform:uppercase;line-height:1;color:var(--bl)}
+.tag-vid{position:absolute;top:12px;left:12px;z-index:2;font-size:.7rem;font-weight:800;letter-spacing:.06em;padding:5px 10px;border-radius:999px;background:rgba(0,0,0,.55);backdrop-filter:blur(6px);color:#fff}
+.desliza{display:none}
+@media(max-width:820px){
+  .trabajos{display:grid;grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:72%;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px;scrollbar-width:none}
+  .trabajos::-webkit-scrollbar{display:none}
+  .trabajos > *{scroll-snap-align:start}
+  .trabajos .obra:first-child{grid-column:auto;aspect-ratio:4/5}
+  .desliza{display:block}
+}
+
 .faq{display:grid;gap:10px;max-width:860px}
 .faq-i{background:var(--n2);border:1px solid var(--linea2);border-radius:18px;padding:4px 18px}
 .faq-i summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 0}
@@ -432,7 +450,7 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
     </div>
     <div>
       <div class="limpia" id="limpia">
-        <img src="/img/detallado-deluxe-cartago-monzu-detallados.1737a4b2.webp" alt="Técnico de Monzú Detallados puliendo un carro negro" width="704" height="609" fetchpriority="high">
+        <img src="/img/pick-up-negra-detallada-monzu-detallados.5fefc17e.webp" alt="Pick up negra recién detallada por Monzú, con la pintura brillante" width="704" height="609" fetchpriority="high">
         <canvas id="sucio" aria-label="Juego: pase el dedo o el mouse para limpiar el carro" role="img"></canvas>
         <canvas class="espuma" id="espuma" aria-hidden="true"></canvas>
         <div class="brillo" aria-hidden="true"></div>
@@ -501,13 +519,22 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
 
 <section id="trabajos"><div class="wrap">
   <div class="cab rv"><div><span class="eti">Nuestro trabajo</span><h2 class="t">Detalle por<br><span class="tq">detalle</span></h2></div>
-    <p>Toque una foto para verla en grande.</p></div>
+    <p>Trabajos reales de Monzú en Cartago. Toque una foto para verla en grande.</p></div>
   <div class="trabajos">
-    <button type="button" class="obra rv" data-titulo="Detallado Deluxe"><img src="/img/detallado-deluxe-cartago-monzu-detallados.1737a4b2.webp" alt="Pulido de la pintura de un carro negro" loading="lazy"><span class="cap"><small>Detallado Deluxe</small><b>Brillo espectacular</b></span></button>
-    <button type="button" class="obra rv" data-titulo="Limpieza de motor"><img src="/img/limpieza-de-motor-monzu-detallados.376b3682.webp" alt="Limpieza de motor con vapor" loading="lazy"><span class="cap"><small>Motor</small><b>Cero grasa</b></span></button>
-    <button type="button" class="obra rv" data-titulo="Tapicería profunda"><img src="/img/limpieza-de-tapiceria-monzu-detallados.e271a8a8.webp" alt="Limpieza de tapicería de un asiento trasero" loading="lazy"><span class="cap"><small>Tapicería</small><b>Como nueva</b></span></button>
+    <button type="button" class="obra rv" data-titulo="Brillo espejo"><img src="/img/tacoma-negra-monzu-detallados.e34fab8c.webp" alt="Pick up negra recién detallada, con la pintura brillante como espejo" loading="lazy" decoding="async"><span class="cap"><small>Detallado exterior</small><b>Brillo espejo</b></span></button>
+    <button type="button" class="obra rv" data-titulo="Antes y ahora"><img src="/img/carro-negro-antes-ahora-monzu-detallados.94a0bcc8.webp" alt="Carro negro antes y después del detallado de Monzú" loading="lazy" decoding="async"><span class="cap"><small>Lavado y encerado</small><b>Antes y ahora</b></span></button>
+    <figure class="clip rv"><video poster="/vid/pulido-monzu-detallados.ae21cde1.jpg" muted loop playsinline preload="none" aria-label="Video del pulido de la pintura con máquina"><source src="/vid/pulido-monzu-detallados.e25648f2.mp4" type="video/mp4"><source src="/vid/pulido-monzu-detallados.4dd9da3e.webm" type="video/webm"></video><span class="tag-vid">▶ Video</span><figcaption class="cap"><small>Video</small><b>Pulido de pintura</b></figcaption></figure>
+    <button type="button" class="obra rv" data-titulo="Pintura mate"><img src="/img/durango-mate-monzu-detallados.10dcda88.webp" alt="Camioneta con pintura negro mate después del lavado" loading="lazy" decoding="async"><span class="cap"><small>Cuidado especial</small><b>Pintura mate</b></span></button>
+    <button type="button" class="obra rv" data-titulo="Tapicería"><img src="/img/asiento-antes-ahora-monzu-detallados.237b1019.webp" alt="Asiento de tela con manchas antes y limpio después" loading="lazy" decoding="async"><span class="cap"><small>Antes y ahora</small><b>Tapicería</b></span></button>
+    <figure class="clip rv"><video poster="/vid/llantin-hidrofobico-monzu-detallados.a029e113.jpg" muted loop playsinline preload="none" aria-label="Video de la aplicación de llantín hidrofóbico en la llanta"><source src="/vid/llantin-hidrofobico-monzu-detallados.cd8f106e.mp4" type="video/mp4"><source src="/vid/llantin-hidrofobico-monzu-detallados.0569f182.webm" type="video/webm"></video><span class="tag-vid">▶ Video</span><figcaption class="cap"><small>Video</small><b>Llantas</b></figcaption></figure>
+    <button type="button" class="obra rv" data-titulo="Motor"><img src="/img/motor-fiat-monzu-detallados.8464ae03.webp" alt="Motor limpio y con los plásticos restaurados" loading="lazy" decoding="async"><span class="cap"><small>Cero grasa</small><b>Motor</b></span></button>
+    <button type="button" class="obra rv" data-titulo="Blanco impecable"><img src="/img/everest-blanca-monzu-detallados.f44ddae1.webp" alt="Camioneta blanca recién lavada y detallada" loading="lazy" decoding="async"><span class="cap"><small>Detallado completo</small><b>Blanco impecable</b></span></button>
+    <figure class="clip rv"><video poster="/vid/lavado-espuma-monzu-detallados.24fc9c3e.jpg" muted loop playsinline preload="none" aria-label="Video del lavado a mano con espuma"><source src="/vid/lavado-espuma-monzu-detallados.7790a8bd.mp4" type="video/mp4"><source src="/vid/lavado-espuma-monzu-detallados.4cfa5a90.webm" type="video/webm"></video><span class="tag-vid">▶ Video</span><figcaption class="cap"><small>Video</small><b>Lavado con espuma</b></figcaption></figure>
+    <button type="button" class="obra rv" data-titulo="Interior"><img src="/img/interior-durango-monzu-detallados.5ddf6e27.webp" alt="Interior con asientos de cuero y plásticos limpios" loading="lazy" decoding="async"><span class="cap"><small>Cuero y plásticos</small><b>Interior</b></span></button>
+    <button type="button" class="obra rv" data-titulo="Acabado brillante"><img src="/img/l200-gris-monzu-detallados.9c9c95f8.webp" alt="Pick up gris con la pintura brillante" loading="lazy" decoding="async"><span class="cap"><small>Detallado exterior</small><b>Acabado brillante</b></span></button>
+    <button type="button" class="obra rv" data-titulo="Limpieza profunda"><img src="/img/interior-desarmado-monzu-detallados.f794bb61.webp" alt="Técnico de Monzú desarmando la consola para limpiar a fondo el interior" loading="lazy" decoding="async"><span class="cap"><small>Interior a fondo</small><b>Limpieza profunda</b></span></button>
   </div>
-  <p class="aviso-fotos">En la página final van más fotos reales de sus trabajos, con antes y después.</p>
+  <p class="aviso-fotos desliza">Deslice para ver más trabajos →</p>
 </div></section>
 
 <section id="aromas"><div class="wrap aromas-grid">
@@ -972,6 +999,12 @@ dialog.legal::backdrop{background:rgba(4,6,8,.8)}
       b.textContent=(x.desde?'Desde ':'')+col(x.p); if(x.conPaq!=null){ var sm=d.createElement('small'); sm.textContent=' · '+col(x.conPaq)+' si lo suma a un detallado'; b.appendChild(sm) } });
     pintaPaquetes();
   }).catch(function(){});
+
+  /* ===== videos de trabajos: se reproducen solos (sin sonido) solo cuando se ven ===== */
+  (function(){ var vs=d.querySelectorAll('.clip video'); if(!vs.length) return;
+    if(!('IntersectionObserver' in window)){ vs.forEach(function(v){ v.preload='metadata' }); return }
+    var io=new IntersectionObserver(function(es){ es.forEach(function(e){ var v=e.target; if(e.isIntersecting&&!QUIETO){ v.preload='auto'; var p=v.play(); if(p&&p.catch) p.catch(function(){}) } else v.pause() }) },{threshold:.45});
+    vs.forEach(function(v){ io.observe(v) }) })();
 
   /* ===== proceso: la línea avanza al bajar ===== */
   var pasos=$('pasos'), ps=pasos.querySelectorAll('.paso');
