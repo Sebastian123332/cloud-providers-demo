@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-S7Cs2DaV7eBuCP2C/17Pj2zamqwMTiA2kOciN9+iAvg=' 'self'; style-src 'sha256-zyFS/513AntqJsQLYGhM9LbosYEWbOyvlKa2lTx2dLQ='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-H6XX/Vr2kaU9OV8L5YJmBKwAOqxmlIV7ZeR6p1rmG/Q=' 'self'; style-src 'sha256-yM/bG9IF4SZbeMWaLKbVFpC8G4hxEd8tmDM0BjRyCa4='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Panel · Monzú Admin</title>
@@ -293,6 +293,38 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
 .hist-t{display:flex;justify-content:space-between;gap:8px}.hist-t small{display:block;color:var(--gr);font-size:.75rem}.hist-d{display:grid;justify-items:end;gap:4px}
 .hist-enc{display:grid;gap:2px;border-top:1px dashed var(--linea2);padding-top:6px}.hist-enc small{color:var(--gr);font-size:.75rem}
 .hist-i .acc .btn{padding:8px;font-size:.8rem}
+.c-top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.c-top .c-hora{font-family:var(--s);font-style:normal;font-weight:800;font-size:1.25rem;letter-spacing:-.01em}
+.c-top h3{font-size:.98rem;font-weight:600;color:var(--bl);margin-top:2px}
+.c-sub{font-size:.82rem;color:var(--gr)}.c-sub b{color:var(--bl)}.c-sub a{color:#93C5FD}
+.chip.suave{background:rgba(148,163,184,.12);color:var(--gr)}.chip.suave.pagado{background:rgba(74,222,128,.14);color:#4ADE80}.chip.suave.opi{color:#FBBF24}
+.acc2{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:8px}
+.acc2 .btn{padding:12px;font-size:.9rem;border-radius:14px}
+.b-wa2{border:1px solid rgba(37,211,102,.45);color:#4ADE80;background:rgba(37,211,102,.06)}
+.dsp{border-top:1px solid var(--linea)}
+.dsp summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px;padding:12px 2px;font-weight:700;font-size:.92rem}
+.dsp summary::-webkit-details-marker{display:none}
+.dsp summary::after{content:"›";margin-left:auto;font-size:1.3rem;line-height:1;color:var(--gr2);transition:transform .25s}
+.dsp[open] summary::after{transform:rotate(90deg)}
+.dsp.opc summary::after{content:""}
+.dsp-n{font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:999px;background:rgba(148,163,184,.14);color:var(--gr)}
+.dsp.opc .dsp-n{background:none;margin-left:auto;font-size:1.1rem;color:var(--gr)}
+.dsp.verde .dsp-n{background:rgba(74,222,128,.14);color:#4ADE80}
+.dsp-c{display:grid;gap:8px;padding:0 0 12px}
+.dsp.mas summary{font-size:.82rem;color:var(--gr);font-weight:600;padding:10px 2px 4px}
+.cita{gap:10px}
+.cli{gap:10px;padding:16px}
+.cli-top2{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.cli-nom{font-size:1.15rem;font-weight:800;letter-spacing:-.01em}
+.est{font-size:.7rem;font-weight:800;padding:4px 10px;border-radius:999px;background:rgba(148,163,184,.14);color:var(--gr);white-space:nowrap}
+.est.ok{background:rgba(74,222,128,.14);color:#4ADE80}.est.mal{background:rgba(248,113,113,.15);color:#F87171}.est.nuevo{background:rgba(59,130,246,.18);color:#93C5FD}
+.cli-sub{color:var(--gr);font-size:.85rem;margin-top:-6px}
+.cli-fila{display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.cli-sellos{display:block;font-size:2.2rem;font-weight:800;line-height:1;color:#60A5FA;letter-spacing:-.02em}
+.cli-fila small{color:var(--gr);font-size:.75rem;white-space:nowrap}
+.cli-fila .der{text-align:right;display:grid;gap:2px}.cli-fila .der b{font-size:.9rem}
+.prox{font-weight:800;color:var(--gr2);font-size:.95rem}.prox.si{color:#4ADE80}
+.cli-barra{height:6px;border-radius:6px;background:rgba(148,163,184,.15);overflow:hidden}.cli-barra i{display:block;height:100%;background:linear-gradient(90deg,#60A5FA,#2563EB);border-radius:6px}
 .cal-nav{display:flex;gap:4px}.cal-nav button{min-width:36px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--linea2);font-weight:700;font-size:.85rem}
 .cal-sem,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 .cal-sem span{text-align:center;font-size:.68rem;font-weight:700;color:var(--gr2)}
@@ -626,51 +658,108 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
     var dia='';
     lista.forEach(function(c){
       if(c.fecha!==dia){ dia=c.fecha; L.appendChild(el('p','dia',fmtDia(dia))) }
-      var box=el('article','cita '+c.estado+(vistos&&$('badge').hidden===false&&c.estado==='pendiente'?' nueva':''));
-      var top=el('div','c-top'); top.appendChild(el('b',null,fmtH(c.hora))); var chs=el('div','chips-c'); if(c.fija) chs.appendChild(el('span','chip fija','🔁 Fija')); chs.appendChild(el('span','chip '+c.estado,NOM[c.estado])); top.appendChild(chs); box.appendChild(top);
-      box.appendChild(el('h3',null,c.nombre));
-      var p=el('p'); var tel=el('a',null,c.tel.slice(0,4)+'-'+c.tel.slice(4)); tel.href='tel:+506'+c.tel; p.appendChild(tel); p.appendChild(d.createTextNode(' · '+c.vehiculo+(c.carro?' · '+c.carro:''))); box.appendChild(p);
-      var p2=el('p'), lug=el('a',null,'📍 '+c.lugar); lug.target='_blank'; lug.rel='noopener noreferrer';
-      lug.href=c.ubic?'https://www.google.com/maps/search/?api=1&query='+c.ubic.lat+','+c.ubic.lng:'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(c.lugar+', Cartago, Costa Rica'); p2.appendChild(lug);
-      if(c.ubic){ p2.appendChild(d.createTextNode(' · ')); var wz=el('a',null,'Waze'); wz.href='https://waze.com/ul?ll='+c.ubic.lat+','+c.ubic.lng+'&navigate=yes'; wz.target='_blank'; wz.rel='noopener noreferrer'; p2.appendChild(wz); p2.appendChild(el('span',null,' · ubicación marcada en el mapa ✓')) }
-      box.appendChild(p2);
-      var ch=el('div','chips-c'); if(c.pago) ch.appendChild(el('span','chip '+(c.pagado?'pagado':''),(c.pagado?'✓ Pagado · ':'💳 ')+c.pago));
-      if(c.estado==='pendiente'||c.estado==='confirmada'){ if(c.r24) ch.appendChild(el('span','chip confirmada','🔔 24 h: '+(REC[c.r24]||c.r24))); if(c.r1) ch.appendChild(el('span','chip confirmada','🔔 1 h: '+(REC[c.r1]||c.r1))) }
-      if(ch.childNodes.length) box.appendChild(ch);
-      if(c.cambiada) box.appendChild(el('p',null,'🔁 El cliente la cambió (antes: '+c.cambiada+')'));
-      if(c.encuesta){ var en=c.encuesta; box.appendChild(el('p','opi','★★★★★'.slice(0,en.general)+'☆☆☆☆☆'.slice(0,5-en.general)+' Opinión del cliente'+(en.comentario?': “'+en.comentario+'”':''))) }
-      if(c.multa>0) box.appendChild(el('p','alerta','⚠️ Incluye multa pendiente de '+col(c.multa)+' por no presentarse antes.'));
-      else if(c.multaCliente>0 && c.estado!=='ausente') box.appendChild(el('p','alerta','⚠️ Este cliente debe una multa de '+col(c.multaCliente)+'.'));
-      var sv=el('div','servs'); c.lineas.forEach(function(l){ var r=el('div'); r.appendChild(el('span',null,l[0])); r.appendChild(el('span',null,col(l[1]))); sv.appendChild(r) });
-      var tt=el('div','tot'); tt.appendChild(el('span',null,'Total estimado')); tt.appendChild(el('span',null,(c.desde?'desde ':'')+col(c.total))); sv.appendChild(tt); box.appendChild(sv);
-      if(c.aroma) box.appendChild(el('p',null,'🌸 Aroma: '+c.aroma));
-      if(c.nota) box.appendChild(el('p',null,'💬 '+c.nota));
-      box.appendChild(mini(c.sellos,datos.meta));
-      var acc=el('div','acc');
-      if(c.estado==='pendiente'){
-        acc.appendChild(boton('Confirmar','b-tq',function(){ accion(c,'confirmar',function(){ hojaWA('✓ Cita confirmada. Avísele a '+c.nombre.split(' ')[0]+':',c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 👋 Le confirmamos su cita en Monzú Detallados para el '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+' en '+c.lugar+'.\n\nSu tarjeta Monzú Club 💧: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en su celular y junte sellos para su lavado gratis.') }) },'ok'));
-        acc.appendChild(boton('Cancelar','b-rojo',siPregunta('¿Cancelar la cita de '+c.nombre+'? La hora queda libre otra vez.','Sí, cancelar',function(){ accion(c,'cancelar') }),'x'));
-      } else if(c.estado==='confirmada'){
-        if(c.sellos>=datos.meta) acc.appendChild(boton('Canjear lavado gratis','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
-        acc.appendChild(boton('Terminado: dar sello','b-ok',function(){ accion(c,'terminar',function(j){ toast('✓ Sello agregado a '+c.nombre.split(' ')[0]+(c.sellos+1>=datos.meta?' · ¡Completó su tarjeta! 🎁':'')); trasTerminar(c,j) }) },'ok'));
-        acc.appendChild(boton('WhatsApp','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! Le escribimos de Monzú Detallados sobre su cita del '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+'.') },'wa'));
-        acc.appendChild(boton(c.pagado?'Quitar pagado':'Marcar pagado','b-bor',function(){ accion(c,'pagado') }));
-        if(c.inicio<=datos.ahora) acc.appendChild(boton('No llegó (multa)','b-rojo',siPregunta('¿'+c.nombre+' no llegó? Se le cobra una multa de '+col(datos.multaMonto)+' en su próxima cita.','Sí, no llegó',function(){ accion(c,'ausente',function(){ toast('Multa registrada. Saldrá en su próxima reserva.') }) })));
-        acc.appendChild(boton('Cancelar','b-rojo',siPregunta('¿Cancelar la cita de '+c.nombre+'?','Sí, cancelar',function(){ accion(c,'cancelar') }),'x'));
-      } else if(c.estado==='hecha'){
-        if(c.sellos>=datos.meta) acc.appendChild(boton('Canjear lavado gratis','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
-        acc.appendChild(boton(c.pagado?'Quitar pagado':'Marcar pagado','b-bor',function(){ accion(c,'pagado') }));
-      }
-      if(c.estado==='pendiente'||c.estado==='confirmada') acc.appendChild(boton('Mover','b-bor',function(){ formMover(c,box) }));
-      if(c.estado!=='cancelada') acc.appendChild(boton('✏️ Editar','b-bor',function(){ formEditar(c,box) }));
-      if((c.estado==='pendiente'||c.estado==='confirmada')&&!c.fija){ var dsm=['domingos','lunes','martes','miércoles','jueves','viernes','sábados'][new Date(c.fecha+'T12:00:00Z').getUTCDay()];
-        acc.appendChild(boton('🔁 Repetir cada semana','b-bor',siPregunta('¿Dejar a '+c.nombre+' con cita fija todos los '+dsm+' a las '+fmtH(c.hora)+'? Se le apartan solas las próximas semanas.','Sí, dejar fija',function(){
-          api('fijar',{id:c.id}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } var nom=c.nombre.split(' ')[0];
-            if(j.choques.length) toast('⚠️ '+j.choques.length+' semana(s) ya tenían otra cita a esa hora.',true); else toast('✓ Cita fija: '+(j.creadas+1)+' citas apartadas.');
-            hojaWA('Avísele a '+nom+':',c.tel,'¡Hola '+nom+'! 👋 Le dejamos su cita fija en Monzú Detallados todos los '+dsm+' a las '+fmtH(c.hora)+'. Le llegan recordatorios antes de cada una y las puede ver o cambiar en su tarjeta: '+enlaceTarjeta(j.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }))) }
-      if(acc.childNodes.length) box.appendChild(acc);
-      L.appendChild(box);
+      L.appendChild(tarjetaCita(c));
     });
+  }
+  /* desplegable que recuerda si estaba abierto cuando el panel se actualiza solo */
+  var ABIERTOS={};
+  function desp(clave,titulo,extra,cls,alAbrir){
+    var dd=el('details','dsp'+(cls?' '+cls:'')), sm=el('summary'); sm.appendChild(el('span','dsp-t',titulo)); if(extra!=null&&extra!=='') sm.appendChild(el('span','dsp-n',extra)); dd.appendChild(sm);
+    var cont=el('div','dsp-c'); dd.appendChild(cont);
+    dd.addEventListener('toggle',function(){ if(dd.open){ ABIERTOS[clave]=1; if(alAbrir&&!cont.dataset.listo){ cont.dataset.listo='1'; alAbrir(cont) } } else delete ABIERTOS[clave] });
+    if(ABIERTOS[clave]){ dd.open=true; if(alAbrir){ cont.dataset.listo='1'; alAbrir(cont) } }
+    return {d:dd,c:cont};
+  }
+  function tarjetaCita(c){
+    var box=el('article','cita '+c.estado+(vistos&&$('badge').hidden===false&&c.estado==='pendiente'?' nueva':''));
+    var top=el('div','c-top'), izq=el('div'); izq.appendChild(el('b','c-hora',fmtH(c.hora))); izq.appendChild(el('h3',null,c.nombre)); top.appendChild(izq);
+    var chs=el('div','chips-c'); if(c.fija) chs.appendChild(el('span','chip fija','🔁 Fija')); chs.appendChild(el('span','chip '+c.estado,NOM[c.estado])); top.appendChild(chs); box.appendChild(top);
+    var serv=c.lineas.filter(function(l){ return !/^Multa/.test(l[0]) }), resumen=(serv[0]?serv[0][0].split(' · ')[0]:'Servicio')+(serv.length>1?' + '+(serv.length-1)+(serv.length===2?' adicional':' adicionales'):'');
+    var linea=el('p','c-sub'); linea.appendChild(d.createTextNode(resumen+' · ')); linea.appendChild(el('b',null,(c.desde?'desde ':'')+col(c.total))); box.appendChild(linea);
+    var p2=el('p','c-sub'), lug=el('a',null,'📍 '+c.lugar); lug.target='_blank'; lug.rel='noopener noreferrer';
+    lug.href=c.ubic?'https://www.google.com/maps/search/?api=1&query='+c.ubic.lat+','+c.ubic.lng:'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(c.lugar+', Cartago, Costa Rica'); p2.appendChild(lug);
+    if(c.ubic){ p2.appendChild(d.createTextNode(' · ')); var wz=el('a',null,'Waze'); wz.href='https://waze.com/ul?ll='+c.ubic.lat+','+c.ubic.lng+'&navigate=yes'; wz.target='_blank'; wz.rel='noopener noreferrer'; p2.appendChild(wz) }
+    box.appendChild(p2);
+    var ch=el('div','chips-c'); if(c.pago) ch.appendChild(el('span','chip suave'+(c.pagado?' pagado':''),(c.pagado?'✓ Pagado · ':'')+c.pago));
+    if(c.encuesta) ch.appendChild(el('span','chip suave opi','★'.repeat(c.encuesta.general)+' opinión'));
+    if(ch.childNodes.length) box.appendChild(ch);
+    if(c.multa>0) box.appendChild(el('p','alerta','⚠️ Incluye multa de '+col(c.multa)));
+    else if(c.multaCliente>0 && c.estado!=='ausente') box.appendChild(el('p','alerta','⚠️ Debe una multa de '+col(c.multaCliente)));
+    /* acciones principales: solo dos */
+    var nom=c.nombre.split(' ')[0], wa=function(){ abrirWA(c.tel,'¡Hola '+nom+'! Le escribimos de Monzú Detallados sobre su cita del '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+'.') };
+    var pri=el('div','acc2');
+    if(c.estado==='pendiente') pri.appendChild(boton('Confirmar','b-tq',function(){ accion(c,'confirmar',function(){ hojaWA('✓ Cita confirmada. Avísele a '+nom+':',c.tel,'¡Hola '+nom+'! 👋 Le confirmamos su cita en Monzú Detallados para el '+fmtDia(c.fecha).toLowerCase()+' a las '+fmtH(c.hora)+' en '+c.lugar+'.\n\nSu tarjeta Monzú Club 💧: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en su celular y junte sellos para su lavado gratis.') }) },'ok'));
+    else if(c.estado==='confirmada') pri.appendChild(boton('Terminado: dar sello','b-ok',function(){ accion(c,'terminar',function(j){ toast('✓ Sello agregado a '+nom+(c.sellos+1>=datos.meta?' · ¡Completó su tarjeta! 🎁':'')); trasTerminar(c,j) }) },'ok'));
+    else if(c.estado==='hecha') pri.appendChild(boton(c.pagado?'✓ Pagado':'Marcar pagado',c.pagado?'b-bor':'b-ok',function(){ accion(c,'pagado') }));
+    if(c.estado!=='cancelada') pri.appendChild(boton('WhatsApp','b-wa2',wa,'wa'));
+    if(pri.childNodes.length) box.appendChild(pri);
+    /* lo demás, en un desplegable */
+    if(c.estado==='cancelada') return box;
+    var D=desp(c.id+':mas','Detalle y más opciones',null,'mas');
+    var sv=el('div','servs'); c.lineas.forEach(function(l){ var r=el('div'); r.appendChild(el('span',null,l[0])); r.appendChild(el('span',null,col(l[1]))); sv.appendChild(r) });
+    var tt=el('div','tot'); tt.appendChild(el('span',null,'Total')); tt.appendChild(el('span',null,(c.desde?'desde ':'')+col(c.total))); sv.appendChild(tt); D.c.appendChild(sv);
+    var info=el('p','c-sub'), tel=el('a',null,'📞 '+c.tel.slice(0,4)+'-'+c.tel.slice(4)); tel.href='tel:+506'+c.tel; info.appendChild(tel); info.appendChild(d.createTextNode(' · '+c.vehiculo+(c.carro?' · '+c.carro:''))); D.c.appendChild(info);
+    if(c.aroma) D.c.appendChild(el('p','c-sub','🌸 Aroma: '+c.aroma)); if(c.nota) D.c.appendChild(el('p','c-sub','💬 '+c.nota));
+    if(c.cambiada) D.c.appendChild(el('p','c-sub','🔁 Cambiada (antes: '+c.cambiada+')'));
+    if((c.estado==='pendiente'||c.estado==='confirmada')&&(c.r24||c.r1)) D.c.appendChild(el('p','c-sub','🔔 Recordatorio '+(c.r1?'1 h: '+(REC[c.r1]||c.r1):'24 h: '+(REC[c.r24]||c.r24))));
+    if(c.encuesta&&c.encuesta.comentario) D.c.appendChild(el('p','opi','“'+c.encuesta.comentario+'”'));
+    D.c.appendChild(mini(c.sellos,datos.meta));
+    var acc=el('div','acc');
+    if(c.sellos>=datos.meta&&(c.estado==='confirmada'||c.estado==='hecha')) acc.appendChild(boton('Canjear lavado gratis','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
+    if(c.estado==='pendiente'||c.estado==='confirmada'){
+      acc.appendChild(boton(c.pagado?'Quitar pagado':'Marcar pagado','b-bor',function(){ accion(c,'pagado') }));
+      acc.appendChild(boton('Mover','b-bor',function(){ formMover(c,D.c) }));
+    }
+    if(c.estado==='hecha'&&c.pagado) acc.appendChild(boton('Quitar pagado','b-bor',function(){ accion(c,'pagado') }));
+    acc.appendChild(boton('✏️ Editar','b-bor',function(){ formEditar(c,D.c) }));
+    if(c.estado==='confirmada'&&c.inicio<=datos.ahora) acc.appendChild(boton('No llegó (multa)','b-rojo',siPregunta('¿'+c.nombre+' no llegó? Se le cobra una multa de '+col(datos.multaMonto)+' en su próxima cita.','Sí, no llegó',function(){ accion(c,'ausente',function(){ toast('Multa registrada. Saldrá en su próxima reserva.') }) })));
+    if(c.estado==='pendiente'||c.estado==='confirmada') acc.appendChild(boton('Cancelar cita','b-rojo',siPregunta('¿Cancelar la cita de '+c.nombre+'? La hora queda libre otra vez.','Sí, cancelar',function(){ accion(c,'cancelar') }),'x'));
+    D.c.appendChild(acc); box.appendChild(D.d);
+    return box;
+  }
+  function fmtCorto(f){ var t=fmtDia(f); if(/^(Hoy|Mañana|Ayer)$/.test(t)) return t; var x=new Date(f+'T12:00:00Z'); return ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][x.getUTCDay()]+' '+x.getUTCDate()+' '+['ene','feb','mar','abr','may','jun','jul','ago','set','oct','nov','dic'][x.getUTCMonth()] }
+  function tarjetaCliente(c){
+    var box=el('div','cli'+(c.tel===ultimoTel?' recien':'')), nom=c.nombre.split(' ')[0];
+    var px=datos.citas.filter(function(x){ return x.tel===c.tel && x.fecha>=datos.hoy && (x.estado==='pendiente'||x.estado==='confirmada') }).sort(function(a,b){ return (a.fecha+a.hora).localeCompare(b.fecha+b.hora) });
+    var nuevo=c.creado&&(Date.now()-Date.parse(c.creado))<14*864e5;
+    var est=c.multa>0?['Debe multa','mal']:px.length?['Cliente activo','ok']:nuevo?['Nuevo','nuevo']:c.lavados?['Cliente','']:['Sin lavados','gris'];
+    var top=el('div','cli-top2'); top.appendChild(el('b','cli-nom',c.nombre)); top.appendChild(el('span','est '+est[1],est[0])); box.appendChild(top);
+    box.appendChild(el('small','cli-sub',c.tel.slice(0,4)+'-'+c.tel.slice(4)+(c.carro?' · '+c.carro:'')));
+    var fila=el('div','cli-fila'), s1=el('div'); s1.appendChild(el('b','cli-sellos',Math.min(c.sellos,datos.meta)+'/'+datos.meta)); s1.appendChild(el('small',null,c.sellos>=datos.meta?'🎁 ¡Premio listo!':'Sellos acumulados')); fila.appendChild(s1);
+    var s2=el('div','der'); s2.appendChild(el('b',null,'Próxima cita')); s2.appendChild(el('span',px.length?'prox si':'prox',px.length?fmtCorto(px[0].fecha)+' · '+fmtH(px[0].hora):'Sin cita')); fila.appendChild(s2); box.appendChild(fila);
+    var barra=el('div','cli-barra'), bi=el('i'); bi.style.width=Math.min(100,c.sellos/datos.meta*100)+'%'; barra.appendChild(bi); box.appendChild(barra);
+    var pri=el('div','acc2');
+    if(c.sellos>=datos.meta) pri.appendChild(boton('Canjear premio','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
+    else pri.appendChild(boton('Dar sello','b-ok',siPregunta('¿Dar un sello a '+c.nombre+'?','Sí, dar sello',function(){ sello(c.tarjeta,c.nombre) }),'gota'));
+    pri.appendChild(boton('Contactar','b-tq',function(){ abrirWA(c.tel,'¡Hola '+nom+'! Le escribimos de Monzú Detallados.') },'wa'));
+    box.appendChild(pri);
+    // Información del cliente
+    var A=desp(c.tel+':info','Información del cliente');
+    var tl=el('a',null,'📞 '+c.tel.slice(0,4)+'-'+c.tel.slice(4)); tl.href='tel:+506'+c.tel; var p1=el('p','c-sub'); p1.appendChild(tl); A.c.appendChild(p1);
+    [c.carro?'🚗 '+c.carro:'', c.lugar?'📍 '+c.lugar:'', c.creado?'🗓️ Cliente desde '+new Date(c.creado).toLocaleDateString('es-CR',{day:'numeric',month:'long',year:'numeric'}):'', (c.tienePin?'🔐 Tiene PIN':'🔓 Todavía no tiene PIN')+' · '+(c.conNotificaciones?'🔔 recibe recordatorios':'sin notificaciones'), c.premios?'🎁 '+c.premios+' premio(s) canjeado(s)':''].forEach(function(t){ if(t) A.c.appendChild(el('p','c-sub',t)) });
+    if(c.multa>0){ A.c.appendChild(el('p','alerta','⚠️ Debe una multa de '+col(c.multa))); A.c.appendChild(boton('Anular multa','b-bor',siPregunta('¿Anular la multa de '+col(c.multa)+' de '+c.nombre+'?','Sí, anular',function(){ api('perdonar-multa',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Multa anulada.'); refrescar() }) }))) }
+    box.appendChild(A.d);
+    // Historial de servicios
+    var B=desp(c.tel+':hist','Historial de servicios',c.lavados+(c.lavados===1?' lavado':' lavados'),'',function(cont){ historial(c,cont) }); box.appendChild(B.d);
+    // Citas programadas
+    var C=desp(c.tel+':citas','Citas programadas',px.length?px.length+(px.length===1?' próxima':' próximas'):'ninguna',px.length?'verde':'',function(cont){
+      if(!px.length){ cont.appendChild(el('p','ayuda izq','No tiene citas agendadas.')); }
+      px.forEach(function(x){ var r=el('div','hist-i'), t=el('div','hist-t'), iz=el('div'); iz.appendChild(el('b',null,fmtDia(x.fecha)+' · '+fmtH(x.hora))); iz.appendChild(el('small',null,x.lineas.map(function(l){ return l[0].split(' · ')[0] }).join(' + ')+' · '+(x.pago||''))); t.appendChild(iz);
+        var de=el('div','hist-d'); de.appendChild(el('span','chip '+x.estado,(x.fija?'🔁 ':'')+NOM[x.estado])); de.appendChild(el('b',null,col(x.total))); t.appendChild(de); r.appendChild(t);
+        var a=el('div','acc'); a.appendChild(boton('✏️ Editar','b-bor',function(){ formEditar(x,r) })); a.appendChild(boton('Mover','b-bor',function(){ formMover(x,r) })); r.appendChild(a); cont.appendChild(r) });
+      cont.appendChild(boton('＋ Agendar otra cita','b-bor',function(){ abreFija(null,{}); fjTel=c.tel; $('fjBuscar').value=c.nombre+' · '+c.tel.slice(0,4)+'-'+c.tel.slice(4); $('fjCliTxt').textContent='✓ '+c.nombre; if(c.lugar) $('fjLugar').value=c.lugar; d.querySelector('.tabs button[data-sec=citas]').click(); setTimeout(function(){ $('fFija').scrollIntoView({behavior:'smooth',block:'start'}) },200) }));
+    }); box.appendChild(C.d);
+    // Opciones adicionales
+    var E=desp(c.tel+':mas','Opciones adicionales','⋯','opc');
+    var acc=el('div','acc');
+    acc.appendChild(boton('✏️ Editar cliente','b-bor',function(){ formCliente(c,E.c) }));
+    acc.appendChild(boton('Enviar tarjeta','b-bor',function(){ abrirWA(c.tel,'¡Hola '+nom+'! 💧 Esta es su tarjeta Monzú Club, donde ve sus sellos: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en la pantalla de inicio de su celular para tenerla siempre a mano.') },'wa'));
+    if(c.tienePin) acc.appendChild(boton('Restablecer PIN','b-bor',siPregunta('¿Restablecer el PIN de '+c.nombre+'? Le enviamos su tarjeta por WhatsApp para que cree uno nuevo.','Sí, restablecer',function(){
+      api('pin-reset',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } hojaWA('🔐 PIN restablecido. Mándele su tarjeta para que cree uno nuevo:',c.tel,'¡Hola '+nom+'! 🔐 Le restablecimos el PIN de Monzú Club. Abra su tarjeta aquí y cree uno nuevo: '+enlaceTarjeta(c.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) })));
+    acc.appendChild(boton('Eliminar cliente','b-rojo',siPregunta('¿Eliminar a '+c.nombre+' y todos sus datos (tarjeta, sellos y citas)? No se puede deshacer.','Sí, eliminar',function(){
+      api('borrar-cliente',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Cliente eliminado.'); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }),'x'));
+    E.c.appendChild(acc); box.appendChild(E.d);
+    return box;
   }
   /* recordatorios de las próximas 24 horas: si el cliente no tiene notificaciones, se le manda por WhatsApp con un toque */
   function recordatorios(){
@@ -698,26 +787,7 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
     var L=$('listaCli'), q=$('buscar').value.trim().toLowerCase(); L.textContent='';
     var lista=datos.clientes.slice().sort(function(a,b){ return String(b.creado||'').localeCompare(String(a.creado||'')) }).filter(function(c){ return !q || c.nombre.toLowerCase().indexOf(q)>=0 || c.tel.indexOf(q.replace(/\D/g,''))>=0&&q.replace(/\D/g,'') });
     if(!lista.length){ L.appendChild(el('p','vacio',datos.clientes.length?'No hay clientes con esa búsqueda.':'Todavía no hay clientes. Se agregan solos con la primera reserva.')); return }
-    lista.forEach(function(c){
-      var box=el('div','cli'+(c.tel===ultimoTel?' recien':'')), top=el('div','cli-top'), izq=el('div');
-      var nb=el('b',null,c.nombre); if(!c.tienePin) nb.appendChild(el('span','sinpin','Sin PIN')); izq.appendChild(nb); izq.appendChild(el('small',null,c.tel.slice(0,4)+'-'+c.tel.slice(4)+(c.carro?' · '+c.carro:'')+(c.premios?' · '+c.premios+' premio(s) canjeado(s)':'')));
-      var em=el('em',null,c.sellos>=datos.meta?'🎁 Premio':c.sellos+'/'+datos.meta); if(c.sellos>=datos.meta) em.className='oro';
-      top.appendChild(izq); top.appendChild(em); box.appendChild(top); box.appendChild(mini(c.sellos,datos.meta));
-      var px=datos.citas.filter(function(x){ return x.tel===c.tel && x.fecha>=datos.hoy && (x.estado==='pendiente'||x.estado==='confirmada') }).sort(function(a,b){ return (a.fecha+a.hora).localeCompare(b.fecha+b.hora) });
-      box.appendChild(el('p','hist-agen '+(px.length?'si':'no'),px.length?'📅 Agendado: '+fmtDia(px[0].fecha)+' '+fmtH(px[0].hora)+(px.length>1?' (+'+(px.length-1)+' más)':''):'Sin cita agendada'));
-      var acc=el('div','acc');
-      if(c.sellos>=datos.meta) acc.appendChild(boton('Canjear premio','b-oro',function(){ canjear(c.tarjeta,c.nombre) },'regalo'));
-      else acc.appendChild(boton('Dar sello','b-ok',siPregunta('¿Dar un sello a '+c.nombre+'?','Sí, dar sello',function(){ sello(c.tarjeta,c.nombre) }),'gota'));
-      if(c.multa>0) acc.appendChild(boton('Anular multa','b-bor',siPregunta('¿Anular la multa de '+col(c.multa)+' de '+c.nombre+'?','Sí, anular',function(){ api('perdonar-multa',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Multa anulada.'); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) })));
-      acc.appendChild(boton('📋 Historial','b-tq',function(){ historial(c,box) }));
-      acc.appendChild(boton('✏️ Editar','b-bor',function(){ formCliente(c,box) }));
-      acc.appendChild(boton('Enviar tarjeta','b-wa',function(){ abrirWA(c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 💧 Esta es su tarjeta Monzú Club, donde ve sus sellos: '+enlaceTarjeta(c.tarjeta)+'\nGuárdela en la pantalla de inicio de su celular para tenerla siempre a mano.') },'wa'));
-      if(c.tienePin) acc.appendChild(boton('Restablecer PIN','b-bor',siPregunta('¿Restablecer el PIN de '+c.nombre+'? Le enviamos su tarjeta por WhatsApp para que cree uno nuevo.','Sí, restablecer',function(){
-        api('pin-reset',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } hojaWA('🔐 PIN restablecido. Mándele su tarjeta para que cree uno nuevo:',c.tel,'¡Hola '+c.nombre.split(' ')[0]+'! 🔐 Le restablecimos el PIN de Monzú Club. Abra su tarjeta aquí y cree uno nuevo: '+enlaceTarjeta(c.tarjeta)); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) })));
-      acc.appendChild(boton('Eliminar','b-rojo',siPregunta('¿Eliminar a '+c.nombre+' y todos sus datos (tarjeta, sellos y citas)? No se puede deshacer.','Sí, eliminar',function(){
-        api('borrar-cliente',{t:c.tarjeta}).then(function(j){ if(!j.ok){ toast(j.error||'No se pudo.',true); return } toast('Cliente eliminado.'); refrescar() }).catch(function(){ toast('Sin conexión.',true) }) }),'x'));
-      box.appendChild(acc); L.appendChild(box);
-    });
+    lista.forEach(function(c){ L.appendChild(tarjetaCliente(c)) });
   }
   /* respaldo y seguridad */
   $('btnRespaldo').addEventListener('click',function(){
@@ -933,7 +1003,7 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
     function carga(){ api('historial',{t:c.tarjeta}).then(function(j){ H.textContent=''; if(!j.ok){ H.appendChild(el('p','msg mal',j.error||'No se pudo cargar.')); return }
       var K=j.cliente, hecho=j.citas.filter(function(x){ return x.estado==='hecha' }).length, cab=el('div','hist-cab');
       cab.appendChild(el('b','tit-p','📋 Historial de '+K.nombre.split(' ')[0]));
-      cab.appendChild(boton('Cerrar','b-bor',function(){ H.remove() })); H.appendChild(cab);
+      cab.appendChild(boton('Cerrar','b-bor',function(){ var dd=box.closest&&box.closest('details'); H.remove(); if(dd){ dd.open=false; delete box.dataset.listo } })); H.appendChild(cab);
       var res=el('div','hist-res'); [[hecho,'lavados'],[col(j.gastado),'gastado'],[K.sellos+'/'+datos.meta,'sellos'],[K.premios,'premios']].forEach(function(x){ var d1=el('div'); d1.appendChild(el('b',null,String(x[0]))); d1.appendChild(el('small',null,x[1])); res.appendChild(d1) }); H.appendChild(res);
       if(K.multa) H.appendChild(el('p','alerta','⚠️ Debe una multa de '+col(K.multa)));
       j.fijas.forEach(function(f){ H.appendChild(el('p','ayuda izq','🔁 Cita fija: todos '+losDias(f.dia)+' a las '+fmtH(f.hora)+(f.hasta?' hasta '+elDia(f.hasta):' sin fin'))) });

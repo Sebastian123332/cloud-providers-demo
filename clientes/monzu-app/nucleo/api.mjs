@@ -559,7 +559,8 @@ export async function manejar(req, opts) {
         const db = await leerDB(), desde = sumaDias(hoyCR().fecha, -45);
         const citas = db.citas.filter((c) => c.fecha >= desde).sort((a, b) => (a.fecha + a.hora).localeCompare(b.fecha + b.hora))
           .map(({ origen, ...c }) => ({ ...c, sellos: db.clientes[c.tel]?.sellos ?? 0, tarjeta: db.clientes[c.tel]?.token, multaCliente: db.clientes[c.tel]?.multa || 0, conNotificaciones: (db.clientes[c.tel]?.push || []).length > 0, inicio: inicioCita(c) }));
-        const clientes = Object.values(db.clientes).map((c) => ({ nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token, tienePin: !!c.pinHash, creado: c.creado || '', multa: c.multa || 0, conNotificaciones: (c.push || []).length > 0 }))
+        const lav = {}; db.citas.forEach((x) => { if (x.estado === 'hecha') lav[x.tel] = (lav[x.tel] || 0) + 1; });
+        const clientes = Object.values(db.clientes).map((c) => ({ lavados: lav[c.tel] || 0, lugar: (c.pref && c.pref.lugar) || '', nombre: c.nombre, tel: c.tel, carro: c.carro || '', sellos: c.sellos, premios: c.premios || 0, tarjeta: c.token, tienePin: !!c.pinHash, creado: c.creado || '', multa: c.multa || 0, conNotificaciones: (c.push || []).length > 0 }))
           .sort((a, b) => b.sellos - a.sellos || a.nombre.localeCompare(b.nombre));
         const fijas = (db.fijas || []).map((f) => ({ ...f, nombre: db.clientes[f.tel]?.nombre || '(cliente borrado)' }));
         return json({ ok: true, espacio: { usados: BYTES, max: 1900000, clientes: Object.keys(db.clientes).length }, config: { horas: CFG.horas, dias: CFG.dias, cerrados: CFG.cerrados, cat: CFG.cat, resena: CFG.resena, metaMes: CFG.metaMes || 0 }, fijas, pagos: AJUSTES.pagos, hoy: hoyCR().fecha, ahora: Date.now(), waAuto: waActivo(), meta: AJUSTES.meta, premio: AJUSTES.premio, multaMonto: AJUSTES.multa, horasCancelar: AJUSTES.horasCancelar, citas, clientes });
