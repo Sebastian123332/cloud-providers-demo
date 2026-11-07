@@ -128,6 +128,8 @@ a{color:inherit}
 .estrellas{display:flex;gap:6px}
 .estrellas button{font-size:1.9rem;line-height:1;color:rgba(148,163,184,.35);padding:2px;transition:transform .15s}
 .estrellas button.on{color:#FBBF24}.estrellas button:active{transform:scale(1.2)}
+.notif.resalta{border:2px solid #FBBF24;box-shadow:0 0 0 6px rgba(251,191,36,.18);animation:latido 1.6s ease-in-out 3}
+@keyframes latido{50%{box-shadow:0 0 0 12px rgba(251,191,36,.08)}}
 .cambio{display:grid;gap:8px;border-top:1px solid rgba(76,195,212,.3);padding-top:10px;text-align:left}
 .acceso{display:grid;gap:14px}
 .tit{font-family:var(--t);font-style:italic;font-weight:900;text-transform:uppercase;font-size:2.2rem;line-height:1}

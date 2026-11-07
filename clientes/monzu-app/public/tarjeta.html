@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-krdRJdFnT2tzxfbabewNtQSJFo5YWFpaZCKqt7wN1do=' 'self'; style-src 'sha256-WoV6mKKwXZDScAs531WyqBCEbHosu1An1QXA+yLIE1M='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-bHuKvTnyI51arzp75gEOjh0XVxpvG1OwT/87Lm5Iso0=' 'self'; style-src 'sha256-f8aJRarsyBHu8C5fw5qFl5JXQmWBb+ThiPXVpyuHelQ='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Mi tarjeta · Monzú Club</title>
@@ -155,6 +155,8 @@ a{color:inherit}
 .estrellas{display:flex;gap:6px}
 .estrellas button{font-size:1.9rem;line-height:1;color:rgba(148,163,184,.35);padding:2px;transition:transform .15s}
 .estrellas button.on{color:#FBBF24}.estrellas button:active{transform:scale(1.2)}
+.notif.resalta{border:2px solid #FBBF24;box-shadow:0 0 0 6px rgba(251,191,36,.18);animation:latido 1.6s ease-in-out 3}
+@keyframes latido{50%{box-shadow:0 0 0 12px rgba(251,191,36,.08)}}
 .cambio{display:grid;gap:8px;border-top:1px solid rgba(76,195,212,.3);padding-top:10px;text-align:left}
 .acceso{display:grid;gap:14px}
 .tit{font-family:var(--t);font-style:italic;font-weight:900;text-transform:uppercase;font-size:2.2rem;line-height:1}
@@ -368,6 +370,7 @@ body{background:radial-gradient(460px 380px at 100% -8%,rgba(245,166,35,.28),tra
     [['📱',t.tel?t.tel.slice(0,4)+'-'+t.tel.slice(4):''],['🚗',t.carro],['💧',t.sellos+' sellos'],['🎁',t.premios?t.premios+(t.premios===1?' premio ganado':' premios ganados'):''],['🔔',t.recordatorios?'Recordatorios activos':'']].forEach(function(x){ if(!x[1]) return; var sp=d.createElement('span'); sp.textContent=x[0]+' '; var b=d.createElement('b'); b.textContent=x[1]; sp.appendChild(b); dt.appendChild(sp) });
     if(!rapidaLista) prepRapida(t);
     pintaEncuesta(j);
+    irANotif();
     multaAct=t.multa||0; pintaTotal(); var mm=$('multaMsg'); mm.hidden=!(t.multa>0); if(t.multa>0) mm.textContent='⚠️ Tiene una multa pendiente de '+col(t.multa)+' por no presentarse a una cita. Se suma al total de su próxima cita.';
     var h=$('hist'); h.textContent='';
     t.hist.forEach(function(x){ var r=d.createElement('div'), b=d.createElement('b'), sp=d.createElement('span'); b.textContent=x[0]; sp.textContent=fmtF(x[1]); r.appendChild(b); r.appendChild(sp); h.appendChild(r) });
@@ -463,6 +466,8 @@ body{background:radial-gradient(460px 380px at 100% -8%,rgba(245,166,35,.28),tra
     for(var i=1;i<=5;i++){ (function(n){ var b=d.createElement('button'); b.type='button'; b.textContent='★'; b.setAttribute('role','radio'); b.setAttribute('aria-checked','false'); b.setAttribute('aria-label',n+(n===1?' estrella':' estrellas'));
       b.addEventListener('click',function(){ ENC[k]=n; [].forEach.call(g.children,function(x,j){ x.classList.toggle('on',j<n); x.setAttribute('aria-checked',String(j===n-1)) }); if(navigator.vibrate) navigator.vibrate(15) }); g.appendChild(b) })(i) } });
   d.querySelectorAll('#encRec .chip').forEach(function(b){ b.addEventListener('click',function(){ encRec=b.dataset.r==='si'; d.querySelectorAll('#encRec .chip').forEach(function(x){ x.setAttribute('aria-pressed',String(x===b)) }) }) });
+  var NOTIF_VISTO=false;
+  function irANotif(){ if(NOTIF_VISTO||location.hash!=='#recordatorios') return; NOTIF_VISTO=true; var n=$('notif'); n.classList.add('resalta'); setTimeout(function(){ n.scrollIntoView({behavior:'smooth',block:'center'}) },400) }
   function pintaEncuesta(j){
     if(j.resena) RESENA=j.resena;
     if(encListo) return; var E=j.encuesta; $('encuesta').hidden=!E; if(!E) return;

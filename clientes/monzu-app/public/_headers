@@ -41,7 +41,7 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
   X-Robots-Tag: noindex
 /tarjeta.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-krdRJdFnT2tzxfbabewNtQSJFo5YWFpaZCKqt7wN1do=' 'self'; style-src 'sha256-WoV6mKKwXZDScAs531WyqBCEbHosu1An1QXA+yLIE1M='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-bHuKvTnyI51arzp75gEOjh0XVxpvG1OwT/87Lm5Iso0=' 'self'; style-src 'sha256-f8aJRarsyBHu8C5fw5qFl5JXQmWBb+ThiPXVpyuHelQ='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -52,7 +52,7 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
   X-Robots-Tag: noindex
 /tarjeta
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-krdRJdFnT2tzxfbabewNtQSJFo5YWFpaZCKqt7wN1do=' 'self'; style-src 'sha256-WoV6mKKwXZDScAs531WyqBCEbHosu1An1QXA+yLIE1M='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-bHuKvTnyI51arzp75gEOjh0XVxpvG1OwT/87Lm5Iso0=' 'self'; style-src 'sha256-f8aJRarsyBHu8C5fw5qFl5JXQmWBb+ThiPXVpyuHelQ='; font-src 'self'; img-src 'self' data: https://tile.openstreetmap.org; connect-src 'self' https://nominatim.openstreetmap.org; manifest-src 'self'; worker-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types monzu-sw; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -63,7 +63,7 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=(self), payment=(), usb=()
   X-Robots-Tag: noindex
 /panel.html
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-EuGXn/kATfQku++WkpPuxUg2+hDVCyt7k1Unhb18d/U=' 'self'; style-src 'sha256-EPplEZ9elVblp2DKfr+lRfTyeN3ViaiO2krB+x/xzvI='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-8XKicO3wyuL70FgmityfBHrwf7kVUQaFxh3mVZMHtJM=' 'self'; style-src 'sha256-EQHyTo5hzcOJ5JSaqlYNfAEAq3dRGxPIc/b3n7pRuRU='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -75,7 +75,7 @@
   X-Robots-Tag: noindex, nofollow
   Cache-Control: no-store
 /panel
-  Content-Security-Policy: default-src 'none'; script-src 'sha256-EuGXn/kATfQku++WkpPuxUg2+hDVCyt7k1Unhb18d/U=' 'self'; style-src 'sha256-EPplEZ9elVblp2DKfr+lRfTyeN3ViaiO2krB+x/xzvI='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
+  Content-Security-Policy: default-src 'none'; script-src 'sha256-8XKicO3wyuL70FgmityfBHrwf7kVUQaFxh3mVZMHtJM=' 'self'; style-src 'sha256-EQHyTo5hzcOJ5JSaqlYNfAEAq3dRGxPIc/b3n7pRuRU='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; frame-ancestors 'none'; upgrade-insecure-requests
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

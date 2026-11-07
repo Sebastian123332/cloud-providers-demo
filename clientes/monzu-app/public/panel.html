@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-EuGXn/kATfQku++WkpPuxUg2+hDVCyt7k1Unhb18d/U=' 'self'; style-src 'sha256-EPplEZ9elVblp2DKfr+lRfTyeN3ViaiO2krB+x/xzvI='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-8XKicO3wyuL70FgmityfBHrwf7kVUQaFxh3mVZMHtJM=' 'self'; style-src 'sha256-EQHyTo5hzcOJ5JSaqlYNfAEAq3dRGxPIc/b3n7pRuRU='; font-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self'; form-action 'none'; base-uri 'none'; object-src 'none'; require-trusted-types-for 'script'; trusted-types 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Panel · Monzú Admin</title>
@@ -329,6 +329,8 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
 .ar-f{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr) auto;gap:6px;align-items:center;background:rgba(7,11,20,.5);border:1px solid var(--linea);border-radius:12px;padding:8px}.ar-f input{width:100%;padding:10px;font-size:.9rem;border-radius:10px;border:1px solid var(--linea2);background:var(--n);color:var(--bl)}
 @media(max-width:560px){.ar-f{grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto}.ar-f input[data-c=n]{grid-column:1/-1}}.ar-f .chk{padding:8px 10px}
 .paq-f .quitar{justify-self:start}
+.pn-prog{display:flex;justify-content:space-between;align-items:center;gap:10px}.pn-prog .btn{width:auto}
+.pn-f{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;padding:8px 10px;border-radius:12px;background:rgba(7,11,20,.5);border:1px solid var(--linea)}.pn-f small{display:block;color:var(--gr);font-size:.75rem}.pn-f .btn{width:auto;padding:8px 12px;font-size:.8rem}.pn-f.ya{opacity:.55}
 .cal-nav{display:flex;gap:4px}.cal-nav button{min-width:36px;height:34px;padding:0 10px;border-radius:10px;border:1px solid var(--linea2);font-weight:700;font-size:.85rem}
 .cal-sem,.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
 .cal-sem span{text-align:center;font-size:.68rem;font-weight:700;color:var(--gr2)}
@@ -499,6 +501,13 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
         <p class="msg" id="mNuevo" role="alert"></p>
       </form>
     </details>
+    <button type="button" class="btn b-tq" id="btnPedirNotif">🔔 Pedir a todos que activen recordatorios</button>
+    <div class="caja-p" id="pedirNotif" hidden>
+      <div class="hist-cab"><b class="tit-p">🔔 Activar recordatorios</b><button type="button" class="btn b-bor" id="pnCerrar">Cerrar</button></div>
+      <p class="ayuda izq">Nadie puede activarlos desde afuera: cada cliente tiene que tocar “Activar” en su celular. Mándele a cada uno este WhatsApp con el link directo, uno por uno.</p>
+      <div class="pn-prog"><b id="pnCuenta"></b><button type="button" class="btn b-wa" id="pnSiguiente">Enviar al siguiente</button></div>
+      <div class="lista" id="pnLista"></div>
+    </div>
     <button type="button" class="btn b-bor" id="btnOpiniones">⭐ Ver opiniones de los clientes</button>
     <details class="nuevo" id="impCli">
       <summary>⇪ Pasar mis clientes de otro sistema</summary>
@@ -614,7 +623,7 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
     vistos=ids; datos=j;
     $('actualizado').textContent='Actualizado '+new Date().toLocaleTimeString('es-CR',{hour:'numeric',minute:'2-digit'});
     var editando=function(id){ return !!d.querySelector('#'+id+' .editar, #'+id+' .mover, #'+id+' .hist-c') };   // no se borra un formulario abierto
-    kpis(); cargaRep(); recordatorios(); if(!editando('listaCitas')) citas(); if(!editando('listaCli')) clientes(); if(!editando('listaFijas')) fijas(); ajustes(); llenaCHora(); calendario(); espacio(); if($('sec-ganancias').classList.contains('on')) reporte();
+    kpis(); cargaRep(); recordatorios(); if(!editando('listaCitas')) citas(); if(!editando('listaCli')) clientes(); if(!editando('listaFijas')) fijas(); ajustes(); llenaCHora(); calendario(); espacio(); var sinN=datos.clientes.filter(function(c){ return !c.conNotificaciones }).length; $('btnPedirNotif').textContent='🔔 Pedir a todos que activen recordatorios'+(sinN?' ('+sinN+' sin activar)':' ✓'); if(!$('pedirNotif').hidden) pedirNotif(); if($('sec-ganancias').classList.contains('on')) reporte();
   }
   /* ---------- dashboard: tarjetas, gráfico de ventas y meta del mes ---------- */
   var rep=null, rango=30;
@@ -826,6 +835,21 @@ body{background:radial-gradient(520px 420px at 92% -6%,rgba(245,166,35,.32),tran
     }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
   });
   $('buscar').addEventListener('input',function(){ if(datos) clientes() });
+  /* pedir a los clientes que activen los recordatorios (solo ellos pueden darle permiso a su celular) */
+  var PN_KEY='monzu-pedido-notif';
+  function pnEnviados(){ try{ return JSON.parse(localStorage.getItem(PN_KEY)||'{}') }catch(e){ return {} } }
+  function pnMarca(tel){ var o=pnEnviados(); o[tel]=datos.hoy; try{ localStorage.setItem(PN_KEY,JSON.stringify(o)) }catch(e){} }
+  function pnMensaje(c){ return '¡Hola '+c.nombre.split(' ')[0]+'! 💧 Para que no se le pase su cita, active los recordatorios de Monzú en su celular: abra este enlace y toque “Activar recordatorios”. Le avisamos 24 horas y 1 hora antes. '+enlaceTarjeta(c.tarjeta)+'#recordatorios' }
+  function pedirNotif(){
+    var L=$('pnLista'); L.textContent=''; var env=pnEnviados(), sin=datos.clientes.filter(function(c){ return !c.conNotificaciones });
+    var falta=sin.filter(function(c){ return !env[c.tel] });
+    $('pnCuenta').textContent=sin.length?(sin.length-falta.length)+' de '+sin.length+' avisados':'¡Todos tienen los recordatorios activos! 🎉'; $('pnSiguiente').hidden=!falta.length;
+    sin.sort(function(a,b){ return (env[a.tel]?1:0)-(env[b.tel]?1:0) }).forEach(function(c){ var r=el('div','pn-f'+(env[c.tel]?' ya':'')), t=el('div'); t.appendChild(el('b',null,c.nombre)); t.appendChild(el('small',null,c.tel.slice(0,4)+'-'+c.tel.slice(4)+(env[c.tel]?' · ✓ avisado '+fmtDia(env[c.tel]).toLowerCase():''))); r.appendChild(t);
+      r.appendChild(boton(env[c.tel]?'Otra vez':'Enviar','b-wa',function(){ abrirWA(c.tel,pnMensaje(c)); pnMarca(c.tel); pedirNotif() },'wa')); L.appendChild(r) });
+  }
+  $('btnPedirNotif').addEventListener('click',function(){ var b=$('pedirNotif'); b.hidden=!b.hidden; if(!b.hidden) pedirNotif() });
+  $('pnCerrar').addEventListener('click',function(){ $('pedirNotif').hidden=true });
+  $('pnSiguiente').addEventListener('click',function(){ var env=pnEnviados(), c=datos.clientes.filter(function(x){ return !x.conNotificaciones&&!env[x.tel] })[0]; if(!c) return; abrirWA(c.tel,pnMensaje(c)); pnMarca(c.tel); pedirNotif() });
   $('btnOpiniones').addEventListener('click',function(){ d.querySelector('.tabs button[data-sec=ganancias]').click(); var t=setInterval(function(){ var o=[].filter.call(d.querySelectorAll('#rep .caja-p'),function(x){ return /Opiniones/.test(x.textContent) })[0]; if(o){ clearInterval(t); o.scrollIntoView({behavior:'smooth',block:'start'}) } },200); setTimeout(function(){ clearInterval(t) },5000) });
   $('fImportar').addEventListener('submit',function(e){
     e.preventDefault(); var m=$('mImp');

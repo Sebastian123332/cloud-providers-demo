@@ -44,6 +44,7 @@
     [['📱',t.tel?t.tel.slice(0,4)+'-'+t.tel.slice(4):''],['🚗',t.carro],['💧',t.sellos+' sellos'],['🎁',t.premios?t.premios+(t.premios===1?' premio ganado':' premios ganados'):''],['🔔',t.recordatorios?'Recordatorios activos':'']].forEach(function(x){ if(!x[1]) return; var sp=d.createElement('span'); sp.textContent=x[0]+' '; var b=d.createElement('b'); b.textContent=x[1]; sp.appendChild(b); dt.appendChild(sp) });
     if(!rapidaLista) prepRapida(t);
     pintaEncuesta(j);
+    irANotif();
     multaAct=t.multa||0; pintaTotal(); var mm=$('multaMsg'); mm.hidden=!(t.multa>0); if(t.multa>0) mm.textContent='⚠️ Tiene una multa pendiente de '+col(t.multa)+' por no presentarse a una cita. Se suma al total de su próxima cita.';
     var h=$('hist'); h.textContent='';
     t.hist.forEach(function(x){ var r=d.createElement('div'), b=d.createElement('b'), sp=d.createElement('span'); b.textContent=x[0]; sp.textContent=fmtF(x[1]); r.appendChild(b); r.appendChild(sp); h.appendChild(r) });
@@ -139,6 +140,8 @@
     for(var i=1;i<=5;i++){ (function(n){ var b=d.createElement('button'); b.type='button'; b.textContent='★'; b.setAttribute('role','radio'); b.setAttribute('aria-checked','false'); b.setAttribute('aria-label',n+(n===1?' estrella':' estrellas'));
       b.addEventListener('click',function(){ ENC[k]=n; [].forEach.call(g.children,function(x,j){ x.classList.toggle('on',j<n); x.setAttribute('aria-checked',String(j===n-1)) }); if(navigator.vibrate) navigator.vibrate(15) }); g.appendChild(b) })(i) } });
   d.querySelectorAll('#encRec .chip').forEach(function(b){ b.addEventListener('click',function(){ encRec=b.dataset.r==='si'; d.querySelectorAll('#encRec .chip').forEach(function(x){ x.setAttribute('aria-pressed',String(x===b)) }) }) });
+  var NOTIF_VISTO=false;
+  function irANotif(){ if(NOTIF_VISTO||location.hash!=='#recordatorios') return; NOTIF_VISTO=true; var n=$('notif'); n.classList.add('resalta'); setTimeout(function(){ n.scrollIntoView({behavior:'smooth',block:'center'}) },400) }
   function pintaEncuesta(j){
     if(j.resena) RESENA=j.resena;
     if(encListo) return; var E=j.encuesta; $('encuesta').hidden=!E; if(!E) return;

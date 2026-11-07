@@ -83,7 +83,7 @@
     vistos=ids; datos=j;
     $('actualizado').textContent='Actualizado '+new Date().toLocaleTimeString('es-CR',{hour:'numeric',minute:'2-digit'});
     var editando=function(id){ return !!d.querySelector('#'+id+' .editar, #'+id+' .mover, #'+id+' .hist-c') };   // no se borra un formulario abierto
-    kpis(); cargaRep(); recordatorios(); if(!editando('listaCitas')) citas(); if(!editando('listaCli')) clientes(); if(!editando('listaFijas')) fijas(); ajustes(); llenaCHora(); calendario(); espacio(); if($('sec-ganancias').classList.contains('on')) reporte();
+    kpis(); cargaRep(); recordatorios(); if(!editando('listaCitas')) citas(); if(!editando('listaCli')) clientes(); if(!editando('listaFijas')) fijas(); ajustes(); llenaCHora(); calendario(); espacio(); var sinN=datos.clientes.filter(function(c){ return !c.conNotificaciones }).length; $('btnPedirNotif').textContent='🔔 Pedir a todos que activen recordatorios'+(sinN?' ('+sinN+' sin activar)':' ✓'); if(!$('pedirNotif').hidden) pedirNotif(); if($('sec-ganancias').classList.contains('on')) reporte();
   }
   /* ---------- dashboard: tarjetas, gráfico de ventas y meta del mes ---------- */
   var rep=null, rango=30;
@@ -295,6 +295,21 @@
     }).catch(function(){ m.textContent='Sin conexión.'; m.className='msg mal' });
   });
   $('buscar').addEventListener('input',function(){ if(datos) clientes() });
+  /* pedir a los clientes que activen los recordatorios (solo ellos pueden darle permiso a su celular) */
+  var PN_KEY='monzu-pedido-notif';
+  function pnEnviados(){ try{ return JSON.parse(localStorage.getItem(PN_KEY)||'{}') }catch(e){ return {} } }
+  function pnMarca(tel){ var o=pnEnviados(); o[tel]=datos.hoy; try{ localStorage.setItem(PN_KEY,JSON.stringify(o)) }catch(e){} }
+  function pnMensaje(c){ return '¡Hola '+c.nombre.split(' ')[0]+'! 💧 Para que no se le pase su cita, active los recordatorios de Monzú en su celular: abra este enlace y toque “Activar recordatorios”. Le avisamos 24 horas y 1 hora antes. '+enlaceTarjeta(c.tarjeta)+'#recordatorios' }
+  function pedirNotif(){
+    var L=$('pnLista'); L.textContent=''; var env=pnEnviados(), sin=datos.clientes.filter(function(c){ return !c.conNotificaciones });
+    var falta=sin.filter(function(c){ return !env[c.tel] });
+    $('pnCuenta').textContent=sin.length?(sin.length-falta.length)+' de '+sin.length+' avisados':'¡Todos tienen los recordatorios activos! 🎉'; $('pnSiguiente').hidden=!falta.length;
+    sin.sort(function(a,b){ return (env[a.tel]?1:0)-(env[b.tel]?1:0) }).forEach(function(c){ var r=el('div','pn-f'+(env[c.tel]?' ya':'')), t=el('div'); t.appendChild(el('b',null,c.nombre)); t.appendChild(el('small',null,c.tel.slice(0,4)+'-'+c.tel.slice(4)+(env[c.tel]?' · ✓ avisado '+fmtDia(env[c.tel]).toLowerCase():''))); r.appendChild(t);
+      r.appendChild(boton(env[c.tel]?'Otra vez':'Enviar','b-wa',function(){ abrirWA(c.tel,pnMensaje(c)); pnMarca(c.tel); pedirNotif() },'wa')); L.appendChild(r) });
+  }
+  $('btnPedirNotif').addEventListener('click',function(){ var b=$('pedirNotif'); b.hidden=!b.hidden; if(!b.hidden) pedirNotif() });
+  $('pnCerrar').addEventListener('click',function(){ $('pedirNotif').hidden=true });
+  $('pnSiguiente').addEventListener('click',function(){ var env=pnEnviados(), c=datos.clientes.filter(function(x){ return !x.conNotificaciones&&!env[x.tel] })[0]; if(!c) return; abrirWA(c.tel,pnMensaje(c)); pnMarca(c.tel); pedirNotif() });
   $('btnOpiniones').addEventListener('click',function(){ d.querySelector('.tabs button[data-sec=ganancias]').click(); var t=setInterval(function(){ var o=[].filter.call(d.querySelectorAll('#rep .caja-p'),function(x){ return /Opiniones/.test(x.textContent) })[0]; if(o){ clearInterval(t); o.scrollIntoView({behavior:'smooth',block:'start'}) } },200); setTimeout(function(){ clearInterval(t) },5000) });
   $('fImportar').addEventListener('submit',function(e){
     e.preventDefault(); var m=$('mImp');
