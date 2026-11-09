@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Corte &amp; Estilo Barbería · Demostración Plan Básico</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,700&display=swap">
+<link rel="stylesheet" href="comun.css">
+<style>
+:root{--oro:#D9A84E;--fondo:#0E0C0A;--c2:#17130F;--c3:#211B15}
+body{background:var(--fondo)}
+.top{display:flex;justify-content:space-between;align-items:center;padding:18px 0}
+.marca{display:flex;align-items:center;gap:10px;font-family:"Playfair Display",serif;font-style:italic;font-size:1.4rem;color:var(--oro);text-decoration:none}
+.marca svg{width:34px;height:34px}
+.llamar{color:var(--bl);text-decoration:none;border:1px solid rgba(217,168,78,.5);padding:8px 14px;border-radius:999px;font-size:.88rem}
+.hero{padding:40px 0 60px;display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center}
+.hero small{color:var(--oro);font-weight:700;letter-spacing:.2em;text-transform:uppercase;font-size:.75rem}
+.hero h1{font-family:var(--t);font-weight:900;text-transform:uppercase;font-size:clamp(3rem,8vw,5.6rem);line-height:.9;margin:10px 0 16px}
+.hero h1 em{font-family:"Playfair Display",serif;font-weight:700;color:var(--oro);text-transform:none}
+.hero p{color:var(--gr);max-width:46ch}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.btn{display:inline-flex;align-items:center;gap:8px;padding:14px 20px;border-radius:14px;font-weight:700;text-decoration:none}
+.btn-oro{background:var(--oro);color:#1b1307}.btn-wa{background:var(--ok);color:#052814}
+.ilus{aspect-ratio:1;border-radius:30px;background:radial-gradient(circle at 30% 25%,rgba(217,168,78,.35),transparent 55%),linear-gradient(160deg,var(--c3),var(--c2));border:1px solid rgba(217,168,78,.3);display:grid;place-items:center}
+.ilus svg{width:58%;height:58%}
+section h2{font-family:var(--t);font-weight:900;text-transform:uppercase;font-size:clamp(2.2rem,6vw,3.4rem);margin-bottom:18px}
+section h2 span{color:var(--oro)}
+.serv{padding:30px 0}
+.lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.it{display:flex;justify-content:space-between;align-items:center;gap:14px;background:var(--c2);border:1px solid rgba(255,255,255,.07);border-radius:16px;padding:16px 18px}
+.it b{display:block}.it small{color:var(--gr)}
+.it em{font-style:normal;font-family:var(--t);font-weight:800;font-size:1.6rem;color:var(--oro);white-space:nowrap}
+.info{padding:40px 0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.info div{background:var(--c2);border:1px solid rgba(255,255,255,.07);border-radius:18px;padding:20px}
+.info h3{font-family:var(--t);text-transform:uppercase;font-size:1.4rem;color:var(--oro);margin-bottom:8px}
+.info p,.info li{color:var(--gr);font-size:.94rem}.info ul{list-style:none;display:grid;gap:4px}
+.info a{color:var(--bl)}
+.redes{display:flex;gap:10px;margin-top:8px}.redes a{padding:8px 12px;border-radius:10px;border:1px solid rgba(255,255,255,.12);text-decoration:none;font-size:.88rem}
+footer{border-top:1px solid rgba(255,255,255,.08);padding:26px 0 90px;color:var(--gr);font-size:.85rem;text-align:center}
+.flota{position:fixed;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;background:var(--ok);display:grid;place-items:center;box-shadow:0 10px 30px rgba(37,211,102,.5)}
+.flota svg{width:30px;height:30px}
+@media(max-width:820px){.hero{grid-template-columns:1fr}.ilus{max-width:320px}.lista,.info{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="cinta"><div class="wrap"><a class="logo-s" href="index.html"><i>S</i>SOLANOTECH</a><span class="txt">Demostración del <b>Plan Básico · $75</b> · negocio de ejemplo</span><a href="index.html">Ver planes</a></div></div>
+
+<div class="wrap">
+  <div class="top"><a class="marca" href="#"><svg viewBox="0 0 48 48" fill="none" stroke="#D9A84E" stroke-width="3" stroke-linecap="round"><circle cx="13" cy="35" r="6"/><circle cx="35" cy="35" r="6"/><path d="M17 31 38 8M31 31 10 8"/></svg>Corte &amp; Estilo</a><a class="llamar" href="tel:+50689330326">📞 Llamar</a></div>
+
+  <section class="hero">
+    <div>
+      <small>Barbería · Cartago centro</small>
+      <h1>Su mejor corte, <em>sin esperar</em></h1>
+      <p>Cortes clásicos y modernos, barba con toalla caliente y atención con calma. Escríbanos y le apartamos su espacio.</p>
+      <div class="cta"><a class="btn btn-wa" href="https://wa.me/50689330326?text=Hola%2C%20vi%20la%20demo%20B%C3%A1sica%20(barber%C3%ADa)%20y%20quiero%20una%20as%C3%AD" target="_blank" rel="noopener">💬 Escribir por WhatsApp</a><a class="btn btn-oro" href="#servicios">Ver precios</a></div>
+    </div>
+    <div class="ilus" aria-hidden="true"><svg viewBox="0 0 120 120" fill="none" stroke="#D9A84E" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M60 14c-18 0-30 12-30 30v10c0 20 12 38 30 38s30-18 30-38V44c0-18-12-30-30-30z"/><path d="M38 70c6 6 14 10 22 10s16-4 22-10M48 54h.1M72 54h.1M52 92l-6 16M68 92l6 16"/><path d="M30 44c10-4 20-14 22-20 6 10 22 18 38 20"/></svg></div>
+  </section>
+
+  <section class="serv" id="servicios">
+    <h2>Servicios y <span>precios</span></h2>
+    <div class="lista">
+      <div class="it"><div><b>Corte clásico</b><small>Tijera y máquina</small></div><em>₡5.000</em></div>
+      <div class="it"><div><b>Corte + barba</b><small>Con toalla caliente</small></div><em>₡8.000</em></div>
+      <div class="it"><div><b>Perfilado de barba</b><small>Navaja y aceite</small></div><em>₡3.500</em></div>
+      <div class="it"><div><b>Corte de niño</b><small>Hasta 12 años</small></div><em>₡4.000</em></div>
+    </div>
+  </section>
+
+  <section class="info">
+    <div><h3>🕒 Horario</h3><ul><li>Lunes a viernes · 9 a. m. – 7 p. m.</li><li>Sábado · 8 a. m. – 5 p. m.</li><li>Domingo · cerrado</li></ul></div>
+    <div><h3>📍 Ubicación</h3><p>Cartago centro, 100 m norte de la Basílica.</p><p style="margin-top:8px"><a href="https://www.google.com/maps/search/?api=1&query=Cartago+Costa+Rica" target="_blank" rel="noopener">Abrir en Google Maps →</a></p></div>
+    <div><h3>📱 Contacto</h3><p>WhatsApp y llamadas: 8888-8888</p><div class="redes"><a href="#">Facebook</a><a href="#">Instagram</a></div></div>
+  </section>
+</div>
+
+<footer>Corte &amp; Estilo es un negocio de ejemplo · Página hecha por <b>Solanotech</b> · Plan Básico $75</footer>
+<a class="flota" href="https://wa.me/50689330326?text=Hola%2C%20vi%20la%20demo%20B%C3%A1sica%20y%20quiero%20una%20p%C3%A1gina%20as%C3%AD" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2c.2-.6.2-1 .1-1.2z"/></svg></a>
+</body>
+</html>

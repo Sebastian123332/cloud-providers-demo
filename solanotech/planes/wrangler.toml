@@ -1,0 +1,6 @@
+# Planes y demostraciones de Solanotech (solo páginas, sin servidor). El nombre debe ser igual al del Worker en Cloudflare.
+name = "solanotech-planes"
+compatibility_date = "2025-09-01"
+
+[assets]
+directory = "./public"

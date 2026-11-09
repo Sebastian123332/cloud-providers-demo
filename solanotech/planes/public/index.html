@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Planes de páginas web · Solanotech</title>
+<meta name="description" content="Páginas web para negocios de Costa Rica desde $75: informativa, Pro y Premium con reservas en línea. Vea las demostraciones.">
+<meta property="og:title" content="Su página web desde $75 · Solanotech">
+<meta property="og:description" content="Informativa $75 · Pro $100 · Premium $150. Vea las demostraciones y pida la suya por WhatsApp.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="comun.css">
+<style>
+body{background:radial-gradient(900px 600px at 85% -10%,rgba(59,116,255,.22),transparent 60%),radial-gradient(700px 500px at 0% 30%,rgba(255,210,63,.08),transparent 60%),var(--n)}
+header{padding:22px 0}
+header .wrap{display:flex;justify-content:space-between;align-items:center}
+.wa-top{background:var(--ok);color:#052814;text-decoration:none;font-weight:700;padding:10px 16px;border-radius:999px;font-size:.9rem}
+.hero{padding:40px 0 30px;text-align:center}
+.hero h1{font-family:var(--t);font-weight:900;text-transform:uppercase;font-size:clamp(3rem,9vw,6.4rem);line-height:.9}
+.hero h1 span{color:var(--am)}
+.hero p{color:var(--gr);font-size:clamp(1rem,2.4vw,1.2rem);max-width:640px;margin:18px auto 0}
+.planes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;padding:30px 0 20px;align-items:stretch}
+.plan{position:relative;background:var(--n2);border:1px solid var(--linea);border-radius:26px;padding:28px 24px;display:flex;flex-direction:column;gap:16px}
+.plan.dest{background:linear-gradient(180deg,rgba(59,116,255,.18),var(--n2) 45%);border-color:rgba(59,116,255,.6);transform:translateY(-10px);box-shadow:0 30px 60px -30px rgba(59,116,255,.7)}
+.plan.prem{background:linear-gradient(180deg,rgba(255,210,63,.14),var(--n2) 45%);border-color:rgba(255,210,63,.55)}
+.etq{position:absolute;top:-13px;left:24px;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border-radius:999px;background:var(--az);color:#fff}
+.plan.prem .etq{background:var(--am);color:#1a1400}
+.plan h2{font-family:var(--t);font-weight:800;text-transform:uppercase;font-size:2rem;line-height:1}
+.plan .para{color:var(--gr);font-size:.92rem}
+.precio{display:flex;align-items:baseline;gap:6px}
+.precio b{font-family:var(--t);font-weight:900;font-size:4.2rem;line-height:.9}
+.precio small{color:var(--gr);font-size:.85rem}
+.plan ul{list-style:none;display:grid;gap:9px;font-size:.93rem}
+.plan li{display:flex;gap:10px;align-items:flex-start}
+.plan li::before{content:"✓";flex:none;width:20px;height:20px;border-radius:50%;background:rgba(37,211,102,.16);color:#4ADE80;display:grid;place-items:center;font-size:.75rem;font-weight:800;margin-top:2px}
+.plan li.mas::before{content:"+";background:rgba(255,210,63,.16);color:var(--am)}
+.acc{margin-top:auto;display:grid;gap:10px}
+.btn{display:flex;justify-content:center;align-items:center;gap:8px;padding:14px;border-radius:14px;font-weight:700;text-decoration:none;font-size:.95rem}
+.btn-a{background:var(--az);color:#fff}
+.plan.prem .btn-a{background:var(--am);color:#1a1400}
+.btn-b{border:1px solid var(--linea);color:var(--bl)}
+.btn-wa{background:var(--ok);color:#052814}
+.notas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;padding:20px 0 50px}
+.notas div{background:var(--n2);border:1px solid var(--linea);border-radius:18px;padding:18px}
+.notas b{display:block;margin-bottom:4px}.notas p{color:var(--gr);font-size:.9rem}
+.tabla{padding:10px 0 50px}
+.tabla h2,.notas-t{font-family:var(--t);font-weight:900;text-transform:uppercase;font-size:clamp(2rem,5vw,3rem);margin-bottom:16px}
+.tabla table{width:100%;border-collapse:collapse;font-size:.92rem;background:var(--n2);border-radius:18px;overflow:hidden}
+.tabla th,.tabla td{padding:12px 14px;border-bottom:1px solid var(--linea);text-align:center}
+.tabla th:first-child,.tabla td:first-child{text-align:left;color:var(--gr)}
+.tabla thead th{font-family:var(--t);font-size:1.3rem;text-transform:uppercase}
+.si{color:#4ADE80;font-weight:800}.no{color:#4b5163}
+.scroll{overflow-x:auto}
+footer{border-top:1px solid var(--linea);padding:30px 0 40px;color:var(--gr);font-size:.88rem}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center}
+.flota{position:fixed;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;background:var(--ok);display:grid;place-items:center;box-shadow:0 10px 30px rgba(37,211,102,.5);z-index:40}
+.flota svg{width:30px;height:30px}
+@media(max-width:900px){.planes,.notas{grid-template-columns:minmax(0,1fr)}.plan.dest{transform:none}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="logo-s" href="#"><i>S</i>SOLANOTECH</a><a class="wa-top" href="https://wa.me/50689330326?text=Hola%20Solanotech%2C%20quiero%20una%20p%C3%A1gina%20web" target="_blank" rel="noopener">WhatsApp 8933-0326</a></div></header>
+
+<section class="hero"><div class="wrap">
+  <h1>Su negocio <span>en internet</span></h1>
+  <p>Páginas web modernas, rápidas y hechas a la medida para negocios de Costa Rica. Escoja el plan, vea la demostración y pídala por WhatsApp.</p>
+</div></section>
+
+<section class="wrap planes" id="planes">
+  <article class="plan">
+    <h2>Básica</h2><p class="para">Para que lo encuentren y le escriban.</p>
+    <div class="precio"><b>$75</b><small>pago único</small></div>
+    <ul>
+      <li>Página de una sola sección, informativa</li>
+      <li>Su logo, colores, servicios y precios</li>
+      <li>Botón de WhatsApp y llamada</li>
+      <li>Horario, ubicación con Google Maps y redes sociales</li>
+      <li>Adaptada al celular</li>
+      <li>Lista para aparecer en Google</li>
+    </ul>
+    <div class="acc"><a class="btn btn-a" href="demo-basica.html">👀 Ver demostración</a><a class="btn btn-b" href="https://wa.me/50689330326?text=Hola%20Solanotech%2C%20me%20interesa%20la%20p%C3%A1gina%20B%C3%A1sica%20de%20%2475" target="_blank" rel="noopener">Pedir la Básica</a></div>
+  </article>
+  <article class="plan dest">
+    <span class="etq">La más pedida</span>
+    <h2>Pro</h2><p class="para">Más secciones, más botones y más ventas.</p>
+    <div class="precio"><b>$100</b><small>pago único</small></div>
+    <ul>
+      <li>Todo lo de la Básica</li>
+      <li class="mas">Varias secciones: servicios, trabajos, opiniones, preguntas</li>
+      <li class="mas">Galería de fotos que se abren en grande</li>
+      <li class="mas">Cotizador: el cliente escoge y le llega el mensaje listo por WhatsApp</li>
+      <li class="mas">Indicador “Abierto ahora / Cerrado”</li>
+      <li class="mas">Animaciones y diseño más trabajado</li>
+      <li class="mas">QR para reseñas de Google</li>
+    </ul>
+    <div class="acc"><a class="btn btn-a" href="demo-pro.html">👀 Ver demostración</a><a class="btn btn-b" href="https://wa.me/50689330326?text=Hola%20Solanotech%2C%20me%20interesa%20la%20p%C3%A1gina%20Pro%20de%20%24100" target="_blank" rel="noopener">Pedir la Pro</a></div>
+  </article>
+  <article class="plan prem">
+    <span class="etq">Premium</span>
+    <h2>Premium</h2><p class="para">Su negocio funcionando solo en internet.</p>
+    <div class="precio"><b>$150</b><small>pago único</small></div>
+    <ul>
+      <li>Todo lo de la Pro</li>
+      <li class="mas">Reservas en línea con horario real</li>
+      <li class="mas">Tarjeta de cliente frecuente con sellos</li>
+      <li class="mas">Panel del dueño: citas, clientes y ganancias</li>
+      <li class="mas">Recordatorios de citas</li>
+      <li class="mas">Lo que su negocio necesite: si se puede programar, se hace</li>
+    </ul>
+    <div class="acc"><a class="btn btn-a" href="demo-premium.html">👀 Ver demostración</a><a class="btn btn-b" href="https://wa.me/50689330326?text=Hola%20Solanotech%2C%20me%20interesa%20la%20p%C3%A1gina%20Premium%20de%20%24150" target="_blank" rel="noopener">Pedir la Premium</a></div>
+  </article>
+</section>
+
+<section class="wrap tabla">
+  <h2>Compare los planes</h2>
+  <div class="scroll"><table>
+    <thead><tr><th></th><th>Básica</th><th>Pro</th><th>Premium</th></tr></thead>
+    <tbody>
+      <tr><td>Diseño con su logo y colores</td><td class="si">✓</td><td class="si">✓</td><td class="si">✓</td></tr>
+      <tr><td>Botón de WhatsApp y llamada</td><td class="si">✓</td><td class="si">✓</td><td class="si">✓</td></tr>
+      <tr><td>Adaptada al celular</td><td class="si">✓</td><td class="si">✓</td><td class="si">✓</td></tr>
+      <tr><td>Galería de trabajos</td><td class="no">—</td><td class="si">✓</td><td class="si">✓</td></tr>
+      <tr><td>Cotizador por WhatsApp</td><td class="no">—</td><td class="si">✓</td><td class="si">✓</td></tr>
+      <tr><td>Opiniones y preguntas frecuentes</td><td class="no">—</td><td class="si">✓</td><td class="si">✓</td></tr>
+      <tr><td>Reservas en línea</td><td class="no">—</td><td class="no">—</td><td class="si">✓</td></tr>
+      <tr><td>Cliente frecuente (sellos)</td><td class="no">—</td><td class="no">—</td><td class="si">✓</td></tr>
+      <tr><td>Panel del dueño</td><td class="no">—</td><td class="no">—</td><td class="si">✓</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section class="wrap">
+  <h2 class="notas-t">Bueno saber</h2>
+  <div class="notas">
+    <div><b>🌐 Su propio dominio</b><p>Su página puede quedar en <strong>sunegocio.com</strong>. El dominio se paga aparte, cuesta unos $10–15 al año y le ayudamos a comprarlo y conectarlo.</p></div>
+    <div><b>🔍 Aparecer en Google</b><p>La dejamos lista para Google y le ayudamos con su perfil de Google Maps para que lo encuentren cerca.</p></div>
+    <div><b>🔒 Segura y rápida</b><p>Conexión segura (candado), protección contra ataques y carga rápida en el celular.</p></div>
+  </div>
+</section>
+
+<footer><div class="wrap"><a class="logo-s" href="#"><i>S</i>SOLANOTECH</a><span>Desarrollo web hecho en Cartago, Costa Rica · <a href="https://ssolanotech.com">ssolanotech.com</a> · WhatsApp 8933-0326</span></div></footer>
+<a class="flota" href="https://wa.me/50689330326?text=Hola%20Solanotech%2C%20quiero%20una%20p%C3%A1gina%20web" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2c.2-.6.2-1 .1-1.2z"/></svg></a>
+</body>
+</html>

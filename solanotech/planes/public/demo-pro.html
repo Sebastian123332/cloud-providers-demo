@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Taller Motor Pro · Demostración Plan Pro</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="comun.css">
+<style>
+:root{--r:#FF4D2E;--c2:#12141B;--c3:#1A1D27}
+body{background:radial-gradient(800px 500px at 100% 0,rgba(255,77,46,.16),transparent 60%),var(--n)}
+nav{position:sticky;top:41px;z-index:30;background:rgba(8,9,13,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--linea)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;padding:12px 0;gap:12px}
+.marca{font-family:var(--t);font-weight:900;font-size:1.5rem;text-transform:uppercase;text-decoration:none;letter-spacing:.02em}.marca span{color:var(--r)}
+.links{display:flex;gap:18px;font-size:.9rem}.links a{text-decoration:none;color:var(--gr)}.links a:hover{color:var(--bl)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:13px 18px;border-radius:12px;font-weight:700;text-decoration:none;border:0;cursor:pointer;font-family:inherit;font-size:.95rem}
+.btn-r{background:var(--r);color:#fff}.btn-wa{background:var(--ok);color:#052814}.btn-b{border:1px solid var(--linea);color:var(--bl);background:none}
+.hero{padding:60px 0 40px;display:grid;grid-template-columns:1.2fr .8fr;gap:30px;align-items:center}
+.estado{display:inline-flex;align-items:center;gap:8px;font-size:.82rem;font-weight:700;padding:6px 12px;border-radius:999px;background:rgba(74,222,128,.12);color:#4ADE80}
+.estado i{width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 0 4px rgba(74,222,128,.2)}
+.estado.cerrado{background:rgba(248,113,113,.12);color:#F87171}
+.hero h1{font-family:var(--t);font-weight:900;text-transform:uppercase;font-size:clamp(3rem,8vw,5.8rem);line-height:.88;margin:16px 0}
+.hero h1 span{color:var(--r)}
+.hero p{color:var(--gr);max-width:50ch}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:28px}
+.stats div{border-left:2px solid var(--r);padding-left:10px}.stats b{font-family:var(--t);font-size:2.2rem;line-height:1}.stats small{display:block;color:var(--gr);font-size:.78rem}
+.ilus{aspect-ratio:4/5;border-radius:28px;background:linear-gradient(160deg,#2a1611,#12141B 60%);border:1px solid rgba(255,77,46,.35);display:grid;place-items:center;position:relative;overflow:hidden}
+.ilus svg{width:70%}
+section{padding:50px 0}
+.tit{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:22px;flex-wrap:wrap}
+.tit h2{font-family:var(--t);font-weight:900;text-transform:uppercase;font-size:clamp(2.3rem,6vw,3.6rem);line-height:.9}.tit h2 span{color:var(--r)}
+.tit p{color:var(--gr);max-width:40ch}
+.servs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.sv{background:var(--c2);border:1px solid var(--linea);border-radius:20px;padding:22px;transition:transform .3s,border-color .3s}
+.sv:hover{transform:translateY(-4px);border-color:rgba(255,77,46,.5)}
+.sv .ic{width:46px;height:46px;border-radius:12px;background:rgba(255,77,46,.14);display:grid;place-items:center;font-size:1.4rem;margin-bottom:12px}
+.sv h3{font-size:1.1rem}.sv p{color:var(--gr);font-size:.9rem;margin-top:4px}.sv b{display:block;margin-top:10px;color:var(--r)}
+.coti{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;background:var(--c2);border:1px solid var(--linea);border-radius:24px;padding:24px}
+.coti label.op{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:12px;border:1px solid var(--linea);margin-bottom:8px;cursor:pointer}
+.coti label.op:has(input:checked){border-color:var(--r);background:rgba(255,77,46,.08)}
+.coti input{accent-color:var(--r);width:18px;height:18px}
+.coti .lbl{font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gr);font-weight:700;margin:10px 0 8px}
+.vehs{display:flex;gap:8px;margin-bottom:6px}.vehs label{flex:1}
+.res{background:var(--c3);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:12px}
+.res ul{list-style:none;font-size:.9rem;color:var(--gr);display:grid;gap:6px;min-height:60px}
+.res .tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--linea);padding-top:12px}.res .tot b{font-family:var(--t);font-size:2.4rem}
+.gal{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.ft{aspect-ratio:1;border-radius:18px;border:0;cursor:zoom-in;display:grid;place-items:end start;padding:14px;color:#fff;font:700 .9rem var(--s);text-align:left;position:relative;overflow:hidden}
+.ft span{position:relative;z-index:1;text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.ft::before{content:attr(data-ico);position:absolute;inset:0;display:grid;place-items:center;font-size:3.4rem;opacity:.9}
+.f1{background:linear-gradient(135deg,#3b1d16,#ff4d2e)}.f2{background:linear-gradient(135deg,#15233d,#3b74ff)}.f3{background:linear-gradient(135deg,#1d2b1d,#4ade80)}.f4{background:linear-gradient(135deg,#2e2614,#ffd23f)}
+.visor{position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.85);display:none;place-items:center;padding:20px}
+.visor.on{display:grid}.visor div{width:min(560px,100%);aspect-ratio:4/3;border-radius:22px;display:grid;place-items:center;font-size:6rem}
+.visor p{color:#fff;margin-top:12px;text-align:center}
+.ops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.op2{background:var(--c2);border:1px solid var(--linea);border-radius:20px;padding:20px}
+.op2 .est{color:#FBBF24;letter-spacing:2px}.op2 p{color:var(--bl);margin:8px 0;font-size:.95rem}.op2 small{color:var(--gr)}
+.faq details{background:var(--c2);border:1px solid var(--linea);border-radius:16px;padding:4px 18px;margin-bottom:10px}
+.faq summary{cursor:pointer;padding:14px 0;font-weight:700;list-style:none;display:flex;justify-content:space-between}
+.faq summary::after{content:"+";color:var(--r);font-size:1.4rem;transition:transform .3s}.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{color:var(--gr);padding-bottom:14px}
+.ubi{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ubi>div{background:var(--c2);border:1px solid var(--linea);border-radius:20px;padding:22px}
+.qr{display:flex;gap:16px;align-items:center}.qr .q{width:96px;height:96px;flex:none;border-radius:12px;background:#fff;display:grid;place-items:center;color:#000;font-size:2.4rem}
+footer{border-top:1px solid var(--linea);padding:26px 0 90px;color:var(--gr);font-size:.85rem;text-align:center}
+.flota{position:fixed;right:16px;bottom:16px;width:58px;height:58px;border-radius:50%;background:var(--ok);display:grid;place-items:center;box-shadow:0 10px 30px rgba(37,211,102,.5);z-index:40}
+.flota svg{width:30px;height:30px}
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
+@media(max-width:860px){.links{display:none}.hero,.coti,.ubi{grid-template-columns:1fr}.ilus{display:none}.servs,.ops{grid-template-columns:1fr}.gal{grid-template-columns:repeat(2,1fr)}}
+@media(prefers-reduced-motion:reduce){.rv{opacity:1;transform:none;transition:none}}
+</style>
+</head>
+<body>
+<div class="cinta"><div class="wrap"><a class="logo-s" href="index.html"><i>S</i>SOLANOTECH</a><span class="txt">Demostración del <b>Plan Pro · $100</b> · negocio de ejemplo</span><a href="index.html">Ver planes</a></div></div>
+<nav><div class="wrap"><a class="marca" href="#">Motor<span>Pro</span></a><div class="links"><a href="#servicios">Servicios</a><a href="#cotizar">Cotizar</a><a href="#trabajos">Trabajos</a><a href="#opiniones">Opiniones</a><a href="#preguntas">Preguntas</a></div><a class="btn btn-wa" href="https://wa.me/50689330326?text=Hola%2C%20vi%20la%20demo%20Pro%20(taller)%20y%20quiero%20una%20as%C3%AD" target="_blank" rel="noopener">WhatsApp</a></div></nav>
+
+<div class="wrap">
+  <section class="hero">
+    <div>
+      <span class="estado" id="estado"><i></i><span id="estadoTxt">Abierto ahora</span></span>
+      <h1>Su carro en <span>buenas manos</span></h1>
+      <p>Mecánica general, frenos, suspensión y diagnóstico por computadora en Cartago. Precios claros antes de empezar.</p>
+      <div class="cta"><a class="btn btn-r" href="#cotizar">Cotizar ahora</a><a class="btn btn-b" href="tel:+50689330326">📞 Llamar</a></div>
+      <div class="stats"><div><b>15+</b><small>años de experiencia</small></div><div><b>3.000+</b><small>carros atendidos</small></div><div><b>4,9★</b><small>en Google</small></div></div>
+    </div>
+    <div class="ilus" aria-hidden="true"><svg viewBox="0 0 200 200" fill="none" stroke="#FF4D2E" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"><circle cx="100" cy="100" r="34"/><path d="M100 40v14M100 146v14M40 100h14M146 100h14M58 58l10 10M132 132l10 10M58 142l10-10M132 68l10-10"/><circle cx="100" cy="100" r="10" fill="#FF4D2E"/></svg></div>
+  </section>
+
+  <section id="servicios">
+    <div class="tit rv"><h2>Nuestros <span>servicios</span></h2><p>Todo lo que su carro necesita en un solo lugar.</p></div>
+    <div class="servs">
+      <div class="sv rv"><div class="ic">🛠️</div><h3>Mecánica general</h3><p>Cambio de aceite, filtros, bujías y mantenimiento preventivo.</p><b>Desde ₡15.000</b></div>
+      <div class="sv rv"><div class="ic">🛑</div><h3>Frenos</h3><p>Pastillas, discos y revisión completa del sistema.</p><b>Desde ₡25.000</b></div>
+      <div class="sv rv"><div class="ic">💻</div><h3>Diagnóstico</h3><p>Escáner por computadora y revisión de luces del tablero.</p><b>₡12.000</b></div>
+    </div>
+  </section>
+
+  <section id="cotizar">
+    <div class="tit rv"><h2>Cotice en <span>10 segundos</span></h2><p>Escoja lo que necesita y le llega el mensaje listo por WhatsApp.</p></div>
+    <div class="coti rv">
+      <div>
+        <div class="lbl">Vehículo</div>
+        <div class="vehs"><label class="op"><input type="radio" name="v" value="1" checked> Sedán</label><label class="op"><input type="radio" name="v" value="1.2"> SUV / Pick up</label></div>
+        <div class="lbl">Servicios</div>
+        <label class="op"><input type="checkbox" value="15000" data-n="Cambio de aceite y filtros"> Cambio de aceite y filtros · ₡15.000</label>
+        <label class="op"><input type="checkbox" value="25000" data-n="Pastillas de freno"> Pastillas de freno · ₡25.000</label>
+        <label class="op"><input type="checkbox" value="12000" data-n="Diagnóstico por computadora"> Diagnóstico por computadora · ₡12.000</label>
+        <label class="op"><input type="checkbox" value="18000" data-n="Alineado y balanceo"> Alineado y balanceo · ₡18.000</label>
+      </div>
+      <div class="res"><b>Su cotización</b><ul id="lineas"><li>Escoja uno o varios servicios.</li></ul><div class="tot"><span>Total estimado</span><b id="total">₡0</b></div><a class="btn btn-wa" id="enviar" href="#" target="_blank" rel="noopener">💬 Enviar por WhatsApp</a><small style="color:var(--gr)">Precio de referencia; se confirma al revisar el carro.</small></div>
+    </div>
+  </section>
+
+  <section id="trabajos">
+    <div class="tit rv"><h2>Trabajos <span>recientes</span></h2><p>Aquí van las fotos reales de sus trabajos. Toque una para verla en grande.</p></div>
+    <div class="gal">
+      <button class="ft f1 rv" data-ico="🛞" type="button"><span>Cambio de llantas</span></button>
+      <button class="ft f2 rv" data-ico="🔧" type="button"><span>Motor reparado</span></button>
+      <button class="ft f3 rv" data-ico="🔋" type="button"><span>Sistema eléctrico</span></button>
+      <button class="ft f4 rv" data-ico="🚗" type="button"><span>Entrega lista</span></button>
+    </div>
+  </section>
+
+  <section id="opiniones">
+    <div class="tit rv"><h2>Lo que dicen <span>los clientes</span></h2><p>Opiniones de ejemplo, como las que salen de Google.</p></div>
+    <div class="ops">
+      <div class="op2 rv"><div class="est">★★★★★</div><p>“Me explicaron todo antes de empezar y el precio fue el que me dijeron.”</p><small>Cliente de ejemplo · Paraíso</small></div>
+      <div class="op2 rv"><div class="est">★★★★★</div><p>“Rápidos y honestos. El carro quedó como nuevo.”</p><small>Cliente de ejemplo · Tres Ríos</small></div>
+      <div class="op2 rv"><div class="est">★★★★★</div><p>“Coticé por WhatsApp y al día siguiente ya lo tenía listo.”</p><small>Cliente de ejemplo · Cartago</small></div>
+    </div>
+  </section>
+
+  <section id="preguntas" class="faq">
+    <div class="tit rv"><h2>Preguntas <span>frecuentes</span></h2></div>
+    <details class="rv"><summary>¿Necesito cita?</summary><p>No es obligatorio, pero si escribe antes le apartamos espacio y no espera.</p></details>
+    <details class="rv"><summary>¿Dan garantía?</summary><p>Sí, todos los trabajos tienen garantía por escrito.</p></details>
+    <details class="rv"><summary>¿Cómo puedo pagar?</summary><p>Efectivo, SINPE Móvil o tarjeta.</p></details>
+  </section>
+
+  <section class="ubi">
+    <div class="rv"><h3 style="font-family:var(--t);font-size:1.6rem;text-transform:uppercase">📍 Dónde estamos</h3><p style="color:var(--gr);margin:8px 0 14px">Cartago, 200 m sur del parque. Lunes a sábado, 7 a. m. a 5 p. m.</p><a class="btn btn-b" href="https://www.google.com/maps/search/?api=1&query=Cartago+Costa+Rica" target="_blank" rel="noopener">Abrir en Google Maps</a> <a class="btn btn-b" href="https://waze.com/ul?q=Cartago%20Costa%20Rica" target="_blank" rel="noopener">Waze</a></div>
+    <div class="rv qr"><div class="q" aria-hidden="true">⭐</div><div><h3 style="font-family:var(--t);font-size:1.6rem;text-transform:uppercase">Califíquenos</h3><p style="color:var(--gr)">Incluye un QR para que sus clientes le dejen reseñas en Google al terminar.</p></div></div>
+  </section>
+</div>
+<div class="visor" id="visor" role="dialog" aria-label="Foto ampliada"><div><div id="visorIco"></div><p id="visorTxt"></p></div></div>
+<footer>Motor Pro es un negocio de ejemplo · Página hecha por <b>Solanotech</b> · Plan Pro $100</footer>
+<a class="flota" href="https://wa.me/50689330326?text=Hola%2C%20vi%20la%20demo%20Pro%20y%20quiero%20una%20p%C3%A1gina%20as%C3%AD" target="_blank" rel="noopener" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2c.2-.6.2-1 .1-1.2z"/></svg></a>
+<script>
+(function(){
+  var d=document, $=function(i){ return d.getElementById(i) }, col=function(n){ return '₡'+String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'.') };
+  /* abierto / cerrado según la hora de Costa Rica */
+  var cr=new Date(Date.now()-6*36e5), dia=cr.getUTCDay(), h=cr.getUTCHours()+cr.getUTCMinutes()/60, ab=dia>=1&&dia<=6&&h>=7&&h<17;
+  if(!ab){ $('estado').classList.add('cerrado'); $('estadoTxt').textContent='Cerrado · abre '+(dia===6&&h>=17||dia===0?'el lunes':'mañana')+' 7 a. m.' } else $('estadoTxt').textContent='Abierto ahora · hasta las 5 p. m.';
+  /* cotizador */
+  function coti(){ var f=+d.querySelector('input[name=v]:checked').value, ul=$('lineas'), t=0, ls=[]; ul.textContent='';
+    d.querySelectorAll('#cotizar input[type=checkbox]:checked').forEach(function(i){ var p=Math.round(+i.value*f); t+=p; ls.push(i.dataset.n+' ('+col(p)+')'); var li=d.createElement('li'); li.textContent='• '+i.dataset.n+' — '+col(p); ul.appendChild(li) });
+    if(!ls.length){ var li=d.createElement('li'); li.textContent='Escoja uno o varios servicios.'; ul.appendChild(li) }
+    $('total').textContent=col(t);
+    $('enviar').href='https://wa.me/50689330326?text='+encodeURIComponent('Hola, vi la demo Pro de Solanotech. Así llegaría la cotización:\n'+(ls.length?ls.join('\n')+'\nTotal: '+col(t):'(sin servicios)'));
+  }
+  d.querySelectorAll('#cotizar input').forEach(function(i){ i.addEventListener('change',coti) }); coti();
+  /* galería */
+  d.querySelectorAll('.ft').forEach(function(b){ b.addEventListener('click',function(){ $('visorIco').textContent=b.dataset.ico; $('visorIco').parentNode.style.background=getComputedStyle(b).backgroundImage; $('visorTxt').textContent=b.textContent; $('visor').classList.add('on') }) });
+  $('visor').addEventListener('click',function(){ $('visor').classList.remove('on') });
+  /* aparecen al bajar */
+  var io='IntersectionObserver' in window?new IntersectionObserver(function(es){ es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target) } }) },{threshold:.12}):null;
+  d.querySelectorAll('.rv').forEach(function(el){ if(io) io.observe(el); else el.classList.add('in') });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bella Studio · Demostración Plan Premium</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,700&display=swap">
+<link rel="stylesheet" href="comun.css">
+<style>
+:root{--rosa:#F472B6;--lila:#A78BFA;--c2:#141019;--c3:#1D1724}
+body{background:radial-gradient(800px 520px at 100% -5%,rgba(244,114,182,.18),transparent 60%),radial-gradient(700px 500px at 0 40%,rgba(167,139,250,.12),transparent 60%),#0B0910}
+.demo{background:rgba(255,210,63,.1);border:1px solid rgba(255,210,63,.35);color:#FDE68A;font-size:.82rem;padding:10px 14px;border-radius:12px;margin:14px 0}
+.hero{padding:30px 0 20px;text-align:center}
+.hero .marca{font-family:"Playfair Display",serif;font-style:italic;font-size:1.3rem;color:var(--rosa)}
+.hero h1{font-family:var(--t);font-weight:900;text-transform:uppercase;font-size:clamp(2.8rem,8vw,5rem);line-height:.9;margin-top:6px}
+.hero h1 span{background:linear-gradient(90deg,var(--rosa),var(--lila));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero p{color:var(--gr);margin-top:10px}
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--c2);border:1px solid var(--linea);border-radius:16px;padding:5px;margin:18px auto 20px;max-width:620px}
+.tabs button{padding:12px 6px;border-radius:12px;border:0;background:none;color:var(--gr);font:700 .9rem var(--s);cursor:pointer}
+.tabs button[aria-selected=true]{background:linear-gradient(135deg,var(--rosa),var(--lila));color:#1b0b16}
+.sec{display:none;max-width:720px;margin:0 auto 60px}.sec.on{display:grid;gap:16px}
+.caja{background:var(--c2);border:1px solid var(--linea);border-radius:22px;padding:20px;display:grid;gap:12px}
+.caja h2{font-family:var(--t);font-weight:900;text-transform:uppercase;font-size:1.8rem;line-height:1}
+.lbl{font-size:.74rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gr);font-weight:700}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:11px 14px;border-radius:12px;border:1px solid var(--linea);background:#0B0910;color:var(--bl);font:600 .9rem var(--s);cursor:pointer;display:grid;text-align:left}
+.chip small{color:var(--gr);font-weight:600;font-size:.74rem}
+.chip[aria-pressed=true]{background:linear-gradient(135deg,var(--rosa),var(--lila));color:#1b0b16;border-color:transparent}.chip[aria-pressed=true] small{color:#3b1530}
+.chip:disabled{opacity:.35;text-decoration:line-through;cursor:not-allowed}
+.dias{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.dia{flex:none;width:64px;padding:9px 0;border-radius:14px;border:1px solid var(--linea);background:#0B0910;color:var(--bl);display:grid;justify-items:center;cursor:pointer;font-family:var(--s)}
+.dia small{font-size:.66rem;text-transform:uppercase;color:var(--gr);font-weight:700}.dia b{font-family:var(--t);font-size:1.5rem;line-height:1}
+.dia[aria-pressed=true]{background:linear-gradient(135deg,var(--rosa),var(--lila));color:#1b0b16;border-color:transparent}.dia[aria-pressed=true] small{color:#3b1530}
+input.inp{width:100%;padding:13px;border-radius:12px;border:1px solid var(--linea);background:#0B0910;color:var(--bl);font:500 1rem var(--s)}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tot{display:flex;justify-content:space-between;align-items:baseline;border-top:1px dashed var(--linea);padding-top:12px}.tot b{font-family:var(--t);font-size:2.2rem}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px;border-radius:14px;font:700 .95rem var(--s);text-decoration:none;border:0;cursor:pointer}
+.btn-p{background:linear-gradient(135deg,var(--rosa),var(--lila));color:#1b0b16}.btn-b{border:1px solid var(--linea);color:var(--bl);background:none}.btn-wa{background:var(--ok);color:#052814}
+.msg{font-size:.88rem;font-weight:600;min-height:1.2em}.msg.mal{color:#F87171}.msg.bien{color:#4ADE80}
+.tarjeta{border-radius:24px;padding:22px;background:linear-gradient(140deg,#5b2147,#2a1640 55%,#140d1d);box-shadow:0 24px 50px -20px rgba(244,114,182,.5);display:grid;gap:14px}
+.tarjeta .cab{display:flex;justify-content:space-between}.tarjeta small{color:#F9A8D4;letter-spacing:.16em;text-transform:uppercase;font-size:.68rem;font-weight:700}.tarjeta b.n{font-family:"Playfair Display",serif;font-style:italic;font-size:1.6rem}
+.sellos{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.sello{aspect-ratio:1;border-radius:50%;border:2px dashed rgba(249,168,212,.4);display:grid;place-items:center;font-size:1.2rem}
+.sello.on{border:2px solid #F9A8D4;background:radial-gradient(circle at 35% 30%,#FBCFE8,#EC4899)}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpis div{background:#0B0910;border:1px solid var(--linea);border-radius:14px;padding:12px}.kpis b{display:block;font-family:var(--t);font-size:1.8rem;line-height:1}.kpis small{color:var(--gr);font-size:.72rem}
+.cita{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:#0B0910;border:1px solid var(--linea);border-radius:14px;padding:12px}
+.cita .hr{font-family:var(--t);font-weight:800;font-size:1.3rem}.cita small{display:block;color:var(--gr);font-size:.78rem}
+.cita .acc{display:flex;gap:6px}.cita .acc button{padding:8px 10px;border-radius:10px;border:0;font:700 .78rem var(--s);cursor:pointer}
+.ok{background:rgba(74,222,128,.16);color:#4ADE80}.conf{background:rgba(96,165,250,.16);color:#93C5FD}
+.est{font-size:.7rem;font-weight:800;padding:3px 8px;border-radius:999px;background:rgba(251,191,36,.15);color:#FBBF24}.est.c{background:rgba(96,165,250,.15);color:#93C5FD}.est.h{background:rgba(74,222,128,.15);color:#4ADE80}
+.lista{display:grid;gap:8px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,160%);background:#4ADE80;color:#052814;font-weight:800;padding:12px 18px;border-radius:14px;transition:transform .4s;z-index:90;width:min(92vw,420px);text-align:center}.toast.on{transform:translate(-50%,0)}
+.mas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.mas div{background:var(--c2);border:1px solid var(--linea);border-radius:16px;padding:14px;font-size:.9rem;color:var(--gr)}.mas b{color:var(--bl);display:block}
+footer{border-top:1px solid var(--linea);padding:26px 0 40px;color:var(--gr);font-size:.85rem;text-align:center}
+@media(max-width:560px){.mas,.dos{grid-template-columns:1fr}.cita{grid-template-columns:auto 1fr}.cita .acc{grid-column:1/-1}}
+</style>
+</head>
+<body>
+<div class="cinta"><div class="wrap"><a class="logo-s" href="index.html"><i>S</i>SOLANOTECH</a><span class="txt">Demostración del <b>Plan Premium · $150</b> · negocio de ejemplo</span><a href="index.html">Ver planes</a></div></div>
+<div class="wrap">
+  <section class="hero"><div class="marca">Bella Studio</div><h1>Reserve su cita <span>en 1 minuto</span></h1><p>Uñas, cabello y cejas en Cartago. Escoja el servicio, el día y la hora.</p></section>
+  <p class="demo">🧪 <b>Pruébelo:</b> reserve una cita, vea cómo le llega a la tarjeta del cliente y cómo la ve el dueño en su panel. En esta demostración todo se guarda solo en su celular.</p>
+  <div class="tabs" role="tablist"><button role="tab" aria-selected="true" data-t="reservar">📅 Reservar</button><button role="tab" aria-selected="false" data-t="tarjeta">💳 Mi tarjeta</button><button role="tab" aria-selected="false" data-t="panel">📊 Panel del dueño</button></div>
+
+  <section class="sec on" id="sec-reservar">
+    <div class="caja">
+      <div class="lbl">1 · Servicio</div><div class="chips" id="servs"></div>
+      <div class="lbl">2 · Día</div><div class="dias" id="dias"></div>
+      <div class="lbl">3 · Hora disponible</div><div class="chips" id="horas"><small style="color:var(--gr)">Escoja primero el día.</small></div>
+      <div class="lbl">4 · Sus datos</div><div class="dos"><input class="inp" id="nom" placeholder="Su nombre" maxlength="40"><input class="inp" id="tel" placeholder="Teléfono 8888-8888" inputmode="tel" maxlength="12"></div>
+      <div class="tot"><span>Total</span><b id="total">₡0</b></div>
+      <button class="btn btn-p" id="reservar" type="button">Reservar mi cita</button><p class="msg" id="msg"></p>
+    </div>
+  </section>
+
+  <section class="sec" id="sec-tarjeta">
+    <div class="tarjeta"><div class="cab"><div><small>Cliente frecuente</small><br><b class="n" id="tjNom">Su nombre</b></div><small>BELLA<br>CLUB</small></div><div class="sellos" id="sellos"></div><div style="display:flex;justify-content:space-between;align-items:center"><b style="font-family:var(--t);font-size:2rem" id="tjCuenta">0 / 10</b><small style="letter-spacing:0;text-transform:none;font-size:.85rem" id="tjFalta">Con 10 sellos, su manicure sale gratis</small></div></div>
+    <div class="caja"><b>📅 Su próxima cita</b><p id="prox" style="color:var(--gr)">Todavía no tiene citas. Reserve en la pestaña “Reservar”.</p><p style="color:var(--gr);font-size:.88rem">🔔 En la versión real le llega un recordatorio 24 horas y 1 hora antes, y puede cambiar o cancelar la cita desde aquí.</p></div>
+  </section>
+
+  <section class="sec" id="sec-panel">
+    <div class="kpis"><div><b id="kHoy">0</b><small>Citas hoy</small></div><div><b id="kSem">₡0</b><small>Ventas de la semana</small></div><div><b id="kCli">0</b><small>Clientes</small></div></div>
+    <div class="caja"><h2>Próximas citas</h2><div class="lista" id="lista"></div><button class="btn btn-b" id="reiniciar" type="button">↺ Reiniciar la demostración</button></div>
+    <div class="mas"><div><b>📊 Ganancias</b>Por día, semana y mes, y por forma de pago.</div><div><b>🔁 Citas fijas</b>Clientes que vienen siempre el mismo día.</div><div><b>⭐ Encuestas</b>Opiniones después de cada servicio.</div><div><b>⚙️ Ajustes</b>Horario, días libres y precios desde el celular.</div></div>
+  </section>
+
+  <a class="btn btn-wa" style="max-width:720px;margin:0 auto 30px" href="https://wa.me/50689330326?text=Hola%2C%20vi%20la%20demo%20Premium%20(reservas)%20y%20quiero%20algo%20as%C3%AD%20para%20mi%20negocio" target="_blank" rel="noopener">💬 Quiero esto para mi negocio</a>
+</div>
+<div class="toast" id="toast"></div>
+<footer>Bella Studio es un negocio de ejemplo · Sistema hecho por <b>Solanotech</b> · Plan Premium $150</footer>
+<script>
+(function(){
+  var d=document, $=function(i){ return d.getElementById(i) }, col=function(n){ return '₡'+String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g,'.') }, K='bella-demo-v1';
+  var SERV=[['Manicure',8000],['Pedicure',10000],['Uñas acrílicas',18000],['Corte y secado',12000],['Diseño de cejas',6000]];
+  var HORAS=['09:00','10:30','12:00','14:00','15:30','17:00'], DS=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'], MS=['ene','feb','mar','abr','may','jun','jul','ago','set','oct','nov','dic'];
+  function hoy(){ return new Date(Date.now()-6*36e5).toISOString().slice(0,10) }
+  function suma(f,n){ var x=new Date(f+'T12:00:00Z'); x.setUTCDate(x.getUTCDate()+n); return x.toISOString().slice(0,10) }
+  function fH(h){ var p=h.split(':'), n=+p[0]; return (n>12?n-12:n)+':'+p[1]+(n<12?' a. m.':' p. m.') }
+  function fD(f){ var x=new Date(f+'T12:00:00Z'); return DS[x.getUTCDay()]+' '+x.getUTCDate()+' '+MS[x.getUTCMonth()] }
+  function sem(){ var h=hoy(), c=[['Andrea M.',0,'10:30',0],['Lucía R.',2,'14:00',0],['Paola V.',1,'12:00',1],['Karla S.',3,'09:00',2]];
+    return { yo:null, sellos:3, citas:c.map(function(x,i){ return {id:'s'+i,nom:x[0],fecha:suma(h,x[1]),hora:x[2],serv:SERV[x[3]][0],precio:SERV[x[3]][1],est:'pendiente'} }) } }
+  function lee(){ try{ return JSON.parse(localStorage.getItem(K))||sem() }catch(e){ return sem() } }
+  function guarda(){ try{ localStorage.setItem(K,JSON.stringify(D)) }catch(e){} }
+  var D=lee(), sel={s:[],f:'',h:''};
+  function toast(t){ var e=$('toast'); e.textContent=t; e.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(function(){ e.classList.remove('on') },2600) }
+  function boton(cls,html){ var b=d.createElement('button'); b.type='button'; b.className=cls; b.innerHTML=html; return b }
+  /* reservar */
+  SERV.forEach(function(s,i){ var b=boton('chip',s[0]+'<small>'+col(s[1])+'</small>'); b.setAttribute('aria-pressed','false'); b.onclick=function(){ var k=sel.s.indexOf(i); if(k<0) sel.s.push(i); else sel.s.splice(k,1); b.setAttribute('aria-pressed',String(k<0)); total() }; $('servs').appendChild(b) });
+  for(var i=0,n=0;n<12;i++){ (function(f){ var x=new Date(f+'T12:00:00Z'); if(x.getUTCDay()===0) return; n++; var b=boton('dia','<small>'+(f===hoy()?'hoy':DS[x.getUTCDay()])+'</small><b>'+x.getUTCDate()+'</b><small>'+MS[x.getUTCMonth()]+'</small>'); b.setAttribute('aria-pressed','false');
+    b.onclick=function(){ sel.f=f; sel.h=''; d.querySelectorAll('.dia').forEach(function(y){ y.setAttribute('aria-pressed',String(y===b)) }); horas() }; $('dias').appendChild(b) })(suma(hoy(),i)) }
+  function horas(){ var c=$('horas'); c.textContent=''; var ocup=D.citas.filter(function(x){ return x.fecha===sel.f }).map(function(x){ return x.hora });
+    HORAS.forEach(function(h,k){ var lleno=ocup.indexOf(h)>=0||((sel.f.charCodeAt(9)+k)%5===0); var b=boton('chip',fH(h)+(lleno?'<small>ocupada</small>':'')); b.disabled=lleno; b.setAttribute('aria-pressed','false');
+      b.onclick=function(){ sel.h=h; c.querySelectorAll('.chip').forEach(function(y){ y.setAttribute('aria-pressed',String(y===b)) }) }; c.appendChild(b) }) }
+  function total(){ $('total').textContent=col(sel.s.reduce(function(a,i){ return a+SERV[i][1] },0)) }
+  $('reservar').onclick=function(){ var nom=$('nom').value.trim(), tel=$('tel').value.replace(/\D/g,''), m=$('msg'), falta=[];
+    if(!sel.s.length) falta.push('el servicio'); if(!sel.f) falta.push('el día'); else if(!sel.h) falta.push('la hora'); if(nom.length<2) falta.push('su nombre'); if(tel.length<8) falta.push('su teléfono');
+    if(falta.length){ m.className='msg mal'; m.textContent='Falta: '+falta.join(', ')+'.'; return }
+    var c={id:'u'+Date.now(),nom:nom,fecha:sel.f,hora:sel.h,serv:sel.s.map(function(i){ return SERV[i][0] }).join(' + '),precio:sel.s.reduce(function(a,i){ return a+SERV[i][1] },0),est:'pendiente',mia:true};
+    D.citas.push(c); D.yo=nom; guarda(); m.className='msg bien'; m.textContent='✓ ¡Cita reservada! '+fD(c.fecha)+' a las '+fH(c.hora)+'. Vea su tarjeta y el panel del dueño.';
+    toast('✓ Cita reservada'); horas(); pinta() };
+  /* tarjeta y panel */
+  function pinta(){ $('tjNom').textContent=D.yo||'Su nombre'; var s=$('sellos'); s.textContent=''; for(var i=0;i<10;i++){ var e=d.createElement('div'); e.className='sello'+(i<D.sellos?' on':''); e.textContent=i===9?'🎁':(i<D.sellos?'💅':''); s.appendChild(e) }
+    $('tjCuenta').textContent=Math.min(D.sellos,10)+' / 10'; $('tjFalta').textContent=D.sellos>=10?'🎁 ¡Su manicure gratis está lista!':'Le faltan '+(10-D.sellos)+' para su manicure gratis';
+    var mia=D.citas.filter(function(x){ return x.mia&&x.est!=='hecha' }).sort(function(a,b){ return (a.fecha+a.hora).localeCompare(b.fecha+b.hora) })[0];
+    $('prox').textContent=mia?fD(mia.fecha)+' · '+fH(mia.hora)+' · '+mia.serv+' · '+col(mia.precio)+(mia.est==='confirmada'?' · confirmada ✓':' · por confirmar'):'Todavía no tiene citas. Reserve en la pestaña “Reservar”.';
+    var L=$('lista'); L.textContent=''; var cs=D.citas.slice().sort(function(a,b){ return (a.fecha+a.hora).localeCompare(b.fecha+b.hora) });
+    cs.forEach(function(c){ var r=d.createElement('div'); r.className='cita'; var h=d.createElement('div'); h.className='hr'; h.textContent=fH(c.hora); var t=d.createElement('div'); var b=d.createElement('b'); b.textContent=c.nom+(c.mia?' (usted)':''); var sm=d.createElement('small'); sm.textContent=fD(c.fecha)+' · '+c.serv+' · '+col(c.precio); var e=d.createElement('span'); e.className='est'+(c.est==='confirmada'?' c':c.est==='hecha'?' h':''); e.textContent=c.est==='pendiente'?'Por confirmar':c.est==='confirmada'?'Confirmada':'Terminada';
+      t.appendChild(b); t.appendChild(sm); t.appendChild(e); r.appendChild(h); r.appendChild(t); var a=d.createElement('div'); a.className='acc';
+      if(c.est==='pendiente'){ var x=boton('conf','Confirmar'); x.onclick=function(){ c.est='confirmada'; guarda(); pinta(); toast('✓ Confirmada · se le avisa al cliente por WhatsApp') }; a.appendChild(x) }
+      if(c.est==='confirmada'){ var y=boton('ok','Terminado'); y.onclick=function(){ c.est='hecha'; if(c.mia) D.sellos=Math.min(10,D.sellos+1); guarda(); pinta(); toast(c.mia?'💅 ¡Sello agregado a su tarjeta!':'✓ Terminado · se le pide la reseña') }; a.appendChild(y) }
+      r.appendChild(a); L.appendChild(r) });
+    $('kHoy').textContent=D.citas.filter(function(c){ return c.fecha===hoy() }).length;
+    $('kSem').textContent=col(D.citas.filter(function(c){ return c.est==='hecha' }).reduce(function(a,c){ return a+c.precio },0)+45000);
+    $('kCli').textContent=38+D.citas.filter(function(c){ return c.mia }).length;
+  }
+  $('reiniciar').onclick=function(){ D=sem(); guarda(); pinta(); toast('Demostración reiniciada') };
+  d.querySelectorAll('.tabs button').forEach(function(b){ b.onclick=function(){ d.querySelectorAll('.tabs button').forEach(function(x){ x.setAttribute('aria-selected',String(x===b)) }); d.querySelectorAll('.sec').forEach(function(s){ s.classList.toggle('on',s.id==='sec-'+b.dataset.t) }); pinta() } });
+  pinta();
+})();
+</script>
+</body>
+</html>
