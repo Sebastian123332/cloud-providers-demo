@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+:root{--n:#08090D;--az:#3B74FF;--am:#FFD23F;--ok:#25D366;--bl:#F5F6FA;--gr:#A6ABBC;--t:"Big Shoulders Display",Impact,sans-serif;--s:"Space Grotesk",system-ui,sans-serif;--m:"JetBrains Mono",ui-monospace,monospace}
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:1350px;overflow:hidden;position:relative;font-family:var(--s);color:var(--bl);
+ background:
+  linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px) 0 0/54px 54px,
+  linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px) 0 0/54px 54px,
+  radial-gradient(800px 640px at 95% 8%,rgba(59,116,255,.45),transparent 62%),
+  radial-gradient(760px 600px at 0% 92%,rgba(255,210,63,.22),transparent 62%),
+  radial-gradient(600px 500px at 30% 40%,rgba(37,211,102,.10),transparent 60%),
+  #0A0D18}
+.abs{position:absolute}
+/* arriba */
+.logo{left:64px;top:60px;display:flex;align-items:center;gap:14px;font-family:var(--t);font-weight:800;font-size:46px;letter-spacing:.04em}
+.logo i{width:62px;height:62px;border-radius:16px;background:var(--az);display:grid;place-items:center;font-style:normal;font-size:38px;color:#fff;box-shadow:0 8px 30px rgba(59,116,255,.55)}
+.pill{right:64px;top:68px;display:flex;align-items:center;gap:12px;padding:14px 26px;border-radius:999px;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.18);font-weight:700;font-size:21px;letter-spacing:.2em;text-transform:uppercase}
+.pill::before{content:"";width:12px;height:12px;border-radius:50%;background:var(--am);box-shadow:0 0 14px var(--am)}
+h1{left:60px;top:160px;font-weight:700;font-size:124px;line-height:.98;letter-spacing:-.045em}
+h1 em{font-style:normal;background:linear-gradient(90deg,#FFD23F 0%,#7CE38B 45%,#5B8CFF 100%);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* tarjeta incluye */
+.card{left:64px;top:470px;width:440px;padding:30px 30px 32px;border-radius:26px;background:rgba(22,26,40,.78);border:1.5px solid rgba(255,255,255,.14);backdrop-filter:blur(8px);box-shadow:0 20px 60px rgba(0,0,0,.45);z-index:3}
+.card h3{font-size:19px;letter-spacing:.24em;text-transform:uppercase;color:#C9CDDA;margin-bottom:20px;font-weight:600}
+.card ul{list-style:none;display:grid;gap:17px}
+.card li{display:flex;gap:14px;align-items:flex-start;font-size:26px;font-weight:700;line-height:1.2}
+.card li::before{content:"✓";flex:none;width:32px;height:32px;border-radius:50%;background:var(--ok);color:#06280f;display:grid;place-items:center;font-size:19px;font-weight:900;margin-top:-1px}
+/* codigo */
+.code{left:548px;top:470px;width:468px;border-radius:22px;background:rgba(30,35,52,.92);border:1.5px solid rgba(255,255,255,.14);box-shadow:0 24px 60px rgba(0,0,0,.5);z-index:4;overflow:hidden}
+.code .bar{display:flex;align-items:center;gap:9px;padding:15px 20px;border-bottom:1px solid rgba(255,255,255,.1);font-size:18px;color:#D9DCE6}
+.code .bar i{width:13px;height:13px;border-radius:50%}
+.code .bar span{margin-left:10px}
+.code pre{font-family:var(--m);font-variant-ligatures:none;font-feature-settings:"liga" 0,"calt" 0;font-size:18.5px;line-height:1.6;padding:16px 22px 20px;color:#E8EAF2;white-space:pre}
+.c{color:#7D8499}.tg{color:#FFB65C}.at{color:#7CE38B}.st{color:#FFE28A}.kw{color:#8FB0FF}
+/* laptop */
+.lap{left:466px;top:690px;width:580px;z-index:2}
+.lap .pant{height:356px;border-radius:20px 20px 4px 4px;background:#14161F;padding:14px 14px 10px;border:2px solid #2C3142;box-shadow:0 30px 70px rgba(0,0,0,.55)}
+.lap .pant img{width:100%;height:100%;object-fit:cover;object-position:top;border-radius:8px;display:block}
+.lap .base{height:22px;margin:0 -34px;background:linear-gradient(#C9CEDA,#8E95A6);border-radius:0 0 22px 22px;position:relative}
+.lap .base::after{content:"";position:absolute;left:50%;top:0;width:120px;height:8px;transform:translateX(-50%);background:#6E7487;border-radius:0 0 10px 10px}
+/* celular */
+.cel{left:896px;top:820px;width:150px;height:304px;border-radius:28px;background:#0E1017;border:3px solid #3A4054;padding:7px;z-index:5;box-shadow:0 24px 50px rgba(0,0,0,.6)}
+.cel img{width:100%;height:100%;object-fit:cover;object-position:top;border-radius:21px;display:block}
+/* precio */
+.precio{left:64px;top:1008px;display:flex;align-items:center;gap:26px;padding:22px 34px 22px 32px;border-radius:26px;background:rgba(24,27,38,.92);border:1.5px solid rgba(255,255,255,.16);box-shadow:0 20px 50px rgba(0,0,0,.5);z-index:6}
+.precio b{font-family:var(--s);font-weight:700;font-size:86px;line-height:1;letter-spacing:-.04em;background:linear-gradient(180deg,#FFE27A,#F5B90F);-webkit-background-clip:text;background-clip:text;color:transparent}
+.precio small{display:block;font-size:17px;letter-spacing:.2em;text-transform:uppercase;color:#C9CDDA;font-weight:600}
+.precio span{display:block;font-size:26px;font-weight:700;margin-top:4px}
+/* abajo */
+.franja{left:0;right:0;bottom:0;height:150px;display:flex;align-items:center;justify-content:space-between;padding:0 64px;background:rgba(10,12,20,.88);border-top:4px solid transparent;border-image:linear-gradient(90deg,#7CE38B,#FFD23F,#3B74FF) 1}
+.franja p{font-size:34px;font-weight:700;letter-spacing:-.01em}.franja p small{display:block;font-size:22px;color:var(--gr);font-weight:500;margin-top:4px}
+.wa{display:flex;align-items:center;gap:14px;background:var(--ok);color:#052814;padding:20px 32px;border-radius:20px;font-weight:700;font-size:34px}
+.wa svg{width:38px;height:38px}
+
+.conf{left:64px;top:830px;width:440px;padding:24px 24px 26px;border-radius:26px;background:rgba(22,26,40,.85);border:1.5px solid rgba(255,255,255,.14);box-shadow:0 20px 60px rgba(0,0,0,.45);z-index:6}
+.conf h3{font-size:19px;letter-spacing:.24em;text-transform:uppercase;color:#C9CDDA;margin-bottom:16px;font-weight:600;display:flex;align-items:center;gap:10px}
+.conf h3::before{content:"★";color:var(--am);letter-spacing:0;font-size:22px}
+.conf .g{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.conf .t{height:78px;border-radius:14px;display:grid;place-items:center;overflow:hidden;border:1.5px solid rgba(255,255,255,.12)}
+.conf .t img{max-width:88%;max-height:70%;display:block}
+.conf p{margin-top:14px;font-size:19px;color:#C9CDDA}
+</style></head><body>
+<div class="abs logo"><i>S</i>SOLANOTECH</div>
+<div class="abs pill" id="pill">Páginas web · CR</div>
+<h1 class="abs" id="tit">Su web, hecha<br><em>a la medida</em></h1>
+
+<div class="abs card"><h3 id="cardt">Lo que incluye</h3><ul id="lista"></ul></div>
+
+<div class="abs code"><div class="bar"><i style="background:#FF5F57"></i><i style="background:#FEBC2E"></i><i style="background:#28C840"></i><span id="arch">sitio/inicio.html</span></div><pre id="cod"></pre></div>
+
+<div class="abs lap"><div class="pant"><img id="pc" alt=""></div><div class="base"></div></div>
+<div class="abs cel"><img id="cl" alt=""></div>
+
+<div class="abs conf"><h3>Confiaron en nosotros</h3><div class="g">
+<div class="t" style="background:#F4B700"><img src="logo-dieca.png" alt="Grúas Dieca"></div>
+<div class="t" style="background:#0B0F1A"><img src="logo-hidalgo.png" alt="Grúas Hidalgo"></div>
+<div class="t" style="background:#111"><img src="logo-mario.png" alt="Grúas Mario"></div>
+<div class="t" style="background:#fff"><img src="logo-adriana.png" alt="Adriana Solano, bonos de vivienda"></div>
+</div><p>Páginas reales, hechas por Solanotech.</p></div>
+
+<div class="abs franja"><p>Su negocio, en internet.<small>ssolanotech.com · Costa Rica</small></p>
+<div class="wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .2-3.3-.7-2.8-1.1-4.5-3.9-4.7-4.1-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.3-.3.6-.3.8-.3h.6c.2 0 .4 0 .6.5l.9 2.1c.1.2.1.3 0 .5l-.3.5-.4.5c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.1 1 2.1 1.3 2.4 1.5.3.1.5.1.6-.1l.9-1.1c.2-.3.4-.2.6-.1l2 1c.3.1.5.2.5.3.1.2.1.7-.1 1.3z"/></svg>8933-0326</div></div>
+
+<script>
+const V={
+ general:{pill:'Páginas web · CR',img:'pro',pre:'₡75.000',pres:'Desde',pret:'web profesional',
+  lista:['Diseño a la medida','Rápida en el celular','Botón de WhatsApp','Lista para Google','Segura (candado HTTPS)'],
+  arch:'sitio/inicio.html',
+  cod:`<span class="c">&lt;!-- Hecho a la medida --&gt;</span>
+<span class="tg">&lt;section</span> <span class="at">id</span>=<span class="st">"servicios"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;h2&gt;</span>Servicios<span class="tg">&lt;/h2&gt;</span>
+  <span class="tg">&lt;a</span> <span class="at">href</span>=<span class="st">"#whatsapp"</span><span class="tg">&gt;</span>
+    Escríbanos
+  <span class="tg">&lt;/a&gt;</span>
+<span class="tg">&lt;/section&gt;</span>`},
+ basica:{pill:'Plan Básico',img:'basica',pre:'₡75.000',pres:'Plan Básico',pret:'página informativa',
+  lista:['Servicios y precios','Horario y ubicación','Botón de WhatsApp','Adaptada al celular','Lista para Google'],
+  arch:'sitio/inicio.html',
+  cod:`<span class="c">&lt;!-- Todo en una página --&gt;</span>
+<span class="tg">&lt;section</span> <span class="at">id</span>=<span class="st">"horario"</span><span class="tg">&gt;</span>
+  <span class="tg">&lt;h2&gt;</span>Horario<span class="tg">&lt;/h2&gt;</span>
+  <span class="tg">&lt;p&gt;</span>Lun a Sáb · 9 a 7<span class="tg">&lt;/p&gt;</span>
+  <span class="tg">&lt;a</span> <span class="at">href</span>=<span class="st">"#mapa"</span><span class="tg">&gt;</span>Cómo llegar<span class="tg">&lt;/a&gt;</span>
+<span class="tg">&lt;/section&gt;</span>`},
+ pro:{pill:'Plan Pro',img:'pro',pre:'₡100.000',pres:'Plan Pro',pret:'más secciones',
+  lista:['Todo lo de la Básica','Cotizador por WhatsApp','Galería de trabajos','Opiniones y preguntas','"Abierto ahora" en vivo'],
+  arch:'sitio/cotizador.js',
+  cod:`<span class="c">// Cotiza y manda al WhatsApp</span>
+<span class="kw">const</span> total = servicios
+  .<span class="at">reduce</span>((s, x) =&gt; s + x.precio, <span class="st">0</span>);
+<span class="kw">abrirWhatsApp</span>(
+  <span class="st">\`Hola, quiero cotizar:</span>
+<span class="st">  Total ₡\${total}\`</span>
+);`},
+ premium:{pill:'Plan Premium',img:'premium',pre:'₡150.000',pres:'Plan Premium',pret:'sistema completo',
+  lista:['Todo lo del Pro','Reservas en línea','Tarjeta de cliente frecuente','Panel del dueño','¡Lo que necesite se programa!'],
+  arch:'sistema/reservas.js',
+  cod:`<span class="c">// El cliente reserva solo</span>
+<span class="kw">async function</span> <span class="at">reservar</span>(cita) {
+  <span class="kw">if</span> (!libre(cita.hora)) <span class="kw">return</span>;
+  <span class="kw">await</span> guardar(cita);
+  panel.<span class="at">avisar</span>(<span class="st">"Nueva cita"</span>);
+  tarjeta.<span class="at">sello</span>(cita.cliente);
+}`}};
+const v=V[location.hash.slice(1)]||V.general;
+pill.textContent=v.pill;arch.textContent=v.arch;cod.innerHTML=v.cod;
+lista.innerHTML=v.lista.map(t=>'<li>'+t+'</li>').join('');
+pc.src='../portafolio/pc-hidalgo.jpg';cl.src='../portafolio/cel-mario.jpg';
+</script>
+</body></html>
