@@ -1,0 +1,28 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@800;900&family=Space+Grotesk:wght@500;600&display=swap">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:"Big Shoulders Display",sans-serif;overflow:hidden}
+.v{display:none;position:relative;overflow:hidden}
+body.cuad .cuad,body.cuadw .cuadw,body.port .port{display:grid}
+/* 1: solo la S, cuadrado (foto de perfil) */
+.cuad{width:1200px;height:1200px;place-items:center;background:radial-gradient(700px 700px at 75% 15%,#5B8CFF,#3B74FF 45%,#1F4FD8)}
+.cuad b{font-size:900px;font-weight:900;color:#fff;line-height:1;margin-top:-40px;text-shadow:0 20px 60px rgba(8,9,13,.35)}
+/* 2: S + nombre, cuadrado */
+.cuadw{width:1200px;height:1200px;place-items:center;background:radial-gradient(800px 600px at 100% 0,rgba(59,116,255,.4),transparent 60%),#08090D;color:#F5F6FA}
+.cuadw .in{display:flex;flex-direction:column;align-items:center;gap:46px}
+.cuadw i{width:520px;height:520px;border-radius:120px;background:radial-gradient(400px 400px at 75% 15%,#5B8CFF,#3B74FF 50%,#1F4FD8);display:grid;place-items:center;font-style:normal;font-size:420px;font-weight:900;color:#fff;box-shadow:0 30px 90px rgba(59,116,255,.55)}
+.cuadw span{font-size:150px;font-weight:800;letter-spacing:.05em;line-height:1}
+.cuadw small{font-family:"Space Grotesk";font-size:44px;color:#A6ABBC;font-weight:500;letter-spacing:.02em;margin-top:-20px}
+/* 3: portada 16:9 */
+.port{width:2048px;height:1152px;place-items:center;color:#F5F6FA;background:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px) 0 0/64px 64px,linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px) 0 0/64px 64px,radial-gradient(1100px 800px at 100% 0,rgba(59,116,255,.45),transparent 62%),radial-gradient(900px 700px at 0 100%,rgba(255,210,63,.16),transparent 62%),#08090D}
+.port .in{display:flex;align-items:center;gap:70px}
+.port i{width:380px;height:380px;border-radius:90px;background:radial-gradient(300px 300px at 75% 15%,#5B8CFF,#3B74FF 50%,#1F4FD8);display:grid;place-items:center;font-style:normal;font-size:310px;font-weight:900;color:#fff;box-shadow:0 30px 90px rgba(59,116,255,.55)}
+.port span{display:block;font-size:220px;font-weight:800;letter-spacing:.05em;line-height:.9}
+.port small{display:block;font-family:"Space Grotesk";font-size:54px;color:#C9CDDA;font-weight:500;margin-top:26px}
+.port small b{color:#FFD23F;font-weight:600}
+</style></head><body>
+<div class="v cuad"><b>S</b></div>
+<div class="v cuadw"><div class="in"><i>S</i><span>SOLANOTECH</span><small>Páginas web y sistemas · Costa Rica</small></div></div>
+<div class="v port"><div class="in"><i>S</i><div><span>SOLANOTECH</span><small>Páginas web y sistemas <b>a la medida</b><br>Cartago · Costa Rica · 8933-0326</small></div></div></div>
+</body></html>
