@@ -13,6 +13,7 @@
   color-scheme:dark;
 }
 *{box-sizing:border-box}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
 body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
@@ -149,9 +150,95 @@ details.fg summary .cnt{margin-left:auto;margin-right:10px;font-size:11px;backgr
 .social a:hover{border-color:var(--violet)}
 .social svg{width:18px;height:18px}
 @media (max-width:760px){.perf-band .wrap,.visit .wrap{grid-template-columns:1fr}}
-footer{border-top:1px solid var(--line);padding-block:22px 28px;color:var(--muted);font-size:13px}
-footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-footer a{color:var(--violet-hi)}
+/* Footer */
+.foot{border-top:1px solid var(--line);padding-block:36px 24px;color:var(--muted);font-size:14px}
+.foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:28px}
+@media (max-width:820px){.foot-grid{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.foot-grid{grid-template-columns:1fr}}
+.foot h5{margin:0 0 10px;color:var(--ink);font-size:12px;letter-spacing:.14em;text-transform:uppercase}
+.foot ul{list-style:none;margin:0;padding:0;display:grid;gap:7px}
+.foot a,.foot .lk{color:var(--muted);text-decoration:none;background:none;border:0;padding:0;font-size:14px;text-align:left}
+.foot a:hover,.foot .lk:hover{color:var(--violet-hi)}
+.foot p{margin:10px 0 0}
+.foot-bottom{border-top:1px solid var(--line);margin-top:28px;padding-top:16px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:12px}
+.cards{display:flex;gap:6px;flex-wrap:wrap}
+.cardmark{font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.05em;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);border-radius:8px;padding:6px 10px}
+.secure{display:flex;gap:8px;align-items:flex-start;color:var(--muted);font-size:12px;margin:0}
+.secure svg{flex:none;width:16px;height:16px;color:var(--ok);margin-top:1px}
+
+/* Ficha de producto y checkout (pantallas sobre la tienda) */
+.sheet{position:fixed;inset:0;z-index:65;background:var(--bg);overflow:auto;padding-bottom:env(safe-area-inset-bottom,0px)}
+.sheet-top{position:sticky;top:0;z-index:2;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top,0px)}
+.sheet-top .wrap{display:flex;align-items:center;gap:12px;padding-block:10px}
+.sheet-top img{height:30px;width:auto}
+.back{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:8px 12px;font-weight:700}
+.pd{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:40px;padding-block:26px 60px;align-items:start}
+@media (max-width:860px){.pd{grid-template-columns:1fr;gap:18px}}
+.pd-img{aspect-ratio:1;max-width:100%;border-radius:20px;background:radial-gradient(circle at 50% 60%,#2b2036 0%,var(--panel-2) 70%);display:grid;place-items:center;position:relative;overflow:hidden}
+.pd-img > svg{width:84%;height:84%} .pd-img > img{width:100%;height:100%;object-fit:cover}
+.crumbs{font-size:12px;color:var(--muted);display:flex;gap:6px;flex-wrap:wrap}
+.crumbs a{color:var(--muted)}
+.pd h1{font-family:var(--f-display);font-size:clamp(26px,3.6vw,36px);line-height:1.1;margin:4px 0 8px;text-wrap:balance}
+.pp{font-family:var(--f-display);font-size:28px;font-weight:700;font-variant-numeric:tabular-nums}
+.pp s{font-size:16px;color:var(--muted);font-weight:500;margin-left:8px}
+.pd-sec{border-top:1px solid var(--line);padding-top:16px;margin-top:16px;display:grid;gap:10px}
+.pd-sec h4{margin:0;font-size:14px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.pd-sizes{display:grid;grid-template-columns:repeat(auto-fill,minmax(58px,1fr));gap:8px}
+.pd-sizes button{border:1px solid var(--line);background:var(--panel);border-radius:10px;padding:11px 0;font-weight:800;font-variant-numeric:tabular-nums}
+.pd-sizes button[aria-pressed="true"]{background:var(--ink);color:#13081b;border-color:var(--ink)}
+.pd-sizes button:disabled{opacity:.3;text-decoration:line-through;cursor:not-allowed}
+.avail{font-size:14px;color:var(--muted);margin:0} .avail b{color:var(--ink)}
+.ship-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.ship-opts{grid-template-columns:1fr}}
+.ship-opt{display:grid;gap:6px;align-content:start;text-align:left;border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:12px;font-size:13px;color:var(--muted)}
+.ship-opt b{color:var(--ink);font-size:14px}
+.ship-opt[aria-pressed="true"]{border-color:var(--violet-hi);box-shadow:0 0 0 1px var(--violet-hi)}
+.chk{display:flex;gap:10px;align-items:center;font-size:14px}
+.chk input{width:18px;height:18px;accent-color:var(--violet)}
+.big{width:100%;border:0;border-radius:12px;padding:15px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:15px}
+.big.pri{background:var(--violet);color:#fff} .big.pri:hover{background:var(--violet-hi);color:#160322}
+.big.alt{background:var(--ink);color:#13081b}
+.big.ghost{background:var(--panel-2);border:1px solid var(--line)}
+.big:disabled{opacity:.4;cursor:not-allowed}
+.stepq{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:10px}
+.stepq button{width:40px;height:40px;background:none;border:0;font-weight:800;font-size:18px}
+.stepq span{min-width:28px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+.co{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px;padding-block:22px 60px;align-items:start}
+@media (max-width:860px){.co{grid-template-columns:1fr}}
+.co-box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;display:grid;gap:12px;min-width:0}
+.co-box h3{margin:0;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.06em;font-size:16px;display:flex;gap:10px;align-items:center}
+.co-box h3 i{font-style:normal;width:24px;height:24px;border-radius:50%;background:var(--violet);color:#fff;display:grid;place-items:center;font-size:12px}
+.fld{display:grid;gap:5px;font-size:12px;color:var(--muted);min-width:0}
+.fld input,.fld select,.fld textarea{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:11px;color:var(--ink);font:inherit;font-size:14px;min-width:0}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:480px){.g2{grid-template-columns:1fr}}
+.payopt{display:flex;gap:12px;align-items:flex-start;text-align:left;border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px;width:100%}
+.payopt[aria-pressed="true"]{border-color:var(--violet-hi);box-shadow:0 0 0 1px var(--violet-hi)}
+.payopt b{display:block} .payopt small{color:var(--muted);display:block}
+.payopt .dotr{width:18px;height:18px;border-radius:50%;border:2px solid var(--muted);flex:none;margin-top:2px}
+.payopt[aria-pressed="true"] .dotr{border-color:var(--violet-hi);background:radial-gradient(circle,var(--violet-hi) 40%,transparent 46%)}
+.payopt:disabled{opacity:.4;cursor:not-allowed}
+.sum{position:sticky;top:76px}
+.sum-line{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:10px;align-items:center;font-size:13px}
+.sum-line .thumb{width:48px;height:42px;border-radius:8px;background:var(--bg);overflow:hidden;display:grid;place-items:center}
+.sum-line .thumb img{width:100%;height:100%;object-fit:contain}
+.sum-line small{color:var(--muted);display:block}
+.err{color:var(--bad);font-size:13px;margin:0}
+.done{text-align:center;display:grid;gap:14px;justify-items:center;padding-block:40px;max-width:560px;margin:0 auto}
+.done .okc{width:72px;height:72px;border-radius:50%;background:rgba(62,207,114,.14);color:var(--ok);display:grid;place-items:center;font-size:34px}
+.done .pend{background:rgba(255,181,71,.14);color:var(--warn)}
+.done p{color:var(--muted);margin:0}
+.modal{position:fixed;inset:0;z-index:95;display:grid;place-items:center;background:rgba(0,0,0,.72);padding:16px}
+.modal-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;width:min(560px,100%);max-height:88vh;overflow:auto;padding:20px;display:grid;gap:12px}
+.modal-card h3{margin:0;font-family:var(--f-display);text-transform:uppercase;font-size:18px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.modal-card p,.modal-card li{color:var(--muted);font-size:14px;margin:0}
+.modal-card ul{margin:0;padding-left:18px;display:grid;gap:6px}
+.tbl{overflow-x:auto} .tbl table{border-collapse:collapse;width:100%;font-size:13px;font-variant-numeric:tabular-nums}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:center}
+.tbl th{color:var(--ink)}
+.gw{border:1px solid var(--line);border-radius:14px;padding:14px;background:var(--bg);display:grid;gap:10px}
+.demo-note{font-size:12px;color:var(--warn);border:1px dashed var(--warn);border-radius:10px;padding:8px 10px;margin:0}
+a.art,.name a{text-decoration:none;color:inherit}
 
 /* Cart drawer */
 .scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:70}
@@ -273,31 +360,54 @@ footer a{color:var(--violet-hi)}
   </section>
 </main>
 
-<footer>
+<footer class="foot">
   <div class="wrap">
-    <span>© 2026 Fashionista Sneakers · Calzado deportivo, ropa y perfumería</span>
-    <a href="admin.html">Panel del dueño (demo)</a>
+    <div class="foot-grid">
+      <div>
+        <img src="logo.png" alt="Fashionista Sneakers" style="height:34px;width:auto;display:block">
+        <p>Calzado deportivo, ropa y perfumería. 600 m norte de la Farmacia Fischel, Cartago, Costa Rica.</p>
+        <h5 style="margin-top:18px">Métodos de pago</h5>
+        <div class="cards"><span class="cardmark">VISA</span><span class="cardmark">Mastercard</span><span class="cardmark">AMEX</span><span class="cardmark">SINPE Móvil</span></div>
+        <p class="secure" style="margin-top:10px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Los pagos con tarjeta los procesa la pasarela con verificación 3-D Secure del banco. La tienda no ve ni guarda datos de tarjetas.</p>
+      </div>
+      <div><h5>Comprar</h5><ul>
+        <li><a href="#hombre">Hombre</a></li><li><a href="#mujer">Mujer</a></li><li><a href="#ninos">Niños</a></li>
+        <li><a href="#basketball">Basketball</a></li><li><a href="#running">Running</a></li><li><a href="#ofertas">Ofertas</a></li><li><a href="perfumeria.html">Perfumería</a></li></ul></div>
+      <div><h5>Ayuda</h5><ul>
+        <li><button class="lk" data-info="envios">Envíos y entregas</button></li>
+        <li><button class="lk" data-info="cambios">Cambios y devoluciones</button></li>
+        <li><button class="lk" data-info="tallas">Guía de tallas</button></li>
+        <li><button class="lk" data-info="faq">Preguntas frecuentes</button></li></ul></div>
+      <div><h5>Contacto y legal</h5><ul>
+        <li><a id="ftWa" href="#" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><button class="lk" data-info="privacidad">Política de privacidad</button></li>
+        <li><button class="lk" data-info="terminos">Términos y condiciones</button></li>
+        <li><a href="admin.html">Panel del dueño (demo)</a></li></ul></div>
+    </div>
+    <div class="foot-bottom"><span>© 2026 Fashionista Sneakers · Cartago, Costa Rica</span><span>Sitio desarrollado por Solanotech</span></div>
   </div>
 </footer>
+
+<section class="sheet" id="pdView" hidden aria-label="Detalle del producto">
+  <div class="sheet-top"><div class="wrap"><button class="back" data-back>← Volver</button><img src="logo.png" alt="Fashionista Sneakers"><button class="cart-btn" data-opencart style="margin-left:auto">Carrito <span class="n cartN">0</span></button></div></div>
+  <div class="wrap" id="pdBody"></div>
+</section>
+<section class="sheet" id="coView" hidden aria-label="Pagar pedido">
+  <div class="sheet-top"><div class="wrap"><button class="back" data-back>← Seguir comprando</button><img src="logo.png" alt="Fashionista Sneakers"><span class="secure" style="margin-left:auto;align-items:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Pago seguro</span></div></div>
+  <div class="wrap" id="coBody"></div>
+</section>
+<div class="modal" id="modal" hidden><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="mTitle" id="modalCard"></div></div>
 
 <div class="scrim" id="scrim" hidden></div>
 <aside class="drawer" id="drawer" aria-label="Carrito" aria-hidden="true">
   <div class="d-head"><h3>Tu carrito</h3><button class="x" id="closeCart" aria-label="Cerrar carrito">×</button></div>
   <div class="d-list" id="lines"></div>
   <div class="d-foot">
-    <label for="ship">Entrega
-      <select id="ship">
-        <option value="0">Retiro en tienda (Cartago) · gratis</option>
-        <option value="2500">Mensajería GAM · ₡2 500</option>
-        <option value="3500">Correos de Costa Rica · ₡3 500</option>
-      </select>
-    </label>
-    <label for="cname">Nombre para el pedido<input id="cname" type="text" autocomplete="name" placeholder="Ej. María Solano"></label>
-    <div class="row"><span>Subtotal</span><span id="sub">₡0</span></div>
-    <div class="row"><span>Envío</span><span id="shipv">₡0</span></div>
-    <div class="row total"><span>Total</span><span id="tot">₡0</span></div>
-    <a class="wa" id="wa" href="#" target="_blank" rel="noopener" aria-disabled="true">Enviar pedido por WhatsApp</a>
-    <p class="note">Se abre WhatsApp con el pedido listo. La tienda confirma disponibilidad y pago (SINPE, tarjeta o efectivo). WhatsApp de la tienda: <span id="waNum"></span></p>
+    <div class="row total"><span>Subtotal</span><span id="sub">₡0</span></div>
+    <p class="note">El envío se calcula al pagar. Retiro en tienda gratis.</p>
+    <button class="big pri" id="goPay" disabled>Ir a pagar</button>
+    <div class="cards" style="justify-content:center"><span class="cardmark">VISA</span><span class="cardmark">Mastercard</span><span class="cardmark">AMEX</span><span class="cardmark">SINPE</span></div>
+    <a class="note" id="wa" href="#" target="_blank" rel="noopener" style="text-align:center;color:var(--violet-hi)">¿Preferís pedir por WhatsApp? <span id="waNum"></span></a>
   </div>
 </aside>
 <div class="scrim" id="fscrim" hidden style="z-index:84"></div>
@@ -308,6 +418,7 @@ footer a{color:var(--violet-hi)}
 /* ===== Datos de la tienda (reemplazar por los reales) ===== */
 const STORE = {
   whatsapp: "50688888888",  // EJEMPLO
+  sinpe: "8888-8888",       // EJEMPLO
   socials: [
     {name:"Facebook",  url:"https://www.facebook.com/search/top?q=Fashionista%20sneakers"},
     {name:"Instagram", url:"https://www.instagram.com/"},
@@ -412,9 +523,9 @@ function card(p){
   ].join("");
   const lbl = p.cat==="Calzado" ? "Talla US" : "Talla";
   return `<article class="card ${tot===0?"soldout":""}">
-    <div class="art"><div class="badges">${badges}</div>${FS.visual(p)}</div>
+    <a class="art" href="#${slug(p.id)}" aria-label="Ver ${esc(p.brand)} ${esc(p.name)}"><div class="badges">${badges}</div>${FS.visual(p)}</a>
     <div class="body">
-      <div><div class="brand">${esc(p.brand)}</div><h3 class="name">${esc(p.name)}</h3><p class="meta">${esc(p.gen)} · ${esc(p.cat==="Calzado"?p.dep:p.cat)}</p></div>
+      <div><div class="brand">${esc(p.brand)}</div><h3 class="name"><a href="#${slug(p.id)}">${esc(p.name)}</a></h3><p class="meta">${esc(p.gen)} · ${esc(p.cat==="Calzado"?p.dep:p.cat)}</p></div>
       ${one==="Única" ? "" : `<div role="group" aria-label="${lbl}"><div class="meta" style="margin-bottom:4px">${lbl}</div>
       <div class="sizes">${sizes.map(t=>`<button data-id="${p.id}" data-size="${esc(t)}" aria-pressed="${sz===t}" ${hasStock(p,t)?"":"disabled"} title="${hasStock(p,t)?p.stock[t]+" disponibles":"Agotada"}">${esc(t)}</button>`).join("")}</div></div>`}
       <div class="left">${sz && left>0 && left<=2 ? `Quedan ${left} en talla ${esc(sz)}` : ""}</div>
@@ -448,26 +559,24 @@ function render(){
 const save = () => store.set("fs_cart", cart);
 const lname = l => l.brand==="Combo" ? "Combo "+l.name : l.name.includes(l.brand) ? l.name : l.brand+" "+l.name;
 function thumbOf(p){ return p.foto || "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(FS.art(p).replace("<svg ",'<svg xmlns="http://www.w3.org/2000/svg" ')); }
-function add(p, t){
+function add(p, t, n=1, regalo=false){
   const stock = +p.stock[t]||0, key = p.id+"-"+t, l = cart.find(x=>x.key===key);
-  if((l?l.qty:0) >= stock){ toast(`Solo hay ${stock} en talla ${t}`); return; }
-  if(l) l.qty++; else cart.push({key,pid:p.id,name:p.name,brand:p.brand,label:t==="Única"?"Talla única":(p.cat==="Calzado"?"Talla US ":"Talla ")+t,price:FS.precio(p),qty:1,ml:0,talla:t,thumb:thumbOf(p)});
-  save(); renderCart(); render(); toast("Agregado al carrito");
+  if((l?l.qty:0) + n > stock){ toast(`Solo hay ${stock} en talla ${t}`); return false; }
+  if(l){ l.qty += n; if(regalo) l.regalo = true; }
+  else cart.push({key,pid:p.id,name:p.name,brand:p.brand,label:t==="Única"?"Talla única":(p.cat==="Calzado"?"Talla US ":"Talla ")+t,price:FS.precio(p),qty:n,ml:0,talla:t,thumb:thumbOf(p),regalo});
+  save(); renderCart(); render(); toast("Agregado al carrito"); return true;
 }
 function renderCart(){
-  $("#cartCount").textContent = cart.reduce((s,l)=>s+l.qty,0);
+  const n = cart.reduce((s,l)=>s+l.qty,0);
+  $("#cartCount").textContent = n; document.querySelectorAll(".cartN").forEach(e=>e.textContent=n);
   $("#lines").innerHTML = cart.length ? cart.map((l,i)=>`<div class="line"><div class="thumb">${l.thumb?`<img src="${l.thumb}" alt="">`:""}</div>
-      <div><div class="t">${esc(lname(l))}</div><div class="s">${esc(l.label)} · ${FS.crc(l.price)}</div><button class="rm" data-rm="${i}">Quitar</button></div>
+      <div><div class="t">${esc(lname(l))}</div><div class="s">${esc(l.label)}${l.regalo?" · Regalo":""} · ${FS.crc(l.price)}</div><button class="rm" data-rm="${i}">Quitar</button></div>
       <div class="qty"><button data-dec="${i}" aria-label="Quitar uno">−</button><span>${l.qty}</span><button data-inc="${i}" aria-label="Agregar uno">+</button></div></div>`).join("")
     : `<div class="d-empty"><p>Tu carrito está vacío.</p><p>Elegí una talla disponible y tocá <b>Agregar</b>.</p></div>`;
-  const sub = cart.reduce((s,l)=>s+l.price*l.qty,0), ship = cart.length ? +$("#ship").value : 0;
-  $("#sub").textContent = FS.crc(sub); $("#shipv").textContent = ship?FS.crc(ship):"Gratis"; $("#tot").textContent = FS.crc(sub+ship);
-  const wa = $("#wa"); wa.setAttribute("aria-disabled", cart.length?"false":"true");
-  if(cart.length){
-    const who = $("#cname").value.trim(), opt = $("#ship").selectedOptions[0].textContent.split("·")[0].trim();
-    const msg = `¡Hola Fashionista Sneakers! Quiero hacer este pedido:\n\n${cart.map(l=>`• ${l.qty} × ${lname(l)} (${l.label}) — ${FS.crc(l.price*l.qty)}`).join("\n")}\n\nSubtotal: ${FS.crc(sub)}\nEntrega: ${opt}${ship?` (${FS.crc(ship)})`:""}\nTotal: ${FS.crc(sub+ship)}${who?`\n\nA nombre de: ${who}`:""}`;
-    wa.href = `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`;
-  } else wa.href = "#";
+  const sub = cart.reduce((s,l)=>s+l.price*l.qty,0);
+  $("#sub").textContent = FS.crc(sub); $("#goPay").disabled = !cart.length;
+  const msg = cart.length ? `¡Hola Fashionista Sneakers! Quiero hacer este pedido:\n\n${cart.map(l=>`• ${l.qty} × ${lname(l)} (${l.label}) — ${FS.crc(l.price*l.qty)}`).join("\n")}\n\nSubtotal: ${FS.crc(sub)}` : "¡Hola Fashionista Sneakers!";
+  $("#wa").href = `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`;
 }
 function openCart(o){ $("#drawer").classList.toggle("open",o); $("#drawer").setAttribute("aria-hidden",!o); $("#scrim").hidden=!o; if(o) $("#closeCart").focus(); }
 function openF(o){ $("#filters").classList.toggle("open",o); $("#fscrim").hidden=!o; }
@@ -480,6 +589,7 @@ const ICONS={Facebook:`<svg viewBox="0 0 24 24"><path fill="currentColor" d="M14
   WhatsApp:`<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.2.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.2z"/></svg>`};
 $("#social").innerHTML = STORE.socials.map(s=>`<a href="${s.url||"https://wa.me/"+STORE.whatsapp}" target="_blank" rel="noopener">${ICONS[s.name]}${s.name}</a>`).join("");
 $("#waNum").textContent = "+" + STORE.whatsapp.replace(/^(\d{3})(\d{4})(\d{4})$/,"$1 $2 $3");
+$("#ftWa").href = "https://wa.me/"+STORE.whatsapp; $("#ftWa").textContent = "WhatsApp " + $("#waNum").textContent;
 
 /* ===== Eventos ===== */
 document.addEventListener("change", e=>{
@@ -509,11 +619,203 @@ document.addEventListener("click", e=>{
 $("#clearAll").onclick = ()=>{ ["gen","cat","dep","talla","brand","color","price"].forEach(k=>F[k].clear()); F.oferta=false; q=""; $("#q").value=""; shown=PAGE; render(); };
 $("#more").onclick = ()=>{ shown += PAGE; render(); };
 $("#openF").onclick = ()=>openF(true); $("#applyF").onclick = ()=>openF(false); $("#fscrim").onclick = ()=>openF(false);
-$("#openCart").onclick = ()=>openCart(true); $("#closeCart").onclick = ()=>openCart(false); $("#scrim").onclick = ()=>openCart(false);
-document.addEventListener("keydown", e=>{ if(e.key==="Escape"){ openCart(false); openF(false);} });
-$("#ship").onchange = renderCart; $("#cname").oninput = renderCart;
+$("#openCart").onclick = ()=>openCart(true); $("#goPay").onclick = ()=>{ openCart(false); co.step="form"; location.hash="checkout"; }; $("#closeCart").onclick = ()=>openCart(false); $("#scrim").onclick = ()=>openCart(false);
+document.addEventListener("keydown", e=>{ if(e.key!=="Escape") return; if(!$("#modal").hidden){ closeModal(); return; } openCart(false); openF(false); });
 let qt; $("#q").oninput = e=>{ clearTimeout(qt); qt=setTimeout(()=>{ q=e.target.value.trim(); shown=PAGE; render(); },150); };
 $("#sort").onchange = e=>{ sort=e.target.value; render(); };
+
+/* ===== Ficha de producto ===== */
+const slug = id => "p-" + String(id).toLowerCase().replace(/[^a-z0-9-]/g,"-");
+const bySlug = s => db.productos.find(p=>slug(p.id)===s);
+const SHIP = {
+  dom:   {label:"Envío a domicilio", cost:3500, eta:"Entrega de 2 a 4 días hábiles a todo el país (mensajería en el GAM o Correos de Costa Rica)."},
+  tienda:{label:"Retiro en tienda Cartago", cost:0, eta:"Listo para retirar el mismo día hábil, 600 m norte de la Farmacia Fischel."}
+};
+const PAYS = {
+  tarjeta:{label:"Tarjeta de crédito o débito", sub:"Visa, Mastercard o American Express. Verificación 3-D Secure de tu banco."},
+  sinpe:  {label:"SINPE Móvil", sub:"Transferís desde la app de tu banco y enviás el comprobante por WhatsApp."},
+  efectivo:{label:"Pagar al retirar", sub:"Efectivo o tarjeta en la tienda. Solo con retiro en tienda."}
+};
+const CARDS = `<div class="cards"><span class="cardmark">VISA</span><span class="cardmark">Mastercard</span><span class="cardmark">AMEX</span></div>`;
+const LOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>`;
+const pd = {id:null, size:null, qty:1, gift:false};
+const co = {ship:"dom", pay:"tarjeta", step:"form", order:null, f:{name:"",tel:"",mail:"",prov:"San José",canton:"",dir:""}};
+let openSheet = null;
+function showSheet(which){
+  openSheet = which;
+  $("#pdView").hidden = which!=="pd"; $("#coView").hidden = which!=="co";
+  document.body.style.overflow = which ? "hidden" : "";
+  if(which){ const el = which==="pd" ? $("#pdView") : $("#coView"); el.scrollTop = 0; }
+}
+function genRoute(g){ return {Hombre:"hombre",Mujer:"mujer","Niños":"ninos"}[g] || "tienda"; }
+function shipCards(){
+  return `<div class="ship-opts">${Object.entries(SHIP).map(([k,v])=>`<button class="ship-opt" data-ship="${k}" aria-pressed="${co.ship===k}"><b>${v.label} · ${v.cost?FS.crc(v.cost):"Gratis"}</b><span>${v.eta}</span></button>`).join("")}</div>`;
+}
+function renderPD(){
+  const p = db.productos.find(x=>x.id===pd.id);
+  if(!p || !p.activo){ $("#pdBody").innerHTML = `<div class="done"><p>Este producto ya no está disponible.</p><button class="big pri" data-back>Volver al catálogo</button></div>`; return; }
+  const sizes = FS.sizes(p), one = sizes.length===1 ? sizes[0] : null, tot = FS.total(p);
+  if(!pd.size && one && hasStock(p,one)) pd.size = one;
+  if(pd.size && !hasStock(p,pd.size)) pd.size = null;
+  const avail = pd.size ? Math.max(0,(+p.stock[pd.size]||0) - inCart(p.id,pd.size)) : null;
+  if(avail!==null) pd.qty = Math.max(1, Math.min(pd.qty, avail||1));
+  const sale = p.oferta && p.oferta<p.price;
+  const badges = [sale?`<span class="tag">-${Math.round((1-p.oferta/p.price)*100)}%</span>`:"", p.nuevo?`<span class="tag new">Nuevo</span>`:"", tot===0?`<span class="tag out">Agotado</span>`:tot<=3?`<span class="tag low">Últimas ${tot}</span>`:""].join("");
+  const can = tot>0 && pd.size && avail>0;
+  $("#pdBody").innerHTML = `<div class="pd">
+    <div class="pd-img"><div class="badges">${badges}</div>${FS.visual(p)}</div>
+    <div>
+      <div class="crumbs"><a href="#${genRoute(p.gen)}">${esc(p.gen)}</a><span>/</span><span>${esc(p.cat)}</span>${p.dep?`<span>/</span><span>${esc(p.dep)}</span>`:""}<span>/</span><span>${esc(p.id)}</span></div>
+      <div class="brand" style="margin-top:12px">${esc(p.brand)}</div>
+      <h1>${esc(p.name)}${p.gen==="Unisex"?"":" de "+esc(p.gen)}</h1>
+      <div class="pp">${FS.crc(FS.precio(p))}${sale?`<s>${FS.crc(p.price)}</s>`:""}</div>
+      <div class="pd-sec"><h4>Métodos de pago</h4><div class="cards"><span class="cardmark">VISA</span><span class="cardmark">Mastercard</span><span class="cardmark">AMEX</span><span class="cardmark">SINPE Móvil</span></div></div>
+      <div class="pd-sec">
+        <h4>${one==="Única"?"Talla":"Seleccionar talla"+(p.cat==="Calzado"?" (US)":"")}<button class="linkbtn" data-info="tallas">Guía de tallas</button></h4>
+        ${one==="Única" ? `<p class="avail">Talla única</p>` : `<div class="pd-sizes" role="group" aria-label="Tallas">${sizes.map(t=>`<button data-pdsize="${esc(t)}" aria-pressed="${pd.size===t}" ${hasStock(p,t)?"":"disabled"} title="${hasStock(p,t)?"Disponible":"Agotada"}">${esc(t)}</button>`).join("")}</div>`}
+        <p class="avail">${tot===0 ? `<b>Producto agotado.</b> Escribinos por WhatsApp y te avisamos cuando vuelva.` : pd.size ? `Cantidad disponible: <b>${avail}</b>${avail===0?" (ya está en tu carrito)":""}` : `Elegí una talla para ver la cantidad disponible.`}</p>
+      </div>
+      <div class="pd-sec"><h4>Entrega</h4>${shipCards()}
+        <label class="chk"><input type="checkbox" id="pdGift" ${pd.gift?"checked":""}>Este producto es un regalo (se envía sin precio)</label></div>
+      <div class="pd-sec">
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><div class="stepq"><button data-pq="-1" aria-label="Menos">−</button><span>${pd.qty}</span><button data-pq="1" aria-label="Más">+</button></div><p class="err" id="pdErr"></p></div>
+        <button class="big alt" data-pdadd ${tot===0?"disabled":""}>Añadir al carrito</button>
+        <button class="big pri" data-pdbuy ${tot===0?"disabled":""}>Comprar ahora</button>
+        <p class="secure">${LOCK}Pago seguro con tarjeta, SINPE Móvil o al retirar en tienda.</p>
+      </div>
+    </div></div>`;
+  const g = $("#pdGift"); if(g) g.onchange = ()=>{ pd.gift = g.checked; };
+  if(!can && tot>0 && !pd.size) {} // se valida al tocar los botones
+}
+function pdAdd(){
+  const p = db.productos.find(x=>x.id===pd.id), sizes = FS.sizes(p);
+  const t = pd.size || (sizes.length===1 ? sizes[0] : null);
+  if(!t){ $("#pdErr").textContent = "Elegí una talla."; return false; }
+  return add(p, t, pd.qty, pd.gift);
+}
+
+/* ===== Checkout ===== */
+const PROV = ["San José","Alajuela","Cartago","Heredia","Guanacaste","Puntarenas","Limón"];
+function syncCO(){
+  const v = id => { const el=document.getElementById(id); return el ? el.value : null; };
+  ["name","tel","mail","prov","canton","dir"].forEach(k=>{ const x=v("co"+k[0].toUpperCase()+k.slice(1)); if(x!==null) co.f[k]=x; });
+}
+function totals(){ const sub = cart.reduce((s,l)=>s+l.price*l.qty,0), ship = SHIP[co.ship].cost; return {sub, ship, total:sub+ship}; }
+function renderCO(){
+  if(co.step==="done" && co.order){ renderDone(); return; }
+  if(!cart.length){ $("#coBody").innerHTML = `<div class="done"><p>Tu carrito está vacío.</p><button class="big pri" data-back>Ver productos</button></div>`; return; }
+  if(co.ship==="dom" && co.pay==="efectivo") co.pay = "tarjeta";
+  const t = totals(), f = co.f;
+  $("#coBody").innerHTML = `<div class="co">
+    <div style="display:grid;gap:14px;min-width:0">
+      <div class="co-box"><h3><i>1</i>Tus datos</h3>
+        <div class="g2"><label class="fld">Nombre completo<input id="coName" autocomplete="name" value="${esc(f.name)}" placeholder="María Solano"></label>
+        <label class="fld">Teléfono (WhatsApp)<input id="coTel" inputmode="tel" autocomplete="tel" value="${esc(f.tel)}" placeholder="8888-8888"></label></div>
+        <label class="fld">Correo para la confirmación<input id="coMail" type="email" autocomplete="email" value="${esc(f.mail)}" placeholder="tucorreo@ejemplo.com"></label>
+      </div>
+      <div class="co-box"><h3><i>2</i>Entrega</h3>${shipCards()}
+        ${co.ship==="dom" ? `<div class="g2"><label class="fld">Provincia<select id="coProv">${PROV.map(x=>`<option ${x===f.prov?"selected":""}>${x}</option>`).join("")}</select></label>
+        <label class="fld">Cantón y distrito<input id="coCanton" value="${esc(f.canton)}" placeholder="Oreamuno, San Rafael"></label></div>
+        <label class="fld">Dirección exacta<textarea id="coDir" rows="2" placeholder="Señas, color de la casa, número">${esc(f.dir)}</textarea></label>` : ""}
+      </div>
+      <div class="co-box"><h3><i>3</i>Pago</h3>
+        ${Object.entries(PAYS).map(([k,v])=>`<button class="payopt" data-pay="${k}" aria-pressed="${co.pay===k}" ${k==="efectivo"&&co.ship==="dom"?"disabled":""}><span class="dotr"></span><span><b>${v.label}</b><small>${v.sub}</small>${k==="tarjeta"?`<div style="margin-top:6px">${CARDS}</div>`:""}</span></button>`).join("")}
+      </div>
+    </div>
+    <aside class="co-box sum"><h3>Resumen del pedido</h3>
+      ${cart.map(l=>`<div class="sum-line"><div class="thumb">${l.thumb?`<img src="${l.thumb}" alt="">`:""}</div><div>${esc(lname(l))}<small>${esc(l.label)}${l.regalo?" · Regalo":""} · ${l.qty} ${l.qty===1?"unidad":"unidades"}</small></div><b>${FS.crc(l.price*l.qty)}</b></div>`).join("")}
+      <div class="row"><span>Subtotal</span><span>${FS.crc(t.sub)}</span></div>
+      <div class="row"><span>${SHIP[co.ship].label}</span><span>${t.ship?FS.crc(t.ship):"Gratis"}</span></div>
+      <div class="row total"><span>Total</span><span>${FS.crc(t.total)}</span></div>
+      <p class="err" id="coErr"></p>
+      <button class="big pri" id="coPay">${co.pay==="tarjeta" ? "Pagar "+FS.crc(t.total) : "Confirmar pedido"}</button>
+      <p class="secure">${LOCK}Tus datos se usan solo para entregar este pedido.</p>
+    </aside></div>`;
+  $("#coPay").onclick = submitCO;
+  $("#coBody").oninput = ()=>{ const e=$("#coErr"); if(e) e.textContent=""; };
+}
+function submitCO(){
+  syncCO(); const f = co.f, err = m => { $("#coErr").textContent = m; };
+  if(f.name.trim().length<3) return err("Escribí tu nombre completo.");
+  if(f.tel.replace(/\D/g,"").length<8) return err("Escribí un teléfono de 8 dígitos.");
+  if(!/^\S+@\S+\.\S+$/.test(f.mail.trim())) return err("Escribí un correo válido para enviarte la confirmación.");
+  if(co.ship==="dom" && (!f.canton.trim() || f.dir.trim().length<8)) return err("Completá el cantón y la dirección exacta.");
+  db = FS.load();
+  for(const l of cart){ const p = db.productos.find(x=>x.id===l.pid);
+    if(p && l.talla && l.qty > (+p.stock[l.talla]||0)) return err(`Ya no hay suficientes unidades de ${lname(l)} en ${l.label}. Ajustá la cantidad en el carrito.`); }
+  if(co.pay==="tarjeta") openGateway(); else finalize("Pendiente");
+}
+function openGateway(){
+  const t = totals();
+  modal(`<h3 id="mTitle">Pago con tarjeta <button class="x" data-mclose aria-label="Cerrar">×</button></h3>
+    <p class="demo-note">Demostración: aquí no se cobra nada ni se piden datos de tarjeta. En la tienda real en este paso aparece el formulario seguro de la pasarela (por ejemplo Tilopay u ONVO) con la verificación 3-D Secure del banco. La tienda nunca ve ni guarda los números de la tarjeta.</p>
+    <div class="gw"><div class="row"><span>Comercio</span><b>Fashionista Sneakers</b></div><div class="row"><span>Monto</span><b>${FS.crc(t.total)}</b></div>${CARDS}</div>
+    <button class="big pri" id="gwOk">Simular pago aprobado</button>
+    <button class="big ghost" id="gwNo">Simular tarjeta rechazada</button>`);
+  $("#gwOk").onclick = ()=>{ closeModal(); finalize("Pagado"); };
+  $("#gwNo").onclick = ()=>{ closeModal(); $("#coErr").textContent = "El banco rechazó la tarjeta. Probá con otra tarjeta o elegí SINPE Móvil."; };
+}
+function finalize(estado){
+  db = FS.load(); const t = totals(), f = co.f;
+  const codigo = "PED-" + String(Date.now()).slice(-6);
+  cart.forEach(l=>{ const p = db.productos.find(x=>x.id===l.pid); if(p && l.talla && l.talla in p.stock) p.stock[l.talla] = Math.max(0,(+p.stock[l.talla]||0) - l.qty); });
+  const order = { codigo, fecha:new Date().toISOString(), cliente:f.name.trim(), tel:f.tel.trim(), correo:f.mail.trim(),
+    entrega:SHIP[co.ship].label, direccion: co.ship==="dom" ? `${f.prov}, ${f.canton.trim()}. ${f.dir.trim()}` : "",
+    pago:PAYS[co.pay].label, payKey:co.pay, estado, subtotal:t.sub, envio:t.ship, total:t.total,
+    items: cart.map(l=>({nombre:lname(l), detalle:l.label+(l.regalo?" · Regalo":""), qty:l.qty, precio:l.price})) };
+  db.pedidos = db.pedidos || []; db.pedidos.unshift(order);
+  if(!FS.save(db)){ $("#coErr").textContent = "No se pudo guardar el pedido. Intentá de nuevo."; return; }
+  co.order = order; co.step = "done"; cart = []; save(); renderCart(); render(); renderCO();
+  $("#coView").scrollTop = 0;
+}
+function renderDone(){
+  const o = co.order, paid = o.estado==="Pagado";
+  const msg = `Hola Fashionista Sneakers, hice el pedido ${o.codigo} por ${FS.crc(o.total)}.${o.payKey==="sinpe"?" Adjunto el comprobante del SINPE.":""}`;
+  const how = paid ? `Pago aprobado. Te escribimos por WhatsApp cuando tu pedido salga${o.direccion?"":" o esté listo para retirar"}.`
+    : o.payKey==="sinpe" ? `Transferí <b>${FS.crc(o.total)}</b> por SINPE Móvil al <b>${STORE.sinpe}</b> (Fashionista Sneakers) con el código <b>${o.codigo}</b> en el detalle, y envianos el comprobante.`
+    : `Tu pedido queda apartado por 48 horas. Pagás al retirar en la tienda.`;
+  $("#coBody").innerHTML = `<div class="done">
+    <div class="okc ${paid?"":"pend"}">${paid?"✓":"…"}</div>
+    <h2 style="margin:0">${paid?"¡Gracias por tu compra!":"Pedido recibido"}</h2>
+    <p>Pedido <b style="color:var(--ink)">${o.codigo}</b> · ${FS.crc(o.total)} · ${esc(o.entrega)}</p>
+    <p>${how}</p>
+    ${o.payKey==="sinpe"?`<a class="big pri" style="text-decoration:none;display:block" href="https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">Enviar comprobante por WhatsApp</a>`:""}
+    <p class="demo-note">Demo: no se envía correo. El pedido ya aparece en el panel del dueño (pestaña Pedidos) y las tallas vendidas se descontaron del inventario.</p>
+    <button class="big ghost" id="doneBack">Seguir comprando</button></div>`;
+  $("#doneBack").onclick = ()=>{ co.step="form"; co.order=null; location.hash = listHash || "tienda"; };
+}
+
+/* ===== Ventanas de información ===== */
+const INFO = {
+  tallas:["Guía de tallas", `<p>Medidas aproximadas. Pueden variar un poco según la marca; si estás entre dos tallas, elegí la mayor.</p>
+    <div class="tbl"><table><thead><tr><th>US Hombre</th><th>US Mujer</th><th>EU</th><th>Largo del pie</th></tr></thead><tbody>
+    ${[["—","5","35.5","22 cm"],["—","6","36.5","23 cm"],["—","7","38","24 cm"],["7","8.5","40","25 cm"],["7.5","9","40.5","25.5 cm"],["8","9.5","41","26 cm"],["8.5","10","42","26.5 cm"],["9","10.5","42.5","27 cm"],["9.5","11","43","27.5 cm"],["10","11.5","44","28 cm"],["10.5","12","44.5","28.5 cm"],["11","—","45","29 cm"],["12","—","46","30 cm"]].map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join("")}</tr>`).join("")}
+    </tbody></table></div><p>Ropa: XS a XXL según la tabla de cada marca. Niños: 11C–13C (pequeños) y 1Y–6Y (juveniles).</p>`],
+  envios:["Envíos y entregas", `<ul><li>Retiro en tienda en Cartago: gratis, listo el mismo día hábil.</li><li>Envío a domicilio: ₡3 500 a todo el país, de 2 a 4 días hábiles (mensajería en el GAM, Correos de Costa Rica fuera del GAM).</li><li>Te avisamos por WhatsApp cuando el pedido sale.</li></ul><p class="demo-note">Texto de ejemplo: ajustar tarifas y plazos con el negocio.</p>`],
+  cambios:["Cambios y devoluciones", `<ul><li>Cambios de talla dentro de los 8 días naturales con la factura, producto sin uso y en su caja.</li><li>Si el producto llega con defecto de fábrica, lo cambiamos o devolvemos el dinero.</li><li>Las ofertas aplican para cambio de talla, no para devolución.</li></ul><p class="demo-note">Texto de ejemplo: ajustar con el negocio y la Ley 7472 de protección al consumidor.</p>`],
+  faq:["Preguntas frecuentes", `<ul><li><b>¿Los productos son originales?</b> Sí, todos los productos son originales.</li><li><b>¿Puedo apartar?</b> Sí: elegí "Pagar al retirar" y tu pedido queda apartado 48 horas.</li><li><b>¿Cómo sé si hay mi talla?</b> En cada producto solo se pueden elegir las tallas disponibles; las agotadas aparecen tachadas.</li></ul><p class="demo-note">Texto de ejemplo.</p>`],
+  privacidad:["Política de privacidad", `<p>Usamos tu nombre, teléfono, correo y dirección solo para procesar y entregar tu pedido y para contactarte sobre él. No vendemos ni compartimos tus datos, salvo con la empresa de envío y la pasarela de pago para completar la compra. Podés pedir acceso, corrección o eliminación de tus datos escribiéndonos por WhatsApp.</p><p class="demo-note">Texto de ejemplo: revisar conforme a la Ley 8968 de protección de datos personales.</p>`],
+  terminos:["Términos y condiciones", `<p>Los precios están en colones e incluyen IVA. Las existencias se confirman al momento del pago. Las ofertas son válidas hasta agotar existencias. La compra está sujeta a la aprobación del pago por parte del banco o la confirmación del SINPE Móvil.</p><p class="demo-note">Texto de ejemplo: ajustar con el negocio.</p>`]
+};
+function modal(html){ $("#modalCard").innerHTML = html; $("#modal").hidden = false; const b=$("#modalCard [data-mclose]"); if(b) b.focus(); }
+function closeModal(){ $("#modal").hidden = true; }
+$("#modal").onclick = e=>{ if(e.target.id==="modal") closeModal(); };
+
+/* Clics de la ficha, checkout y ventanas */
+document.addEventListener("click", e=>{
+  const t = e.target.closest("button"); if(!t) return;
+  if(t.hasAttribute("data-back")){ if(fromList && history.length>1) history.back(); else location.hash = listHash || "tienda"; return; }
+  if(t.hasAttribute("data-opencart")){ openCart(true); return; }
+  if(t.hasAttribute("data-mclose")){ closeModal(); return; }
+  if(t.dataset.info){ const [ti,body] = INFO[t.dataset.info]; modal(`<h3 id="mTitle">${ti} <button class="x" data-mclose aria-label="Cerrar">×</button></h3>${body}`); return; }
+  if(t.dataset.pdsize){ pd.size = t.dataset.pdsize; pd.qty = 1; renderPD(); return; }
+  if(t.dataset.pq){ const p = db.productos.find(x=>x.id===pd.id); const max = pd.size ? Math.max(1,(+p.stock[pd.size]||0)-inCart(p.id,pd.size)) : 1;
+    const n = pd.qty + (+t.dataset.pq); if(n>max){ $("#pdErr").textContent = pd.size?`Solo hay ${max} disponibles en esa talla.`:"Elegí una talla."; return; } pd.qty = Math.max(1,n); renderPD(); return; }
+  if(t.dataset.ship){ if(openSheet==="co") syncCO(); co.ship = t.dataset.ship; openSheet==="co" ? renderCO() : renderPD(); return; }
+  if(t.dataset.pay){ syncCO(); co.pay = t.dataset.pay; renderCO(); return; }
+  if(t.hasAttribute("data-pdadd")){ if(pdAdd()) renderPD(); return; }
+  if(t.hasAttribute("data-pdbuy")){ if(pdAdd()){ co.step="form"; location.hash = "checkout"; } return; }
+});
 
 /* ===== Rutas: #hombre, #mujer, #ninos, #ofertas, #running, #ropa… ===== */
 const ROUTES = {
@@ -522,9 +824,15 @@ const ROUTES = {
   basketball:{dep:["Basketball"],cat:["Calzado"]}, running:{dep:["Running"],cat:["Calzado"]}, lifestyle:{dep:["Lifestyle"]},
   futbol:{dep:["Fútbol"]}, training:{dep:["Training"]}, skate:{dep:["Skate"]}, ofertas:{oferta:true}, tienda:{}
 };
+let listHash = "", fromList = false;
 function route(scroll){
   const h = location.hash.slice(1), r = ROUTES[h];
   if(h==="perfumeria"){ location.replace("perfumeria.html"); return; }
+  if(h.startsWith("p-")){ const p = bySlug(h); if(p){ if(pd.id!==p.id){ pd.id=p.id; pd.size=null; pd.qty=1; pd.gift=false; } showSheet("pd"); renderPD(); return; } }
+  if(h==="checkout"){ showSheet("co"); renderCO(); return; }
+  const wasSheet = !!openSheet; showSheet(null);
+  if(wasSheet && h===listHash){ return; }
+  listHash = h;
   document.querySelectorAll("#mainNav a").forEach(a=>a.setAttribute("aria-current", a.getAttribute("href")==="#"+h));
   if(!r){ render(); return; }
   ["gen","cat","dep","talla","brand","color","price"].forEach(k=>F[k].clear()); F.oferta=false;
@@ -532,9 +840,9 @@ function route(scroll){
   shown = PAGE; render();
   if(scroll) $("#tienda").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
 }
-window.addEventListener("hashchange", ()=>route(true));
+window.addEventListener("hashchange", ()=>{ fromList = true; route(!openSheet); });
 /* Cambios hechos en el panel (otra pestaña) se ven al instante */
-const reload = ()=>{ db = FS.load(); cart = store.get("fs_cart", []); renderCart(); render(); };
+const reload = ()=>{ db = FS.load(); cart = store.get("fs_cart", []); renderCart(); render(); if(openSheet==="pd") renderPD(); if(openSheet==="co" && co.step!=="done") renderCO(); };
 window.addEventListener("storage", e=>{ if(e.key===FS.KEY || e.key==="fs_cart") reload(); });
 window.addEventListener("pageshow", e=>{ if(e.persisted) reload(); });
 route(!!ROUTES[location.hash.slice(1)]);

@@ -72,12 +72,12 @@
       if (rnd() < .3) mk("Ropa","Niños",b,nm,"Lifestyle",pr,k);
     });
     acc.forEach(([b,nm,k,pr]) => mk("Accesorios","Unisex",b,nm,"Lifestyle",pr,k));
-    return {version:1, productos: out, deportes: TAXO.deportes.slice()};
+    return {version:1, productos: out, deportes: TAXO.deportes.slice(), pedidos: []};
   }
 
   /* ---------- almacenamiento ---------- */
   function load(){
-    try { const d = JSON.parse(localStorage.getItem(KEY) || "null"); if (d && Array.isArray(d.productos)) return d; } catch(e){}
+    try { const d = JSON.parse(localStorage.getItem(KEY) || "null"); if (d && Array.isArray(d.productos)) { d.pedidos = d.pedidos || []; return d; } } catch(e){}
     return seed();
   }
   function save(db){

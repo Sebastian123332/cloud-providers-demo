@@ -37,8 +37,15 @@ header .sp{margin-left:auto;display:flex;gap:8px}
 .btn.sm{padding:6px 10px;font-size:12px}
 main{padding-block:20px 60px}
 .demo{background:rgba(180,60,240,.1);border:1px dashed rgba(180,60,240,.5);border-radius:12px;padding:10px 14px;color:var(--muted);font-size:13px;margin-bottom:16px}
-.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px;margin-bottom:18px}
-@media (max-width:820px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.stats{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px;margin-bottom:18px}
+@media (max-width:980px){.stats{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ped{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;display:grid;gap:8px}
+.ped-h{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.ped-h small,.ped li{color:var(--muted)}
+.ped ul{margin:0;padding-left:18px;font-size:13px}
+.pill{font-size:11px;font-weight:800;border-radius:999px;padding:3px 10px}
+.pill.Pendiente{background:rgba(255,181,71,.15);color:var(--warn)}.pill.Pagado,.pill.Entregado{background:rgba(62,207,114,.13);color:var(--ok)}.pill.Enviado{background:rgba(120,150,255,.15);color:#a9bcff}.pill.Cancelado{background:rgba(255,107,129,.13);color:var(--bad)}
 .stat{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:left;min-width:0}
 button.stat:hover{border-color:var(--violet)}
 .stat b{display:block;font-family:var(--f-display);font-size:26px;line-height:1.1;font-variant-numeric:tabular-nums}
@@ -133,6 +140,7 @@ textarea{width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px}
     <div class="stats" id="stats"></div>
     <div class="tabs" role="tablist">
       <button role="tab" data-tab="inv" aria-selected="true">Inventario</button>
+      <button role="tab" data-tab="ped" aria-selected="false">Pedidos <span id="pedN"></span></button>
       <button role="tab" data-tab="cats" aria-selected="false">Categorías</button>
       <button role="tab" data-tab="io" aria-selected="false">Importar / Exportar</button>
       <button class="btn pri sm" id="newBtn" style="margin-left:auto">+ Agregar producto</button>
@@ -151,6 +159,11 @@ textarea{width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px}
       <div class="legend"><span><i style="background:var(--ok)"></i>3 o más</span><span><i style="background:var(--warn)"></i>1–2 unidades</span><span><i style="background:var(--bad)"></i>Agotada (no se puede comprar)</span><span>Tocá un producto para cambiar cantidades</span></div>
       <div class="list" id="list"></div>
       <div class="pager"><button class="btn" id="more" hidden>Ver más</button></div>
+    </div>
+
+    <div id="tab-ped" hidden>
+      <div class="bar"><select id="pEst" aria-label="Estado del pedido"><option value="">Todos los pedidos</option><option>Pendiente</option><option>Pagado</option><option>Enviado</option><option>Entregado</option><option>Cancelado</option></select></div>
+      <div class="list" id="peds"></div>
     </div>
 
     <div id="tab-cats" hidden>
@@ -217,7 +230,8 @@ function renderStats(){
     <div class="stat ok"><b>${units.toLocaleString("es-CR")}</b><span>Unidades en inventario</span></div>
     <button class="stat bad" data-est="out"><b>${out}</b><span>Productos agotados</span></button>
     <button class="stat bad" data-est="hole"><b>${holes}</b><span>Tallas agotadas</span></button>
-    <button class="stat warn" data-est="low"><b>${low}</b><span>Con 3 o menos</span></button>`;
+    <button class="stat warn" data-est="low"><b>${low}</b><span>Con 3 o menos</span></button>
+    <button class="stat" data-goped="1"><b>${(db.pedidos||[]).filter(o=>o.estado==="Pendiente"||o.estado==="Pagado").length}</b><span>Pedidos por despachar</span></button>`;
 }
 
 /* ---------- inventario ---------- */
@@ -253,13 +267,27 @@ function renderList(){
     </button>`).join("") : `<div class="empty">No hay productos con ese filtro.</div>`;
   $("#more").hidden = n >= rows.length;
 }
-function renderAll(){ renderStats(); fillSelects(); renderList(); renderDeps(); }
+function renderPeds(){
+  const P = db.pedidos || [], f = $("#pEst").value, L = P.filter(o=>!f || o.estado===f);
+  const pend = P.filter(o=>o.estado==="Pendiente"||o.estado==="Pagado").length;
+  $("#pedN").textContent = pend ? `(${pend})` : "";
+  $("#peds").innerHTML = L.length ? L.map(o=>`<div class="ped">
+    <div class="ped-h"><div><b>${esc(o.codigo)}</b> · ${esc(o.cliente)} <span class="pill ${esc(o.estado)}">${esc(o.estado)}</span><br><small>${new Date(o.fecha).toLocaleString("es-CR",{dateStyle:"short",timeStyle:"short"})} · ${esc(o.pago)} · ${esc(o.entrega)}</small></div><b style="font-family:var(--f-display);font-size:18px">${FS.crc(o.total)}</b></div>
+    <ul>${o.items.map(i=>`<li>${i.qty} × ${esc(i.nombre)} (${esc(i.detalle)}) · ${FS.crc(i.precio*i.qty)}</li>`).join("")}</ul>
+    ${o.direccion?`<small style="color:var(--muted)">Dirección: ${esc(o.direccion)}</small>`:""}
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><select data-ped="${esc(o.codigo)}" aria-label="Estado">${["Pendiente","Pagado","Enviado","Entregado","Cancelado"].map(s=>`<option ${s===o.estado?"selected":""}>${s}</option>`).join("")}</select>
+    <a class="btn sm" target="_blank" rel="noopener" href="https://wa.me/506${String(o.tel).replace(/\D/g,"").slice(-8)}">Escribir al cliente</a><small style="color:var(--muted)">${esc(o.tel)} · ${esc(o.correo||"")}</small></div>
+  </div>`).join("") : `<div class="empty">Todavía no hay pedidos${f?" con ese estado":""}. Hacé una compra de prueba en la tienda y aparece aquí.</div>`;
+  $("#peds").querySelectorAll("[data-ped]").forEach(sel=>sel.onchange=()=>{ const o=db.pedidos.find(x=>x.codigo===sel.dataset.ped); o.estado=sel.value; persist(); renderPeds(); renderStats(); toast("Estado actualizado ✓"); });
+}
+$("#pEst").onchange = renderPeds;
+function renderAll(){ renderStats(); fillSelects(); renderList(); renderDeps(); renderPeds(); }
 ["#q","#fGen","#fCat","#fDep","#fEst"].forEach(id=>$(id).addEventListener("input",()=>{shown=30;renderList();}));
 $("#more").onclick = ()=>{ shown+=30; renderList(); };
-$("#stats").onclick = e=>{ const b=e.target.closest("[data-est]"); if(!b) return; $("#fEst").value=b.dataset.est; tab("inv"); shown=30; renderList(); };
+$("#stats").onclick = e=>{ if(e.target.closest("[data-goped]")){ tab("ped"); return; } const b=e.target.closest("[data-est]"); if(!b) return; $("#fEst").value=b.dataset.est; tab("inv"); shown=30; renderList(); };
 
 /* ---------- pestañas ---------- */
-function tab(t){ document.querySelectorAll("[data-tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t)); ["inv","cats","io"].forEach(x=>$("#tab-"+x).hidden = x!==t); }
+function tab(t){ document.querySelectorAll("[data-tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t)); ["inv","ped","cats","io"].forEach(x=>$("#tab-"+x).hidden = x!==t); }
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
 
 /* ---------- editor ---------- */
