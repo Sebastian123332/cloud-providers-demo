@@ -1,0 +1,489 @@
+<title>Fashionista Sneakers</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: vitrina oscura de tienda — cabecera fija, logo de marquesina, pestañas por departamento, rejilla de productos y carrito lateral. Tema único oscuro (identidad de la marca). */
+:root{
+  --bg:#000000;
+  --panel:#121018;
+  --panel-2:#1a1722;
+  --line:#2a2533;
+  --ink:#f3eef8;
+  --muted:#a59cb2;
+  --violet:#b43cf0;
+  --violet-hi:#d27bff;
+  --violet-deep:#5e1a86;
+  --ok:#3ecf72;
+  --f-display:"Chakra Petch","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--violet-hi);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* Header */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:16px;padding-block:10px}
+.top img{height:40px;width:auto}
+.top nav{display:flex;gap:4px;margin-left:auto}
+.top nav a{font-family:var(--f-display);font-weight:600;text-transform:uppercase;letter-spacing:.08em;font-size:13px;text-decoration:none;padding:8px 12px;border-radius:8px;color:var(--muted)}
+.top nav a:hover{color:var(--ink);background:var(--panel)}
+.cart-btn{display:flex;align-items:center;gap:8px;background:var(--violet);border:0;border-radius:999px;padding:9px 16px;font-weight:700;color:#fff}
+.cart-btn:hover{background:var(--violet-hi);color:#160322}
+.cart-btn .n{background:#fff;color:var(--violet-deep);border-radius:999px;min-width:22px;height:22px;display:grid;place-items:center;font-size:12px;font-variant-numeric:tabular-nums}
+@media (max-width:760px){.top nav{display:none}.cart-btn{margin-left:auto}.top img{height:32px}}
+
+/* Hero */
+.hero{padding-block:44px 28px;text-align:center;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;left:50%;top:40%;width:720px;height:260px;max-width:100%;transform:translate(-50%,-50%);background:radial-gradient(closest-side,rgba(180,60,240,.28),transparent);pointer-events:none}
+.hero img.logo{width:min(640px,100%);height:auto;position:relative;z-index:1}
+.hero p.lead{font-size:clamp(16px,2.4vw,19px);color:var(--muted);max-width:56ch;margin:14px auto 0;position:relative;z-index:1}
+.hero .depts{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:24px;position:relative;z-index:1}
+.dept{display:flex;align-items:center;gap:10px;text-decoration:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:10px 18px 10px 12px;font-family:var(--f-display);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:14px}
+.dept:hover{border-color:var(--violet)}
+.dept svg{width:26px;height:26px}
+.facts{display:flex;justify-content:center;gap:8px 22px;flex-wrap:wrap;margin-top:22px;font-size:13px;color:var(--muted);position:relative;z-index:1}
+.facts span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(62,207,114,.2)}
+
+/* Shop */
+.shop{padding-block:24px 56px}
+.shop-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+h2{font-family:var(--f-display);font-weight:700;font-size:clamp(26px,4vw,36px);line-height:1.1;margin:0;text-transform:uppercase;letter-spacing:.02em;text-wrap:balance}
+h2 small{display:block;font-family:var(--f-body);font-size:13px;font-weight:600;color:var(--violet-hi);letter-spacing:.14em;margin-bottom:6px}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:4px;background:var(--panel)}
+.tabs button{border:0;background:transparent;padding:8px 14px;border-radius:9px;font-weight:700;font-size:14px;color:var(--muted)}
+.tabs button[aria-selected="true"]{background:var(--violet);color:#fff}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
+.tools input,.tools select{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 12px;font:inherit;font-size:14px}
+.tools input{flex:1 1 220px;min-width:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px}
+.chip{border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600;color:var(--muted)}
+.chip[aria-pressed="true"]{border-color:var(--violet);color:var(--ink);background:rgba(180,60,240,.14)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden;transition:border-color .2s,transform .2s}
+.card:hover{border-color:#43395a;transform:translateY(-2px)}
+.art{aspect-ratio:4/3;max-width:100%;display:grid;place-items:center;position:relative;background:radial-gradient(circle at 50% 60%,var(--glow,#2b2036) 0%,var(--panel-2) 70%)}
+.art svg{width:78%;height:78%}
+.tag{position:absolute;top:10px;left:10px;font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:4px 8px;border-radius:6px;background:var(--violet);color:#fff}
+.tag.alt{background:#fff;color:var(--violet-deep)}
+.body{padding:14px;display:flex;flex-direction:column;gap:10px;flex:1}
+.brand{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--violet-hi)}
+.name{font-family:var(--f-display);font-weight:600;font-size:18px;line-height:1.2;margin:2px 0 0}
+.meta{font-size:13px;color:var(--muted);margin:0}
+.sizes{display:flex;gap:5px;flex-wrap:wrap}
+.sizes button{min-width:38px;padding:5px 7px;border-radius:8px;border:1px solid var(--line);background:var(--panel-2);font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.sizes button[aria-pressed="true"]{border-color:var(--violet-hi);background:var(--violet);color:#fff}
+.buy{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:auto;padding-top:4px}
+.price{font-family:var(--f-display);font-weight:700;font-size:20px;font-variant-numeric:tabular-nums}
+.price s{font-family:var(--f-body);font-size:12px;color:var(--muted);font-weight:500;display:block;line-height:1}
+.add{border:0;border-radius:10px;padding:10px 14px;background:var(--ink);color:#13081b;font-weight:800;font-size:13px}
+.add:hover{background:var(--violet-hi)}
+.hint{font-size:12px;color:#ff9db4;min-height:0}
+.empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0}
+
+/* Visit */
+.visit{border-top:1px solid var(--line);padding-block:48px}
+.visit .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:32px;align-items:center}
+.visit figure{margin:0;justify-self:center}
+.visit figure img{width:min(320px,100%);aspect-ratio:1;object-fit:cover;border-radius:50%;border:4px solid var(--violet);display:block}
+.visit ul{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:12px}
+.visit li{display:flex;gap:12px;align-items:flex-start;color:var(--muted)}
+.visit li b{color:var(--ink);display:block;font-weight:700}
+.visit li svg{flex:none;width:22px;height:22px;margin-top:2px;color:var(--violet-hi)}
+@media (max-width:760px){.visit .wrap{grid-template-columns:1fr}}
+
+.social{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+.social a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px}
+.social a:hover{border-color:var(--violet)}
+.social svg{width:18px;height:18px}
+
+footer{border-top:1px solid var(--line);padding-block:22px 28px;color:var(--muted);font-size:13px}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* Cart drawer */
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:70}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(420px,100%);background:var(--panel);border-left:1px solid var(--line);z-index:80;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);padding-right:env(safe-area-inset-right,0px);transform:translateX(100%);transition:transform .25s ease}
+.drawer.open{transform:none}
+.d-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
+.d-head h3{font-family:var(--f-display);text-transform:uppercase;letter-spacing:.06em;margin:0;font-size:20px}
+.x{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;width:38px;height:38px;font-size:20px;line-height:1}
+.d-list{flex:1;overflow:auto;padding:12px 18px;display:grid;gap:12px;align-content:start}
+.line{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--panel-2);border:1px solid var(--line);border-radius:12px;padding:8px}
+.line .thumb{width:64px;height:56px;border-radius:8px;display:grid;place-items:center;background:var(--bg)}
+.line .thumb svg{width:88%;height:88%}
+.line .t{font-weight:700;font-size:14px;line-height:1.25}
+.line .s{font-size:12px;color:var(--muted)}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font-weight:800}
+.qty span{min-width:18px;text-align:center;font-variant-numeric:tabular-nums;font-weight:700}
+.rm{background:none;border:0;color:var(--muted);font-size:12px;text-decoration:underline;padding:0;margin-top:2px}
+.d-foot{border-top:1px solid var(--line);padding:16px 18px;display:grid;gap:12px}
+.d-foot label{font-size:13px;color:var(--muted);display:grid;gap:6px}
+.d-foot select,.d-foot input{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;color:var(--ink);font:inherit;font-size:14px}
+.row{display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+.row.total{font-family:var(--f-display);font-size:22px;font-weight:700}
+.wa{display:flex;align-items:center;justify-content:center;gap:10px;text-decoration:none;background:#25d366;color:#04210f;font-weight:800;border-radius:12px;padding:13px;font-size:15px}
+.wa[aria-disabled="true"]{opacity:.45;pointer-events:none}
+.note{font-size:12px;color:var(--muted);margin:0}
+.d-empty{color:var(--muted);text-align:center;padding:40px 10px}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--ink);color:#13081b;font-weight:700;padding:10px 16px;border-radius:999px;z-index:90;transition:.25s;pointer-events:none;font-size:14px}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a href="#inicio" aria-label="Fashionista Sneakers, inicio"><img src="{{LOGO}}" alt="Fashionista Sneakers"></a>
+    <nav aria-label="Departamentos">
+      <a href="#tenis">Tenis</a>
+      <a href="#ropa">Ropa</a>
+      <a href="#perfumeria">Perfumería</a>
+      <a href="#visitanos">Visítanos</a>
+    </nav>
+    <button class="cart-btn" id="openCart" aria-label="Abrir carrito">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h15l-1.5 9h-12z"/><path d="M6 7 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
+      Carrito <span class="n" id="cartCount">0</span>
+    </button>
+  </div>
+</header>
+
+<main id="inicio">
+  <section class="hero">
+    <div class="wrap">
+      <img class="logo" src="{{LOGO}}" alt="Fashionista Sneakers">
+      <p class="lead">Tenis, ropa urbana y perfumería original en Cartago. Escoge tu talla, arma tu carrito y te confirmamos el pedido por WhatsApp.</p>
+      <div class="depts">
+        <a class="dept" href="#tenis"><svg viewBox="0 0 64 40" aria-hidden="true"><use href="#ic-shoe"/></svg>Tenis</a>
+        <a class="dept" href="#ropa"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#ic-tee"/></svg>Ropa</a>
+        <a class="dept" href="#perfumeria"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#ic-bottle"/></svg>Perfumería</a>
+      </div>
+      <div class="facts">
+        <span><i class="dot"></i>Abierto ahora</span>
+        <span>Envíos a todo Costa Rica</span>
+        <span>Pago SINPE Móvil, tarjeta o efectivo</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="shop" id="tienda">
+    <div class="wrap">
+      <div class="shop-head">
+        <h2 id="shopTitle"><small>Catálogo</small>Todo</h2>
+        <div class="tabs" role="tablist" aria-label="Departamento">
+          <button role="tab" data-cat="todo" aria-selected="true">Todo</button>
+          <button role="tab" data-cat="tenis" aria-selected="false">Tenis</button>
+          <button role="tab" data-cat="ropa" aria-selected="false">Ropa</button>
+          <button role="tab" data-cat="perfumeria" aria-selected="false">Perfumería</button>
+        </div>
+      </div>
+      <div class="tools">
+        <input id="q" type="search" placeholder="Buscar: Jordan, hoodie, Sauvage…" aria-label="Buscar productos">
+        <select id="sort" aria-label="Ordenar">
+          <option value="pop">Más vendidos</option>
+          <option value="asc">Precio: menor a mayor</option>
+          <option value="desc">Precio: mayor a menor</option>
+        </select>
+      </div>
+      <div class="chips" id="chips" aria-label="Filtrar por marca"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="visit" id="visitanos">
+    <div class="wrap">
+      <figure><img src="{{STORE}}" alt="Fachada de la tienda Fashionista Sneakers en Cartago"></figure>
+      <div>
+        <h2><small>Tienda física</small>Visítanos en Cartago</h2>
+        <ul>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span><b>Dirección</b>600 metros norte de la Farmacia Fischel, Cartago, Costa Rica</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><b>Horario</b>Confirma el horario del día por WhatsApp antes de tu visita.</span></li>
+          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h11v9H3zM14 10h4l3 3v3h-7z"/><circle cx="7" cy="18" r="1.6"/><circle cx="17" cy="18" r="1.6"/></svg><span><b>Envíos</b>Mensajería en el GAM y Correos de Costa Rica al resto del país.</span></li>
+        </ul>
+        <div class="social" id="social"></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Fashionista Sneakers · Calzado deportivo, ropa y perfumería</span>
+    <span>123 mil seguidores en Facebook</span>
+  </div>
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+<aside class="drawer" id="drawer" aria-label="Carrito" aria-hidden="true">
+  <div class="d-head"><h3>Tu carrito</h3><button class="x" id="closeCart" aria-label="Cerrar carrito">×</button></div>
+  <div class="d-list" id="lines"></div>
+  <div class="d-foot" id="foot">
+    <label for="ship">Entrega
+      <select id="ship">
+        <option value="0">Retiro en tienda (Cartago) · gratis</option>
+        <option value="2500">Mensajería GAM · ₡2 500</option>
+        <option value="3500">Correos de Costa Rica · ₡3 500</option>
+      </select>
+    </label>
+    <label for="cname">Nombre para el pedido
+      <input id="cname" type="text" autocomplete="name" placeholder="Ej. María Solano">
+    </label>
+    <div class="row"><span>Subtotal</span><span id="sub">₡0</span></div>
+    <div class="row"><span>Envío</span><span id="shipv">₡0</span></div>
+    <div class="row total"><span>Total</span><span id="tot">₡0</span></div>
+    <a class="wa" id="wa" href="#" target="_blank" rel="noopener" aria-disabled="true">
+      <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><use href="#ic-wa"/></svg>Enviar pedido por WhatsApp
+    </a>
+    <p class="note">Se abre WhatsApp con el detalle del pedido listo para enviar. La tienda confirma disponibilidad y forma de pago. WhatsApp de la tienda: <span id="waNum"></span></p>
+  </div>
+</aside>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- Íconos y siluetas reutilizables -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="ic-shoe" viewBox="0 0 64 40"><path d="M3 26c0-6 2-12 5-16 3 0 6 2 9 4 4 2 7 3 11 3 6 0 10 3 16 6 6 2 14 2 16 5 1 2 0 5-2 6H8c-3 0-5-3-5-8z" fill="currentColor"/></symbol>
+    <symbol id="ic-tee" viewBox="0 0 64 64"><path d="M22 8 8 16l5 12 7-3v31h24V25l7 3 5-12-14-8c-2 4-6 6-10 6s-8-2-10-6z" fill="currentColor"/></symbol>
+    <symbol id="ic-bottle" viewBox="0 0 64 64"><rect x="26" y="4" width="12" height="8" rx="2" fill="currentColor"/><rect x="29" y="12" width="6" height="6" fill="currentColor"/><rect x="14" y="18" width="36" height="42" rx="8" fill="currentColor"/></symbol>
+    <symbol id="ic-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.2.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 1.9 2.9 4.6 4 1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.2z"/></symbol>
+  </defs>
+</svg>
+
+<script>
+/* ===== Configuración de la tienda: reemplaza con los datos reales ===== */
+const STORE = {
+  whatsapp: "50688888888",                 // número con código de país, sin + ni espacios (EJEMPLO)
+  socials: [
+    {name:"Facebook",  url:"https://www.facebook.com/search/top?q=Fashionista%20sneakers"},
+    {name:"Instagram", url:"https://www.instagram.com/"},   // reemplazar por el perfil real
+    {name:"TikTok",    url:"https://www.tiktok.com/"},      // reemplazar por el perfil real
+    {name:"WhatsApp",  url:null}                             // se arma con el número de arriba
+  ]
+};
+
+/* ===== Catálogo (precios de ejemplo en colones) ===== */
+const SHOE_US = ["7","7.5","8","8.5","9","9.5","10","10.5","11"];
+const CLOTH = ["S","M","L","XL"];
+const P = [
+  // Tenis
+  {id:"af1",  cat:"tenis", brand:"Nike",          name:"Air Force 1 '07",         meta:"Blanco triple · Cuero",           price:72000, sizes:SHOE_US, kind:"shoe", c1:"#f4f4f4", c2:"#d9d9d9", tag:"Top ventas", pop:1},
+  {id:"aj1",  cat:"tenis", brand:"Jordan",        name:"Air Jordan 1 Mid",        meta:"Negro / rojo",                    price:98000, sizes:SHOE_US, kind:"shoe", c1:"#c8192e", c2:"#111111", tag:"Nuevo", pop:2},
+  {id:"samba",cat:"tenis", brand:"Adidas",        name:"Samba OG",                meta:"Blanco / verde · Suela goma",     price:79000, sizes:SHOE_US, kind:"shoe", c1:"#f1efe6", c2:"#1f6b3a", pop:3},
+  {id:"oldsk",cat:"tenis", brand:"Vans",          name:"Old Skool",               meta:"Negro / blanco · Gamuza y lona",  price:48000, old:55000, sizes:SHOE_US, kind:"shoe", c1:"#151515", c2:"#f2f2f2", tag:"Oferta", pop:4},
+  {id:"nb550",cat:"tenis", brand:"New Balance",   name:"550",                     meta:"Blanco / azul marino",            price:85000, sizes:SHOE_US, kind:"shoe", c1:"#f3f3ef", c2:"#1d3260", pop:6},
+  {id:"ua",   cat:"tenis", brand:"Under Armour",  name:"HOVR Phantom 3",          meta:"Running · Gris carbón",           price:69000, sizes:SHOE_US, kind:"shoe", c1:"#4a4d55", c2:"#b43cf0", pop:9},
+  {id:"dunk", cat:"tenis", brand:"Nike",          name:"Dunk Low Retro",          meta:"Panda · Blanco / negro",          price:82000, sizes:SHOE_US, kind:"shoe", c1:"#f4f4f4", c2:"#161616", pop:5},
+  // Ropa
+  {id:"hood", cat:"ropa",  brand:"Nike",          name:"Hoodie Club Fleece",      meta:"Algodón perchado · Negro",        price:38000, sizes:CLOTH, kind:"hoodie", c1:"#1b1b1d", c2:"#3a3a3f", tag:"Top ventas", pop:2},
+  {id:"tee",  cat:"ropa",  brand:"Jordan",        name:"Camiseta Jumpman",        meta:"100 % algodón · Blanca",          price:22000, sizes:CLOTH, kind:"tee", c1:"#f3f3f3", c2:"#c8192e", pop:4},
+  {id:"tre",  cat:"ropa",  brand:"Adidas",        name:"Jacket Firebird",         meta:"Tricot · Negro con 3 franjas",    price:45000, sizes:CLOTH, kind:"hoodie", c1:"#151515", c2:"#ffffff", pop:7},
+  {id:"short",cat:"ropa",  brand:"Nike",          name:"Short Dri-FIT",           meta:"Deportivo · Gris",                price:19000, old:24000, sizes:CLOTH, kind:"tee", c1:"#8a8d94", c2:"#e9e9e9", tag:"Oferta", pop:8},
+  {id:"cap",  cat:"ropa",  brand:"New Era",       name:"Gorra 9FIFTY Snapback",   meta:"Ajustable · Morado",              price:24000, sizes:["Única"], kind:"cap", c1:"#6c1fa0", c2:"#ffffff", pop:6},
+  {id:"sock", cat:"ropa",  brand:"Nike",          name:"Medias Everyday (3 pares)", meta:"Media caña · Blanco",           price:12000, sizes:["S","M","L"], kind:"tee", c1:"#efefef", c2:"#cfcfcf", pop:10},
+  // Perfumería
+  {id:"sauv", cat:"perfumeria", brand:"Dior",        name:"Sauvage EDT",           meta:"100 ml · Aromática fresca",      price:78000, sizes:["60 ml","100 ml"], prices:{"60 ml":62000,"100 ml":78000}, kind:"bottle", c1:"#1f3a63", c2:"#c9d3e2", tag:"Top ventas", pop:1},
+  {id:"bleu", cat:"perfumeria", brand:"Chanel",      name:"Bleu de Chanel EDP",    meta:"100 ml · Amaderada",             price:92000, sizes:["50 ml","100 ml"], prices:{"50 ml":68000,"100 ml":92000}, kind:"bottle", c1:"#101a2c", c2:"#5b6f93", pop:3},
+  {id:"good", cat:"perfumeria", brand:"Carolina Herrera", name:"Good Girl EDP",    meta:"80 ml · Floral oriental",        price:74000, sizes:["50 ml","80 ml"], prices:{"50 ml":58000,"80 ml":74000}, kind:"bottle", c1:"#1b1430", c2:"#d4a24c", pop:2},
+  {id:"oneM", cat:"perfumeria", brand:"Paco Rabanne",name:"1 Million EDT",         meta:"100 ml · Especiada",             price:64000, old:71000, sizes:["100 ml"], kind:"bottle", c1:"#b48a2c", c2:"#f3d27a", tag:"Oferta", pop:4},
+  {id:"lib",  cat:"perfumeria", brand:"YSL",         name:"Libre EDP",             meta:"90 ml · Floral lavanda",         price:86000, sizes:["50 ml","90 ml"], prices:{"50 ml":64000,"90 ml":86000}, kind:"bottle", c1:"#e6e0d3", c2:"#1a1a1a", tag:"Nuevo", pop:5},
+  {id:"acq",  cat:"perfumeria", brand:"Giorgio Armani", name:"Acqua di Giò EDT",   meta:"100 ml · Cítrica acuática",      price:70000, sizes:["100 ml"], kind:"bottle", c1:"#9fc3d8", c2:"#ffffff", pop:6},
+  {id:"lady", cat:"perfumeria", brand:"Fashionista", name:"Body mist Violeta",     meta:"250 ml · Frutal · Marca propia", price:9500, sizes:["250 ml"], kind:"bottle", c1:"#b43cf0", c2:"#f3d6ff", pop:7}
+];
+const CAT_LABEL = {todo:"Todo", tenis:"Tenis", ropa:"Ropa", perfumeria:"Perfumería"};
+
+/* ===== Ilustraciones de producto ===== */
+function art(p){
+  const a=p.c1,b=p.c2;
+  if(p.kind==="shoe") return `<svg viewBox="0 0 200 120" aria-hidden="true">
+    <ellipse cx="100" cy="104" rx="84" ry="7" fill="#000" opacity=".35"/>
+    <path d="M18 78c0-18 6-36 16-48 9 0 18 6 27 12 12 7 22 10 34 10 18 0 30 9 48 17 17 7 40 6 45 15 3 6 0 13-6 16H32c-8 0-14-8-14-22z" fill="${a}"/>
+    <path d="M18 88h172c0 5-2 8-6 10H32c-8 0-14-4-14-10z" fill="${b}"/>
+    <path d="M70 58c20 6 48 6 70 0-6 10-28 18-52 16" fill="none" stroke="${b}" stroke-width="7" stroke-linecap="round"/>
+    <path d="M60 42l8 10M72 46l7 10M84 48l6 10" stroke="${b}" stroke-width="3" stroke-linecap="round" opacity=".8"/>
+    <path d="M34 30c-6 10-10 24-10 40" stroke="${b}" stroke-width="5" fill="none" opacity=".6"/></svg>`;
+  if(p.kind==="hoodie") return `<svg viewBox="0 0 200 160" aria-hidden="true">
+    <path d="M70 20c8-8 52-8 60 0l40 22 14 56-24 6-8-30v74H48V74l-8 30-24-6 14-56z" fill="${a}"/>
+    <path d="M78 22c4 22 40 22 44 0" fill="none" stroke="${b}" stroke-width="5"/>
+    <path d="M92 40v26M108 40v26" stroke="${b}" stroke-width="3" stroke-linecap="round"/>
+    <rect x="70" y="104" width="60" height="22" rx="6" fill="none" stroke="${b}" stroke-width="3" opacity=".7"/>
+    <path d="M44 44l-6 60M156 44l6 60" stroke="${b}" stroke-width="3" opacity=".5"/></svg>`;
+  if(p.kind==="tee") return `<svg viewBox="0 0 200 160" aria-hidden="true">
+    <path d="M72 18 30 40l14 34 18-8v80h76V66l18 8 14-34-42-22c-6 10-16 16-28 16s-22-6-28-16z" fill="${a}"/>
+    <path d="M72 18c6 10 16 16 28 16s22-6 28-16" fill="none" stroke="${b}" stroke-width="4"/>
+    <circle cx="100" cy="84" r="14" fill="${b}" opacity=".85"/></svg>`;
+  if(p.kind==="cap") return `<svg viewBox="0 0 200 140" aria-hidden="true">
+    <path d="M40 92c0-40 26-62 60-62s60 22 60 62z" fill="${a}"/>
+    <path d="M40 92h120c22 0 34 6 34 12-30 6-90 6-154-2z" fill="${a}" opacity=".85"/>
+    <path d="M100 30v62M70 40c-8 14-10 32-10 52M130 40c8 14 10 32 10 52" stroke="${b}" stroke-width="2" opacity=".5" fill="none"/>
+    <rect x="84" y="56" width="32" height="18" rx="4" fill="${b}"/><circle cx="100" cy="30" r="4" fill="${b}"/></svg>`;
+  return `<svg viewBox="0 0 160 180" aria-hidden="true">
+    <ellipse cx="80" cy="170" rx="52" ry="6" fill="#000" opacity=".35"/>
+    <rect x="62" y="10" width="36" height="26" rx="5" fill="${b}"/>
+    <rect x="70" y="36" width="20" height="14" fill="${b}" opacity=".75"/>
+    <rect x="28" y="50" width="104" height="116" rx="18" fill="${a}"/>
+    <rect x="40" y="62" width="14" height="90" rx="7" fill="#fff" opacity=".18"/>
+    <rect x="52" y="96" width="56" height="30" rx="4" fill="${b}" opacity=".9"/>
+    <rect x="60" y="106" width="40" height="4" rx="2" fill="${a}"/><rect x="66" y="114" width="28" height="3" rx="1.5" fill="${a}" opacity=".7"/></svg>`;
+}
+
+/* ===== Utilidades ===== */
+const $ = s => document.querySelector(s);
+const crc = n => "₡" + n.toLocaleString("es-CR").replace(/[., ]/g," ").replace(/\s/g," ");
+const full = p => p.name.includes(p.brand) ? p.name : p.brand+" "+p.name;
+const priceOf = (p,size) => (p.prices && p.prices[size]) || p.price;
+const store = {
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
+};
+
+/* ===== Estado ===== */
+let cat = "todo", brand = null, q = "", sort = "pop";
+const picked = {};                       // talla elegida por producto
+let cart = store.get("fs-cart", []);     // [{id,size,qty}]
+
+/* ===== Catálogo ===== */
+function visible(){
+  let list = P.filter(p => cat==="todo" || p.cat===cat);
+  if(brand) list = list.filter(p=>p.brand===brand);
+  if(q){const t=q.toLowerCase(); list=list.filter(p=>(p.name+" "+p.brand+" "+p.meta).toLowerCase().includes(t));}
+  if(sort==="asc") list=[...list].sort((a,b)=>a.price-b.price);
+  else if(sort==="desc") list=[...list].sort((a,b)=>b.price-a.price);
+  else list=[...list].sort((a,b)=>a.pop-b.pop || a.cat.localeCompare(b.cat));
+  return list;
+}
+function renderChips(){
+  const brands=[...new Set(P.filter(p=>cat==="todo"||p.cat===cat).map(p=>p.brand))];
+  if(brand && !brands.includes(brand)) brand=null;
+  $("#chips").innerHTML = `<button class="chip" data-b="" aria-pressed="${!brand}">Todas las marcas</button>` +
+    brands.map(b=>`<button class="chip" data-b="${b}" aria-pressed="${brand===b}">${b}</button>`).join("");
+}
+function renderGrid(){
+  const list=visible();
+  $("#shopTitle").innerHTML = `<small>Catálogo · ${list.length} productos</small>${CAT_LABEL[cat]}`;
+  if(!list.length){$("#grid").innerHTML=`<p class="empty">No encontramos productos con esa búsqueda. Prueba otra marca o escribe menos palabras.</p>`;return;}
+  $("#grid").innerHTML = list.map(p=>{
+    const sz = picked[p.id] || (p.sizes.length===1 ? p.sizes[0] : null);
+    const pr = priceOf(p, sz);
+    const label = p.cat==="tenis" ? "Talla US" : p.cat==="ropa" ? "Talla" : "Presentación";
+    return `<article class="card" style="--glow:${p.c1}33">
+      <div class="art">${p.tag?`<span class="tag ${p.tag==="Nuevo"?"alt":""}">${p.tag}</span>`:""}${art(p)}</div>
+      <div class="body">
+        <div><div class="brand">${p.brand}</div><h3 class="name">${p.name}</h3><p class="meta">${p.meta}</p></div>
+        <div role="group" aria-label="${label}">
+          <div class="meta" style="font-size:12px;margin-bottom:5px">${label}</div>
+          <div class="sizes">${p.sizes.map(s=>`<button data-id="${p.id}" data-size="${s}" aria-pressed="${sz===s}">${s}</button>`).join("")}</div>
+        </div>
+        <div class="hint" id="h-${p.id}"></div>
+        <div class="buy">
+          <div class="price">${p.old?`<s>${crc(p.old)}</s>`:""}${crc(pr)}</div>
+          <button class="add" data-add="${p.id}">Agregar</button>
+        </div>
+      </div></article>`;
+  }).join("");
+}
+function setCat(c, scroll){
+  cat = CAT_LABEL[c] ? c : "todo";
+  document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected", b.dataset.cat===cat));
+  renderChips(); renderGrid();
+  if(scroll) $("#tienda").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto":"smooth"});
+}
+
+/* ===== Carrito ===== */
+function save(){store.set("fs-cart",cart)}
+function add(id,size){
+  const l=cart.find(x=>x.id===id&&x.size===size);
+  if(l) l.qty++; else cart.push({id,size,qty:1});
+  save(); renderCart(); toast("Agregado al carrito");
+}
+function renderCart(){
+  const n=cart.reduce((s,l)=>s+l.qty,0);
+  $("#cartCount").textContent=n;
+  if(!cart.length){
+    $("#lines").innerHTML=`<div class="d-empty"><p>Tu carrito está vacío.</p><p>Elige una talla en cualquier producto y toca <b>Agregar</b>.</p></div>`;
+  } else {
+    $("#lines").innerHTML=cart.map((l,i)=>{
+      const p=P.find(x=>x.id===l.id); if(!p) return "";
+      return `<div class="line"><div class="thumb">${art(p)}</div>
+        <div><div class="t">${full(p)}</div><div class="s">${p.cat==="perfumeria"?"":"Talla "}${l.size} · ${crc(priceOf(p,l.size))}</div>
+        <button class="rm" data-rm="${i}">Quitar</button></div>
+        <div class="qty"><button data-dec="${i}" aria-label="Quitar uno">−</button><span>${l.qty}</span><button data-inc="${i}" aria-label="Agregar uno">+</button></div></div>`;
+    }).join("");
+  }
+  const sub=cart.reduce((s,l)=>{const p=P.find(x=>x.id===l.id);return s+(p?priceOf(p,l.size)*l.qty:0)},0);
+  const ship=cart.length?+$("#ship").value:0;
+  $("#sub").textContent=crc(sub); $("#shipv").textContent=ship?crc(ship):"Gratis"; $("#tot").textContent=crc(sub+ship);
+  const wa=$("#wa");
+  wa.setAttribute("aria-disabled", cart.length?"false":"true");
+  wa.href = cart.length ? waLink(sub,ship) : "#";
+}
+function waLink(sub,ship){
+  const who=$("#cname").value.trim();
+  const opt=$("#ship").selectedOptions[0].textContent.split("·")[0].trim();
+  const lines=cart.map(l=>{const p=P.find(x=>x.id===l.id);return `• ${l.qty} × ${full(p)} (${l.size}) — ${crc(priceOf(p,l.size)*l.qty)}`;});
+  const msg=`¡Hola Fashionista Sneakers! Quiero hacer este pedido:\n\n${lines.join("\n")}\n\nSubtotal: ${crc(sub)}\nEntrega: ${opt}${ship?` (${crc(ship)})`:""}\nTotal: ${crc(sub+ship)}${who?`\n\nA nombre de: ${who}`:""}`;
+  return `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`;
+}
+function openCart(o){
+  $("#drawer").classList.toggle("open",o); $("#drawer").setAttribute("aria-hidden",!o); $("#scrim").hidden=!o;
+  if(o) $("#closeCart").focus();
+}
+let tt; function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>el.classList.remove("show"),1600)}
+
+/* ===== Redes ===== */
+const ICONS={
+  Facebook:`<svg viewBox="0 0 24 24"><path fill="currentColor" d="M14 8h3V4h-3c-2.8 0-4 1.8-4 4.4V11H7v4h3v7h4v-7h3l1-4h-4V8.8c0-.5.4-.8 1-.8z"/></svg>`,
+  Instagram:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>`,
+  TikTok:`<svg viewBox="0 0 24 24"><path fill="currentColor" d="M16 3c.4 2.4 1.9 3.9 4 4.1v3.3c-1.5 0-2.9-.4-4-1.2V15a6 6 0 1 1-6-6h.5v3.3H10a2.7 2.7 0 1 0 2.7 2.7V3z"/></svg>`,
+  WhatsApp:`<svg viewBox="0 0 24 24"><use href="#ic-wa"/></svg>`
+};
+$("#social").innerHTML = STORE.socials.map(s=>{
+  const url = s.url || `https://wa.me/${STORE.whatsapp}`;
+  return `<a href="${url}" target="_blank" rel="noopener">${ICONS[s.name]||""}${s.name}</a>`;
+}).join("");
+$("#waNum").textContent = "+" + STORE.whatsapp.replace(/^(\d{3})(\d{4})(\d{4})$/,"$1 $2 $3");
+
+/* ===== Eventos ===== */
+document.addEventListener("click",e=>{
+  const t=e.target.closest("button,a"); if(!t) return;
+  if(t.dataset.cat){location.hash = t.dataset.cat==="todo" ? "tienda" : t.dataset.cat; return;}
+  if(t.dataset.b!==undefined && t.classList.contains("chip")){brand=t.dataset.b||null;renderChips();renderGrid();return;}
+  if(t.dataset.size){picked[t.dataset.id]=t.dataset.size;renderGrid();return;}
+  if(t.dataset.add){
+    const p=P.find(x=>x.id===t.dataset.add);
+    const sz=picked[p.id]||(p.sizes.length===1?p.sizes[0]:null);
+    if(!sz){const h=$("#h-"+p.id);h.textContent= p.cat==="perfumeria"?"Elige la presentación primero.":"Elige tu talla primero.";return;}
+    add(p.id,sz);return;
+  }
+  if(t.dataset.inc!==undefined){cart[+t.dataset.inc].qty++;save();renderCart();return;}
+  if(t.dataset.dec!==undefined){const l=cart[+t.dataset.dec];l.qty--;if(l.qty<1)cart.splice(+t.dataset.dec,1);save();renderCart();return;}
+  if(t.dataset.rm!==undefined){cart.splice(+t.dataset.rm,1);save();renderCart();return;}
+});
+$("#openCart").onclick=()=>openCart(true);
+$("#closeCart").onclick=()=>openCart(false);
+$("#scrim").onclick=()=>openCart(false);
+document.addEventListener("keydown",e=>{if(e.key==="Escape")openCart(false)});
+$("#ship").onchange=renderCart;
+$("#cname").oninput=renderCart;
+$("#q").oninput=e=>{q=e.target.value.trim();renderGrid()};
+$("#sort").onchange=e=>{sort=e.target.value;renderGrid()};
+
+function route(scroll){
+  const h=location.hash.slice(1);
+  if(CAT_LABEL[h]) setCat(h, scroll);
+  else if(h==="tienda") setCat("todo", scroll);
+  else if(!h || h==="inicio") setCat(cat,false);
+}
+window.addEventListener("hashchange",()=>route(true));
+route(!!location.hash && CAT_LABEL[location.hash.slice(1)]);
+renderCart();
+</script>
