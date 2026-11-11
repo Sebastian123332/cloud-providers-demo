@@ -62,6 +62,7 @@ h2{font-family:var(--f-display);font-weight:700;font-size:clamp(26px,4vw,36px);l
 h2 small{display:block;font-family:var(--f-body);font-size:13px;font-weight:600;color:var(--violet-hi);letter-spacing:.14em;margin-bottom:6px}
 .tabs{display:flex;gap:6px;flex-wrap:wrap;border:1px solid var(--line);border-radius:12px;padding:4px;background:var(--panel)}
 .tabs button{border:0;background:transparent;padding:8px 14px;border-radius:9px;font-weight:700;font-size:14px;color:var(--muted)}
+.tabs .tab-link{padding:8px 14px;border-radius:9px;font-weight:700;font-size:14px;color:var(--violet-hi);text-decoration:none}
 .tabs button[aria-selected="true"]{background:var(--violet);color:#fff}
 .tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px}
 .tools input,.tools select{background:var(--panel);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:10px 12px;font:inherit;font-size:14px}
@@ -92,6 +93,14 @@ h2 small{display:block;font-family:var(--f-body);font-size:13px;font-weight:600;
 .hint{font-size:12px;color:#ff9db4;min-height:0}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0}
 
+/* Perfume band */
+.perf-band{border-top:1px solid var(--line);padding-block:48px;background:radial-gradient(60% 80% at 20% 50%,rgba(180,60,240,.18),transparent 70%)}
+.perf-band .wrap{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:32px;align-items:center}
+.perf-band img{width:100%;max-width:380px;aspect-ratio:1;object-fit:cover;border-radius:24px;justify-self:center;display:block}
+.perf-band p{color:var(--muted);max-width:52ch;margin:14px 0 22px}
+.cta{display:inline-flex;text-decoration:none;background:var(--violet);color:#fff;font-weight:800;border-radius:999px;padding:12px 22px}
+.cta:hover{background:var(--violet-hi);color:#160322}
+@media (max-width:760px){.perf-band .wrap{grid-template-columns:1fr}}
 /* Visit */
 .visit{border-top:1px solid var(--line);padding-block:48px}
 .visit .wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:32px;align-items:center}
@@ -148,7 +157,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
     <nav aria-label="Departamentos">
       <a href="#tenis">Tenis</a>
       <a href="#ropa">Ropa</a>
-      <a href="#perfumeria">Perfumería</a>
+      <a href="perfumeria.html">Perfumería</a>
       <a href="#visitanos">Visítanos</a>
     </nav>
     <button class="cart-btn" id="openCart" aria-label="Abrir carrito">
@@ -162,11 +171,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
   <section class="hero">
     <div class="wrap">
       <img class="logo" src="{{LOGO}}" alt="Fashionista Sneakers">
-      <p class="lead">Tenis, ropa urbana y perfumería original en Cartago. Escoge tu talla, arma tu carrito y te confirmamos el pedido por WhatsApp.</p>
+      <p class="lead">Tenis, ropa urbana y perfumería en Cartago. Escoge tu talla, arma tu carrito y te confirmamos el pedido por WhatsApp.</p>
       <div class="depts">
         <a class="dept" href="#tenis"><svg viewBox="0 0 64 40" aria-hidden="true"><use href="#ic-shoe"/></svg>Tenis</a>
         <a class="dept" href="#ropa"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#ic-tee"/></svg>Ropa</a>
-        <a class="dept" href="#perfumeria"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#ic-bottle"/></svg>Perfumería</a>
+        <a class="dept" href="perfumeria.html"><svg viewBox="0 0 64 64" aria-hidden="true"><use href="#ic-bottle"/></svg>Perfumería</a>
       </div>
       <div class="facts">
         <span><i class="dot"></i>Abierto ahora</span>
@@ -184,11 +193,11 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
           <button role="tab" data-cat="todo" aria-selected="true">Todo</button>
           <button role="tab" data-cat="tenis" aria-selected="false">Tenis</button>
           <button role="tab" data-cat="ropa" aria-selected="false">Ropa</button>
-          <button role="tab" data-cat="perfumeria" aria-selected="false">Perfumería</button>
+          <a class="tab-link" href="perfumeria.html">Perfumería ↗</a>
         </div>
       </div>
       <div class="tools">
-        <input id="q" type="search" placeholder="Buscar: Jordan, hoodie, Sauvage…" aria-label="Buscar productos">
+        <input id="q" type="search" placeholder="Buscar: Jordan, hoodie, Samba…" aria-label="Buscar productos">
         <select id="sort" aria-label="Ordenar">
           <option value="pop">Más vendidos</option>
           <option value="asc">Precio: menor a mayor</option>
@@ -197,6 +206,17 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
       </div>
       <div class="chips" id="chips" aria-label="Filtrar por marca"></div>
       <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="perf-band">
+    <div class="wrap">
+      <img src="{{HERO}}" alt="">
+      <div>
+        <h2><small>Nuevo departamento</small>Perfumería</h2>
+        <p>Decants de 3, 5 y 10 ml para probar antes de comprar la botella, parciales, botellas selladas y combos en promoción. Entre más decants llevás, más ahorrás.</p>
+        <a class="cta" href="perfumeria.html">Ver perfumería</a>
+      </div>
     </div>
   </section>
 
@@ -289,17 +309,9 @@ const P = [
   {id:"tre",  cat:"ropa",  brand:"Adidas",        name:"Jacket Firebird",         meta:"Tricot · Negro con 3 franjas",    price:45000, sizes:CLOTH, kind:"hoodie", c1:"#151515", c2:"#ffffff", pop:7},
   {id:"short",cat:"ropa",  brand:"Nike",          name:"Short Dri-FIT",           meta:"Deportivo · Gris",                price:19000, old:24000, sizes:CLOTH, kind:"tee", c1:"#8a8d94", c2:"#e9e9e9", tag:"Oferta", pop:8},
   {id:"cap",  cat:"ropa",  brand:"New Era",       name:"Gorra 9FIFTY Snapback",   meta:"Ajustable · Morado",              price:24000, sizes:["Única"], kind:"cap", c1:"#6c1fa0", c2:"#ffffff", pop:6},
-  {id:"sock", cat:"ropa",  brand:"Nike",          name:"Medias Everyday (3 pares)", meta:"Media caña · Blanco",           price:12000, sizes:["S","M","L"], kind:"tee", c1:"#efefef", c2:"#cfcfcf", pop:10},
-  // Perfumería
-  {id:"sauv", cat:"perfumeria", brand:"Dior",        name:"Sauvage EDT",           meta:"100 ml · Aromática fresca",      price:78000, sizes:["60 ml","100 ml"], prices:{"60 ml":62000,"100 ml":78000}, kind:"bottle", c1:"#1f3a63", c2:"#c9d3e2", tag:"Top ventas", pop:1},
-  {id:"bleu", cat:"perfumeria", brand:"Chanel",      name:"Bleu de Chanel EDP",    meta:"100 ml · Amaderada",             price:92000, sizes:["50 ml","100 ml"], prices:{"50 ml":68000,"100 ml":92000}, kind:"bottle", c1:"#101a2c", c2:"#5b6f93", pop:3},
-  {id:"good", cat:"perfumeria", brand:"Carolina Herrera", name:"Good Girl EDP",    meta:"80 ml · Floral oriental",        price:74000, sizes:["50 ml","80 ml"], prices:{"50 ml":58000,"80 ml":74000}, kind:"bottle", c1:"#1b1430", c2:"#d4a24c", pop:2},
-  {id:"oneM", cat:"perfumeria", brand:"Paco Rabanne",name:"1 Million EDT",         meta:"100 ml · Especiada",             price:64000, old:71000, sizes:["100 ml"], kind:"bottle", c1:"#b48a2c", c2:"#f3d27a", tag:"Oferta", pop:4},
-  {id:"lib",  cat:"perfumeria", brand:"YSL",         name:"Libre EDP",             meta:"90 ml · Floral lavanda",         price:86000, sizes:["50 ml","90 ml"], prices:{"50 ml":64000,"90 ml":86000}, kind:"bottle", c1:"#e6e0d3", c2:"#1a1a1a", tag:"Nuevo", pop:5},
-  {id:"acq",  cat:"perfumeria", brand:"Giorgio Armani", name:"Acqua di Giò EDT",   meta:"100 ml · Cítrica acuática",      price:70000, sizes:["100 ml"], kind:"bottle", c1:"#9fc3d8", c2:"#ffffff", pop:6},
-  {id:"lady", cat:"perfumeria", brand:"Fashionista", name:"Body mist Violeta",     meta:"250 ml · Frutal · Marca propia", price:9500, sizes:["250 ml"], kind:"bottle", c1:"#b43cf0", c2:"#f3d6ff", pop:7}
+  {id:"sock", cat:"ropa",  brand:"Nike",          name:"Medias Everyday (3 pares)", meta:"Media caña · Blanco",           price:12000, sizes:["S","M","L"], kind:"tee", c1:"#efefef", c2:"#cfcfcf", pop:10}
 ];
-const CAT_LABEL = {todo:"Todo", tenis:"Tenis", ropa:"Ropa", perfumeria:"Perfumería"};
+const CAT_LABEL = {todo:"Todo", tenis:"Tenis", ropa:"Ropa"};
 
 /* ===== Ilustraciones de producto ===== */
 function art(p){
@@ -339,7 +351,7 @@ function art(p){
 /* ===== Utilidades ===== */
 const $ = s => document.querySelector(s);
 const crc = n => "₡" + n.toLocaleString("es-CR").replace(/[., ]/g," ").replace(/\s/g," ");
-const full = p => p.name.includes(p.brand) ? p.name : p.brand+" "+p.name;
+const lname = l => l.brand==="Combo" ? "Combo "+l.name : l.name.includes(l.brand) ? l.name : l.brand+" "+l.name;
 const priceOf = (p,size) => (p.prices && p.prices[size]) || p.price;
 const store = {
   get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}},
@@ -349,7 +361,7 @@ const store = {
 /* ===== Estado ===== */
 let cat = "todo", brand = null, q = "", sort = "pop";
 const picked = {};                       // talla elegida por producto
-let cart = store.get("fs-cart", []);     // [{id,size,qty}]
+let cart = store.get("fs_cart", []);     // compartido con perfumeria.html: [{key,pid,name,brand,label,price,qty,ml,thumb}]
 
 /* ===== Catálogo ===== */
 function visible(){
@@ -374,7 +386,7 @@ function renderGrid(){
   $("#grid").innerHTML = list.map(p=>{
     const sz = picked[p.id] || (p.sizes.length===1 ? p.sizes[0] : null);
     const pr = priceOf(p, sz);
-    const label = p.cat==="tenis" ? "Talla US" : p.cat==="ropa" ? "Talla" : "Presentación";
+    const label = p.cat==="tenis" ? "Talla US" : "Talla";
     return `<article class="card" style="--glow:${p.c1}33">
       <div class="art">${p.tag?`<span class="tag ${p.tag==="Nuevo"?"alt":""}">${p.tag}</span>`:""}${art(p)}</div>
       <div class="body">
@@ -399,10 +411,13 @@ function setCat(c, scroll){
 }
 
 /* ===== Carrito ===== */
-function save(){store.set("fs-cart",cart)}
+function save(){store.set("fs_cart",cart)}
 function add(id,size){
-  const l=cart.find(x=>x.id===id&&x.size===size);
-  if(l) l.qty++; else cart.push({id,size,qty:1});
+  const p=P.find(x=>x.id===id), key=id+"-"+size;
+  const l=cart.find(x=>x.key===key);
+  if(l) l.qty++;
+  else cart.push({key,pid:id,name:p.name.includes(p.brand)?p.name:p.name,brand:p.brand,label:(p.cat==="tenis"?"Talla US ":p.sizes.length>1?"Talla ":"")+size,price:priceOf(p,size),qty:1,ml:0,
+    thumb:"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(art(p).replace("<svg ",'<svg xmlns="http://www.w3.org/2000/svg" ')) });
   save(); renderCart(); toast("Agregado al carrito");
 }
 function renderCart(){
@@ -412,14 +427,15 @@ function renderCart(){
     $("#lines").innerHTML=`<div class="d-empty"><p>Tu carrito está vacío.</p><p>Elige una talla en cualquier producto y toca <b>Agregar</b>.</p></div>`;
   } else {
     $("#lines").innerHTML=cart.map((l,i)=>{
-      const p=P.find(x=>x.id===l.id); if(!p) return "";
-      return `<div class="line"><div class="thumb">${art(p)}</div>
-        <div><div class="t">${full(p)}</div><div class="s">${p.cat==="perfumeria"?"":"Talla "}${l.size} · ${crc(priceOf(p,l.size))}</div>
+      const p=P.find(x=>x.id===l.pid);
+      const th=p?art(p):l.thumb?`<img src="${l.thumb}" alt="" style="width:100%;height:100%;object-fit:contain">`:"";
+      return `<div class="line"><div class="thumb">${th}</div>
+        <div><div class="t">${lname(l)}</div><div class="s">${l.label} · ${crc(l.price)}</div>
         <button class="rm" data-rm="${i}">Quitar</button></div>
         <div class="qty"><button data-dec="${i}" aria-label="Quitar uno">−</button><span>${l.qty}</span><button data-inc="${i}" aria-label="Agregar uno">+</button></div></div>`;
     }).join("");
   }
-  const sub=cart.reduce((s,l)=>{const p=P.find(x=>x.id===l.id);return s+(p?priceOf(p,l.size)*l.qty:0)},0);
+  const sub=cart.reduce((s,l)=>s+l.price*l.qty,0);
   const ship=cart.length?+$("#ship").value:0;
   $("#sub").textContent=crc(sub); $("#shipv").textContent=ship?crc(ship):"Gratis"; $("#tot").textContent=crc(sub+ship);
   const wa=$("#wa");
@@ -429,7 +445,7 @@ function renderCart(){
 function waLink(sub,ship){
   const who=$("#cname").value.trim();
   const opt=$("#ship").selectedOptions[0].textContent.split("·")[0].trim();
-  const lines=cart.map(l=>{const p=P.find(x=>x.id===l.id);return `• ${l.qty} × ${full(p)} (${l.size}) — ${crc(priceOf(p,l.size)*l.qty)}`;});
+  const lines=cart.map(l=>`• ${l.qty} × ${lname(l)} (${l.label}) — ${crc(l.price*l.qty)}`);
   const msg=`¡Hola Fashionista Sneakers! Quiero hacer este pedido:\n\n${lines.join("\n")}\n\nSubtotal: ${crc(sub)}\nEntrega: ${opt}${ship?` (${crc(ship)})`:""}\nTotal: ${crc(sub+ship)}${who?`\n\nA nombre de: ${who}`:""}`;
   return `https://wa.me/${STORE.whatsapp}?text=${encodeURIComponent(msg)}`;
 }
@@ -461,7 +477,7 @@ document.addEventListener("click",e=>{
   if(t.dataset.add){
     const p=P.find(x=>x.id===t.dataset.add);
     const sz=picked[p.id]||(p.sizes.length===1?p.sizes[0]:null);
-    if(!sz){const h=$("#h-"+p.id);h.textContent= p.cat==="perfumeria"?"Elige la presentación primero.":"Elige tu talla primero.";return;}
+    if(!sz){$("#h-"+p.id).textContent="Elige tu talla primero.";return;}
     add(p.id,sz);return;
   }
   if(t.dataset.inc!==undefined){cart[+t.dataset.inc].qty++;save();renderCart();return;}
@@ -484,6 +500,10 @@ function route(scroll){
   else if(!h || h==="inicio") setCat(cat,false);
 }
 window.addEventListener("hashchange",()=>route(true));
+if(location.hash==="#perfumeria") location.replace("perfumeria.html");
+// refrescar carrito si se modificó en la página de perfumería
+window.addEventListener("storage",e=>{if(e.key==="fs_cart"){cart=store.get("fs_cart",[]);renderCart();}});
+window.addEventListener("pageshow",()=>{cart=store.get("fs_cart",[]);renderCart();});
 route(!!location.hash && CAT_LABEL[location.hash.slice(1)]);
 renderCart();
 </script>
