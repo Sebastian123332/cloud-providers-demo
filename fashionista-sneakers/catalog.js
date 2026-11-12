@@ -103,5 +103,16 @@
   }
   const visual = p => p.foto ? `<img src="${p.foto}" alt="${p.brand} ${p.name}" loading="lazy">` : art(p);
 
-  window.FS = { KEY, sizeKey, sizes, TAXO, COLOR_HEX, tallasPara, load, save, reset, total, precio, crc, art, visual };
+
+  /* Logos de tarjetas aceptadas (reemplazar por los oficiales que entregue el banco o la pasarela) */
+  let lid = 0;
+  function cardLogos(withSinpe){
+    const k = ++lid;
+    const visa = `<svg class="cardlogo" viewBox="0 0 60 38" role="img" aria-label="Visa"><rect width="60" height="38" rx="5" fill="#fff"/><text x="30" y="26.5" text-anchor="middle" font-family="Arial Black,Arial,Helvetica,sans-serif" font-weight="900" font-style="italic" font-size="17" fill="#1a1f71" letter-spacing="-.5">VISA</text></svg>`;
+    const mc = `<svg class="cardlogo" viewBox="0 0 60 38" role="img" aria-label="Mastercard"><defs><clipPath id="mcc${k}"><circle cx="24.5" cy="19" r="11"/></clipPath></defs><rect width="60" height="38" rx="5" fill="#fff"/><circle cx="24.5" cy="19" r="11" fill="#eb001b"/><circle cx="35.5" cy="19" r="11" fill="#f79e1b"/><circle cx="35.5" cy="19" r="11" fill="#ff5f00" clip-path="url(#mcc${k})"/></svg>`;
+    const amex = `<svg class="cardlogo" viewBox="0 0 60 38" role="img" aria-label="American Express"><rect width="60" height="38" rx="5" fill="#1f72cd"/><text x="30" y="17.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="8.4" fill="#fff" letter-spacing=".3">AMERICAN</text><text x="30" y="27.5" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="8.4" fill="#fff" letter-spacing=".3">EXPRESS</text></svg>`;
+    const sinpe = withSinpe ? `<span class="cardmark">SINPE Móvil</span>` : "";
+    return `<span class="cards">${visa}${mc}${amex}${sinpe}</span>`;
+  }
+  window.FS = { KEY, cardLogos, sizeKey, sizes, TAXO, COLOR_HEX, tallasPara, load, save, reset, total, precio, crc, art, visual };
 })();
