@@ -1,0 +1,49 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<title>Solanotech · Tarjeta</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Noto+Serif+JP:wght@900&display=swap">
+<style>
+@page{size:90mm 50mm;margin:0}
+:root{--a1:#e5263d;--a2:#ff8a5c;--bg:#07050a;--shu:#e5263d;--text:#f6f3f4;--muted:#b9adb1;--grad:linear-gradient(120deg,var(--a1),var(--a2))}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:Inter,sans-serif;color:var(--text);background:#333}
+.t{width:90mm;height:50mm;position:relative;overflow:hidden;page-break-after:always;background:radial-gradient(60mm 40mm at 100% 0,rgba(229,38,61,.45),transparent 65%),radial-gradient(50mm 40mm at 0 100%,rgba(255,138,92,.18),transparent 65%),var(--bg)}
+.marca{position:absolute;font-family:"Noto Serif JP";font-weight:900;line-height:1;color:rgba(229,38,61,.08)}
+/* frente */
+.frente{display:grid;place-items:center;text-align:center}
+.frente .in{display:grid;justify-items:center;gap:2.4mm;position:relative}
+.seal{width:13mm;height:13mm;border-radius:3.4mm;background:var(--shu);display:grid;place-items:center;font-family:"Noto Serif JP";font-weight:900;font-size:8mm;color:#fff;transform:rotate(-5deg);box-shadow:0 0 6mm rgba(229,38,61,.6)}
+.nom{font-family:Sora;font-weight:800;font-size:7.4mm;letter-spacing:-.02em;line-height:1}
+.lema{font-size:2.5mm;letter-spacing:.32em;text-transform:uppercase;color:#ffb199;font-weight:600}
+.linea{width:26mm;height:.4mm;background:var(--grad);border-radius:1mm}
+/* reverso */
+.reverso{padding:4.2mm 5.5mm 9mm;display:grid;grid-template-columns:1fr auto;gap:4mm;align-items:center}
+.reverso h1{font-family:Sora;font-weight:800;font-size:4mm;letter-spacing:-.02em;line-height:1.1}
+.reverso .rol{font-size:2.3mm;color:#ffb199;font-weight:600;margin:.8mm 0 2.2mm}
+.reverso ul{list-style:none;display:grid;gap:1mm;font-size:2.45mm}
+.reverso li{display:flex;align-items:center;gap:1.8mm}
+.reverso li i{width:3.6mm;height:3.6mm;border-radius:1mm;background:var(--grad);display:grid;place-items:center;font-style:normal;font-size:2.1mm;flex:none}
+.reverso li b{font-family:Sora;font-weight:700}
+.qr{display:grid;justify-items:center;gap:1.2mm;font-size:2mm;color:var(--muted);text-align:center}
+.qr div{background:#fff;border-radius:2mm;padding:1.6mm}.qr img{width:18mm;height:18mm;display:block}
+.serv{position:absolute;left:5.5mm;right:5.5mm;bottom:3.2mm;font-size:2.05mm;color:var(--muted);letter-spacing:.04em;border-top:.2mm solid rgba(255,255,255,.14);padding-top:1.6mm}
+</style></head><body>
+<div class="t frente">
+  <div class="marca" style="right:-6mm;bottom:-10mm;font-size:46mm">義</div>
+  <div class="in"><div class="seal">義</div><div class="nom">Solanotech</div><div class="linea"></div><div class="lema">Páginas web · Sistemas · Soporte</div></div>
+</div>
+<div class="t reverso">
+  <div class="marca" style="right:-4mm;top:-8mm;font-size:34mm">信</div>
+  <div style="position:relative">
+    <h1>Sebastián Badilla Solano</h1>
+    <p class="rol">Ingeniero en Sistemas · Desarrollador web</p>
+    <ul>
+      <li><i>📱</i><b>8933-0326</b></li>
+      <li><i>✉</i>sebas43br@gmail.com</li>
+      <li><i>🌐</i>ssolanotech.com</li>
+      <li><i>📍</i>Cartago, Costa Rica</li>
+    </ul>
+  </div>
+  <div class="qr" style="position:relative"><div><img src="qr-whatsapp.svg" alt=""></div>Escaneá y<br>escribime</div>
+  <div class="serv">Páginas web · Menú digital QR · Sistemas a la medida · Soporte técnico</div>
+</div>
+</body></html>

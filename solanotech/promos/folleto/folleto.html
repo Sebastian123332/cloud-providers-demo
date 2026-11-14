@@ -1,0 +1,104 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<title>Solanotech · Folleto</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Noto+Serif+JP:wght@900&display=swap">
+<style>
+@page{size:8.5in 11in;margin:0}
+:root{--a1:#e5263d;--a2:#ff8a5c;--bg:#07050a;--shu:#e5263d;--text:#f6f3f4;--muted:#b9adb1;--line:rgba(255,255,255,.13);--grad:linear-gradient(120deg,var(--a1),var(--a2))}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+body{font-family:Inter,sans-serif;color:var(--text);background:var(--bg)}
+.pag{width:8.5in;height:11in;position:relative;overflow:hidden;padding:.55in .6in .5in;display:flex;flex-direction:column;gap:22px;
+ background:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px) 0 0/40px 40px,radial-gradient(520px 420px at 100% 0,rgba(229,38,61,.4),transparent 62%),radial-gradient(520px 420px at 0 100%,rgba(255,138,92,.16),transparent 62%),var(--bg);page-break-after:always}
+.marca{position:absolute;right:-50px;top:250px;font-family:"Noto Serif JP";font-weight:900;font-size:470px;line-height:1;color:rgba(229,38,61,.055)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative}
+.logo{display:flex;align-items:center;gap:12px;font-family:Sora;font-weight:800;font-size:30px;letter-spacing:-.02em}
+.seal{width:46px;height:46px;border-radius:12px;background:var(--shu);display:grid;place-items:center;font-family:"Noto Serif JP";font-weight:900;font-size:28px;color:#fff;transform:rotate(-5deg);box-shadow:0 0 26px rgba(229,38,61,.6)}
+.pill{padding:8px 16px;border-radius:999px;border:1px solid var(--line);font-family:Sora;font-weight:600;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;color:#ffb199}
+h1{font-family:Sora;font-weight:800;font-size:60px;line-height:.98;letter-spacing:-.035em;text-transform:uppercase;position:relative}
+h2{font-family:Sora;font-weight:800;font-size:30px;line-height:1.05;letter-spacing:-.03em;text-transform:uppercase}
+.gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:16.5px;color:var(--muted);line-height:1.45;position:relative;margin-top:-6px}.sub b{color:var(--text)}
+.grupo{font-family:Sora;font-weight:600;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:#ffb199;display:flex;align-items:center;gap:12px;margin-bottom:-10px;position:relative}
+.grupo::after{content:"";flex:1;height:1px;background:var(--line)}
+.fila{display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative}
+.c{background:rgba(22,13,17,.88);border:1px solid var(--line);border-radius:18px;padding:20px 20px;display:grid;gap:3px;position:relative}
+.c.feat{border-color:rgba(255,138,92,.75);background:linear-gradient(160deg,rgba(229,38,61,.24),rgba(22,13,17,.92) 70%)}
+.c .tag{position:absolute;top:-10px;right:16px;background:var(--grad);font-family:Sora;font-weight:700;font-size:10px;letter-spacing:.08em;padding:4px 10px;border-radius:999px}
+.c h3{font-family:Sora;font-weight:700;font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:#ffb199}
+.c b{font-family:Sora;font-weight:800;font-size:38px;letter-spacing:-.03em;line-height:1.08}
+.c b small{font-family:Inter;font-weight:500;font-size:11.5px;color:var(--muted);letter-spacing:0;margin-left:4px}
+.c p{font-size:13.5px;color:var(--muted);line-height:1.4}
+.c p.reg{color:#ffd2c4;font-weight:600;margin-top:4px}
+.medida{background:var(--grad);border-radius:18px;padding:18px 22px;display:flex;justify-content:space-between;align-items:center;gap:16px;position:relative;box-shadow:0 18px 40px -20px rgba(229,38,61,.8)}
+.medida h3{font-family:Sora;font-weight:800;font-size:21px;letter-spacing:-.02em}
+.medida p{font-size:12.5px;opacity:.95;margin-top:3px}
+.medida span{flex:none;font-family:Sora;font-weight:800;font-size:14px;background:rgba(0,0,0,.25);padding:9px 16px;border-radius:999px}
+.checks{display:grid;grid-template-columns:repeat(4,auto);justify-content:space-between;font-family:Sora;font-weight:600;font-size:12.5px;color:#ffd2c4;position:relative}
+.pie{margin-top:auto;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:14px;font-size:12.5px;color:var(--muted);position:relative}
+.pie b{color:var(--text);font-family:Sora}
+/* página 2 */
+.trab{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.trab figure{border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#111}
+.trab img{width:100%;height:118px;object-fit:cover;object-position:top;display:block}
+.trab figcaption{padding:9px 13px;font-size:12px;color:var(--muted);display:flex;justify-content:space-between}.trab figcaption b{color:var(--text);font-family:Sora;font-size:13px}
+.pasos{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.paso{border:1px solid var(--line);border-radius:16px;padding:16px;background:rgba(22,13,17,.7)}
+.paso i{font-style:normal;font-family:"Noto Serif JP";font-weight:900;font-size:30px;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent;line-height:1}
+.paso h3{font-family:Sora;font-size:15px;margin:6px 0 4px}.paso p{font-size:12px;color:var(--muted);line-height:1.4}
+.soporte{border:1px dashed rgba(255,138,92,.5);border-radius:16px;padding:14px 18px;font-size:13px;color:var(--muted)}.soporte b{color:var(--text)}
+.contacto{display:grid;grid-template-columns:1fr auto auto;gap:22px;align-items:center;background:rgba(22,13,17,.9);border:1px solid rgba(255,138,92,.5);border-radius:22px;padding:20px 24px}
+.contacto h3{font-family:Sora;font-size:21px;font-weight:800}.contacto .rol{color:#ffb199;font-size:12.5px;font-weight:600;margin:2px 0 10px}
+.contacto ul{list-style:none;display:grid;gap:4px;font-size:13.5px}.contacto li span{color:var(--muted);display:inline-block;width:78px}
+.qr{display:grid;justify-items:center;gap:6px;font-size:10.5px;color:var(--muted);text-align:center}
+.qr div{background:#fff;border-radius:12px;padding:9px}.qr img{width:92px;height:92px;display:block}
+</style></head><body>
+
+<section class="pag">
+  <div class="marca">義</div>
+  <div class="top"><div class="logo"><span class="seal">義</span>Solanotech</div><div class="pill">Hecho en Cartago 🇨🇷</div></div>
+  <h1>Tu negocio en línea,<br><span class="gt">a tu medida</span></h1>
+  <p class="sub">Páginas web, menús digitales y sistemas para negocios de Costa Rica. <b>Pago único, sin mensualidades</b>: el hosting y el certificado de seguridad van incluidos siempre.</p>
+
+  <div class="grupo">Páginas web</div>
+  <div class="fila">
+    <div class="c"><h3>Web básica</h3><b>₡75.000<small>pago único</small></b><p>Página informativa: servicios, precios, fotos, horario, mapa y botón de WhatsApp.</p></div>
+    <div class="c feat"><span class="tag">PARA EMPRESAS</span><h3>Web Pro · Tienda en línea</h3><b>₡160.000<small>pago único</small></b><p>Catálogo de productos, carrito, pedidos por WhatsApp y panel para administrarlo.</p></div>
+  </div>
+
+  <div class="grupo">Restaurantes, sodas y cafeterías</div>
+  <div class="fila">
+    <div class="c"><h3>Menú QR</h3><b>₡50.000<small>pago único</small></b><p>Menú digital con fotos y precios, y QR para las mesas.</p><p class="reg">🎁 Regalo: 10 QR para reseñas en Google</p></div>
+    <div class="c feat"><span class="tag">MÁS POPULAR</span><h3>Menú + panel del dueño</h3><b>₡65.000<small>pago único</small></b><p>Usted cambia platillos, fotos y precios desde el celular.</p><p class="reg">🎁 Regalo: tarjeta de cliente frecuente y QR para reseñas</p></div>
+  </div>
+
+  <div class="medida"><div><h3>Sistemas y apps a la medida</h3><p>Reservas, inventario, ventas e IVA, asistencia, cliente frecuente… Lo que su negocio necesite, se lo programamos.</p></div><span>Cotización gratis</span></div>
+
+  <div class="checks"><span>✓ Adaptada al celular</span><span>✓ Lista para Google</span><span>✓ Segura con candado</span><span>✓ Botón de WhatsApp</span></div>
+  <div class="pie"><span><b>WhatsApp 8933-0326</b> · ssolanotech.com</span><span>Vea los trabajos reales al reverso →</span></div>
+</section>
+
+<section class="pag" style="gap:16px">
+  <div class="marca" style="top:420px">信</div>
+  <div class="top"><div class="logo"><span class="seal">義</span>Solanotech</div><div class="pill">Trabajos reales</div></div>
+  <h2>Ya confiaron <span class="gt">en nosotros</span></h2>
+  <div class="trab">
+    <figure><img src="pc-hidalgo.jpg" alt=""><figcaption><b>Grúas Hidalgo</b>gruashidalgoo.com</figcaption></figure>
+    <figure><img src="pc-dieca.jpg" alt=""><figcaption><b>Grúas Dieca S.A.</b>gruadieca.com</figcaption></figure>
+    <figure><img src="pc-mario.jpg" alt=""><figcaption><b>Grúas Mario 24/7</b>gruas247mario.com</figcaption></figure>
+    <figure><img src="pc-adriana.jpg" alt=""><figcaption><b>Adriana Solano · Bonos</b>adrianasolanobonos.com</figcaption></figure>
+  </div>
+  <h2 style="font-size:24px;margin-top:4px">Así de <span class="gt">fácil</span></h2>
+  <div class="pasos">
+    <div class="paso"><i>一</i><h3>Conversamos</h3><p>Por WhatsApp o en persona: me cuenta de su negocio y qué necesita.</p></div>
+    <div class="paso"><i>二</i><h3>Demo gratis</h3><p>Le preparo una muestra con su logo y sus colores, sin compromiso.</p></div>
+    <div class="paso"><i>三</i><h3>En línea</h3><p>Publico su página, le enseño a usarla y le doy soporte.</p></div>
+  </div>
+  <div class="soporte">🛠️ <b>También soporte técnico:</b> limpieza de laptops y PC, redes y Wi-Fi para empresas, y mantenimiento preventivo para locales.</div>
+  <div class="contacto">
+    <div><h3>Sebastián Badilla Solano</h3><p class="rol">Ingeniero en Sistemas · Fundador de Solanotech</p>
+      <ul><li><span>WhatsApp</span><b>8933-0326</b></li><li><span>Correo</span>sebas43br@gmail.com</li><li><span>Web</span>ssolanotech.com</li><li><span>Zona</span>San Rafael de Oreamuno, Cartago</li></ul></div>
+    <div class="qr"><div><img src="qr-whatsapp.svg" alt=""></div>Escríbame<br>por WhatsApp</div>
+    <div class="qr"><div><img src="qr-web.svg" alt=""></div>Vea mi<br>página</div>
+  </div>
+  <div class="pie" style="margin-top:0;border:0;padding:0;justify-content:center">義 Rectitud · 信 Confianza</div>
+</section>
+</body></html>
