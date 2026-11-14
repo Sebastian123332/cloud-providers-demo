@@ -1,0 +1,62 @@
+<!doctype html><html><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=Inter:wght@400;500;600&family=Noto+Serif+JP:wght@900&display=swap">
+<style>
+:root{--a1:#e5263d;--a2:#ff8a5c;--bg:#07050a;--shu:#e5263d;--text:#f6f3f4;--muted:#b6a9ad;--line:rgba(255,255,255,.12);--grad:linear-gradient(120deg,var(--a1),var(--a2));--alto:1350px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{width:1080px;height:var(--alto);overflow:hidden;position:relative;font-family:Inter,sans-serif;color:var(--text);
+ background:linear-gradient(rgba(255,255,255,.03) 1px,transparent 1px) 0 0/54px 54px,linear-gradient(90deg,rgba(255,255,255,.03) 1px,transparent 1px) 0 0/54px 54px,radial-gradient(800px 600px at 100% 0,rgba(229,38,61,.42),transparent 62%),radial-gradient(700px 600px at 0 100%,rgba(255,138,92,.2),transparent 62%),var(--bg);
+ display:flex;flex-direction:column;padding:62px 60px 56px;gap:34px}
+.marca{position:absolute;right:-60px;top:330px;font-family:"Noto Serif JP";font-weight:900;font-size:620px;line-height:1;color:rgba(229,38,61,.06)}
+.top{display:flex;justify-content:space-between;align-items:center;position:relative}
+.logo{display:flex;align-items:center;gap:16px;font-family:Sora;font-weight:800;font-size:44px;letter-spacing:-.02em}
+.seal{width:68px;height:68px;border-radius:17px;background:var(--shu);display:grid;place-items:center;font-family:"Noto Serif JP";font-weight:900;font-size:42px;color:#fff;transform:rotate(-5deg);box-shadow:0 0 40px rgba(229,38,61,.6)}
+.pill{display:flex;align-items:center;gap:12px;padding:13px 24px;border-radius:999px;border:1.5px solid var(--line);background:rgba(255,255,255,.05);font-family:Sora;font-weight:600;font-size:19px;letter-spacing:.18em;text-transform:uppercase;color:#ffb199}
+.pill::before{content:"";width:11px;height:11px;border-radius:50%;background:var(--a2);box-shadow:0 0 12px var(--a2)}
+h1{font-family:Sora;font-weight:800;font-size:82px;line-height:.98;letter-spacing:-.035em;text-transform:uppercase;position:relative}
+.gt{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:26px;color:var(--muted);line-height:1.35;margin-top:-4px;position:relative}.sub b{color:var(--text)}
+.grupo{font-family:Sora;font-weight:600;font-size:18px;letter-spacing:.22em;text-transform:uppercase;color:#ffb199;display:flex;align-items:center;gap:14px;position:relative;margin-bottom:-10px}
+.grupo::after{content:"";flex:1;height:1px;background:var(--line)}
+.fila{display:grid;grid-template-columns:1fr 1fr;gap:18px;position:relative}
+.c{background:rgba(20,12,16,.85);border:1.5px solid var(--line);border-radius:26px;padding:24px 26px;display:grid;gap:6px;position:relative}
+.c.feat{border-color:rgba(255,138,92,.75);background:linear-gradient(160deg,rgba(229,38,61,.22),rgba(20,12,16,.9) 70%)}
+.c .tag{position:absolute;top:-14px;right:22px;background:var(--grad);font-family:Sora;font-weight:700;font-size:15px;letter-spacing:.08em;padding:6px 14px;border-radius:999px}
+.c h3{font-family:Sora;font-weight:700;font-size:22px;letter-spacing:.08em;text-transform:uppercase;color:#ffb199}
+.c b{font-family:Sora;font-weight:800;font-size:54px;letter-spacing:-.03em;line-height:1.05}
+.c b small{font-family:Inter;font-weight:500;font-size:18px;color:var(--muted);letter-spacing:0;margin-left:6px}
+.c p{font-size:20px;color:var(--muted);line-height:1.35}
+.medida{background:var(--grad);border-radius:26px;padding:26px 30px;display:flex;justify-content:space-between;align-items:center;gap:20px;position:relative;box-shadow:0 24px 60px -24px rgba(229,38,61,.8)}
+.medida h3{font-family:Sora;font-weight:800;font-size:34px;letter-spacing:-.02em;line-height:1.1}
+.medida p{font-size:20px;opacity:.92;margin-top:6px}
+.medida span{flex:none;font-family:Sora;font-weight:800;font-size:24px;background:rgba(0,0,0,.25);padding:14px 22px;border-radius:999px}
+.pie{margin-top:auto;display:flex;justify-content:space-between;align-items:center;position:relative}
+.pie p{font-family:Sora;font-weight:700;font-size:28px;line-height:1.2}.pie p small{display:block;font-family:Inter;font-weight:500;font-size:20px;color:var(--muted);margin-top:4px}
+.wa{display:flex;align-items:center;gap:14px;background:#25D366;color:#052814;padding:18px 30px;border-radius:999px;font-family:Sora;font-weight:800;font-size:34px;box-shadow:0 18px 44px -14px rgba(37,211,102,.7)}
+.wa svg{width:38px;height:38px}
+.extra{display:none}
+body.historia .extra{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;font-family:Sora;font-weight:600;font-size:28px;position:relative}
+body.historia .extra span{color:#ffd2c4}
+body.historia{--alto:1920px;padding:110px 60px 100px;gap:38px}
+body.historia h1{font-size:104px}body.historia .sub{font-size:30px}
+body.historia .fila{grid-template-columns:1fr;gap:22px}body.historia .c{padding:30px 30px;grid-template-columns:1fr auto;column-gap:20px;align-items:center}body.historia .c h3{grid-column:1}body.historia .c b{font-size:54px;grid-column:2;grid-row:1/3}body.historia .c p{font-size:21px;grid-column:1}body.historia{gap:40px}
+body.historia .marca{top:640px}
+</style></head><body>
+<div class="marca" aria-hidden="true">義</div>
+<div class="top"><div class="logo"><span class="seal">義</span>Solanotech</div><div class="pill">Precios 2026</div></div>
+<h1>Tu negocio en línea, <span class="gt">a tu medida</span></h1>
+<p class="sub">Pago único, <b>sin mensualidades</b>. Hosting y SSL incluidos siempre.</p>
+<div class="grupo">Páginas web</div>
+<div class="fila">
+ <div class="c"><h3>Web básica</h3><b>₡75.000</b><p>Página informativa: servicios, precios, horario, mapa y WhatsApp.</p></div>
+ <div class="c feat"><span class="tag">PARA EMPRESAS</span><h3>Web Pro · Tienda</h3><b>₡160.000</b><p>Tienda en línea con catálogo, carrito, pedidos y panel.</p></div>
+</div>
+<div class="grupo">Restaurantes y sodas</div>
+<div class="fila">
+ <div class="c"><h3>Menú QR</h3><b>₡50.000</b><p>Menú digital con fotos, precios y QR para las mesas.</p></div>
+ <div class="c feat"><span class="tag">MÁS POPULAR</span><h3>Menú + panel</h3><b>₡65.000</b><p>Vos cambiás platos, fotos y precios al instante.</p></div>
+</div>
+<div class="medida"><div><h3>Sistemas y apps a la medida</h3><p>Reservas, inventario, ventas e IVA, asistencia… Lo que tu emprendimiento necesite, te lo programamos.</p></div><span>Cotizá</span></div>
+<div class="extra"><span>✓ Adaptada al celular</span><span>✓ Lista para Google</span><span>✓ Segura con candado</span><span>✓ Botón de WhatsApp</span></div>
+<div class="pie"><p>Hecho en Cartago 🇨🇷<small>ssolanotech.com</small></p>
+<div class="wa"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg>8933-0326</div></div>
+</body></html>
