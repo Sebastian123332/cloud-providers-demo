@@ -25,7 +25,7 @@
   "description": "Aplicaciones web, sistemas a la medida, páginas web, menús digitales con QR y reparación de equipos para negocios en Costa Rica.",
   "telephone": "+506 8933-0326",
   "email": "sebas43br@gmail.com",
-  "priceRange": "₡₡",
+  "priceRange": "₡50.000 – ₡160.000",
   "openingHours": "Mo-Sa 08:00-18:00",
   "founder": {"@type": "Person", "name": "Sebastián Badilla Solano", "jobTitle": "Ingeniero en Sistemas", "alumniOf": "Universidad Americana (UAM)"},
   "knowsAbout": ["Desarrollo web", "Sistemas a la medida", "Menú digital con QR", "Ciberseguridad", "Soporte técnico"],
@@ -260,6 +260,8 @@ main,footer{position:relative;z-index:2}
 .plans-head{display:grid;gap:14px;max-width:680px;margin-bottom:60px}
 .plans-head h2{font-size:clamp(2.4rem,5.6vw,4.6rem);font-weight:800;text-transform:uppercase}
 .plans-head p{color:var(--muted)}
+.plans.dos{grid-template-columns:repeat(2,minmax(0,1fr));max-width:860px}
+.plan .desde{font-size:1.3rem}
 .plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;align-items:start}
 .plan{padding:32px 28px;border-radius:24px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(14px);display:flex;flex-direction:column;gap:6px;position:relative}
 .plan.feat{border-color:var(--a2);background:linear-gradient(160deg,color-mix(in srgb,var(--a1) 22%,transparent),color-mix(in srgb,var(--a2) 8%,transparent))}
@@ -283,7 +285,7 @@ main,footer{position:relative;z-index:2}
 .rest-head{display:grid;gap:14px;max-width:700px;margin-bottom:56px}
 .rest-head h2{font-size:clamp(2.4rem,5.6vw,4.6rem);font-weight:800;text-transform:uppercase}
 .rest-head p{color:var(--muted)}
-.rest-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:22px;align-items:start}
+.rest-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));max-width:1000px;gap:22px;align-items:start}
 .rdemo{position:relative;border-radius:24px;border:1px solid var(--line);background:var(--glass);backdrop-filter:blur(14px);display:flex;flex-direction:column;overflow:hidden}
 .rdemo.new{border-color:var(--a2)}
 .rnew{position:absolute;top:14px;right:14px;z-index:4;background:var(--grad);color:#fff;font-size:.7rem;font-weight:700;padding:4px 10px;border-radius:999px;letter-spacing:.06em}
@@ -306,7 +308,7 @@ main,footer{position:relative;z-index:2}
 .btn[aria-disabled="true"]{opacity:.5;pointer-events:none}
 .plan-demo{font-size:.85rem;font-weight:600;text-align:center;margin-top:12px;color:var(--a2)}
 .plan-demo[aria-disabled="true"]{display:none}
-@media (max-width:1100px){.rest-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:900px){.rest-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:620px){.rest-grid{grid-template-columns:1fr}}
 
 /* ===== Cierre: cotizar ===== */
@@ -351,6 +353,7 @@ footer{border-top:1px solid var(--line);padding:30px var(--gut) 100px;display:fl
       <a href="#proyectos">Proyectos</a>
       <a href="#nosotros">Nosotros</a>
       <a href="#proceso">Proceso</a>
+      <a href="#precios">Precios</a>
       <a href="#menu">Menú QR</a>
       <a href="#restaurantes">Restaurantes</a>
       <a href="#cotizar">Contacto</a>
@@ -540,6 +543,35 @@ footer{border-top:1px solid var(--line);padding:30px var(--gut) 100px;display:fl
     </div>
   </section>
 
+    <section class="plans-sec" id="precios">
+    <div class="plans-head">
+      <span class="eyebrow">Precios</span>
+      <h2>Páginas web y <span class="gt">sistemas</span></h2>
+      <p>Para todo tipo de negocio y emprendimiento. Pago único, sin mensualidades: el hosting y el certificado SSL van incluidos siempre.</p>
+    </div>
+    <div class="plans">
+      <div class="plan" data-lift="60">
+        <h3>WEB BÁSICA</h3><p class="for">Página informativa para tu negocio</p>
+        <div class="price">₡75.000 <small>pago único</small></div>
+        <ul><li>Tus servicios, precios y fotos</li><li>Horario, ubicación con Google Maps y Waze</li><li>Botón de WhatsApp y redes sociales</li><li>Adaptada al celular</li><li>Lista para aparecer en Google</li></ul>
+        <a href="https://wa.me/50689330326?text=Hola%20Solanotech%2C%20me%20interesa%20la%20Web%20B%C3%A1sica%20de%20%E2%82%A175.000" target="_blank" rel="noopener" class="btn btn-ghost">La quiero</a>
+      </div>
+      <div class="plan feat" data-lift="160">
+        <span class="tag">PARA EMPRESAS</span>
+        <h3>WEB PRO · TIENDA EN LÍNEA</h3><p class="for">Para vender y recibir pedidos en línea</p>
+        <div class="price">₡160.000 <small>pago único</small></div>
+        <ul><li>Todo lo de la Web Básica</li><li>Catálogo de productos con fotos y precios</li><li>Carrito de compras y pedidos por WhatsApp</li><li>Panel para administrar productos y pedidos</li><li>Más secciones: galería, opiniones y preguntas</li></ul>
+        <a href="https://wa.me/50689330326?text=Hola%20Solanotech%2C%20me%20interesa%20la%20Web%20Pro%20con%20tienda%20en%20l%C3%ADnea%20de%20%E2%82%A1160.000" target="_blank" rel="noopener" class="btn btn-primary">La quiero</a>
+      </div>
+      <div class="plan" data-lift="100">
+        <h3>SISTEMAS Y APPS</h3><p class="for">Lo que tu negocio necesite, lo programamos</p>
+        <div class="price desde">A la medida <small>cotización sin compromiso</small></div>
+        <ul><li>Reservas y citas en línea</li><li>Inventario, ventas, gastos e IVA</li><li>Control de asistencia de empleados</li><li>Tarjeta de cliente frecuente</li><li>Paneles y reportes para el dueño</li></ul>
+        <a href="#cotizar" class="btn btn-ghost">Cotizar mi proyecto</a>
+      </div>
+    </div>
+  </section>
+
   <!-- ============ MENÚ QR ============ -->
   <section class="plans-sec" id="menu">
     <div class="plans-head">
@@ -547,28 +579,21 @@ footer{border-top:1px solid var(--line);padding:30px var(--gut) 100px;display:fl
       <h2>Menú digital con <span class="gt">QR</span></h2>
       <p>Tus clientes escanean la mesa y ven tu menú con fotos y precios. Vos lo actualizás cuando querás. Pago único, sin mensualidades.</p>
     </div>
-    <div class="plans">
+    <div class="plans dos">
       <div class="plan" data-lift="60">
-        <h3>MENÚ</h3><p class="for">Restaurantes y sodas pequeñas</p>
-        <div class="price">₡89.900 <small>pago único</small></div>
-        <ul><li>Página de menú digital</li><li>Fotos, precios y categorías</li><li>Código QR para las mesas</li><li>Diseño responsive</li></ul>
-        <a href="https://wa.me/50689330326?text=Hola%2C%20me%20interesa%20el%20plan%20SOLANOTECH%20MEN%C3%9A" target="_blank" rel="noopener" class="btn btn-ghost">Lo quiero</a>
+        <h3>MENÚ QR</h3><p class="for">Restaurantes, sodas y cafeterías</p>
+        <div class="price">₡50.000 <small>pago único</small></div>
+        <ul><li>Menú digital con fotos, precios y categorías</li><li>Código QR para las mesas</li><li>Adaptado al celular</li><li>Botón de WhatsApp para pedidos</li></ul>
+        <a href="https://wa.me/50689330326?text=Hola%20Solanotech%2C%20me%20interesa%20el%20Men%C3%BA%20QR%20de%20%E2%82%A150.000" target="_blank" rel="noopener" class="btn btn-ghost">Lo quiero</a>
         <a class="plan-demo" href="https://exquisite-cassata-24e645.netlify.app/" data-demo-link="menu" target="_blank" rel="noopener">Ver demostración →</a>
       </div>
-      <div class="plan feat" data-lift="160">
+      <div class="plan feat" data-lift="140">
         <span class="tag">MÁS POPULAR</span>
-        <h3>PRO</h3><p class="for">Control total de tu menú</p>
-        <div class="price">₡149.900 <small>pago único</small></div>
-        <ul><li>Todo lo del plan Menú</li><li>Panel administrativo</li><li>WhatsApp y redes sociales</li><li>Dominio propio y hosting</li><li>QR personalizado con tu marca</li></ul>
-        <a href="https://wa.me/50689330326?text=Hola%2C%20me%20interesa%20el%20plan%20SOLANOTECH%20PRO" target="_blank" rel="noopener" class="btn btn-primary">Lo quiero</a>
+        <h3>MENÚ + PANEL DEL DUEÑO</h3><p class="for">Cambiá platos y precios vos mismo</p>
+        <div class="price">₡65.000 <small>pago único</small></div>
+        <ul><li>Todo lo del Menú QR</li><li>Panel del dueño para cambiar platos, fotos y precios al instante</li><li>Ocultar platos agotados con un toque</li><li>WhatsApp y redes sociales</li><li>QR personalizado con tu marca</li></ul>
+        <a href="https://wa.me/50689330326?text=Hola%20Solanotech%2C%20me%20interesa%20el%20Men%C3%BA%20QR%20con%20panel%20del%20due%C3%B1o%20de%20%E2%82%A165.000" target="_blank" rel="noopener" class="btn btn-primary">Lo quiero</a>
         <a class="plan-demo" href="https://lovely-hummingbird-9d52e4.netlify.app/" data-demo-link="pro" target="_blank" rel="noopener">Ver demostración →</a>
-      </div>
-      <div class="plan" data-lift="100">
-        <h3>PREMIUM</h3><p class="for">Para marcas que quieren destacar</p>
-        <div class="price">₡249.900 <small>pago único</small></div>
-        <ul><li>Todo lo del plan Pro</li><li>Diseño 100% personalizado</li><li>Animaciones y secciones especiales</li><li>Promociones</li><li>SEO básico</li><li>Soporte prioritario</li></ul>
-        <a href="https://wa.me/50689330326?text=Hola%2C%20me%20interesa%20el%20plan%20SOLANOTECH%20PREMIUM" target="_blank" rel="noopener" class="btn btn-ghost">Lo quiero</a>
-        <a class="plan-demo" href="https://comfy-lamington-a5198b.netlify.app/" data-demo-link="premium" target="_blank" rel="noopener">Ver demostración →</a>
       </div>
     </div>
     <div class="dom"><span><b>.com</b>₡7.000/año</span><span><b>.co.cr</b>₡13.000/año</span><span><b>.cr</b>₡36.000/año</span><span><b>Hosting + SSL</b>incluido siempre</span></div>
@@ -584,38 +609,26 @@ footer{border-top:1px solid var(--line);padding:30px var(--gut) 100px;display:fl
     </div>
     <div class="rest-grid">
       <article class="rdemo" data-demo="menu" data-lift="40">
-        <div class="rdemo-phone"><div class="rdemo-ph"><i>🍽️</i><b>Plan Menú</b><span>Tocá para abrir la demostración</span></div></div>
+        <div class="rdemo-phone"><div class="rdemo-ph"><i>🍽️</i><b>Menú QR</b><span>Tocá para abrir la demostración</span></div></div>
         <div class="rdemo-body">
-          <h3>Plan Menú</h3>
+          <h3>Menú QR</h3>
           <p>Menú digital con fotos, precios y categorías, y un código QR para cada mesa.</p>
           <a class="rver" href="#menu">Ver precio y lo que incluye ↑</a>
           <div class="rdemo-acts">
             <a class="btn btn-primary" href="https://exquisite-cassata-24e645.netlify.app/" data-demo-link="menu" target="_blank" rel="noopener">Ver demostración →</a>
-            <a class="btn btn-ghost" href="https://wa.me/50689330326?text=Hola%2C%20me%20interesa%20el%20plan%20SOLANOTECH%20MEN%C3%9A" target="_blank" rel="noopener">Lo quiero</a>
+            <a class="btn btn-ghost" href="X" target="_blank" rel="noopener">Lo quiero</a>
           </div>
         </div>
       </article>
       <article class="rdemo" data-demo="pro" data-lift="120">
-        <div class="rdemo-phone"><div class="rdemo-ph"><i>📲</i><b>Plan Pro</b><span>Tocá para abrir la demostración</span></div></div>
+        <div class="rdemo-phone"><div class="rdemo-ph"><i>📲</i><b>Menú + panel</b><span>Tocá para abrir la demostración</span></div></div>
         <div class="rdemo-body">
-          <h3>Plan Pro</h3>
-          <p>Todo lo del Menú más panel para cambiar platos y precios, WhatsApp, redes y dominio propio.</p>
+          <h3>Menú + panel del dueño</h3>
+          <p>Todo lo del Menú QR más el panel para que el dueño cambie platos, fotos y precios al instante.</p>
           <a class="rver" href="#menu">Ver precio y lo que incluye ↑</a>
           <div class="rdemo-acts">
             <a class="btn btn-primary" href="https://lovely-hummingbird-9d52e4.netlify.app/" data-demo-link="pro" target="_blank" rel="noopener">Ver demostración →</a>
-            <a class="btn btn-ghost" href="https://wa.me/50689330326?text=Hola%2C%20me%20interesa%20el%20plan%20SOLANOTECH%20PRO" target="_blank" rel="noopener">Lo quiero</a>
-          </div>
-        </div>
-      </article>
-      <article class="rdemo" data-demo="premium" data-lift="80">
-        <div class="rdemo-phone"><div class="rdemo-ph"><i>✨</i><b>Plan Premium</b><span>Tocá para abrir la demostración</span></div></div>
-        <div class="rdemo-body">
-          <h3>Plan Premium</h3>
-          <p>Diseño 100% personalizado con animaciones, secciones de promociones y SEO básico.</p>
-          <a class="rver" href="#menu">Ver precio y lo que incluye ↑</a>
-          <div class="rdemo-acts">
-            <a class="btn btn-primary" href="https://comfy-lamington-a5198b.netlify.app/" data-demo-link="premium" target="_blank" rel="noopener">Ver demostración →</a>
-            <a class="btn btn-ghost" href="https://wa.me/50689330326?text=Hola%2C%20me%20interesa%20el%20plan%20SOLANOTECH%20PREMIUM" target="_blank" rel="noopener">Lo quiero</a>
+            <a class="btn btn-ghost" href="https://wa.me/50689330326?text=Hola%20Solanotech%2C%20me%20interesa%20el%20Men%C3%BA%20QR%20con%20panel%20del%20due%C3%B1o%20de%20%E2%82%A165.000" target="_blank" rel="noopener">Lo quiero</a>
           </div>
         </div>
       </article>
