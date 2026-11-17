@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="es-CR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>HIMS CR · Demostración privada por Solanotech</title>
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#000000">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--n:#000;--n2:#0c0c0c;--n3:#151515;--l:rgba(255,255,255,.1);--l2:rgba(255,255,255,.2);--bl:#f5f3ef;--gr:#a7a39b;--or:#c9a45c;--or2:#e6cf9a;--sf:"Cormorant Garamond",Georgia,serif;--s:"Inter",system-ui,sans-serif;--ease:cubic-bezier(.16,1,.3,1)}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;background:var(--n)}
+body{background:var(--n);color:var(--bl);font-family:var(--s);font-weight:300;line-height:1.65;overflow-x:clip}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0}
+:focus-visible{outline:1px solid var(--or);outline-offset:3px}
+.wrap{max-width:1160px;margin:0 auto;padding-inline:max(18px,4vw)}
+.eti{font-size:.7rem;font-weight:500;letter-spacing:.38em;text-transform:uppercase;color:var(--or)}
+h1,h2,h3{font-family:var(--sf);font-weight:600;line-height:1.02;letter-spacing:.01em}
+h2{font-size:clamp(2.4rem,5.5vw,4rem)}
+h2 em{font-style:italic;color:var(--or2);font-weight:500}
+.lead{color:var(--gr);max-width:560px}
+section{padding:clamp(80px,10vw,130px) 0;scroll-margin-top:60px}
+.cab{display:grid;gap:16px;margin-bottom:clamp(36px,5vw,56px)}.cab.c{justify-items:center;text-align:center}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:15px 30px;font-size:.78rem;font-weight:500;letter-spacing:.26em;text-transform:uppercase;border:1px solid var(--bl);transition:.4s var(--ease)}
+.btn:hover{background:var(--bl);color:#000}
+.btn.or{background:var(--or);border-color:var(--or);color:#000}.btn.or:hover{background:var(--or2);border-color:var(--or2)}
+.corona{display:block}
+/* aviso demo */
+.demo{position:sticky;top:0;z-index:60;background:var(--or);color:#000;font-size:.74rem;text-align:center;padding:7px 14px;font-weight:500}
+.demo b{font-weight:700}
+/* barra */
+.barra{position:sticky;top:31px;z-index:50;background:rgba(0,0,0,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--l)}
+.barra-in{height:70px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.marca{display:flex;align-items:center;gap:12px}
+.marca span{font-family:var(--sf);font-weight:600;font-size:1.7rem;letter-spacing:.12em}
+.menu{display:flex;gap:30px;font-size:.74rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gr)}
+.menu a:hover{color:var(--bl)}
+.barra .btn{padding:11px 18px;font-size:.68rem}
+@media (max-width:900px){.menu{display:none}}
+/* portada */
+.portada{min-height:calc(100svh - 101px);display:grid;place-items:center;text-align:center;position:relative;overflow:hidden;padding:80px 0;
+ background:radial-gradient(60% 50% at 50% 40%,rgba(201,164,92,.16),transparent 70%),repeating-linear-gradient(90deg,rgba(255,255,255,.025) 0 1px,transparent 1px 120px),#000}
+.portada .in{display:grid;justify-items:center;gap:22px;position:relative}
+.portada h1{font-size:clamp(4.6rem,15vw,10rem);letter-spacing:.14em;margin-right:-.14em;line-height:.9}
+.portada .sub{font-size:.8rem;letter-spacing:.5em;text-transform:uppercase;color:var(--or2);margin-right:-.5em}
+.portada .lead{margin:6px auto 0;text-align:center}
+.raya{width:60px;height:1px;background:var(--or)}
+.acc{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:14px}
+/* servicios */
+.tabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:36px}
+.tab{padding:11px 20px;border:1px solid var(--l2);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gr);transition:.3s}
+.tab[aria-selected="true"]{border-color:var(--or);color:#000;background:var(--or)}
+.panel{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(24px,5vw,64px);align-items:start}
+@media (max-width:860px){.panel{grid-template-columns:1fr}}
+.panel[hidden]{display:none}
+.foto{aspect-ratio:4/5;border:1px solid var(--l);background:radial-gradient(70% 60% at 50% 35%,rgba(201,164,92,.22),transparent 70%),var(--n3);display:grid;place-items:center;text-align:center;position:relative;overflow:hidden}
+.foto .ic{font-family:var(--sf);font-size:6rem;color:var(--or);opacity:.85;line-height:1}
+.foto small{position:absolute;bottom:16px;left:0;right:0;font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gr)}
+.lista h3{font-size:2.4rem;margin-bottom:6px}
+.lista>p{color:var(--gr);margin-bottom:22px}
+.item{display:flex;align-items:baseline;gap:12px;padding:16px 0;border-bottom:1px solid var(--l)}
+.item div{flex:1}
+.item b{font-family:var(--sf);font-size:1.35rem;font-weight:600}
+.item p{font-size:.85rem;color:var(--gr)}
+.item .pr{font-family:var(--sf);font-size:1.4rem;color:var(--or2);white-space:nowrap}
+.item .pr small{font-family:var(--s);font-size:.7rem;color:var(--gr);margin-right:4px}
+.item button{font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;border:1px solid var(--l2);padding:8px 12px;white-space:nowrap}
+.item button:hover{border-color:var(--or);color:var(--or)}
+/* equipo */
+#equipo{background:var(--n2)}
+.equipo{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+@media (max-width:900px){.equipo{grid-template-columns:1fr 1fr}}
+.pers{border:1px solid var(--l);background:var(--n)}
+.pers .f{aspect-ratio:1;background:linear-gradient(160deg,#1c1c1c,#0a0a0a);display:grid;place-items:center;font-family:var(--sf);font-size:3rem;color:var(--or)}
+.pers div.t{padding:16px 18px 20px}
+.pers b{font-family:var(--sf);font-size:1.35rem;display:block}
+.pers p{font-size:.8rem;color:var(--gr)}
+/* reservar */
+.reserva{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,60px);align-items:start}
+@media (max-width:860px){.reserva{grid-template-columns:1fr}}
+.form{border:1px solid var(--l2);padding:clamp(22px,4vw,36px);display:grid;gap:16px;background:var(--n2)}
+.campo{display:grid;gap:7px}
+.campo label{font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gr)}
+.campo select,.campo input{background:#000;border:1px solid var(--l2);color:var(--bl);padding:13px 14px;font:inherit;font-weight:400;border-radius:0}
+.campo select:focus,.campo input:focus{outline:1px solid var(--or);border-color:var(--or)}
+.dos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.horas{display:flex;flex-wrap:wrap;gap:8px}
+.horas button{border:1px solid var(--l2);padding:9px 13px;font-size:.82rem}
+.horas button[aria-pressed="true"]{background:var(--or);border-color:var(--or);color:#000}
+.horas button:disabled{opacity:.3;text-decoration:line-through;cursor:not-allowed}
+.resumen{font-size:.9rem;color:var(--gr);border-left:2px solid var(--or);padding-left:14px}
+.resumen b{color:var(--bl);font-weight:500}
+.err{color:#ff8f8f;font-size:.85rem;min-height:1.2em}
+/* membresía */
+.planes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:900px){.planes{grid-template-columns:1fr}}
+.plan{border:1px solid var(--l2);padding:32px 28px;display:grid;gap:12px;align-content:start;background:var(--n2)}
+.plan.top{border-color:var(--or);background:linear-gradient(170deg,rgba(201,164,92,.14),var(--n2) 60%)}
+.plan h3{font-size:2rem}
+.plan .pr{font-family:var(--sf);font-size:2.6rem;color:var(--or2);line-height:1}
+.plan .pr small{font-family:var(--s);font-size:.75rem;color:var(--gr)}
+.plan ul{list-style:none;display:grid;gap:8px;font-size:.9rem;color:#d8d4cc;margin:6px 0 10px}
+.plan li::before{content:"—  ";color:var(--or)}
+/* club */
+.club{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,60px);align-items:center}
+@media (max-width:860px){.club{grid-template-columns:1fr}}
+.tarjeta{aspect-ratio:1.6;border:1px solid var(--or);padding:26px;display:grid;align-content:space-between;background:linear-gradient(135deg,#111,#000 60%),#000;box-shadow:0 30px 80px -40px rgba(201,164,92,.5)}
+.tarjeta .top{display:flex;justify-content:space-between;align-items:center}
+.tarjeta .top span{font-family:var(--sf);font-size:1.6rem;letter-spacing:.12em}
+.tarjeta .top small{font-size:.64rem;letter-spacing:.3em;color:var(--or);text-transform:uppercase}
+.sellos{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+.sello{aspect-ratio:1;border:1px solid var(--l2);border-radius:50%;display:grid;place-items:center;font-size:.8rem;color:var(--gr)}
+.sello.on{background:var(--or);border-color:var(--or);color:#000}
+.tarjeta .pie{display:flex;justify-content:space-between;font-size:.75rem;color:var(--gr)}
+.tarjeta .pie b{color:var(--or2);font-weight:500}
+/* ubicación */
+.ubi{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+@media (max-width:860px){.ubi{grid-template-columns:1fr}}
+.dato{border:1px solid var(--l);padding:26px;display:grid;gap:6px}
+.dato small{font-size:.66rem;letter-spacing:.26em;text-transform:uppercase;color:var(--or)}
+.dato b{font-weight:400;font-size:1.02rem}
+.dato a{color:var(--or2);font-size:.85rem}
+footer{border-top:1px solid var(--l);padding:40px 0 110px;color:var(--gr);font-size:.82rem}
+.pie2{display:flex;flex-wrap:wrap;justify-content:space-between;gap:16px;align-items:center}
+.pie2 a{color:var(--or2)}
+.flota{position:fixed;right:18px;bottom:18px;z-index:55;width:58px;height:58px;border-radius:50%;background:#25D366;display:grid;place-items:center;box-shadow:0 12px 30px -8px rgba(37,211,102,.6)}
+.flota svg{width:28px;height:28px}
+.js .rv{opacity:0;transform:translateY(26px);transition:opacity 1s var(--ease),transform 1s var(--ease)}.js .rv.ve{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.js .rv{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<script>document.body.classList.add('js')</script>
+<div class="demo"><b>Demostración privada</b> preparada por Solanotech para HIMS CR · Fotos, precios y textos son de ejemplo</div>
+
+<header class="barra"><div class="wrap barra-in">
+  <a href="#inicio" class="marca" aria-label="HIMS, inicio"><svg class="corona" width="34" height="26" viewBox="0 0 34 26" fill="none" stroke="#f5f3ef" stroke-width="1.4" aria-hidden="true"><path d="M2 6l7 12 8-16 8 16 7-12"/><path d="M9 18l8-8 8 8"/><path d="M11 23h12"/></svg><span>HIMS</span></a>
+  <nav class="menu" aria-label="Secciones"><a href="#servicios">Servicios</a><a href="#equipo">Equipo</a><a href="#membresia">Mensualidad</a><a href="#club">Club</a><a href="#ubicacion">Ubicación</a></nav>
+  <a href="#reservar" class="btn or">Reservar</a>
+</div></header>
+
+<main>
+<section class="portada" id="inicio">
+  <div class="in rv">
+    <svg width="92" height="70" viewBox="0 0 34 26" fill="none" stroke="#c9a45c" stroke-width="1" aria-hidden="true"><path d="M2 6l7 12 8-16 8 16 7-12"/><path d="M9 18l8-8 8 8"/><path d="M11 23h12"/></svg>
+    <h1>HIMS</h1>
+    <p class="sub">Barbería · Spa · Tattoo · Estilismo</p>
+    <div class="raya"></div>
+    <p class="lead">Cuidado masculino de primer nivel en Pinares de Curridabat. Reserve su cita en un minuto.</p>
+    <div class="acc"><a href="#reservar" class="btn or">Reservar cita</a><a href="#servicios" class="btn">Ver servicios</a></div>
+  </div>
+</section>
+
+<section id="servicios">
+  <div class="wrap">
+    <div class="cab c rv"><span class="eti">Servicios</span><h2>Todo en <em>un solo lugar</em></h2></div>
+    <div class="tabs rv" role="tablist" id="tabs"></div>
+    <div id="paneles"></div>
+  </div>
+</section>
+
+<section id="equipo">
+  <div class="wrap">
+    <div class="cab rv"><span class="eti">Equipo HIMS</span><h2>Manos <em>expertas</em></h2><p class="lead">Cada cliente puede escoger a su especialista al reservar.</p></div>
+    <div class="equipo">
+      <div class="pers rv"><div class="f">BD</div><div class="t"><b>Bryan Duarte</b><p>Barbero · socio · 15 años de experiencia en color y transformación de imagen</p></div></div>
+      <div class="pers rv"><div class="f">✂</div><div class="t"><b>Barbero</b><p>Cortes clásicos, fades y diseño de barba</p></div></div>
+      <div class="pers rv"><div class="f">✦</div><div class="t"><b>Spa</b><p>Masajes, faciales, manicure y pedicure</p></div></div>
+      <div class="pers rv"><div class="f">✒</div><div class="t"><b>Tattoo</b><p>Diseños a la medida, con cita previa</p></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="reservar">
+  <div class="wrap reserva">
+    <div class="rv">
+      <span class="eti">Reservar</span>
+      <h2 style="margin:16px 0 18px">Su cita, <em>sin esperar</em></h2>
+      <p class="lead">Escoja el servicio, el especialista, el día y la hora. La reserva llega directo al WhatsApp de HIMS, ya escrita.</p>
+      <p class="lead" style="margin-top:14px;font-size:.88rem">En la versión con sistema de citas, las horas ocupadas se bloquean solas y el cliente recibe recordatorio automático.</p>
+    </div>
+    <form class="form rv" id="form" novalidate>
+      <div class="campo"><label for="fSer">Servicio</label><select id="fSer"></select></div>
+      <div class="campo"><label for="fEsp">Especialista</label><select id="fEsp"><option>El primero disponible</option><option>Bryan Duarte</option><option>Barbero</option><option>Spa</option><option>Tattoo</option></select></div>
+      <div class="dos">
+        <div class="campo"><label for="fDia">Día</label><select id="fDia"></select></div>
+        <div class="campo"><label>Hora</label><div class="horas" id="horas"></div></div>
+      </div>
+      <div class="dos">
+        <div class="campo"><label for="fNom">Nombre</label><input id="fNom" autocomplete="name" placeholder="Su nombre"></div>
+        <div class="campo"><label for="fTel">Teléfono</label><input id="fTel" inputmode="tel" autocomplete="tel" placeholder="8888-8888"></div>
+      </div>
+      <p class="resumen" id="res"></p>
+      <p class="err" id="err" role="alert"></p>
+      <button type="submit" class="btn or">Confirmar por WhatsApp</button>
+    </form>
+  </div>
+</section>
+
+<section id="membresia" style="background:var(--n2)">
+  <div class="wrap">
+    <div class="cab c rv"><span class="eti">Mensualidad HIMS</span><h2>Siempre <em>impecable</em></h2><p class="lead">Un pago al mes y su imagen al día. Planes de ejemplo para la demostración.</p></div>
+    <div class="planes">
+      <div class="plan rv"><h3>Esencial</h3><div class="pr">₡25.000 <small>/ mes</small></div><ul><li>2 cortes al mes</li><li>Arreglo de barba</li><li>Prioridad al reservar</li></ul><a href="#reservar" class="btn">Lo quiero</a></div>
+      <div class="plan top rv"><h3>Premium</h3><div class="pr">₡40.000 <small>/ mes</small></div><ul><li>4 cortes al mes</li><li>Barba con toalla caliente</li><li>1 facial al mes</li><li>10 % en productos</li></ul><a href="#reservar" class="btn or">Lo quiero</a></div>
+      <div class="plan rv"><h3>Royal</h3><div class="pr">₡60.000 <small>/ mes</small></div><ul><li>Cortes ilimitados</li><li>Manicure y pedicure</li><li>1 masaje al mes</li><li>Bebida de cortesía</li></ul><a href="#reservar" class="btn">Lo quiero</a></div>
+    </div>
+  </div>
+</section>
+
+<section id="club">
+  <div class="wrap club">
+    <div class="tarjeta rv" aria-label="Tarjeta de cliente frecuente de ejemplo">
+      <div class="top"><span>HIMS</span><small>Club de fidelidad</small></div>
+      <div class="sellos" id="sellos"></div>
+      <div class="pie"><span>Andrés M. · cliente desde 2025</span><b>7 de 10</b></div>
+    </div>
+    <div class="rv">
+      <span class="eti">Premiamos su fidelidad</span>
+      <h2 style="margin:16px 0 18px">Cada visita <em>suma</em></h2>
+      <p class="lead">Una tarjeta digital en el celular del cliente, sin descargar nada. Cada servicio suma un sello y con 10 sellos gana el premio que HIMS escoja, por ejemplo un corte gratis.</p>
+      <p class="lead" style="margin-top:14px">Además, al terminar cada visita se le pide una reseña en Google, para que más gente encuentre HIMS.</p>
+      <button type="button" class="btn" id="sumar" style="margin-top:24px">Probar: sumar un sello</button>
+    </div>
+  </div>
+</section>
+
+<section id="ubicacion" style="padding-top:0">
+  <div class="wrap">
+    <div class="cab rv"><span class="eti">Visítenos</span><h2>Pinares de <em>Curridabat</em></h2></div>
+    <div class="ubi">
+      <div class="dato rv"><small>Dirección</small><b>Plaza 1492, Pinares de Curridabat</b><a href="https://www.google.com/maps/search/?api=1&query=Plaza+1492+Pinares+Curridabat" target="_blank" rel="noopener">Abrir en Google Maps →</a><a href="https://waze.com/ul?q=Plaza%201492%20Pinares%20Curridabat" target="_blank" rel="noopener">Abrir en Waze →</a></div>
+      <div class="dato rv"><small>Citas</small><b>WhatsApp 7130-0817</b><b>Teléfono 2271-4747</b></div>
+      <div class="dato rv"><small>Síganos</small><b>Instagram @hims_cr</b><b>Facebook HIMS CR</b></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap pie2"><span>© 2026 HIMS CR · Barbería, spa, tattoo, estilismo y moda</span><span>Demostración hecha por <a href="https://ssolanotech.com" target="_blank" rel="noopener">Solanotech</a> · 8933-0326</span></div></footer>
+<a class="flota" id="flota" href="https://wa.me/50671300817" target="_blank" rel="noopener" aria-label="WhatsApp de HIMS"><svg viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm4.5 12.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.4.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.7a2.7 2.7 0 0 0 1.8-1.3 2.2 2.2 0 0 0 .2-1.3c-.1-.1-.3-.2-.5-.3z"/></svg></a>
+
+<script>
+(() => {
+  const WA = '50671300817';
+  const fmt = n => '₡' + n.toLocaleString('en-US').replace(/,/g, '.');
+  // Precios: los de spa salen de su promoción en Facebook; los demás son de ejemplo.
+  const CAT = [
+    { k:'barberia', n:'Barbería', ic:'✂', d:'Cortes clásicos y modernos, fades y barba con toalla caliente.', s:[
+      ['Corte de cabello','Lavado, corte y peinado', 8000],['Corte + barba','El combo completo', 12000],['Arreglo de barba','Perfilado y toalla caliente', 6000],['Corte niño','Hasta 12 años', 6000],['Color / transformación','Precio según el cabello', 25000, 'desde'] ]},
+    { k:'spa', n:'Spa', ic:'✦', d:'Relajación y cuidado de la piel para hombre.', s:[
+      ['Masaje relajante','Espalda y cuello', 10000],['Facial profesional','Limpieza profunda e hidratación', 15000] ]},
+    { k:'manos', n:'Manos y pies', ic:'❖', d:'Manicure y pedicure masculino.', s:[
+      ['Manicure','Limpieza, corte y limado', 9000],['Pedicure','Cuidado completo de pies', 13500],['Manicure y pedicure','Combo', 19500] ]},
+    { k:'tattoo', n:'Tattoo', ic:'✒', d:'Diseños personalizados con cita previa.', s:[
+      ['Tattoo pequeño','Hasta 5 cm', 30000, 'desde'],['Diseño a la medida','Se cotiza según tamaño y detalle', 0] ]},
+    { k:'estilismo', n:'Estilismo y moda', ic:'♛', d:'Asesoría de imagen para eventos y el día a día.', s:[
+      ['Asesoría de imagen','Corte, barba y estilo según su rostro', 20000],['Peinado para evento','Bodas, graduaciones y fiestas', 12000] ]},
+  ];
+  const tabs = document.getElementById('tabs'), pan = document.getElementById('paneles');
+  CAT.forEach((c, i) => {
+    tabs.insertAdjacentHTML('beforeend', `<button class="tab" role="tab" id="t-${c.k}" aria-controls="p-${c.k}" aria-selected="${i===0}">${c.n}</button>`);
+    pan.insertAdjacentHTML('beforeend', `<div class="panel" role="tabpanel" id="p-${c.k}" aria-labelledby="t-${c.k}" ${i?'hidden':''}>
+      <div class="foto"><span class="ic">${c.ic}</span><small>Aquí van sus fotos reales</small></div>
+      <div class="lista"><h3>${c.n}</h3><p>${c.d}</p>${c.s.map(x => `<div class="item"><div><b>${x[0]}</b><p>${x[1]}</p></div><span class="pr">${x[2] ? (x[3] ? '<small>desde</small>' : '') + fmt(x[2]) : 'Cotizar'}</span><button type="button" data-res="${c.n} · ${x[0]}">Reservar</button></div>`).join('')}</div></div>`);
+  });
+  tabs.addEventListener('click', e => {
+    const b = e.target.closest('.tab'); if (!b) return;
+    tabs.querySelectorAll('.tab').forEach(t => t.setAttribute('aria-selected', t === b));
+    pan.querySelectorAll('.panel').forEach(p => p.hidden = p.id !== b.getAttribute('aria-controls'));
+  });
+  // formulario de reserva
+  const fSer = document.getElementById('fSer');
+  CAT.forEach(c => { const g = document.createElement('optgroup'); g.label = c.n; c.s.forEach(x => g.append(new Option(x[0], c.n + ' · ' + x[0]))); fSer.append(g); });
+  pan.addEventListener('click', e => { const b = e.target.closest('[data-res]'); if (!b) return; fSer.value = b.dataset.res; pinta(); document.getElementById('reservar').scrollIntoView({ behavior: 'smooth' }); });
+  const fDia = document.getElementById('fDia'), DIAS = ['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+  for (let i = 0, n = 0; n < 10; i++) { const d = new Date(); d.setDate(d.getDate() + i); if (d.getDay() === 0) continue; fDia.append(new Option((i===0?'Hoy, ':i===1?'Mañana, ':'') + DIAS[d.getDay()] + ' ' + d.getDate(), (i===0?'hoy ':'') + DIAS[d.getDay()] + ' ' + d.getDate())); n++; }
+  const horas = document.getElementById('horas'); let hora = '';
+  const pintaHoras = () => { horas.innerHTML = ''; ['9:00','10:00','11:00','13:00','14:00','15:00','16:00','17:00','18:00'].forEach((h, i) => {
+    const b = document.createElement('button'); b.type = 'button'; b.textContent = h; b.setAttribute('aria-pressed', h === hora);
+    if ((i + fDia.selectedIndex) % 4 === 1) { b.disabled = true; b.title = 'Ocupada'; if (h === hora) hora = ''; }
+    b.onclick = () => { hora = h; pintaHoras(); pinta(); }; horas.append(b); }); };
+  const res = document.getElementById('res'), err = document.getElementById('err'), v = id => document.getElementById(id).value.trim();
+  const pinta = () => { res.innerHTML = `<b>${fSer.value}</b><br>${v('fEsp')} · ${fDia.value}${hora ? ' a las ' + hora : ''}`; };
+  ['fSer','fEsp'].forEach(id => document.getElementById(id).addEventListener('change', pinta));
+  fDia.addEventListener('change', () => { pintaHoras(); pinta(); });
+  pintaHoras(); pinta();
+  document.getElementById('form').addEventListener('submit', e => {
+    e.preventDefault();
+    if (!hora) return err.textContent = 'Escoja una hora.';
+    if (!v('fNom')) return err.textContent = 'Escriba su nombre.';
+    err.textContent = '';
+    const t = `Hola HIMS, quiero reservar:\n• ${fSer.value}\n• Especialista: ${v('fEsp')}\n• ${fDia.value} a las ${hora}\n• A nombre de ${v('fNom')}${v('fTel') ? ' · ' + v('fTel') : ''}`;
+    window.open('https://wa.me/' + WA + '?text=' + encodeURIComponent(t), '_blank', 'noopener');
+  });
+  // club de sellos
+  const sel = document.getElementById('sellos'); let n = 7;
+  const ps = () => { sel.innerHTML = Array.from({ length: 10 }, (_, i) => `<span class="sello${i < n ? ' on' : ''}">${i === 9 ? '♛' : i + 1}</span>`).join(''); sel.nextElementSibling.querySelector('b').textContent = n >= 10 ? '¡Premio listo!' : n + ' de 10'; };
+  ps(); document.getElementById('sumar').onclick = () => { n = n >= 10 ? 0 : n + 1; ps(); };
+  // aparición
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('ve'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px' });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+})();
+</script>
+</body>
+</html>

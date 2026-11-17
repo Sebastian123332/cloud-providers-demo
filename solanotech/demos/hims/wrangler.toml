@@ -1,0 +1,6 @@
+# Demo privada para HIMS CR. El nombre debe ser igual al del Worker en Cloudflare.
+name = "demohims"
+compatibility_date = "2025-09-01"
+
+[assets]
+directory = "./public"
