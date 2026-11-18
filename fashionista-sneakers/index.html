@@ -20,7 +20,7 @@
   --on-ink:#ffffff; --on-hi:#ffffff; --art-glow:#ece0f7; --bad:#d6334f; --warn:#b26a00; --ok:#1f9d55;
   color-scheme:light;
 }
-:root[data-pal="clara"] :is(.top,.hero,.perf-band,.foot,.sheet-top){
+:root[data-pal="clara"] :is(.top,.hero,.perf-band,.foot,.sheet-top,.marquee){
   --bg:#000000; --panel:#121018; --panel-2:#1a1722; --line:#2a2533; --line-hi:#43395a;
   --ink:#f3eef8; --muted:#a59cb2; --violet:#b43cf0; --violet-hi:#d27bff; --violet-deep:#5e1a86;
   --on-ink:#13081b; --on-hi:#160322; --art-glow:#2b2036; --bad:#ff6b81; --warn:#ffb547; --ok:#3ecf72;
@@ -298,15 +298,125 @@ a.art,.name a{text-decoration:none;color:inherit}
 .d-empty{color:var(--muted);text-align:center;padding:40px 10px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,20px);opacity:0;background:var(--ink);color:var(--on-ink);font-weight:700;padding:10px 16px;border-radius:999px;z-index:90;transition:.25s;pointer-events:none;font-size:14px}
 .toast.show{opacity:1;transform:translate(-50%,0)}
+/* Barra de redes */
+.topbar{background:var(--violet);color:#fff;font-size:13px;font-weight:700}
+.topbar .wrap{display:flex;justify-content:center;gap:4px 20px;flex-wrap:wrap;padding-block:7px}
+.topbar a{display:inline-flex;align-items:center;gap:6px;text-decoration:none;color:#fff}
+.topbar a:hover{text-decoration:underline}
+.topbar svg{width:14px;height:14px;flex:none}
+@media (max-width:640px){.topbar .lbl{display:none}.topbar .wrap{gap:18px}.topbar svg{width:17px;height:17px}}
+
+/* Slider de portada */
+.slider{position:relative;background:#000;color:#fff;overflow:hidden;touch-action:pan-y}
+.slide{display:none;position:relative;min-height:clamp(380px,42vw,540px)}
+.slide.on{display:block;animation:sfade .6s ease}
+@keyframes sfade{from{opacity:.25}to{opacity:1}}
+.s-bg{position:absolute;inset:0;background:radial-gradient(85% 95% at 74% 45%,var(--s3) 0%,var(--s2) 40%,var(--s1) 78%)}
+.s-bg::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(115deg,rgba(255,255,255,.035) 0 2px,transparent 2px 24px)}
+.s-art{position:absolute;right:0;top:0;bottom:0;width:58%;display:grid;place-items:center;pointer-events:none}
+.s-art svg{width:min(700px,90%);height:auto;transform:rotate(-14deg);filter:drop-shadow(0 40px 36px rgba(0,0,0,.55));animation:sfloat 5s ease-in-out infinite}
+@keyframes sfloat{50%{transform:rotate(-11deg) translateY(-14px)}}
+.s-art img{width:100%;height:100%;object-fit:cover;-webkit-mask-image:linear-gradient(90deg,transparent,#000 35%);mask-image:linear-gradient(90deg,transparent,#000 35%)}
+.s-in{position:relative;z-index:2;min-height:inherit;display:flex;align-items:center;padding-block:40px 100px}
+.s-txt{max-width:540px;min-width:0}
+.s-txt small{font-weight:800;letter-spacing:.18em;text-transform:uppercase;font-size:12px;color:#ecd2ff}
+.s-txt h2{font-size:clamp(46px,7.6vw,104px);line-height:.9;margin:10px 0 14px;color:#fff;text-transform:uppercase;letter-spacing:-.01em}
+.s-txt p{color:#eee3f8;font-size:clamp(15px,1.6vw,18px);margin:0 0 24px;max-width:44ch}
+.s-cta{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#000;text-decoration:none;font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:14px;padding:14px 22px;border-radius:8px}
+.s-cta:hover{background:#d27bff;color:#160322}
+.s-tabs{position:absolute;left:0;right:0;bottom:0;z-index:3}
+.s-tabs .wrap{display:flex;gap:18px;padding-block:14px 22px;overflow-x:auto;scrollbar-width:none}
+.s-tabs button{background:none;border:0;color:rgba(255,255,255,.65);display:grid;gap:8px;min-width:118px;text-align:left;font-family:var(--f-display);font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:12px;padding:0}
+.s-tabs button.on{color:#fff}
+.s-tabs i{display:block;height:3px;background:rgba(255,255,255,.25);border-radius:2px;overflow:hidden}
+.s-tabs b{display:block;height:100%;width:0;background:#fff}
+.s-tabs button.on b{animation:prog var(--sdur,6.5s) linear forwards}
+.slider.paused .s-tabs b{animation-play-state:paused}
+@keyframes prog{to{width:100%}}
+@media (max-width:760px){
+  .slide{min-height:560px}
+  .s-art{left:0;width:100%;bottom:auto;height:50%}
+  .s-art svg{width:86%}
+  .s-art img{-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent);mask-image:linear-gradient(180deg,#000 55%,transparent)}
+  .s-in{align-items:flex-end;padding-block:0 96px}
+}
+@media (prefers-reduced-motion:reduce){.s-art svg{animation:none}.s-tabs button.on b{animation:none;width:100%}}
+
+/* Franja de marcas en movimiento */
+.marquee{background:#000;border-block:1px solid #1d1a26;overflow:hidden}
+.mq-track{display:flex;width:max-content;animation:mq 38s linear infinite}
+.marquee:hover .mq-track,.marquee:focus-within .mq-track{animation-play-state:paused}
+.mq-track a{font-family:var(--f-display);font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:#fff;text-decoration:none;padding:15px 0 15px 26px;display:flex;align-items:center;gap:26px;font-size:15px;white-space:nowrap}
+.mq-track a::after{content:"";width:9px;height:9px;background:#b43cf0;transform:rotate(45deg);border-radius:1px}
+.mq-track a:hover{color:#d27bff}
+@keyframes mq{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.marquee{overflow-x:auto}.mq-track{animation:none}}
+
+/* Mosaicos de categorías */
+.tiles{padding-block:30px 6px}
+.tile-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.tile{position:relative;border-radius:14px;overflow:hidden;min-height:270px;display:flex;align-items:flex-start;text-decoration:none;color:#fff;background:var(--tbg)}
+.tile.big{grid-column:span 2;min-height:230px}
+.tile .tart{position:absolute;inset:0;display:grid;place-items:center}
+.tile .tart svg{width:88%;height:auto;transform:rotate(-14deg) translateY(10%);filter:drop-shadow(0 24px 20px rgba(0,0,0,.5));transition:transform .45s cubic-bezier(.2,.8,.2,1)}
+.tile.big .tart{left:35%}
+.tile.big .tart svg{width:min(420px,90%)}
+.tile:hover .tart svg{transform:rotate(-8deg) translateY(6%) scale(1.06)}
+.tile .tart img{width:100%;height:100%;object-fit:cover;transition:transform .45s}
+.tile:hover .tart img{transform:scale(1.05)}
+.tile h3{position:relative;z-index:2;font-family:var(--f-display);text-transform:uppercase;font-size:clamp(24px,2.8vw,36px);margin:0;padding:18px 20px;text-shadow:0 2px 14px rgba(0,0,0,.45);letter-spacing:.02em}
+.tile .go{position:absolute;right:14px;bottom:14px;z-index:2;width:38px;height:38px;border-radius:50%;background:#fff;color:#000;display:grid;place-items:center;font-weight:800;transition:transform .2s}
+.tile:hover .go{transform:translateX(3px)}
+@media (max-width:820px){.tile-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.tile{min-height:200px}.tile.big{grid-column:span 1;min-height:200px}.tile.big .tart{left:0}}
+
+/* Ofertas destacadas */
+.deals{padding-block:34px 8px}
+.deals-head{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.deals-head p{margin:6px 0 0;color:var(--muted);font-size:13px;letter-spacing:.14em;text-transform:uppercase;font-weight:700}
+.deals-nav{display:flex;gap:8px;align-items:center}
+.deals-nav button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--panel);font-weight:800}
+.deals-nav a{font-weight:800;color:var(--violet-hi);text-decoration:none;margin-left:6px}
+.deals-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(220px,250px);gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:10px;scrollbar-width:thin}
+.deals-row .card{scroll-snap-align:start}
+
+/* Nosotros */
+.about{border-top:1px solid var(--line);padding-block:52px}
+.about-in{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:40px;align-items:center}
+.about h2{font-size:clamp(30px,4.6vw,52px)}
+.about p.txt{color:var(--muted);font-size:16px;max-width:60ch;margin:16px 0 22px}
+.vals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.val{border:1px solid var(--line);background:var(--panel);border-radius:14px;padding:14px}
+.val b{display:block;font-family:var(--f-display);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.val span{font-size:13px;color:var(--muted)}
+.stats{display:flex;gap:28px;flex-wrap:wrap;margin-top:22px}
+.stats div b{display:block;font-family:var(--f-display);font-size:34px;line-height:1;color:var(--violet-hi);font-variant-numeric:tabular-nums}
+.stats div span{font-size:12px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;font-weight:700}
+.about figure{margin:0;position:relative}
+.about figure img{width:100%;aspect-ratio:4/5;max-width:100%;object-fit:cover;border-radius:20px;display:block}
+.about figure figcaption{position:absolute;left:14px;bottom:14px;background:rgba(0,0,0,.7);color:#fff;font-size:12px;font-weight:700;padding:6px 10px;border-radius:8px}
+@media (max-width:820px){.about-in{grid-template-columns:1fr}.vals{grid-template-columns:1fr}.about figure img{aspect-ratio:16/10}}
+
+/* Pagos en el pie */
+.bank{display:grid;gap:2px;margin-bottom:10px}
+.bank b{color:var(--ink);font-size:14px}
+.bank code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12px;color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap;word-break:break-all}
+.copy{border:1px solid var(--line);background:var(--panel-2);border-radius:6px;font-size:11px;font-weight:700;padding:2px 7px;color:var(--ink)}
+.foot-notes{border-top:1px solid var(--line);margin-top:24px;padding-top:16px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;font-size:12px}
+.foot-notes span{display:flex;gap:8px}
+.foot-notes span::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--violet-hi);flex:none;margin-top:6px}
+@media (max-width:820px){.foot-notes{grid-template-columns:1fr 1fr}}
+@media (max-width:480px){.foot-notes{grid-template-columns:1fr}}
+.demo-tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:0 4px;margin-left:6px;vertical-align:middle}
 </style>
 
+<div class="topbar"><div class="wrap" id="topbar"></div></div>
 <header class="top">
   <div class="wrap">
-    <a class="logo" href="#inicio" aria-label="Fashionista Sneakers, inicio"><img src="logo.png" alt="Fashionista Sneakers"></a>
+    <a class="logo" href="#inicio" aria-label="Fashionista Sneakers, inicio"><img src="logo.svg" alt="Fashionista Sneakers"></a>
     <nav aria-label="Departamentos" id="mainNav">
       <a href="#hombre">Hombre</a><a href="#mujer">Mujer</a><a href="#ninos">Niños</a>
       <a href="#basketball">Basketball</a><a href="#running">Running</a><a href="#ropa">Ropa</a>
-      <a href="#ofertas" class="hot">Ofertas</a><a href="perfumeria.html">Perfumería</a>
+      <a href="#ofertas" class="hot">Ofertas</a><a href="perfumeria.html">Perfumería</a><a href="#nosotros">Nosotros</a>
     </nav>
     <button class="cart-btn" id="openCart" aria-label="Abrir carrito">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h15l-1.5 9h-12z"/><path d="M6 7 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
@@ -314,27 +424,21 @@ a.art,.name a{text-decoration:none;color:inherit}
     </button>
   </div>
   <div class="subnav"><div class="wrap">
-    <a href="#hombre">Hombre</a><a href="#mujer">Mujer</a><a href="#ninos">Niños</a><a href="#basketball">Basketball</a><a href="#running">Running</a><a href="#lifestyle">Lifestyle</a><a href="#ropa">Ropa</a><a href="#ofertas">Ofertas</a><a href="perfumeria.html">Perfumería</a>
+    <a href="#hombre">Hombre</a><a href="#mujer">Mujer</a><a href="#ninos">Niños</a><a href="#basketball">Basketball</a><a href="#running">Running</a><a href="#lifestyle">Lifestyle</a><a href="#ropa">Ropa</a><a href="#ofertas">Ofertas</a><a href="perfumeria.html">Perfumería</a><a href="#nosotros">Nosotros</a>
   </div></div>
 </header>
 
 <main id="inicio">
-  <section class="hero">
-    <div class="wrap">
-      <div>
-        <img class="logo" src="logo.png" alt="Fashionista Sneakers">
-        <p>Tenis, ropa y perfumería en Cartago. Filtrá por tu talla y solo ves lo que hay disponible.</p>
-      </div>
-      <div class="depts">
-        <a class="dept" href="#hombre"><b>Hombre</b><span id="dc-Hombre">—</span></a>
-        <a class="dept" href="#mujer"><b>Mujer</b><span id="dc-Mujer">—</span></a>
-        <a class="dept" href="#ninos"><b>Niños</b><span id="dc-Niños">—</span></a>
-        <a class="dept" href="#basketball"><b>Basketball</b><span>Calzado de cancha</span></a>
-        <a class="dept" href="#running"><b>Running</b><span>Para correr</span></a>
-        <a class="dept" href="perfumeria.html"><b>Perfumería</b><span>Decants y botellas</span></a>
-      </div>
-    </div>
-  </section>
+  <section class="slider" id="slider" aria-roledescription="carrusel" aria-label="Destacados"></section>
+  <div class="marquee" aria-label="Marcas"><div class="mq-track" id="mq"></div></div>
+
+  <section class="tiles"><div class="wrap"><div class="tile-grid" id="tiles"></div></div></section>
+
+  <section class="deals" id="dealsSec"><div class="wrap">
+    <div class="deals-head"><div><h2><small>Ofertas</small>Precios especiales</h2><p>Descuentos que pone la tienda, hasta agotar existencias</p></div>
+      <div class="deals-nav"><button id="dPrev" aria-label="Anteriores">←</button><button id="dNext" aria-label="Siguientes">→</button><a href="#ofertas">Ver todas</a></div></div>
+    <div class="deals-row" id="dealsRow"></div>
+  </div></section>
 
   <section class="shop" id="tienda">
     <div class="wrap shop-grid">
@@ -374,6 +478,16 @@ a.art,.name a{text-decoration:none;color:inherit}
     </div>
   </section>
 
+  <section class="about" id="nosotros"><div class="wrap about-in">
+    <div>
+      <h2 id="abTitle"><small>Nosotros</small></h2>
+      <p class="txt" id="abText"></p>
+      <div class="vals" id="abVals"></div>
+      <div class="stats"><div><b>123 mil</b><span>Seguidores en Facebook</span></div><div><b>100 %</b><span>Marcas originales</span></div><div><b>7</b><span>Provincias con envío</span></div></div>
+    </div>
+    <figure><img src="tienda.jpg" alt="Tienda Fashionista Sneakers en Cartago"><figcaption>Nuestra tienda en Cartago</figcaption></figure>
+  </div></section>
+
   <section class="visit" id="visitanos">
     <div class="wrap">
       <figure><img src="tienda.jpg" alt="Fachada de la tienda Fashionista Sneakers en Cartago"></figure>
@@ -394,7 +508,7 @@ a.art,.name a{text-decoration:none;color:inherit}
   <div class="wrap">
     <div class="foot-grid">
       <div>
-        <img src="logo.png" alt="Fashionista Sneakers" style="height:34px;width:auto;display:block">
+        <img src="logo.svg" alt="Fashionista Sneakers" style="height:34px;width:auto;display:block">
         <p>Calzado deportivo, ropa y perfumería. 600 m norte de la Farmacia Fischel, Cartago, Costa Rica.</p>
         <h5 style="margin-top:18px">Métodos de pago</h5>
         <span data-cardlogos="sinpe"></span>
@@ -407,23 +521,30 @@ a.art,.name a{text-decoration:none;color:inherit}
         <li><button class="lk" data-info="envios">Envíos y entregas</button></li>
         <li><button class="lk" data-info="cambios">Cambios y devoluciones</button></li>
         <li><button class="lk" data-info="tallas">Guía de tallas</button></li>
-        <li><button class="lk" data-info="faq">Preguntas frecuentes</button></li></ul></div>
-      <div><h5>Contacto y legal</h5><ul>
-        <li><a id="ftWa" href="#" target="_blank" rel="noopener">WhatsApp</a></li>
+        <li><button class="lk" data-info="faq">Preguntas frecuentes</button></li>
         <li><button class="lk" data-info="privacidad">Política de privacidad</button></li>
         <li><button class="lk" data-info="terminos">Términos y condiciones</button></li>
+        <li><a href="#nosotros">Nosotros</a></li>
+        <li><a id="ftWa" href="#" target="_blank" rel="noopener">WhatsApp</a></li>
         <li><a href="admin.html">Panel del dueño (demo)</a></li></ul></div>
+      <div><h5>Pagos <span class="demo-tag">EJEMPLO</span></h5><div id="ftPagos"></div></div>
+    </div>
+    <div class="foot-notes">
+      <span>Las compras con tarjeta se entregan solo al dueño de la tarjeta, con cédula.</span>
+      <span>Retiro en tienda: listo el mismo día hábil; te avisamos por WhatsApp.</span>
+      <span>Si pagás por transferencia o SINPE, enviá el comprobante con el código del pedido.</span>
+      <span>No hay entregas a domicilio los domingos ni feriados.</span>
     </div>
     <div class="foot-bottom"><span>© 2026 Fashionista Sneakers · Cartago, Costa Rica</span><span>Sitio desarrollado por Solanotech</span></div>
   </div>
 </footer>
 
 <section class="sheet" id="pdView" hidden aria-label="Detalle del producto">
-  <div class="sheet-top"><div class="wrap"><button class="back" data-back>← Volver</button><img src="logo.png" alt="Fashionista Sneakers"><button class="cart-btn" data-opencart style="margin-left:auto">Carrito <span class="n cartN">0</span></button></div></div>
+  <div class="sheet-top"><div class="wrap"><button class="back" data-back>← Volver</button><img src="logo.svg" alt="Fashionista Sneakers"><button class="cart-btn" data-opencart style="margin-left:auto">Carrito <span class="n cartN">0</span></button></div></div>
   <div class="wrap" id="pdBody"></div>
 </section>
 <section class="sheet" id="coView" hidden aria-label="Pagar pedido">
-  <div class="sheet-top"><div class="wrap"><button class="back" data-back>← Seguir comprando</button><img src="logo.png" alt="Fashionista Sneakers"><span class="secure" style="margin-left:auto;align-items:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Pago seguro</span></div></div>
+  <div class="sheet-top"><div class="wrap"><button class="back" data-back>← Seguir comprando</button><img src="logo.svg" alt="Fashionista Sneakers"><span class="secure" style="margin-left:auto;align-items:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Pago seguro</span></div></div>
   <div class="wrap" id="coBody"></div>
 </section>
 <div class="modal" id="modal" hidden><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="mTitle" id="modalCard"></div></div>
@@ -592,7 +713,7 @@ function render(){
   $("#count").innerHTML = list.length ? `Productos 1–${n} de <b>${list.length}</b>` : "";
   $("#grid").innerHTML = list.length ? list.slice(0,n).map(card).join("") : `<p class="empty">No hay productos con esos filtros. Probá quitar una talla o una marca.</p>`;
   $("#more").hidden = n >= list.length;
-  FS.TAXO.generos.forEach(g=>{const el=document.getElementById("dc-"+g); if(el) el.textContent=db.productos.filter(p=>p.activo&&p.gen===g&&FS.total(p)>0).length+" productos";});
+  if(typeof renderDeals==="function") renderDeals();
 }
 
 /* ===== Carrito (compartido con perfumeria.html) ===== */
@@ -630,6 +751,78 @@ const ICONS={Facebook:`<svg viewBox="0 0 24 24"><path fill="currentColor" d="M14
 $("#social").innerHTML = STORE.socials.map(s=>`<a href="${s.url||"https://wa.me/"+STORE.whatsapp}" target="_blank" rel="noopener">${ICONS[s.name]}${s.name}</a>`).join("");
 $("#waNum").textContent = "+" + STORE.whatsapp.replace(/^(\d{3})(\d{4})(\d{4})$/,"$1 $2 $3");
 $("#ftWa").href = "https://wa.me/"+STORE.whatsapp; $("#ftWa").textContent = "WhatsApp " + $("#waNum").textContent;
+/* ===== Portada: slider, marcas, mosaicos, ofertas, Nosotros y pagos ===== */
+const TONOS = {violeta:["#0d0216","#47107a","#b43cf0"], rojo:["#120204","#5a0d16","#d21f35"], azul:["#020818","#0f2d6b","#2f7df0"], negro:["#000000","#17131f","#4a4257"], verde:["#020d06","#0f4a26","#22a35a"]};
+const TILE_BG = ["linear-gradient(135deg,#1a0630,#6b1fa8)","linear-gradient(135deg,#0d0d12,#3b3846)","linear-gradient(135deg,#1e0408,#a3162a)","linear-gradient(135deg,#04122b,#1e56b8)","linear-gradient(135deg,#1b1005,#b8741e)","linear-gradient(135deg,#04170c,#1f7a3e)"];
+const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const brandSlug = b => "marca-" + String(b).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+let sIdx = 0, sTimer = null;
+const SDUR = 6500;
+const slidesOn = () => ((db.portada||{}).slides||[]).filter(s=>s.activo!==false);
+function artFor(pid){ const p = db.productos.find(x=>x.id===pid); return p ? (p.foto ? `<img src="${p.foto}" alt="">` : FS.art(p)) : ""; }
+function renderSlider(){
+  const L = slidesOn(), el = $("#slider");
+  if(!L.length){ el.hidden = true; return; } el.hidden = false;
+  if(sIdx >= L.length) sIdx = 0;
+  el.style.setProperty("--sdur", SDUR+"ms");
+  el.innerHTML = L.map((s,i)=>{ const t = TONOS[s.tono] || TONOS.violeta;
+    return `<div class="slide ${i===sIdx?"on":""}" style="--s1:${t[0]};--s2:${t[1]};--s3:${t[2]}" ${i===sIdx?"":'aria-hidden="true"'} role="group" aria-roledescription="diapositiva" aria-label="${i+1} de ${L.length}">
+      <div class="s-bg"></div><div class="s-art">${s.img ? `<img src="${esc(s.img)}" alt="">` : artFor(s.pid)}</div>
+      <div class="wrap s-in"><div class="s-txt">${s.kicker?`<small>${esc(s.kicker)}</small>`:""}<h2>${esc(s.titulo)}</h2><p>${esc(s.texto)}</p>${s.boton?`<a class="s-cta" href="${esc(s.link||"#tienda")}" ${i===sIdx?"":'tabindex="-1"'}>${esc(s.boton)} <span aria-hidden="true">→</span></a>`:""}</div></div></div>`; }).join("")
+    + `<div class="s-tabs"><div class="wrap">${L.map((s,i)=>`<button data-slide="${i}" class="${i===sIdx?"on":""}" aria-label="Ver ${esc(s.tab||s.titulo)}" aria-current="${i===sIdx}"><span>${esc(s.tab||s.titulo)}</span><i><b></b></i></button>`).join("")}</div></div>`;
+  clearTimeout(sTimer);
+  if(!reduceMotion() && L.length>1 && !el.classList.contains("paused")) sTimer = setTimeout(()=>{ sIdx = (sIdx+1) % slidesOn().length; renderSlider(); }, SDUR);
+}
+function goSlide(n){ const L = slidesOn(); if(!L.length) return; sIdx = (n + L.length) % L.length; renderSlider(); }
+(function(){
+  const el = $("#slider"); let sx = null;
+  el.addEventListener("mouseenter", ()=>{ el.classList.add("paused"); clearTimeout(sTimer); });
+  el.addEventListener("mouseleave", ()=>{ el.classList.remove("paused"); renderSlider(); });
+  el.addEventListener("pointerdown", e=>{ sx = e.clientX; });
+  el.addEventListener("pointerup", e=>{ if(sx===null) return; const dx = e.clientX - sx; sx = null; if(Math.abs(dx) > 50) goSlide(sIdx + (dx<0 ? 1 : -1)); });
+})();
+function renderMarquee(){
+  const brands = ((db.portada||{}).marcas || []).filter(Boolean);
+  const one = brands.map(b=>`<a href="#${brandSlug(b)}">${esc(b)}</a>`).join("");
+  $("#mq").innerHTML = one + one.replace(/<a /g,'<a tabindex="-1" aria-hidden="true" ');
+}
+function renderTiles(){
+  const T = (db.portada||{}).mosaicos || [];
+  $("#tiles").innerHTML = T.map((t,i)=>`<a class="tile ${t.grande?"big":""}" href="${esc(t.link||"#tienda")}" style="--tbg:${TILE_BG[i%TILE_BG.length]}">
+    <div class="tart">${t.img ? `<img src="${esc(t.img)}" alt="">` : artFor(t.pid)}</div><h3>${esc(t.titulo)}</h3><span class="go" aria-hidden="true">→</span></a>`).join("");
+}
+function renderDeals(){
+  const L = db.productos.filter(p=>p.activo && p.oferta && p.oferta<p.price && FS.total(p)>0).sort((a,b)=>(b.price-b.oferta)/b.price-(a.price-a.oferta)/a.price).slice(0,14);
+  $("#dealsSec").hidden = !L.length;
+  $("#dealsRow").innerHTML = L.map(card).join("");
+}
+function renderAbout(){
+  const n = (db.portada||{}).nosotros || {};
+  $("#abTitle").innerHTML = `<small>Nosotros</small>${esc(n.titulo||"")}`;
+  $("#abText").textContent = n.texto || "";
+  $("#abVals").innerHTML = (n.valores||[]).map(([t,d])=>`<div class="val"><b>${esc(t)}</b><span>${esc(d)}</span></div>`).join("");
+}
+function pagos(){ return (db.portada||{}).pagos || FS.portadaDefault().pagos; }
+function renderPagos(){
+  const P = pagos();
+  $("#ftPagos").innerHTML = `<div class="bank"><b>SINPE Móvil: ${esc(P.sinpe)}</b><code>${esc(P.titular||"")}</code></div>` +
+    (P.cuentas||[]).map(c=>`<div class="bank"><b>${esc(c.banco)} ${esc(c.cuenta)}</b><code>${esc(c.iban)} <button class="copy" data-copy="${esc(c.iban)}">Copiar</button></code></div>`).join("");
+}
+function renderTopbar(){
+  const items = STORE.socials.map(s=>`<a href="${s.url||"https://wa.me/"+STORE.whatsapp}" target="_blank" rel="noopener" aria-label="${s.name}">${ICONS[s.name]}<span class="lbl">${s.name}</span></a>`).join("")
+    + `<a href="#visitanos" aria-label="Ubicación de la tienda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span class="lbl">Ubicación</span></a>`;
+  $("#topbar").innerHTML = items;
+}
+function renderHome(){ renderSlider(); renderMarquee(); renderTiles(); renderDeals(); renderAbout(); renderPagos(); }
+$("#dPrev").onclick = ()=>$("#dealsRow").scrollBy({left:-520, behavior: reduceMotion()?"auto":"smooth"});
+$("#dNext").onclick = ()=>$("#dealsRow").scrollBy({left: 520, behavior: reduceMotion()?"auto":"smooth"});
+document.addEventListener("click", e=>{
+  const t = e.target.closest("button"); if(!t) return;
+  if(t.dataset.slide!==undefined){ goSlide(+t.dataset.slide); return; }
+  if(t.dataset.copy){ const v = t.dataset.copy; navigator.clipboard.writeText(v).then(()=>toast("Copiado")).catch(()=>toast(v)); return; }
+});
+renderTopbar();
+
 
 /* ===== Eventos ===== */
 document.addEventListener("change", e=>{
@@ -647,7 +840,7 @@ document.addEventListener("click", e=>{
   if(t.dataset.add){
     const p = db.productos.find(x=>x.id===t.dataset.add), sizes=Object.keys(p.stock);
     const sz = picked[p.id] || (sizes.length===1 ? sizes[0] : null);
-    if(!sz){ $("#h-"+p.id).textContent="Elegí tu talla primero."; return; }
+    if(!sz){ const h=t.closest(".card").querySelector(".hint"); if(h) h.textContent="Elegí tu talla primero."; return; }
     add(p, sz); return;
   }
   if(t.dataset.inc!==undefined){ const l=cart[+t.dataset.inc], p=db.productos.find(x=>x.id===l.pid);
@@ -813,7 +1006,7 @@ function renderDone(){
   const o = co.order, paid = o.estado==="Pagado";
   const msg = `Hola Fashionista Sneakers, hice el pedido ${o.codigo} por ${FS.crc(o.total)}.${o.payKey==="sinpe"?" Adjunto el comprobante del SINPE.":""}`;
   const how = paid ? `Pago aprobado. Te escribimos por WhatsApp cuando tu pedido salga${o.direccion?"":" o esté listo para retirar"}.`
-    : o.payKey==="sinpe" ? `Transferí <b>${FS.crc(o.total)}</b> por SINPE Móvil al <b>${STORE.sinpe}</b> (Fashionista Sneakers) con el código <b>${o.codigo}</b> en el detalle, y envianos el comprobante.`
+    : o.payKey==="sinpe" ? `Transferí <b>${FS.crc(o.total)}</b> por SINPE Móvil al <b>${esc(pagos().sinpe)}</b> (Fashionista Sneakers) con el código <b>${o.codigo}</b> en el detalle, y envianos el comprobante.`
     : `Tu pedido queda apartado por 48 horas. Pagás al retirar en la tienda.`;
   $("#coBody").innerHTML = `<div class="done">
     <div class="okc ${paid?"":"pend"}">${paid?"✓":"…"}</div>
@@ -883,6 +1076,14 @@ function route(scroll){
   if(h==="paleta-clara" || h==="paleta-oscura"){ setPal(h.slice(7)); }
   if(h.startsWith("p-")){ const p = bySlug(h); if(p){ if(pd.id!==p.id){ pd.id=p.id; pd.size=null; pd.qty=1; pd.gift=false; } showSheet("pd"); renderPD(); return; } }
   if(h==="checkout"){ showSheet("co"); renderCO(); return; }
+  if(h.startsWith("marca-")){
+    const b = [...new Set(db.productos.map(p=>p.brand))].find(x=>brandSlug(x)===h);
+    showSheet(null); listHash = h;
+    ["gen","cat","dep","talla","brand","color","price"].forEach(k=>F[k].clear()); F.oferta=false;
+    if(b) F.brand.add(b); shown = PAGE; render();
+    if(scroll) $("#tienda").scrollIntoView({behavior: reduceMotion()?"auto":"smooth"});
+    return;
+  }
   const wasSheet = !!openSheet; showSheet(null);
   if(wasSheet && h===listHash){ return; }
   listHash = h;
@@ -895,9 +1096,10 @@ function route(scroll){
 }
 window.addEventListener("hashchange", ()=>{ fromList = true; route(!openSheet); });
 /* Cambios hechos en el panel (otra pestaña) se ven al instante */
-const reload = ()=>{ db = FS.load(); cart = store.get("fs_cart", []); renderCart(); render(); if(openSheet==="pd") renderPD(); if(openSheet==="co" && co.step!=="done") renderCO(); };
+const reload = ()=>{ db = FS.load(); cart = store.get("fs_cart", []); renderCart(); render(); renderHome(); if(openSheet==="pd") renderPD(); if(openSheet==="co" && co.step!=="done") renderCO(); };
 window.addEventListener("storage", e=>{ if(e.key===FS.KEY || e.key==="fs_cart") reload(); });
 window.addEventListener("pageshow", e=>{ if(e.persisted) reload(); });
-route(!!ROUTES[location.hash.slice(1)]);
+renderHome();
+route(!!ROUTES[location.hash.slice(1)] || location.hash.startsWith("#marca-"));
 renderCart();
 </script>

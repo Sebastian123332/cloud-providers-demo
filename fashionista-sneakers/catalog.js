@@ -72,12 +72,47 @@
       if (rnd() < .3) mk("Ropa","Niños",b,nm,"Lifestyle",pr,k);
     });
     acc.forEach(([b,nm,k,pr]) => mk("Accesorios","Unisex",b,nm,"Lifestyle",pr,k));
-    return {version:1, productos: out, deportes: TAXO.deportes.slice(), pedidos: []};
+    return {version:1, productos: out, deportes: TAXO.deportes.slice(), pedidos: [], portada: portadaDefault()};
   }
 
+
+  /* Portada, marcas, mosaicos, Nosotros y datos de pago: todo editable desde el panel (pestaña Portada) */
+  function portadaDefault(){
+    return {
+      slides: [
+        {tab:"Black November", kicker:"Hasta el 30 de noviembre", titulo:"Black November", texto:"Hasta 30 % de descuento en tenis y ropa seleccionados. Hasta agotar existencias.", boton:"Ver ofertas", link:"#ofertas", pid:"FS-0016", img:null, tono:"violeta", activo:true},
+        {tab:"Jordan", kicker:"Basketball", titulo:"Jordan", texto:"Air Jordan 1 Mid, Max Aura y Retro 4. El clásico de la cancha a la calle.", boton:"Comprar Jordan", link:"#marca-jordan", pid:"FS-0012", img:null, tono:"rojo", activo:true},
+        {tab:"Running", kicker:"Para correr", titulo:"Running", texto:"Pegasus, Ultraboost, Fresh Foam y más. Amortiguación para cada kilómetro.", boton:"Ver running", link:"#running", pid:"FS-0006", img:null, tono:"azul", activo:true},
+        {tab:"Perfumería", kicker:"Nuevo departamento", titulo:"Perfumería", texto:"Decants de 3, 5 y 10 ml para probar antes de comprar la botella.", boton:"Ver perfumería", link:"perfumeria.html", pid:null, img:"perfumeria-hero.jpg", tono:"violeta", activo:true}
+      ],
+      marcas: ["Nike","Jordan","Adidas","Puma","New Balance","Under Armour","Vans","Fila","Reebok","New Era"],
+      mosaicos: [
+        {titulo:"Hombre", link:"#hombre", pid:"FS-0001", img:null, grande:true},
+        {titulo:"Mujer", link:"#mujer", pid:"FS-0002", img:null, grande:true},
+        {titulo:"Lifestyle", link:"#lifestyle", pid:"FS-0016", img:null},
+        {titulo:"Running", link:"#running", pid:"FS-0006", img:null},
+        {titulo:"Basketball", link:"#basketball", pid:"FS-0012", img:null},
+        {titulo:"Niños", link:"#ninos", pid:"FS-0005", img:null}
+      ],
+      nosotros: {
+        titulo: "Fashionista es como vos",
+        texto: "Somos una tienda cartaginesa dedicada a la venta de calzado deportivo, ropa y perfumería. Empezamos con unos pocos pares y hoy más de 123 mil personas nos siguen en redes. Escogemos cada modelo pensando en quien lo va a usar: para la cancha, para correr o para salir. Todo lo que vendemos es original y te atendemos como en casa, en la tienda o por WhatsApp.",
+        valores: [["Originales","Marcas 100 % originales, con garantía de la tienda."],["De Cartago","Tienda física 600 m norte de la Farmacia Fischel."],["A tu ritmo","Comprás en línea, por WhatsApp o en la tienda."]]
+      },
+      pagos: {
+        sinpe: "8888-8888",
+        cuentas: [
+          {banco:"BAC", cuenta:"900000000", iban:"CR00 0102 0000 0000 0000 00"},
+          {banco:"BCR", cuenta:"001-0000000-0", iban:"CR00 0152 0000 0000 0000 00"},
+          {banco:"BNCR", cuenta:"200-01-000-000000-0", iban:"CR00 0151 0000 0000 0000 00"}
+        ],
+        titular: "Fashionista Sneakers (EJEMPLO)"
+      }
+    };
+  }
   /* ---------- almacenamiento ---------- */
   function load(){
-    try { const d = JSON.parse(localStorage.getItem(KEY) || "null"); if (d && Array.isArray(d.productos)) { d.pedidos = d.pedidos || []; return d; } } catch(e){}
+    try { const d = JSON.parse(localStorage.getItem(KEY) || "null"); if (d && Array.isArray(d.productos)) { d.pedidos = d.pedidos || []; d.portada = d.portada || portadaDefault(); return d; } } catch(e){}
     return seed();
   }
   function save(db){
@@ -114,5 +149,5 @@
     const sinpe = withSinpe ? `<span class="cardmark">SINPE Móvil</span>` : "";
     return `<span class="cards">${visa}${mc}${amex}${sinpe}</span>`;
   }
-  window.FS = { KEY, cardLogos, sizeKey, sizes, TAXO, COLOR_HEX, tallasPara, load, save, reset, total, precio, crc, art, visual };
+  window.FS = { KEY, cardLogos, portadaDefault, sizeKey, sizes, TAXO, COLOR_HEX, tallasPara, load, save, reset, total, precio, crc, art, visual };
 })();

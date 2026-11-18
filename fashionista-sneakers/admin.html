@@ -120,7 +120,7 @@ textarea{width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px}
 <body>
 <header>
   <div class="wrap">
-    <a href="index.html"><img src="logo.png" alt="Fashionista Sneakers"></a>
+    <a href="index.html"><img src="logo.svg" alt="Fashionista Sneakers"></a>
     <span class="ttl">Panel</span>
     <div class="sp"><a class="btn" href="index.html" target="_blank" rel="noopener">Ver tienda ↗</a><button class="btn" id="logout" hidden>Salir</button></div>
   </div>
@@ -141,6 +141,7 @@ textarea{width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px}
     <div class="tabs" role="tablist">
       <button role="tab" data-tab="inv" aria-selected="true">Inventario</button>
       <button role="tab" data-tab="ped" aria-selected="false">Pedidos <span id="pedN"></span></button>
+      <button role="tab" data-tab="por" aria-selected="false">Portada</button>
       <button role="tab" data-tab="cats" aria-selected="false">Categorías</button>
       <button role="tab" data-tab="io" aria-selected="false">Importar / Exportar</button>
       <button class="btn pri sm" id="newBtn" style="margin-left:auto">+ Agregar producto</button>
@@ -153,7 +154,7 @@ textarea{width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px}
         <select id="fCat" aria-label="Categoría"><option value="">Todas las categorías</option></select>
         <select id="fDep" aria-label="Deporte"><option value="">Todos los deportes</option></select>
         <select id="fEst" aria-label="Estado">
-          <option value="">Todo el stock</option><option value="out">Agotados</option><option value="hole">Con tallas agotadas</option><option value="low">Pocas unidades (≤ 3)</option><option value="off">Ocultos</option>
+          <option value="">Todo el stock</option><option value="out">Agotados</option><option value="hole">Con tallas agotadas</option><option value="low">Pocas unidades (≤ 3)</option><option value="sale">En oferta</option><option value="off">Ocultos</option>
         </select>
       </div>
       <div class="legend"><span><i style="background:var(--ok)"></i>3 o más</span><span><i style="background:var(--warn)"></i>1–2 unidades</span><span><i style="background:var(--bad)"></i>Agotada (no se puede comprar)</span><span>Tocá un producto para cambiar cantidades</span></div>
@@ -165,6 +166,8 @@ textarea{width:100%;font-family:ui-monospace,Menlo,monospace;font-size:12px}
       <div class="bar"><select id="pEst" aria-label="Estado del pedido"><option value="">Todos los pedidos</option><option>Pendiente</option><option>Pagado</option><option>Enviado</option><option>Entregado</option><option>Cancelado</option></select></div>
       <div class="list" id="peds"></div>
     </div>
+
+    <div id="tab-por" hidden><div id="porBox" style="display:grid;gap:14px"></div></div>
 
     <div id="tab-cats" hidden>
       <div class="box">
@@ -253,6 +256,7 @@ function rowsFiltered(){
     if(e==="hole" && !Object.values(p.stock).some(v=>!(+v))) return false;
     if(e==="low" && !(t>0&&t<=3)) return false;
     if(e==="off" && p.activo) return false;
+    if(e==="sale" && !(p.oferta && p.oferta<p.price)) return false;
     return true;
   });
 }
@@ -287,7 +291,8 @@ $("#more").onclick = ()=>{ shown+=30; renderList(); };
 $("#stats").onclick = e=>{ if(e.target.closest("[data-goped]")){ tab("ped"); return; } const b=e.target.closest("[data-est]"); if(!b) return; $("#fEst").value=b.dataset.est; tab("inv"); shown=30; renderList(); };
 
 /* ---------- pestañas ---------- */
-function tab(t){ document.querySelectorAll("[data-tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t)); ["inv","ped","cats","io"].forEach(x=>$("#tab-"+x).hidden = x!==t); }
+function tab(t){ if(t==="por") drawPortada();
+   document.querySelectorAll("[data-tab]").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t)); ["inv","ped","por","cats","io"].forEach(x=>$("#tab-"+x).hidden = x!==t); }
 document.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
 
 /* ---------- editor ---------- */
@@ -316,6 +321,9 @@ function drawEditor(){
       <label class="f">Precio oferta (₡)<input id="eOferta" inputmode="numeric" value="${p.oferta||""}" placeholder="Opcional"></label>
       <label class="f">Color<select id="eColor">${opts(FS.TAXO.colores,p.color)}</select></label>
     </div>
+    <div class="sec">Oferta ${p.oferta&&p.oferta<p.price?`<span style="color:var(--ok)">Activa: −${Math.round((1-p.oferta/p.price)*100)} %</span>`:`<span style="color:var(--muted)">Sin oferta</span>`}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap">${[10,15,20,30,40].map(n=>`<button class="btn sm" data-off="${n}">−${n} %</button>`).join("")}<button class="btn sm danger" data-off="0">Quitar oferta</button></div>
+    <p style="color:var(--muted);font-size:12px;margin:0">Los productos en oferta aparecen en "Precios especiales" de la portada y en el menú Ofertas, con la etiqueta de descuento.</p>
     <div class="g2"><label class="f">Código<input id="eId" value="${esc(p.id)}" ${isNew?"":"readonly"}></label>
       <div style="display:grid;gap:8px;align-content:end"><label class="switch"><input type="checkbox" id="eAct" ${p.activo?"checked":""}>Visible en la tienda</label><label class="switch"><input type="checkbox" id="eNuevo" ${p.nuevo?"checked":""}>Marcar como nuevo</label></div></div>
     <div class="sec">Cantidad por talla <span><button class="btn sm" id="eZero">Agotar todas</button> <button class="btn sm" id="eStd">Tallas estándar</button></span></div>
@@ -340,6 +348,7 @@ function bindEditor(){
   body.querySelectorAll("[data-dn]").forEach(b=>b.onclick=()=>{ readFields(); cur.stock[b.dataset.dn]=Math.max(0,(+cur.stock[b.dataset.dn]||0)-1); drawEditor(); });
   body.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{ readFields(); delete cur.stock[b.dataset.del]; drawEditor(); });
   body.querySelectorAll("[data-q]").forEach(i=>i.onchange=()=>{ readFields(); drawEditor(); });
+  body.querySelectorAll("[data-off]").forEach(b=>b.onclick=()=>{ readFields(); const n=+b.dataset.off; cur.oferta = n && cur.price ? Math.round(cur.price*(1-n/100)/100)*100 : null; drawEditor(); });
   $("#eZero").onclick = ()=>{ readFields(); Object.keys(cur.stock).forEach(t=>cur.stock[t]=0); drawEditor(); };
   $("#eStd").onclick = ()=>{ readFields(); const s={}; FS.tallasPara(cur.cat,cur.gen).forEach(t=>s[t]=+cur.stock[t]||0); cur.stock=s; drawEditor(); };
   $("#eAddSize").onclick = ()=>{ readFields(); const t=$("#eNewSize").value.trim(); if(!t) return; if(!(t in cur.stock)) cur.stock[t]=0; drawEditor(); };
@@ -360,9 +369,9 @@ function bindEditor(){
     $("#eDelNo").onclick=()=>{ $("#delConfirm").hidden=true; d.hidden=false; };
     $("#eDelYes").onclick=()=>{ db.productos=db.productos.filter(p=>p.id!==cur.id); persist(); toast("Producto eliminado"); closeEditor(); renderAll(); }; }
 }
-function compress(file, cb){
+function compress(file, cb, max=600){
   const r = new FileReader();
-  r.onload = ()=>{ const im = new Image(); im.onload = ()=>{ const s=Math.min(1,600/Math.max(im.width,im.height)), c=document.createElement("canvas");
+  r.onload = ()=>{ const im = new Image(); im.onload = ()=>{ const s=Math.min(1,max/Math.max(im.width,im.height)), c=document.createElement("canvas");
     c.width=Math.round(im.width*s); c.height=Math.round(im.height*s); c.getContext("2d").drawImage(im,0,0,c.width,c.height); cb(c.toDataURL("image/webp",.8)); }; im.src = r.result; };
   r.readAsDataURL(file);
 }
@@ -371,6 +380,72 @@ $("#newBtn").onclick = ()=>{ const s={}; FS.tallasPara("Calzado","Hombre").forEa
   openEditor({id:nextId(),brand:"",name:"",gen:"Hombre",cat:"Calzado",dep:"Lifestyle",color:"Negro",color2:"Blanco",kind:"shoe",price:0,oferta:null,stock:s,foto:null,activo:true,nuevo:true}, true); };
 $("#eClose").onclick = closeEditor; $("#scrim").onclick = closeEditor;
 document.addEventListener("keydown", e=>{ if(e.key==="Escape" && cur) closeEditor(); });
+
+
+/* ---------- portada ---------- */
+let por = null;
+const TONOS_ADM = [["violeta","Morado"],["negro","Negro"],["rojo","Rojo"],["azul","Azul"],["verde","Verde"]];
+function linkOpts(v){
+  const base = [["#ofertas","Ofertas"],["#tienda","Todo el catálogo"],["#hombre","Hombre"],["#mujer","Mujer"],["#ninos","Niños"],["#basketball","Basketball"],["#running","Running"],["#lifestyle","Lifestyle"],["#training","Training"],["#futbol","Fútbol"],["#ropa","Ropa"],["#accesorios","Accesorios"],["perfumeria.html","Perfumería"],["#nosotros","Nosotros"]];
+  const brands = [...new Set(db.productos.map(p=>p.brand))].sort().map(b=>["#marca-"+b.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""),"Marca: "+b]);
+  return base.concat(brands).map(([k,l])=>`<option value="${esc(k)}" ${k===v?"selected":""}>${esc(l)}</option>`).join("");
+}
+function prodOpts(v){ return `<option value="">— Ninguno —</option>`+db.productos.map(p=>`<option value="${esc(p.id)}" ${p.id===v?"selected":""}>${esc(p.brand+" "+p.name+" · "+p.gen)}</option>`).join(""); }
+function getP(o,path){ return path.split(".").reduce((a,k)=>a==null?a:a[k],o); }
+function setP(o,path,v){ const ks=path.split("."); const last=ks.pop(); const t=ks.reduce((a,k)=>a[k],o); t[last]=v; }
+const inp = (path,label,ph="") => `<label class="f">${label}<input data-p="${path}" value="${esc(getP(por,path)??"")}" placeholder="${esc(ph)}"></label>`;
+const area = (path,label,rows=2) => `<label class="f">${label}<textarea data-p="${path}" rows="${rows}" style="font-family:inherit;font-size:14px">${esc(getP(por,path)??"")}</textarea></label>`;
+const imgField = (path) => { const v=getP(por,path); return `<div class="photo"><div class="th">${v?`<img src="${esc(v)}" alt="">`:'<span style="font-size:11px;color:var(--muted);padding:6px;text-align:center">Sin foto</span>'}</div><div style="display:grid;gap:6px"><label class="btn sm" style="cursor:pointer">Subir imagen<input type="file" accept="image/*" hidden data-img="${path}"></label>${v?`<button class="btn sm" data-noimg="${path}">Quitar imagen</button>`:""}</div></div>`; };
+function drawPortada(){
+  if(!por) por = JSON.parse(JSON.stringify(db.portada || FS.portadaDefault()));
+  const S = por.slides, M = por.mosaicos, N = por.nosotros, P = por.pagos;
+  $("#porBox").innerHTML = `
+  <div class="box"><div class="sec">Banners de la portada <button class="btn sm" data-add="slides">+ Agregar banner</button></div>
+    <p>Las diapositivas grandes del inicio. Cambian solas cada 6 segundos; las pestañas de abajo muestran la etiqueta. Si no subís imagen, se usa la ilustración del producto elegido.</p>
+    ${S.map((s,i)=>`<div class="ped">
+      <div class="ped-h"><b>Banner ${i+1}</b><span style="display:flex;gap:6px"><button class="btn sm" data-mv="slides.${i}.-1" ${i?"":"disabled"}>↑</button><button class="btn sm" data-mv="slides.${i}.1" ${i<S.length-1?"":"disabled"}>↓</button><button class="btn sm danger" data-rm="slides.${i}">Quitar</button></span></div>
+      <div class="g3">${inp(`slides.${i}.tab`,"Etiqueta (pestaña)")}${inp(`slides.${i}.kicker`,"Texto pequeño")}${inp(`slides.${i}.titulo`,"Título grande")}</div>
+      ${area(`slides.${i}.texto`,"Descripción")}
+      <div class="g3">${inp(`slides.${i}.boton`,"Texto del botón")}<label class="f">El botón lleva a<select data-p="slides.${i}.link">${linkOpts(s.link)}</select></label><label class="f">Color de fondo<select data-p="slides.${i}.tono">${TONOS_ADM.map(([k,l])=>`<option value="${k}" ${k===s.tono?"selected":""}>${l}</option>`).join("")}</select></label></div>
+      <div class="g2"><label class="f">Producto de la ilustración<select data-p="slides.${i}.pid">${prodOpts(s.pid)}</select></label><div style="display:grid;align-content:end"><label class="switch"><input type="checkbox" data-chk="slides.${i}.activo" ${s.activo!==false?"checked":""}>Mostrar este banner</label></div></div>
+      ${imgField(`slides.${i}.img`)}
+    </div>`).join("")}
+  </div>
+  <div class="box"><div class="sec">Marcas en movimiento</div><p>Una marca por línea. Cada una lleva a sus productos en el catálogo.</p>
+    <textarea id="porMarcas" rows="5" style="font-family:inherit;font-size:14px">${esc((por.marcas||[]).join("\n"))}</textarea></div>
+  <div class="box"><div class="sec">Mosaicos de categorías <button class="btn sm" data-add="mosaicos">+ Agregar mosaico</button></div><p>Los cuadros con foto debajo de las marcas (Hombre, Mujer, Running…). Ideal subir una foto de cada categoría.</p>
+    ${M.map((t,i)=>`<div class="ped">
+      <div class="ped-h"><b>${esc(t.titulo||"Mosaico "+(i+1))}</b><span style="display:flex;gap:6px"><button class="btn sm" data-mv="mosaicos.${i}.-1" ${i?"":"disabled"}>↑</button><button class="btn sm" data-mv="mosaicos.${i}.1" ${i<M.length-1?"":"disabled"}>↓</button><button class="btn sm danger" data-rm="mosaicos.${i}">Quitar</button></span></div>
+      <div class="g3">${inp(`mosaicos.${i}.titulo`,"Título")}<label class="f">Lleva a<select data-p="mosaicos.${i}.link">${linkOpts(t.link)}</select></label><label class="f">Producto de la ilustración<select data-p="mosaicos.${i}.pid">${prodOpts(t.pid)}</select></label></div>
+      <div class="g2">${imgField(`mosaicos.${i}.img`)}<div style="display:grid;align-content:center"><label class="switch"><input type="checkbox" data-chk="mosaicos.${i}.grande" ${t.grande?"checked":""}>Mosaico grande (doble ancho)</label></div></div>
+    </div>`).join("")}
+  </div>
+  <div class="box"><div class="sec">Nosotros</div>
+    ${inp("nosotros.titulo","Título")}${area("nosotros.texto","Historia del negocio",5)}
+    ${(N.valores||[]).map((v,i)=>`<div class="g2">${inp(`nosotros.valores.${i}.0`,"Valor "+(i+1))}${inp(`nosotros.valores.${i}.1`,"Detalle")}</div>`).join("")}
+  </div>
+  <div class="box"><div class="sec">Pagos y cuentas bancarias <button class="btn sm" data-add="cuentas">+ Agregar cuenta</button></div><p>Se muestran en el pie de página y en la confirmación de pedidos por SINPE.</p>
+    <div class="g2">${inp("pagos.sinpe","Número de SINPE Móvil")}${inp("pagos.titular","Titular de las cuentas")}</div>
+    ${P.cuentas.map((c,i)=>`<div class="g3" style="align-items:end">${inp(`pagos.cuentas.${i}.banco`,"Banco")}${inp(`pagos.cuentas.${i}.cuenta`,"Número de cuenta")}<div style="display:flex;gap:6px;align-items:end">${inp(`pagos.cuentas.${i}.iban`,"Cuenta IBAN")}<button class="btn sm danger" data-rm="pagos.cuentas.${i}" aria-label="Quitar cuenta">✕</button></div></div>`).join("")}
+  </div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" id="porSave">Guardar portada</button><button class="btn" id="porUndo">Descartar cambios</button><button class="btn danger" id="porReset">Volver a la portada de ejemplo</button></div>`;
+  const box = $("#porBox");
+  box.querySelectorAll("[data-p]").forEach(el=>el.oninput = el.onchange = ()=>setP(por, el.dataset.p, el.value));
+  box.querySelectorAll("[data-chk]").forEach(el=>el.onchange = ()=>setP(por, el.dataset.chk, el.checked));
+  box.querySelectorAll("[data-img]").forEach(el=>el.onchange = e=>{ const f=e.target.files[0]; if(f) compress(f, url=>{ setP(por, el.dataset.img, url); drawPortada(); }, 1400); });
+  box.querySelectorAll("[data-noimg]").forEach(b=>b.onclick = ()=>{ setP(por, b.dataset.noimg, null); drawPortada(); });
+  box.querySelectorAll("[data-rm]").forEach(b=>b.onclick = ()=>{ const ks=b.dataset.rm.split("."); const i=+ks.pop(); getP(por, ks.join(".")).splice(i,1); drawPortada(); });
+  box.querySelectorAll("[data-mv]").forEach(b=>b.onclick = ()=>{ const [k,i,d]=b.dataset.mv.split("."); const a=por[k], x=+i, y=x+(+d); [a[x],a[y]]=[a[y],a[x]]; drawPortada(); });
+  box.querySelectorAll("[data-add]").forEach(b=>b.onclick = ()=>{ const k=b.dataset.add;
+    if(k==="slides") por.slides.push({tab:"Nuevo",kicker:"",titulo:"Nuevo banner",texto:"",boton:"Ver más",link:"#tienda",pid:db.productos[0]?.id||null,img:null,tono:"violeta",activo:true});
+    if(k==="mosaicos") por.mosaicos.push({titulo:"Nueva categoría",link:"#tienda",pid:db.productos[0]?.id||null,img:null,grande:false});
+    if(k==="cuentas") por.pagos.cuentas.push({banco:"",cuenta:"",iban:""});
+    drawPortada(); });
+  $("#porMarcas").oninput = e=>{ por.marcas = e.target.value.split("\n").map(x=>x.trim()).filter(Boolean); };
+  $("#porSave").onclick = ()=>{ db.portada = JSON.parse(JSON.stringify(por)); persist(); toast("Portada guardada ✓ — abrí la tienda para verla"); };
+  $("#porUndo").onclick = ()=>{ por = null; drawPortada(); toast("Cambios descartados"); };
+  $("#porReset").onclick = ()=>{ por = FS.portadaDefault(); drawPortada(); toast("Portada de ejemplo cargada: tocá Guardar para aplicarla"); };
+}
 
 /* ---------- categorías ---------- */
 function renderDeps(){
