@@ -451,7 +451,7 @@ h2 small{font-family:var(--f-body);font-weight:800;color:var(--coral);letter-spa
 
 /* Cabecera blanca, logo centrado y menú debajo */
 .top{background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 14px rgba(20,33,61,.05)}
-.top .wrap{display:grid;grid-template-columns:1fr auto 1fr;grid-template-areas:". logo cart" "nav nav nav";align-items:center;row-gap:4px;padding-block:10px 6px}
+.top > .wrap{display:grid;grid-template-columns:1fr auto 1fr;grid-template-areas:". logo cart" "nav nav nav";align-items:center;row-gap:4px;padding-block:10px 6px}
 .top .logo{grid-area:logo}
 .top .logo img{height:46px}
 .top nav{grid-area:nav;justify-content:center;margin:0;gap:4px}
@@ -463,7 +463,7 @@ h2 small{font-family:var(--f-body);font-weight:800;color:var(--coral);letter-spa
 .cart-btn .n{color:var(--blue)}
 .subnav{border-top:1px solid var(--line)}
 .subnav a{border-color:var(--line);color:var(--ink);background:#fff}
-@media (max-width:980px){.top .wrap{grid-template-areas:"logo cart";grid-template-columns:auto 1fr;padding-block:10px}.top .logo img{height:36px}}
+@media (max-width:980px){.top > .wrap{grid-template-areas:"logo cart";grid-template-columns:auto 1fr;padding-block:10px}.top .logo img{height:36px}}
 
 /* Banner en tarjeta redondeada */
 .slider{background:transparent;max-width:1280px;margin:18px auto 0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow:visible}
@@ -490,9 +490,9 @@ h2 small{font-family:var(--f-body);font-weight:800;color:var(--coral);letter-spa
 .s-tabs button.on i{width:34px;background:#f7c3c4}
 .s-tabs b{background:var(--coral)}
 @media (max-width:760px){
-  .slide{min-height:560px}
+  .slide{min-height:630px}
   .s-bg{background:#fff}
-  .s-art{left:14px;right:14px;top:14px;width:auto;height:46%;bottom:auto}
+  .s-art{left:14px;right:14px;top:14px;width:auto;height:240px;bottom:auto}
   .s-in{padding:0 22px 70px}
   .s-tabs{left:22px}
 }
