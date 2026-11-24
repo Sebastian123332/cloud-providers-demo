@@ -2,7 +2,7 @@
    En esta demo el inventario vive en el navegador (localStorage).
    En la versión final estas mismas funciones leen y escriben en Supabase (ver supabase/schema.sql). */
 (function(){
-  const KEY = "bf_inv_v2";
+  const KEY = "bf_inv_v3";
 
   const TAXO = {
     generos:   ["Hombre","Mujer","Niños","Unisex"],
@@ -97,7 +97,7 @@
       nosotros: {
         titulo: "Butterfly es para vos",
         texto: "Butterfly by Marina nació para que encontrés tenis, zapatos y ropa que te hagan sentir bien. Elegimos cada modelo con cariño y te atendemos como en casa, en nuestras tiendas de Cartago y Curridabat o por WhatsApp. Mandanos una fotito del modelo que te gusta, decinos tu talla y te ayudamos a encontrarlo.",
-        valores: [["Originales","Marcas 100 % originales, con garantía de la tienda."],["Cartago y Curridabat","Dos tiendas físicas para retirar tu pedido."],["A tu ritmo","Comprás en línea, por WhatsApp o en la tienda."]]
+        valores: [["Atención cercana","Te ayudamos a encontrar tu talla por WhatsApp."],["Cartago y Curridabat","Dos tiendas físicas para retirar tu pedido."],["A tu ritmo","Comprás en línea, por WhatsApp o en la tienda."]]
       },
       pagos: {
         sinpe: "8888-8888",
