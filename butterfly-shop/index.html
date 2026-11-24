@@ -563,6 +563,52 @@ h2 small{font-family:var(--f-body);font-weight:800;color:var(--coral);letter-spa
 .drawer{background:#fff}
 .line{background:var(--panel-2);border-color:transparent;border-radius:16px}
 .back{border-radius:999px}
+/* ===== Efectos: esqueleto, stepper y animaciones al deslizar ===== */
+/* Esqueleto de carga */
+.skel{background:#fff;border-radius:22px;padding:10px;box-shadow:0 4px 18px rgba(20,33,61,.07);display:grid;gap:10px}
+.sk{border-radius:12px;background:linear-gradient(100deg,#e9eef7 30%,#f6f8fc 50%,#e9eef7 70%);background-size:300% 100%;animation:shimmer 1.2s ease-in-out infinite}
+.sk.img{aspect-ratio:4/3;border-radius:16px}
+.sk.l{height:11px;width:40%}.sk.t{height:16px;width:75%}.sk.s{height:28px;width:100%;border-radius:999px}
+.sk-row{display:flex;justify-content:space-between;align-items:center;padding:4px 2px}
+.sk.p{height:20px;width:35%}.sk.b{height:36px;width:84px;border-radius:999px}
+@keyframes shimmer{from{background-position:100% 0}to{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.sk{animation:none}}
+
+/* Stepper del pago */
+.stepper{display:flex;align-items:flex-start;max-width:640px;margin:22px auto 4px;padding-inline:4px}
+.stp-i{display:grid;justify-items:center;gap:7px;flex:none;width:64px;text-align:center}
+.stp-i i{font-style:normal;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;border:2.5px solid var(--line-hi);background:#fff;color:var(--muted);font-weight:800;font-size:15px;transition:background .3s,border-color .3s,color .3s,transform .3s}
+.stp-i span{font-size:13px;font-weight:700;color:var(--muted)}
+.stp-i.cur i{border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 5px rgba(37,74,153,.12)}
+.stp-i.cur span{color:var(--blue)}
+.stp-i.ok i{background:var(--blue);border-color:var(--blue);color:#fff;transform:scale(1.04)}
+.stp-i.ok span{color:var(--ink)}
+.stp-l{flex:1;height:3px;border-radius:3px;background:var(--line);margin-top:18px;position:relative;overflow:hidden}
+.stp-l b{position:absolute;inset:0;width:0;background:var(--blue);transition:width .45s ease}
+.stp-l.ok b{width:100%}
+.stp-msg{text-align:center;max-width:640px;margin:6px auto 0;background:var(--panel-2);border-radius:12px;padding:10px 14px;font-weight:700;color:var(--ink);font-size:14px}
+
+/* Cabecera que se encoge al bajar */
+.top .logo img,.top > .wrap{transition:height .25s ease,padding .25s ease}
+.top.shrink > .wrap{padding-block:6px 2px}
+.top.shrink .logo img{height:32px}
+@media (min-width:981px){.top.shrink nav a{padding-block:5px}}
+
+/* Animaciones ligadas al deslizar (solo navegadores que las soportan; sin soporte todo se ve normal) */
+@supports (animation-timeline: view()){
+  @media (prefers-reduced-motion:no-preference){
+    .slider .slide.on{animation:zoomOut linear both;animation-timeline:scroll(root);animation-range:0 520px}
+    @keyframes zoomOut{to{transform:scale(.93);border-radius:44px;opacity:.75}}
+    #grid .card,.deals-row .card{animation:tiltIn linear both;animation-timeline:view();animation-range:entry 0% entry 70%}
+    @keyframes tiltIn{from{transform:perspective(700px) rotateX(16deg) translateY(36px);opacity:.25}to{transform:none;opacity:1}}
+    .deals h2,.shop h2,.about h2,.visit h2,.circ{animation:blurIn linear both;animation-timeline:view();animation-range:entry 10% cover 30%}
+    @keyframes blurIn{from{filter:blur(8px);opacity:.3;transform:translateY(12px)}to{filter:none;opacity:1;transform:none}}
+    .vip{animation:maskReveal linear both;animation-timeline:view();animation-range:entry 0% cover 40%}
+    @keyframes maskReveal{from{clip-path:inset(0 46% round 30px)}to{clip-path:inset(0 0 round 30px)}}
+    .about figure img{animation:zoomIn linear both;animation-timeline:view();animation-range:entry 0% cover 50%}
+    @keyframes zoomIn{from{transform:scale(1.12)}to{transform:scale(1)}}
+  }
+}
 </style>
 
 <div class="topbar"><div class="wrap" id="topbar"></div></div>
@@ -857,6 +903,14 @@ function titleText(){
   if(F.oferta) parts.push("Ofertas");
   return parts.join(" · ") || "Todo el catálogo";
 }
+const SKEL = n => Array.from({length:n},()=>`<div class="skel" aria-hidden="true"><div class="sk img"></div><div class="sk l"></div><div class="sk t"></div><div class="sk s"></div><div class="sk-row"><div class="sk p"></div><div class="sk b"></div></div></div>`).join("");
+let skelT = null;
+function loadGrid(ms=650){
+  clearTimeout(skelT);
+  $("#grid").innerHTML = SKEL(Math.min(8, Math.max(4, shown))); $("#grid").setAttribute("aria-busy","true");
+  $("#count").textContent = "Cargando productos…";
+  skelT = setTimeout(()=>{ $("#grid").removeAttribute("aria-busy"); render(); }, reduceMotion() ? 0 : ms);
+}
 function render(){
   renderFilters(); renderActive();
   const list = sorted(db.productos.filter(p=>match(p)));
@@ -1009,7 +1063,7 @@ document.addEventListener("click", e=>{
   if(t.dataset.rm!==undefined){ cart.splice(+t.dataset.rm,1); save(); renderCart(); render(); return; }
 });
 $("#clearAll").onclick = ()=>{ ["gen","cat","dep","talla","brand","color","price"].forEach(k=>F[k].clear()); F.oferta=false; q=""; $("#q").value=""; shown=PAGE; render(); };
-$("#more").onclick = ()=>{ shown += PAGE; render(); };
+$("#more").onclick = ()=>{ shown += PAGE; loadGrid(450); };
 $("#openF").onclick = ()=>openF(true); $("#applyF").onclick = ()=>openF(false); $("#fscrim").onclick = ()=>openF(false);
 $("#openCart").onclick = ()=>openCart(true); $("#goPay").onclick = ()=>{ openCart(false); co.step="form"; location.hash="checkout"; }; $("#closeCart").onclick = ()=>openCart(false); $("#scrim").onclick = ()=>openCart(false);
 document.addEventListener("keydown", e=>{ if(e.key!=="Escape") return; if(!$("#modal").hidden){ closeModal(); return; } openCart(false); openF(false); });
@@ -1094,12 +1148,26 @@ function syncCO(){
   ["name","tel","mail","prov","canton","dir"].forEach(k=>{ const x=v("co"+k[0].toUpperCase()+k.slice(1)); if(x!==null) co.f[k]=x; });
 }
 function totals(){ const sub = cart.reduce((s,l)=>s+l.price*l.qty,0), ship = SHIP[co.ship].cost; return {sub, ship, total:sub+ship}; }
+function stepState(){
+  const f = co.f, done = co.step==="done";
+  const datos = !!(done || (f.name.trim().length>=3 && f.tel.replace(/\D/g,"").length>=8 && /^\S+@\S+\.\S+$/.test(f.mail.trim())));
+  const entrega = !!(done || co.ship==="tienda" || (f.canton.trim() && f.dir.trim().length>=8));
+  const pago = done;
+  return [datos, entrega, pago, done];
+}
+function stepperHTML(){
+  const st = stepState(), labels = ["Datos","Entrega","Pago","Listo"];
+  const cur = st.indexOf(false);
+  const msg = co.step==="done" ? "Paso 4 de 4 · ¡Listo!" : `Paso ${cur+1} de 4 · ${["Completá tus datos","Elegí cómo recibirlo","Elegí cómo pagar","Listo"][cur]}`;
+  return `<div class="stepper" role="list" aria-label="Progreso de la compra">${labels.map((l,i)=>`${i?`<div class="stp-l ${st[i-1]?"ok":""}"><b></b></div>`:""}<div class="stp-i ${st[i]?"ok":i===cur?"cur":""}" role="listitem" aria-current="${i===cur?"step":"false"}"><i>${st[i]?"✓":i+1}</i><span>${l}</span></div>`).join("")}</div><p class="stp-msg" id="stpMsg">${msg}</p>`;
+}
+function refreshStepper(){ syncCO(); const el=$("#stepWrap"); if(el) el.innerHTML = stepperHTML(); }
 function renderCO(){
   if(co.step==="done" && co.order){ renderDone(); return; }
   if(!cart.length){ $("#coBody").innerHTML = `<div class="done"><p>Tu carrito está vacío.</p><button class="big pri" data-back>Ver productos</button></div>`; return; }
   if(co.ship==="dom" && co.pay==="efectivo") co.pay = "tarjeta";
   const t = totals(), f = co.f;
-  $("#coBody").innerHTML = `<div class="co">
+  $("#coBody").innerHTML = `<div id="stepWrap">${stepperHTML()}</div><div class="co">
     <div style="display:grid;gap:14px;min-width:0">
       <div class="co-box"><h3><i>1</i>Tus datos</h3>
         <div class="g2"><label class="fld">Nombre completo<input id="coName" autocomplete="name" value="${esc(f.name)}" placeholder="María Solano"></label>
@@ -1125,7 +1193,7 @@ function renderCO(){
       <p class="secure">${LOCK}Tus datos se usan solo para entregar este pedido.</p>
     </aside></div>`;
   $("#coPay").onclick = submitCO;
-  $("#coBody").oninput = ()=>{ const e=$("#coErr"); if(e) e.textContent=""; };
+  $("#coBody").oninput = ()=>{ const e=$("#coErr"); if(e) e.textContent=""; refreshStepper(); };
 }
 function submitCO(){
   syncCO(); const f = co.f, err = m => { $("#coErr").textContent = m; };
@@ -1167,7 +1235,7 @@ function renderDone(){
   const how = paid ? `Pago aprobado. Te escribimos por WhatsApp cuando tu pedido salga${o.direccion?"":" o esté listo para retirar"}.`
     : o.payKey==="sinpe" ? `Transferí <b>${FS.crc(o.total)}</b> por SINPE Móvil al <b>${esc(pagos().sinpe)}</b> (Butterfly Shop) con el código <b>${o.codigo}</b> en el detalle, y envianos el comprobante.`
     : `Tu pedido queda apartado por 48 horas. Pagás al retirar en la tienda.`;
-  $("#coBody").innerHTML = `<div class="done">
+  $("#coBody").innerHTML = `<div id="stepWrap">${stepperHTML()}</div><div class="done">
     <div class="okc ${paid?"":"pend"}">${paid?"✓":"…"}</div>
     <h2 style="margin:0">${paid?"¡Gracias por tu compra!":"Pedido recibido"}</h2>
     <p>Pedido <b style="color:var(--ink)">${o.codigo}</b> · ${FS.crc(o.total)} · ${esc(o.entrega)}</p>
@@ -1249,7 +1317,7 @@ function route(scroll){
   if(!r){ render(); return; }
   ["gen","cat","dep","talla","brand","color","price"].forEach(k=>F[k].clear()); F.oferta=false;
   Object.entries(r).forEach(([k,v])=>{ if(k==="oferta") F.oferta=v; else v.forEach(x=>F[k].add(x)); });
-  shown = PAGE; render();
+  shown = PAGE; if(scroll) loadGrid(); else render();
   if(scroll) $("#tienda").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});
 }
 window.addEventListener("hashchange", ()=>{ fromList = true; route(!openSheet); });
@@ -1259,5 +1327,8 @@ window.addEventListener("storage", e=>{ if(e.key===FS.KEY || e.key==="bf_cart") 
 window.addEventListener("pageshow", e=>{ if(e.persisted) reload(); });
 renderHome();
 route(!!ROUTES[location.hash.slice(1)] || location.hash.startsWith("#marca-"));
+loadGrid(900);
+/* cabecera que se encoge */
+(function(){ const h=$(".top"); let on=false; const f=()=>{ const v=scrollY>60; if(v!==on){ on=v; h.classList.toggle("shrink",v); } }; addEventListener("scroll",f,{passive:true}); f(); })();
 renderCart();
 </script>
