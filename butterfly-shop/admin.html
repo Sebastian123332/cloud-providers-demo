@@ -5,15 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Panel Butterfly</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:wght@400;600;700;800&display=swap">
 <style>
 /* Layout: panel de inventario — cabecera, tarjetas de resumen, pestañas, lista de productos con tallas codificadas por color y editor lateral con cantidades por talla. */
 :root{
   --bg:#061127; --panel:#0e1b38; --panel-2:#152649; --line:#24375e;
   --ink:#f2f5fc; --muted:#9fb0d0; --violet:#e5585c; --violet-hi:#ff8a7e; --violet-deep:#8a2d3f;
   --ok:#3ecf72; --warn:#ffb547; --bad:#ff6b81;
-  --f-display:"Chakra Petch","Arial Narrow",system-ui,sans-serif;
-  --f-body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
   color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -386,7 +386,7 @@ document.addEventListener("keydown", e=>{ if(e.key==="Escape" && cur) closeEdito
 let por = null;
 const TONOS_ADM = [["violeta","Azul Butterfly"],["rojo","Coral"],["negro","Negro"],["azul","Azul"],["verde","Verde"]];
 function linkOpts(v){
-  const base = [["#ofertas","Ofertas"],["#tienda","Todo el catálogo"],["#hombre","Hombre"],["#mujer","Mujer"],["#ninos","Niños"],["#basketball","Basketball"],["#running","Running"],["#lifestyle","Lifestyle"],["#training","Training"],["#futbol","Fútbol"],["#ropa","Ropa"],["#accesorios","Accesorios"],["perfumeria.html","Perfumería"],["#nosotros","Nosotros"],["#vip","Comunidad VIP"]];
+  const base = [["#ofertas","Ofertas"],["#tienda","Todo el catálogo"],["#hombre","Hombre"],["#mujer","Mujer"],["#ninos","Niños"],["#basketball","Basketball"],["#running","Running"],["#lifestyle","Lifestyle"],["#training","Training"],["#futbol","Fútbol"],["#ropa","Ropa"],["#accesorios","Accesorios"],["#nosotros","Nosotros"],["#vip","Comunidad VIP"]];
   const brands = [...new Set(db.productos.map(p=>p.brand))].sort().map(b=>["#marca-"+b.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""),"Marca: "+b]);
   return base.concat(brands).map(([k,l])=>`<option value="${esc(k)}" ${k===v?"selected":""}>${esc(l)}</option>`).join("");
 }
@@ -413,7 +413,7 @@ function drawPortada(){
   </div>
   <div class="box"><div class="sec">Marcas en movimiento</div><p>Una marca por línea. Cada una lleva a sus productos en el catálogo.</p>
     <textarea id="porMarcas" rows="5" style="font-family:inherit;font-size:14px">${esc((por.marcas||[]).join("\n"))}</textarea></div>
-  <div class="box"><div class="sec">Mosaicos de categorías <button class="btn sm" data-add="mosaicos">+ Agregar mosaico</button></div><p>Los cuadros con foto debajo de las marcas (Hombre, Mujer, Running…). Ideal subir una foto de cada categoría.</p>
+  <div class="box"><div class="sec">Categorías (círculos de la portada) <button class="btn sm" data-add="mosaicos">+ Agregar mosaico</button></div><p>Los cuadros con foto debajo de las marcas (Hombre, Mujer, Running…). Ideal subir una foto de cada categoría.</p>
     ${M.map((t,i)=>`<div class="ped">
       <div class="ped-h"><b>${esc(t.titulo||"Mosaico "+(i+1))}</b><span style="display:flex;gap:6px"><button class="btn sm" data-mv="mosaicos.${i}.-1" ${i?"":"disabled"}>↑</button><button class="btn sm" data-mv="mosaicos.${i}.1" ${i<M.length-1?"":"disabled"}>↓</button><button class="btn sm danger" data-rm="mosaicos.${i}">Quitar</button></span></div>
       <div class="g3">${inp(`mosaicos.${i}.titulo`,"Título")}<label class="f">Lleva a<select data-p="mosaicos.${i}.link">${linkOpts(t.link)}</select></label><label class="f">Producto de la ilustración<select data-p="mosaicos.${i}.pid">${prodOpts(t.pid)}</select></label></div>

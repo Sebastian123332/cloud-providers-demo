@@ -2,7 +2,7 @@
    En esta demo el inventario vive en el navegador (localStorage).
    En la versión final estas mismas funciones leen y escriben en Supabase (ver supabase/schema.sql). */
 (function(){
-  const KEY = "fs_inv_v1";
+  const KEY = "bf_inv_v2";
 
   const TAXO = {
     generos:   ["Hombre","Mujer","Niños","Unisex"],
@@ -83,7 +83,7 @@
         {tab:"Black November", kicker:"Hasta el 30 de noviembre", titulo:"Black November", texto:"Hasta 30 % de descuento en tenis y ropa seleccionados. Hasta agotar existencias.", boton:"Ver ofertas", link:"#ofertas", pid:"FS-0016", img:null, tono:"violeta", activo:true},
         {tab:"Comunidad VIP", kicker:"Solo para miembros", titulo:"Comunidad VIP", texto:"Promociones exclusivas, novedades y preventas antes que nadie. Unite por WhatsApp.", boton:"Quiero unirme", link:"#vip", pid:"FS-0002", img:null, tono:"rojo", activo:true},
         {tab:"Novedades", kicker:"Recién llegados", titulo:"Novedades", texto:"Los modelos nuevos de la semana. Mandanos una fotito del que te gusta y te ayudamos con la talla.", boton:"Ver novedades", link:"#mujer", pid:"FS-0016", img:null, tono:"violeta", activo:true},
-        {tab:"Perfumería", kicker:"Nuevo departamento", titulo:"Perfumería", texto:"Decants de 3, 5 y 10 ml para probar antes de comprar la botella.", boton:"Ver perfumería", link:"perfumeria.html", pid:null, img:"perfumeria-hero.jpg", tono:"violeta", activo:true}
+        {tab:"Envíos", kicker:"A todo el país", titulo:"Te lo llevamos", texto:"Envíos a todo Costa Rica o retiro gratis en nuestras tiendas de Cartago y Curridabat.", boton:"Comprar ahora", link:"#tienda", pid:"FS-0001", img:null, tono:"violeta", activo:true}
       ],
       marcas: ["Nike","Jordan","Adidas","Puma","New Balance","Under Armour","Vans","Fila","Reebok","New Era"],
       mosaicos: [

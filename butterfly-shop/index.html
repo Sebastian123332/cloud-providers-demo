@@ -1,7 +1,7 @@
 <title>Butterfly Shop</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito+Sans:wght@400;600;700;800&display=swap">
 <style>
 /* Layout: tienda oscura de la marca — cabecera fija con departamentos, filtros laterales (cajón en celular), rejilla de productos con tallas por stock y carrito lateral. Tema único oscuro. */
 :root{
@@ -159,7 +159,7 @@ details.fg summary .cnt{margin-left:auto;margin-right:10px;font-size:11px;backgr
 .more{display:block;margin:20px auto 0;border:1px solid var(--line);background:var(--panel);border-radius:999px;padding:11px 22px;font-weight:700}
 .empty{grid-column:1/-1;text-align:center;color:var(--muted);padding:40px 0}
 
-/* Perfume band + visit */
+/* Visitanos */
 .perf-band{border-top:1px solid var(--line);padding-block:44px;background:radial-gradient(60% 80% at 20% 50%,rgba(229,88,92,.18),transparent 70%)}
 .perf-band .wrap,.visit .wrap{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:32px;align-items:center}
 .perf-band img{width:100%;max-width:360px;aspect-ratio:1;object-fit:cover;border-radius:24px;justify-self:center;display:block}
@@ -415,16 +415,164 @@ a.art,.name a{text-decoration:none;color:inherit}
 @media (max-width:820px){.foot-notes{grid-template-columns:1fr 1fr}}
 @media (max-width:480px){.foot-notes{grid-template-columns:1fr}}
 .demo-tag{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.1em;color:var(--warn);border:1px solid var(--warn);border-radius:4px;padding:0 4px;margin-left:6px;vertical-align:middle}
+/* ================= Diseño Butterfly ================= */
+/* Layout: tienda clara y amable — cabecera blanca con logo centrado, banner en tarjeta azul redondeada, categorías en círculos, filtros en cajón y pie azul de la marca. */
+:root,:root[data-pal="clara"]{
+  --bg:#f6f8fc; --panel:#ffffff; --panel-2:#eef3fb; --line:#e1e7f2; --line-hi:#c6d3ea;
+  --ink:#14213d; --muted:#5b6886; --violet:#e5585c; --violet-hi:#254a99; --violet-deep:#1b3a7d;
+  --on-ink:#ffffff; --on-hi:#ffffff; --art-glow:#dfe8f8; --bad:#d6334f; --warn:#b26a00; --ok:#1f9d55; --hdr:#ffffff;
+  --blue:#254a99; --coral:#e5585c; --soft:#eaf0fb;
+  --f-display:"Fredoka","Trebuchet MS",system-ui,sans-serif;
+  --f-body:"Nunito Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+:root[data-pal="clara"] :is(.top,.sheet-top){
+  --bg:#ffffff; --panel:#f3f6fc; --panel-2:#eef3fb; --line:#e1e7f2; --ink:#14213d; --muted:#5b6886;
+  --violet:#e5585c; --violet-hi:#254a99; --on-ink:#ffffff; --on-hi:#ffffff;
+  background-color:#ffffff; color:var(--ink); color-scheme:light;
+}
+:root[data-pal="clara"] .foot{
+  --bg:#254a99; --panel:#2e56ad; --panel-2:#3560b8; --line:#4a6fbd; --ink:#ffffff; --muted:#d3def5;
+  --violet:#e5585c; --violet-hi:#ffd0c9; --on-ink:#254a99; --on-hi:#254a99;
+  background-color:#254a99; color:var(--ink); color-scheme:dark;
+}
+.palpick{display:none!important}
+body{font-size:15.5px}
+h2,.s-txt h2,.tile h3,.top nav a,.f-head b,.name,.pd h1,.co-box h3,.d-head h3,.modal-card h3,.subnav a,.dept b,.stats div b,.val b,.price,.pp,.row.total{text-transform:none;letter-spacing:0}
+h2{font-weight:600;font-size:clamp(26px,3.4vw,36px)}
+h2 small{font-family:var(--f-body);font-weight:800;color:var(--coral);letter-spacing:.12em;text-transform:uppercase}
+
+/* Barra superior coral con mensaje */
+.tb-msg{margin-right:auto}
+.topbar .wrap{justify-content:flex-end}
+@media (max-width:760px){.tb-msg{display:none}.topbar .wrap{justify-content:center}}
+.topbar{background:var(--coral);font-weight:700}
+.topbar .wrap{padding-block:6px}
+
+/* Cabecera blanca, logo centrado y menú debajo */
+.top{background:#fff;border-bottom:1px solid var(--line);box-shadow:0 2px 14px rgba(20,33,61,.05)}
+.top .wrap{display:grid;grid-template-columns:1fr auto 1fr;grid-template-areas:". logo cart" "nav nav nav";align-items:center;row-gap:4px;padding-block:10px 6px}
+.top .logo{grid-area:logo}
+.top .logo img{height:46px}
+.top nav{grid-area:nav;justify-content:center;margin:0;gap:4px}
+.top nav a{font-family:var(--f-body);font-weight:700;font-size:14.5px;color:var(--ink);padding:8px 12px;border-radius:999px}
+.top nav a:hover,.top nav a[aria-current="true"]{background:var(--soft);color:var(--blue)}
+.top nav a.hot{color:var(--coral)}
+.cart-btn{grid-area:cart;justify-self:end;background:var(--blue);border-radius:999px}
+.cart-btn:hover{background:var(--coral);color:#fff}
+.cart-btn .n{color:var(--blue)}
+.subnav{border-top:1px solid var(--line)}
+.subnav a{border-color:var(--line);color:var(--ink);background:#fff}
+@media (max-width:980px){.top .wrap{grid-template-areas:"logo cart";grid-template-columns:auto 1fr;padding-block:10px}.top .logo img{height:36px}}
+
+/* Banner en tarjeta redondeada */
+.slider{background:transparent;max-width:1280px;margin:18px auto 0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));overflow:visible}
+.slide{border-radius:30px;overflow:hidden;min-height:clamp(380px,40vw,500px);background:#fff;box-shadow:0 10px 40px rgba(37,74,153,.12)}
+.s-bg{background:linear-gradient(90deg,#ffffff 0%,#ffffff 42%,var(--soft) 42%)}
+.s-bg::after{display:none}
+.s-art{right:22px;top:22px;bottom:22px;width:52%;border-radius:24px;background:radial-gradient(70% 80% at 60% 45%,var(--s3),var(--s2) 70%);overflow:hidden}
+.s-art::before,.s-art::after{content:"";position:absolute;height:16px;width:46%;background:linear-gradient(90deg,#e85d5d,#b14d62);z-index:0}
+.s-art::before{left:0;top:30px}.s-art::after{right:0;bottom:30px}
+.s-art svg,.s-art img{position:relative;z-index:1}
+.s-art img{-webkit-mask-image:none;mask-image:none}
+.s-in{padding-block:40px 80px;padding-left:44px}
+.s-txt{max-width:440px}
+.s-txt small{color:var(--coral);letter-spacing:.14em}
+.s-txt h2{font-family:var(--f-display);font-weight:600;color:var(--blue);font-size:clamp(42px,6vw,76px);line-height:.95}
+.s-txt p{color:var(--muted)}
+.s-cta{background:var(--blue);color:#fff;border-radius:999px;text-transform:none;letter-spacing:0;font-size:15px;padding:14px 26px}
+.s-cta:hover{background:var(--coral);color:#fff}
+.s-tabs{left:44px;right:auto;bottom:26px}
+.s-tabs .wrap{padding:0;gap:8px}
+.s-tabs button{min-width:0;display:block}
+.s-tabs button span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.s-tabs i{width:10px;height:10px;border-radius:999px;background:var(--line-hi);transition:width .3s}
+.s-tabs button.on i{width:34px;background:#f7c3c4}
+.s-tabs b{background:var(--coral)}
+@media (max-width:760px){
+  .slide{min-height:560px}
+  .s-bg{background:#fff}
+  .s-art{left:14px;right:14px;top:14px;width:auto;height:46%;bottom:auto}
+  .s-in{padding:0 22px 70px}
+  .s-tabs{left:22px}
+}
+
+/* Círculos de categorías */
+.marquee,.tiles{display:none}
+.circles{padding-block:28px 4px}
+.circ-row{display:flex;gap:22px;justify-content:center;overflow-x:auto;padding:4px 2px 10px;scrollbar-width:none}
+.circ{flex:none;display:grid;justify-items:center;gap:8px;text-decoration:none;color:var(--ink);font-weight:700;font-size:14px;width:104px;text-align:center}
+.circ .ring{width:96px;height:96px;border-radius:50%;padding:3px;background:conic-gradient(from 200deg,#254a99,#e5585c,#254a99)}
+.circ .in{width:100%;height:100%;border-radius:50%;background:#fff;border:3px solid #fff;display:grid;place-items:center;overflow:hidden;background-color:var(--soft)}
+.circ .in svg{width:82%;transform:rotate(-12deg)}
+.circ .in img{width:100%;height:100%;object-fit:cover}
+.circ:hover .ring{background:conic-gradient(from 20deg,#e5585c,#254a99,#e5585c)}
+.circ .vipc{background:linear-gradient(135deg,#254a99,#e5585c);color:#fff;font-family:var(--f-display);font-size:24px;font-weight:600}
+
+/* Ofertas */
+.deals{padding-block:30px 6px}
+.deals-head p{letter-spacing:0;text-transform:none;font-weight:600}
+.deals-nav button{background:#fff;border-color:var(--line);color:var(--blue)}
+.deals-nav a{color:var(--coral)}
+
+/* Catálogo: filtros siempre en cajón */
+.shop-grid{grid-template-columns:1fr}
+.filters{position:fixed;top:0;left:0;bottom:0;width:min(380px,90%);max-height:none;z-index:85;background:#fff;border-right:1px solid var(--line);padding:calc(18px + env(safe-area-inset-top,0px)) 20px calc(84px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-left,0px));transform:translateX(-102%);transition:transform .25s ease;overflow:auto;box-shadow:10px 0 40px rgba(20,33,61,.12)}
+.filters.open{transform:none}
+.f-apply{display:block;position:fixed;left:0;bottom:0;width:min(380px,90%);padding:12px 20px calc(12px + env(safe-area-inset-bottom,0px));background:#fff;border-top:1px solid var(--line);z-index:86}
+.f-apply button{width:100%;border:0;border-radius:999px;padding:13px;background:var(--blue);color:#fff;font-weight:800}
+.filter-btn{display:inline-flex;border-radius:999px;background:var(--blue);color:#fff;border-color:var(--blue)}
+.tools input,.tools select{border-radius:999px;background:#fff}
+.active button{border-color:var(--blue);background:var(--soft);color:var(--blue)}
+.grid{grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px}
+.card{border-radius:22px;border-color:transparent;background:#fff;box-shadow:0 4px 18px rgba(20,33,61,.07)}
+.card:hover{border-color:transparent;box-shadow:0 10px 30px rgba(37,74,153,.16);transform:translateY(-2px)}
+.art{background:var(--soft);margin:10px;border-radius:16px}
+.brand{color:var(--coral)}
+.name{font-weight:600}
+.sizes button{border-radius:999px;background:#fff}
+.sizes button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue)}
+.add{background:var(--blue);color:#fff;border-radius:999px;padding:10px 16px}
+.add:hover{background:var(--coral);color:#fff}
+.tag{border-radius:999px}
+.tag.new{background:var(--blue);color:#fff}
+.more{border-radius:999px;background:#fff}
+
+/* VIP, Nosotros, Visitanos */
+.vip{border-radius:30px;max-width:1248px;margin:30px auto 0}
+.about{border-top:0}
+.about figure img{border-radius:28px}
+.visit figure img{border-radius:28px;border:0;aspect-ratio:1}
+.val{border-radius:18px;background:#fff}
+.stats div b{color:var(--blue)}
+
+/* Pie azul */
+.foot{background:#254a99;border-top:0;margin-top:30px}
+.foot .foot-grid > div:first-child img{height:44px!important}
+.copy{background:#fff;color:#254a99;border-color:#fff}
+
+/* Producto, carrito y pago */
+.pd-img{background:var(--soft);border-radius:28px}
+.pd-sizes button{border-radius:999px;background:#fff}
+.pd-sizes button[aria-pressed="true"]{background:var(--blue);border-color:var(--blue);color:#fff}
+.big{border-radius:999px;text-transform:none;letter-spacing:0;font-size:16px}
+.big.alt{background:var(--blue);color:#fff}
+.big.pri{background:var(--coral)}
+.co-box{border-radius:22px;border-color:transparent;box-shadow:0 4px 18px rgba(20,33,61,.06)}
+.co-box h3 i{background:var(--coral)}
+.drawer{background:#fff}
+.line{background:var(--panel-2);border-color:transparent;border-radius:16px}
+.back{border-radius:999px}
 </style>
 
 <div class="topbar"><div class="wrap" id="topbar"></div></div>
 <header class="top">
   <div class="wrap">
-    <a class="logo" href="#inicio" aria-label="Butterfly Shop, inicio"><img src="logo.svg" alt="Butterfly Shop"></a>
+    <a class="logo" href="#inicio" aria-label="Butterfly Shop, inicio"><img src="logo-azul.svg" alt="Butterfly Shop"></a>
     <nav aria-label="Departamentos" id="mainNav">
       <a href="#hombre">Hombre</a><a href="#mujer">Mujer</a><a href="#ninos">Niños</a>
       <a href="#basketball">Basketball</a><a href="#running">Running</a><a href="#ropa">Ropa</a>
-      <a href="#ofertas" class="hot">Ofertas</a><a href="perfumeria.html">Perfumería</a><a href="#nosotros">Nosotros</a>
+      <a href="#ofertas" class="hot">Ofertas</a><a href="#vip">Comunidad VIP</a><a href="#nosotros">Nosotros</a>
     </nav>
     <button class="cart-btn" id="openCart" aria-label="Abrir carrito">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 7h15l-1.5 9h-12z"/><path d="M6 7 5 3H2"/><circle cx="9" cy="20" r="1.4"/><circle cx="18" cy="20" r="1.4"/></svg>
@@ -432,7 +580,7 @@ a.art,.name a{text-decoration:none;color:inherit}
     </button>
   </div>
   <div class="subnav"><div class="wrap">
-    <a href="#hombre">Hombre</a><a href="#mujer">Mujer</a><a href="#ninos">Niños</a><a href="#basketball">Basketball</a><a href="#running">Running</a><a href="#lifestyle">Lifestyle</a><a href="#ropa">Ropa</a><a href="#ofertas">Ofertas</a><a href="#vip">Comunidad VIP</a><a href="perfumeria.html">Perfumería</a><a href="#nosotros">Nosotros</a>
+    <a href="#hombre">Hombre</a><a href="#mujer">Mujer</a><a href="#ninos">Niños</a><a href="#basketball">Basketball</a><a href="#running">Running</a><a href="#lifestyle">Lifestyle</a><a href="#ropa">Ropa</a><a href="#ofertas">Ofertas</a><a href="#vip">Comunidad VIP</a><a href="#nosotros">Nosotros</a>
   </div></div>
 </header>
 
@@ -441,9 +589,10 @@ a.art,.name a{text-decoration:none;color:inherit}
   <div class="marquee" aria-label="Marcas"><div class="mq-track" id="mq"></div></div>
 
   <section class="tiles"><div class="wrap"><div class="tile-grid" id="tiles"></div></div></section>
+  <section class="circles" aria-label="Categorías"><div class="wrap"><div class="circ-row" id="circles"></div></div></section>
 
   <section class="deals" id="dealsSec"><div class="wrap">
-    <div class="deals-head"><div><h2><small>Ofertas</small>Precios especiales</h2><p>Descuentos que pone la tienda, hasta agotar existencias</p></div>
+    <div class="deals-head"><div><h2><small>Ofertas</small>Ofertas de la semana</h2><p>Precios especiales hasta agotar existencias</p></div>
       <div class="deals-nav"><button id="dPrev" aria-label="Anteriores">←</button><button id="dNext" aria-label="Siguientes">→</button><a href="#ofertas">Ver todas</a></div></div>
     <div class="deals-row" id="dealsRow"></div>
   </div></section>
@@ -471,17 +620,6 @@ a.art,.name a{text-decoration:none;color:inherit}
         <div class="active" id="active"></div>
         <div class="grid" id="grid"></div>
         <button class="more" id="more" hidden>Ver más productos</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="perf-band">
-    <div class="wrap">
-      <img src="perfumeria-hero.jpg" alt="">
-      <div>
-        <h2><small>Departamento</small>Perfumería</h2>
-        <p>Decants de 3, 5 y 10 ml para probar antes de comprar la botella, parciales, botellas selladas y combos en promoción. Entre más decants llevás, más ahorrás.</p>
-        <a class="cta" href="perfumeria.html">Ver perfumería</a>
       </div>
     </div>
   </section>
@@ -530,7 +668,7 @@ a.art,.name a{text-decoration:none;color:inherit}
       </div>
       <div><h5>Comprar</h5><ul>
         <li><a href="#hombre">Hombre</a></li><li><a href="#mujer">Mujer</a></li><li><a href="#ninos">Niños</a></li>
-        <li><a href="#basketball">Basketball</a></li><li><a href="#running">Running</a></li><li><a href="#ofertas">Ofertas</a></li><li><a href="perfumeria.html">Perfumería</a></li></ul></div>
+        <li><a href="#basketball">Basketball</a></li><li><a href="#running">Running</a></li><li><a href="#ofertas">Ofertas</a></li><li><a href="#vip">Comunidad VIP</a></li></ul></div>
       <div><h5>Ayuda</h5><ul>
         <li><button class="lk" data-info="envios">Envíos y entregas</button></li>
         <li><button class="lk" data-info="cambios">Cambios y devoluciones</button></li>
@@ -554,11 +692,11 @@ a.art,.name a{text-decoration:none;color:inherit}
 </footer>
 
 <section class="sheet" id="pdView" hidden aria-label="Detalle del producto">
-  <div class="sheet-top"><div class="wrap"><button class="back" data-back>← Volver</button><img src="logo.svg" alt="Butterfly Shop"><button class="cart-btn" data-opencart style="margin-left:auto">Carrito <span class="n cartN">0</span></button></div></div>
+  <div class="sheet-top"><div class="wrap"><button class="back" data-back>← Volver</button><img src="logo-azul.svg" alt="Butterfly Shop"><button class="cart-btn" data-opencart style="margin-left:auto">Carrito <span class="n cartN">0</span></button></div></div>
   <div class="wrap" id="pdBody"></div>
 </section>
 <section class="sheet" id="coView" hidden aria-label="Pagar pedido">
-  <div class="sheet-top"><div class="wrap"><button class="back" data-back>← Seguir comprando</button><img src="logo.svg" alt="Butterfly Shop"><span class="secure" style="margin-left:auto;align-items:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Pago seguro</span></div></div>
+  <div class="sheet-top"><div class="wrap"><button class="back" data-back>← Seguir comprando</button><img src="logo-azul.svg" alt="Butterfly Shop"><span class="secure" style="margin-left:auto;align-items:center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>Pago seguro</span></div></div>
   <div class="wrap" id="coBody"></div>
 </section>
 <div class="modal" id="modal" hidden><div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="mTitle" id="modalCard"></div></div>
@@ -607,7 +745,7 @@ const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;
 const store = { get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d}catch(e){return d}}, set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}} };
 
 let db = FS.load();
-let cart = store.get("fs_cart", []);
+let cart = store.get("bf_cart", []);
 const picked = {};
 let shown = PAGE;
 
@@ -730,8 +868,8 @@ function render(){
   if(typeof renderDeals==="function") renderDeals();
 }
 
-/* ===== Carrito (compartido con perfumeria.html) ===== */
-const save = () => store.set("fs_cart", cart);
+/* ===== Carrito ===== */
+const save = () => store.set("bf_cart", cart);
 const lname = l => l.brand==="Combo" ? "Combo "+l.name : l.name.includes(l.brand) ? l.name : l.brand+" "+l.name;
 function thumbOf(p){ return p.foto || "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(FS.art(p).replace("<svg ",'<svg xmlns="http://www.w3.org/2000/svg" ')); }
 function add(p, t, n=1, regalo=false){
@@ -825,9 +963,15 @@ function renderPagos(){
 function renderTopbar(){
   const items = STORE.socials.map(s=>`<a href="${s.url||"https://wa.me/"+STORE.whatsapp}" target="_blank" rel="noopener" aria-label="${s.name}">${ICONS[s.name]}<span class="lbl">${s.name}</span></a>`).join("")
     + `<a href="#visitanos" aria-label="Ubicación de la tienda"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s7-6.2 7-12a7 7 0 0 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg><span class="lbl">Ubicación</span></a>`;
-  $("#topbar").innerHTML = items;
+  $("#topbar").innerHTML = `<span class="tb-msg">Envíos a todo el país · Retiro gratis en Cartago y Curridabat</span>` + items;
 }
-function renderHome(){ renderSlider(); renderMarquee(); renderTiles(); renderDeals(); renderAbout(); renderPagos(); }
+function renderCircles(){
+  const T = ((db.portada||{}).mosaicos || []);
+  $("#circles").innerHTML = T.map(t=>`<a class="circ" href="${esc(t.link||"#tienda")}"><span class="ring"><span class="in">${t.img?`<img src="${esc(t.img)}" alt="">`:artFor(t.pid)}</span></span>${esc(t.titulo)}</a>`).join("")
+    + `<a class="circ" href="#ofertas"><span class="ring"><span class="in">${artFor((db.productos.find(p=>p.oferta&&p.oferta<p.price)||{}).id)}</span></span>Ofertas</a>`
+    + `<a class="circ" href="#vip"><span class="ring"><span class="in vipc">VIP</span></span>Comunidad VIP</a>`;
+}
+function renderHome(){ renderSlider(); renderMarquee(); renderTiles(); renderCircles(); renderDeals(); renderAbout(); renderPagos(); }
 $("#dPrev").onclick = ()=>$("#dealsRow").scrollBy({left:-520, behavior: reduceMotion()?"auto":"smooth"});
 $("#dNext").onclick = ()=>$("#dealsRow").scrollBy({left: 520, behavior: reduceMotion()?"auto":"smooth"});
 document.addEventListener("click", e=>{
@@ -1072,7 +1216,7 @@ function setPal(p, keep=true){
   if(keep) store.set("fs_pal", p);
   document.querySelectorAll(".palopt").forEach(b=>b.setAttribute("aria-pressed", b.dataset.pal===(p==="clara"?"clara":"oscura")));
 }
-setPal(store.get("fs_pal","clara"), false);
+setPal("clara", false);
 $("#palBtn").onclick = ()=>{ const pop=$("#palPop"); pop.hidden=!pop.hidden; $("#palBtn").setAttribute("aria-expanded", !pop.hidden); };
 document.querySelectorAll(".palopt").forEach(b=>b.onclick=()=>{ setPal(b.dataset.pal); });
 document.addEventListener("click", e=>{ if(!e.target.closest("#palpick")) $("#palPop").hidden = true; });
@@ -1087,7 +1231,6 @@ const ROUTES = {
 let listHash = "", fromList = false;
 function route(scroll){
   const h = location.hash.slice(1), r = ROUTES[h];
-  if(h==="perfumeria"){ location.replace("perfumeria.html"); return; }
   if(h==="paleta-clara" || h==="paleta-oscura"){ setPal(h.slice(7)); }
   if(h.startsWith("p-")){ const p = bySlug(h); if(p){ if(pd.id!==p.id){ pd.id=p.id; pd.size=null; pd.qty=1; pd.gift=false; } showSheet("pd"); renderPD(); return; } }
   if(h==="checkout"){ showSheet("co"); renderCO(); return; }
@@ -1111,8 +1254,8 @@ function route(scroll){
 }
 window.addEventListener("hashchange", ()=>{ fromList = true; route(!openSheet); });
 /* Cambios hechos en el panel (otra pestaña) se ven al instante */
-const reload = ()=>{ db = FS.load(); cart = store.get("fs_cart", []); renderCart(); render(); renderHome(); if(openSheet==="pd") renderPD(); if(openSheet==="co" && co.step!=="done") renderCO(); };
-window.addEventListener("storage", e=>{ if(e.key===FS.KEY || e.key==="fs_cart") reload(); });
+const reload = ()=>{ db = FS.load(); cart = store.get("bf_cart", []); renderCart(); render(); renderHome(); if(openSheet==="pd") renderPD(); if(openSheet==="co" && co.step!=="done") renderCO(); };
+window.addEventListener("storage", e=>{ if(e.key===FS.KEY || e.key==="bf_cart") reload(); });
 window.addEventListener("pageshow", e=>{ if(e.persisted) reload(); });
 renderHome();
 route(!!ROUTES[location.hash.slice(1)] || location.hash.startsWith("#marca-"));
